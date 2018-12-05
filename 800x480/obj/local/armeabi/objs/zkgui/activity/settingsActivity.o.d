@@ -1,7 +1,7 @@
-D:/zkswe/flythings/bin/workspace/800x480/obj/local/armeabi/objs/zkgui/activity/settingsActivity.o: \
- D:/zkswe/flythings/bin/workspace/800x480/jni/activity/settingsActivity.cpp \
- D:/zkswe/flythings/bin/workspace/800x480/jni/activity/settingsActivity.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/app/Activity.h \
+C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/settingsActivity.o: \
+ C:/Users/shentq/Documents/z11s/800x480/jni/activity/settingsActivity.cpp \
+ C:/Users/shentq/Documents/z11s/800x480/jni/activity/settingsActivity.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/app/Activity.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/string \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_prolog.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_cprolog.h \
@@ -151,14 +151,14 @@ D:/zkswe/flythings/bin/workspace/800x480/obj/local/armeabi/objs/zkgui/activity/s
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_tree.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_tree.c \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_relops_cont.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/app/BaseApp.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/window/ZKMainWindow.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/window/ZKWindow.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/app/BaseApp.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/window/ZKMainWindow.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/window/ZKWindow.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/vector \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_vector.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_vector.c \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_bvector.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKBase.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKBase.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//gui/minigui/common.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//gui/minigui/mgconfig.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/semaphore.h \
@@ -210,26 +210,26 @@ D:/zkswe/flythings/bin/workspace/800x480/obj/local/armeabi/objs/zkgui/activity/s
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//gui/mgeff/mgeff-effector-source.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//gui/mgeff/mgeff-effector.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//gui/mgeff/mgeff-window-animation.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/Common.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/control/Common.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/unistd.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/select.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/sysconf.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/capability.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/pathconf.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/json/json.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/json/json.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/fstream \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_ioserr.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_fstream.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_codecvt.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_fstream.c \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/json/autolink.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/json/config.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/json/version.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/json/value.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/json/forwards.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/json/autolink.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/json/config.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/json/version.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/json/value.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/json/forwards.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/exception \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/json/reader.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/json/features.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/json/reader.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/json/features.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/deque \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_deque.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_deque.c \
@@ -237,47 +237,47 @@ D:/zkswe/flythings/bin/workspace/800x480/obj/local/armeabi/objs/zkgui/activity/s
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stack \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_stack.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/istream \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/json/writer.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/json/writer.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/ostream \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/system/Mutex.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/entry/EasyUIContext.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/Common.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/ime/IMEContext.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/uart/ProtocolData.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/uart/CommDef.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/uart/ProtocolParser.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/uart/ProtocolData.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/utils/Log.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Mutex.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/entry/EasyUIContext.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/control/Common.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/ime/IMEContext.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolData.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/uart/CommDef.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolParser.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolData.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/Log.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/android/log.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKDigitalClock.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKTextView.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKBase.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKButton.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKCircleBar.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKDiagram.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKListView.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKButton.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/utils/VelocityTracker.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKPointer.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKQRCode.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKTextView.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKSeekBar.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKEditText.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKVideoView.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/media/ZKMediaPlayer.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/system/Thread.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/system/Mutex.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/system/Condition.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/utils/MessageQueue.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/system/Condition.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/include/window/ZKSlideWindow.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/logic/settingsLogic.cc \
- D:/zkswe/flythings/bin/workspace/800x480/jni/uart/ProtocolSender.h \
- D:/zkswe/flythings/bin/workspace/800x480/jni/json_test.h
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKDigitalClock.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKTextView.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKBase.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKButton.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKCircleBar.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKDiagram.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKListView.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKButton.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/VelocityTracker.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKPointer.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKQRCode.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKTextView.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKSeekBar.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKEditText.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKVideoView.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/media/ZKMediaPlayer.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Thread.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Mutex.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Condition.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/MessageQueue.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Condition.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/window/ZKSlideWindow.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/logic/settingsLogic.cc \
+ C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolSender.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/json_test.h
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/activity/settingsActivity.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/activity/settingsActivity.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/app/Activity.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/app/Activity.h:
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/string:
 
@@ -577,11 +577,11 @@ D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_tre
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_relops_cont.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/app/BaseApp.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/app/BaseApp.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/window/ZKMainWindow.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/window/ZKMainWindow.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/window/ZKWindow.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/window/ZKWindow.h:
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/vector:
 
@@ -591,7 +591,7 @@ D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_vec
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_bvector.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKBase.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKBase.h:
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//gui/minigui/common.h:
 
@@ -695,7 +695,7 @@ D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//gui/mgeff/mgeff-
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//gui/mgeff/mgeff-window-animation.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/Common.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/control/Common.h:
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/unistd.h:
 
@@ -707,7 +707,7 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/pathconf.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/json/json.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/json/json.h:
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/fstream:
 
@@ -719,21 +719,21 @@ D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_cod
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_fstream.c:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/json/autolink.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/json/autolink.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/json/config.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/json/config.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/json/version.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/json/version.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/json/value.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/json/value.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/json/forwards.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/json/forwards.h:
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/exception:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/json/reader.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/json/reader.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/json/features.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/json/features.h:
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/deque:
 
@@ -749,76 +749,76 @@ D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_sta
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/istream:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/json/writer.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/json/writer.h:
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/ostream:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/system/Mutex.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Mutex.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/entry/EasyUIContext.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/entry/EasyUIContext.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/Common.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/control/Common.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/ime/IMEContext.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/ime/IMEContext.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/uart/ProtocolData.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolData.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/uart/CommDef.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/uart/CommDef.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/uart/ProtocolParser.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolParser.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/uart/ProtocolData.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolData.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/utils/Log.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/Log.h:
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/android/log.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKDigitalClock.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKDigitalClock.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKTextView.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKTextView.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKBase.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKBase.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKButton.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKButton.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKCircleBar.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKCircleBar.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKDiagram.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKDiagram.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKListView.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKListView.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKButton.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKButton.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/utils/VelocityTracker.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/VelocityTracker.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKPointer.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKPointer.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKQRCode.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKQRCode.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKTextView.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKTextView.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKSeekBar.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKSeekBar.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKEditText.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKEditText.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/control/ZKVideoView.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/control/ZKVideoView.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/media/ZKMediaPlayer.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/media/ZKMediaPlayer.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/system/Thread.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Thread.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/system/Mutex.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Mutex.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/system/Condition.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Condition.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/utils/MessageQueue.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/MessageQueue.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/system/Condition.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Condition.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/include/window/ZKSlideWindow.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/include/window/ZKSlideWindow.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/logic/settingsLogic.cc:
+C:/Users/shentq/Documents/z11s/800x480/jni/logic/settingsLogic.cc:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/uart/ProtocolSender.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolSender.h:
 
-D:/zkswe/flythings/bin/workspace/800x480/jni/json_test.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/json_test.h:

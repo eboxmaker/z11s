@@ -1,6 +1,6 @@
-C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/mainActivity.o: \
- C:/Users/shentq/Documents/z11s/800x480/jni/activity/mainActivity.cpp \
- C:/Users/shentq/Documents/z11s/800x480/jni/activity/mainActivity.h \
+C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/networkActivity.o: \
+ C:/Users/shentq/Documents/z11s/800x480/jni/activity/networkActivity.cpp \
+ C:/Users/shentq/Documents/z11s/800x480/jni/activity/networkActivity.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/app/Activity.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/string \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_prolog.h \
@@ -271,10 +271,34 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/mai
  C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/MessageQueue.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Condition.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/window/ZKSlideWindow.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/logic/mainLogic.cc \
- C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolSender.h
+ C:/Users/shentq/Documents/z11s/800x480/jni/logic/networkLogic.cc \
+ C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolSender.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/net/NetManager.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/net/EthernetManager.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/net/WifiManager.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/net/WifiInfo.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/net/SoftApManager.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/SocketClient.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/os/SystemProperties.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/socket.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/socket.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/socket.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/sockios.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/sockios.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/uio.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/in.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/in.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/byteorder.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/little_endian.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/swab.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/generic.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/in6.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/ipv6.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/in6.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netdb.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/arpa/inet.h
 
-C:/Users/shentq/Documents/z11s/800x480/jni/activity/mainActivity.h:
+C:/Users/shentq/Documents/z11s/800x480/jni/activity/networkActivity.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/app/Activity.h:
 
@@ -816,6 +840,54 @@ C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Condition.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/window/ZKSlideWindow.h:
 
-C:/Users/shentq/Documents/z11s/800x480/jni/logic/mainLogic.cc:
+C:/Users/shentq/Documents/z11s/800x480/jni/logic/networkLogic.cc:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolSender.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/include/net/NetManager.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/include/net/EthernetManager.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/include/net/WifiManager.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/include/net/WifiInfo.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/include/net/SoftApManager.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/SocketClient.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/include/os/SystemProperties.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/socket.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/socket.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/socket.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/sockios.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/sockios.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/uio.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/in.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/in.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/byteorder.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/little_endian.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/swab.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/generic.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/in6.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/ipv6.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/in6.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netdb.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/arpa/inet.h:

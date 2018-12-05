@@ -29,8 +29,25 @@
 *
 * 在Eclipse编辑器中  使用 “alt + /”  快捷键可以打开智能提示
 */
+#include "net/NetManager.h"
+#include "SocketClient.h"
 
+#include "os/SystemProperties.h"
 
+#include "string.h"
+#include<sys/socket.h>
+#include<netinet/in.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#define MAXLINE 4500
+
+SocketClient* mSocket=NULL;
+static bool bSocketConnect = false;
+static char **pptr;					//用于gethostbyname() rul 取得函数的结构体
+static char HostID_str[INET_ADDRSTRLEN];	//用于inet_ntop()来取得服务器id
+static	int    	sockfd;				//套接字代号
+static	char    buf[MAXLINE];		//用来装收网上收到的数据
+struct 	sockaddr_in    servaddr;	//外网服务器地址
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -41,12 +58,52 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 	//{1,  1000},
 };
 
+class iWiFiSocketListener : public SocketClient::ISocketListener {
+public:
+	virtual void notify(int what, int status, const char *msg){
+		if(what == 0){
+			if(status == SocketClient::E_SOCKET_STATUS_RECV_OK){
+				//mButton1Ptr->setVisible(false);
+				//mButtonConnectSevPtr->setVisible(false);
+				//mTextview1Ptr->setText("");
+				//bHavePic = true;
+				//mTextview1Ptr->setBackgroundPic(msg);
+				mEditTextMSGPtr->setText("123");
+			}
+		}
+	}
+};
+static iWiFiSocketListener mWifiSocket;
+
 /**
  * 当界面构造时触发
  */
 static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
+	mSocket = new SocketClient();
+	mSocket->setSocketListener(&mWifiSocket);
 
+
+
+	char hname[128];
+	struct hostent *hent;
+	int i;
+	char buf[128];
+	string str;
+	gethostname(hname, sizeof(hname));
+
+	//hent = gethostent();
+	hent = gethostbyname(hname);
+
+	sprintf(buf,"hostname: %s/naddress list: ", hent->h_name);
+	str += buf;
+	str += "\n";
+	for(i = 0; hent->h_addr_list[i]; i++) {
+		sprintf(buf,"%s/t", inet_ntoa(*(struct in_addr*)(hent->h_addr_list[i])));
+		str += buf;
+		str += "\n";
+	}
+	mEditTextClientIPPtr->setText(str);
 }
 
 /**
@@ -62,7 +119,7 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
-	EASYUICONTEXT->hideStatusBar();
+    EASYUICONTEXT->showStatusBar();
 
 }
 
@@ -70,6 +127,7 @@ static void onUI_show() {
  * 当界面隐藏时触发
  */
 static void onUI_hide() {
+	EASYUICONTEXT->hideStatusBar();
 
 }
 
@@ -105,21 +163,7 @@ static bool onUI_Timer(int id){
 	}
     return true;
 }
-const char* IconTab[]={
 
-		"testTextActivity",
-		"settingsActivity",
-		"networkActivity",
-		"inputtextActivity",
-		"waveViewActivity",
-		"testpointerActivity",
-		"windowActivity",
-		"videoActivity",
-		"tesListActivity",
-		"adActivity",
-		"qrcodeActivity",
-		"sqliteActivity"
-};
 /**
  * 有新的触摸事件时触发
  * 参数：ev
@@ -129,13 +173,35 @@ const char* IconTab[]={
  *         false
  *            触摸事件将继续传递到控件上
  */
-static bool onmainActivityTouchEvent(const MotionEvent &ev) {
+static bool onnetworkActivityTouchEvent(const MotionEvent &ev) {
 
 	return false;
 }
-static void onSlideItemClick_Slidewindow1(ZKSlideWindow *pSlideWindow, int index) {
-    //LOGD(" onSlideItemClick_ Slidewindow1 %d !!!\n", index);
-	if(index <= sizeof(IconTab)/sizeof(char*)){
-		EASYUICONTEXT->openActivity(IconTab[index]);
+static bool onButtonClick_BtnConnectServer(ZKButton *pButton) {
+    //LOGD(" ButtonClick Button1 !!!\n");
+	if(!bSocketConnect){
+		mSocket->start();
+		bSocketConnect = true;
+		pButton->setText("断开服务器");
+	}else{
+		mSocket->stop();
+		bSocketConnect = false;
+		pButton->setText("连接服务器");
 	}
+    return true;
+}
+static void onEditTextChanged_EditTextMSG(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EditTextMSG %s !!!\n", text.c_str());
+}
+static void onEditTextChanged_EditTextClientIP(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EditTextClientIP %s !!!\n", text.c_str());
+}
+static void onEditTextChanged_Edittext1(const std::string &text) {
+    //LOGD(" onEditTextChanged_ Edittext1 %s !!!\n", text.c_str());
+}
+
+static bool onButtonClick_BtnSend(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnSend !!!\n");
+	mSocket->send("123");
+    return false;
 }
