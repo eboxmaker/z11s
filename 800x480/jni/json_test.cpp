@@ -10,7 +10,22 @@
 
 using namespace std;
 
+std::string get_id(const char *str)
+{
+	  Json::Reader reader;
 
+	  Json::Value root;
+	  std::string upload_id;
+
+	  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+
+	     upload_id = root["uploadid"].asString();  // 访问节点，upload_id = "UP000000"
+
+	  }
+
+	  return upload_id;
+}
 
 int ParseJsonFromString()
 

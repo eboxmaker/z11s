@@ -14,6 +14,7 @@
 #include <stdlib.h>
 
 FILE *openfile(uint32_t *len);
+std::string get_id(const char *str);
 
 
 

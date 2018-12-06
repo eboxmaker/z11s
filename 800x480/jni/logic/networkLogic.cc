@@ -30,7 +30,8 @@
 * 在Eclipse编辑器中  使用 “alt + /”  快捷键可以打开智能提示
 */
 #include "net/NetManager.h"
-#include "SocketClient.h"
+#include "lib/SocketClient.h"
+#include "json_test.h"
 
 #include "os/SystemProperties.h"
 
@@ -43,11 +44,8 @@
 
 SocketClient* mSocket=NULL;
 static bool bSocketConnect = false;
-static char **pptr;					//用于gethostbyname() rul 取得函数的结构体
-static char HostID_str[INET_ADDRSTRLEN];	//用于inet_ntop()来取得服务器id
-static	int    	sockfd;				//套接字代号
-static	char    buf[MAXLINE];		//用来装收网上收到的数据
-struct 	sockaddr_in    servaddr;	//外网服务器地址
+const char* json_str = "{\"uploadid\": \"UP000000\",\"code\": 100,\"msg\": \"\",\"files\": \"\"}";
+
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -104,6 +102,10 @@ static void onUI_init(){
 		str += "\n";
 	}
 	mEditTextClientIPPtr->setText(str);
+
+	string x = get_id(json_str);
+
+	mEditTextMSGPtr->setText(x);
 }
 
 /**
@@ -120,7 +122,11 @@ static void onUI_intent(const Intent *intentPtr) {
  */
 static void onUI_show() {
     EASYUICONTEXT->showStatusBar();
-
+	if(!bSocketConnect){
+		mBtnConnectServerPtr->setText("断开服务器");
+	}else{
+		mBtnConnectServerPtr->setText("连接服务器");
+	}
 }
 
 /*
@@ -182,11 +188,11 @@ static bool onButtonClick_BtnConnectServer(ZKButton *pButton) {
 	if(!bSocketConnect){
 		mSocket->start();
 		bSocketConnect = true;
-		pButton->setText("断开服务器");
+		mBtnConnectServerPtr->setText("断开服务器");
 	}else{
 		mSocket->stop();
 		bSocketConnect = false;
-		pButton->setText("连接服务器");
+		mBtnConnectServerPtr->setText("连接服务器");
 	}
     return true;
 }

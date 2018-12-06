@@ -25,7 +25,6 @@
 #include "SocketClient.h"
 #include "utils/Log.h"
 
-#define HELLO_WORLD_SERVER_PORT    	6000
 #define BUFFER_SIZE 				4096
 #define FILENAME_MAX_SIZE 			512
 
@@ -142,6 +141,11 @@ void SocketClient::start() {
 		disconnect();
 		return;
 	}
+	else
+	{
+
+		LOGD("create socket thread ok, erro=%d\n",threadID);
+	}
 
 	LOGD("create socket thread success!\n");
 }
@@ -150,7 +154,7 @@ void SocketClient::stop() {
 	disconnect();
 }
 
-bool SocketClient::connect() {
+bool SocketClient::connect(char *ip, uint16_t port) {
 	// 设置一个socket地址结构clientAddr,代表客户机internet地址, 端口
 	struct sockaddr_in clientAddr;
 	bzero(&clientAddr, sizeof(clientAddr)); // 把一段内存区的内容全部设置为0
@@ -166,7 +170,7 @@ bool SocketClient::connect() {
 		return false;
 	}
 
-	/*
+
 	// 把客户机的socket和客户机的socket地址结构联系起来
 	if (bind(mClientSocket, (struct sockaddr*) &clientAddr, sizeof(clientAddr))) {
 		LOGD("Client Bind Port Failed!\n");
@@ -175,15 +179,15 @@ bool SocketClient::connect() {
 	}
 
 	LOGD("Client Bind OK!\n");
-	*/
+
 	// 设置一个socket地址结构serverAddr,代表服务器的internet地址, 端口
 	struct sockaddr_in serverAddr;
 	bzero(&serverAddr, sizeof(serverAddr));
 	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_port=htons(6000); //服务器端口号
+	serverAddr.sin_port=htons(port); //服务器端口号
 
 
-	if (inet_aton(SERVER_IP_ADDR, &serverAddr.sin_addr) == 0) {     // 服务器的IP地址来自程序的参数
+	if (inet_aton(ip, &serverAddr.sin_addr) == 0) {     // 服务器的IP地址来自程序的参数
 		LOGD("Server IP Address Error!\n");
 		disconnect();
 		return false;
@@ -205,6 +209,10 @@ bool SocketClient::connect() {
 
 	return true;
 }
+bool SocketClient::connected()
+{
+
+}
 
 bool SocketClient::disconnect() {
 	LOGD("SocketClient disconnect\n");
@@ -224,9 +232,15 @@ void SocketClient::send(char *msg)
 	return ;
 }
 void SocketClient::threadLoop() {
-	if (!connect()) {
+	if (!connect(SERVER_IP_ADDR,SERVER_PORT)) {
 		LOGD("socket thread connect error return!\n");
 		return;
+	}
+	else
+	{
+
+		LOGD("socket run...!\n");
+
 	}
 
 	// 同步时间

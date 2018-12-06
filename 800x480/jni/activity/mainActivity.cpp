@@ -4,6 +4,8 @@
 #include "mainActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKWindow* mWindow1Ptr;
+static ZKDigitalClock* mDigitalclock1Ptr;
 static ZKSlideWindow* mSlidewindow1Ptr;
 static mainActivity* mActivityPtr;
 
@@ -123,6 +125,8 @@ const char* mainActivity::getAppName() const{
 //TAG:onCreate
 void mainActivity::onCreate() {
 	Activity::onCreate();
+    mWindow1Ptr = (ZKWindow*)findControlByID(ID_MAIN_Window1);
+    mDigitalclock1Ptr = (ZKDigitalClock*)findControlByID(ID_MAIN_Digitalclock1);
     mSlidewindow1Ptr = (ZKSlideWindow*)findControlByID(ID_MAIN_Slidewindow1);if(mSlidewindow1Ptr!= NULL){mSlidewindow1Ptr->setSlideItemClickListener(this);}
 	mActivityPtr = this;
 	onUI_init();
