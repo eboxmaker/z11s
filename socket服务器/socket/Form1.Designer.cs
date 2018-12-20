@@ -38,6 +38,8 @@
             this.btnSendMSG = new System.Windows.Forms.Button();
             this.RichSend = new System.Windows.Forms.RichTextBox();
             this.btnClear = new System.Windows.Forms.Button();
+            this.btnLoadFile = new System.Windows.Forms.Button();
+            this.btnSaveFile = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnStartServer
@@ -128,11 +130,33 @@
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
+            // btnLoadFile
+            // 
+            this.btnLoadFile.Location = new System.Drawing.Point(13, 279);
+            this.btnLoadFile.Name = "btnLoadFile";
+            this.btnLoadFile.Size = new System.Drawing.Size(75, 23);
+            this.btnLoadFile.TabIndex = 10;
+            this.btnLoadFile.Text = "加载文件";
+            this.btnLoadFile.UseVisualStyleBackColor = true;
+            this.btnLoadFile.Click += new System.EventHandler(this.btnLoadFile_Click);
+            // 
+            // btnSaveFile
+            // 
+            this.btnSaveFile.Location = new System.Drawing.Point(13, 319);
+            this.btnSaveFile.Name = "btnSaveFile";
+            this.btnSaveFile.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveFile.TabIndex = 11;
+            this.btnSaveFile.Text = "保存文件";
+            this.btnSaveFile.UseVisualStyleBackColor = true;
+            this.btnSaveFile.Click += new System.EventHandler(this.btnSaveFile_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(683, 417);
+            this.Controls.Add(this.btnSaveFile);
+            this.Controls.Add(this.btnLoadFile);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.RichSend);
             this.Controls.Add(this.btnSendMSG);
@@ -162,6 +186,8 @@
         private System.Windows.Forms.Button btnSendMSG;
         private System.Windows.Forms.RichTextBox RichSend;
         private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.Button btnLoadFile;
+        private System.Windows.Forms.Button btnSaveFile;
     }
 }
 

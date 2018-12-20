@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using MyFun;
 using System.Net.Sockets;
 using System.Threading;
-
+using MyJson;
 
 namespace socket
 {
@@ -107,7 +107,7 @@ namespace socket
 
         private void btnSendMSG_Click(object sender, EventArgs e)
         {
-
+            server.SendAll(RichSend.Text);
         }
 
         private void btnClear_Click(object sender, EventArgs e)
@@ -144,6 +144,17 @@ namespace socket
             //Console.WriteLine(string.Format("{0}", e.Datagram));
             //server.Send(e.TcpClient, "Server has received you text : " + e.Datagram);
             //}
+        }
+
+        private void btnLoadFile_Click(object sender, EventArgs e)
+        {
+           string str =  JsonManager.PackageFileToJsonString("12345678.jpg");
+           RichSend.Text = str;
+        }
+
+        private void btnSaveFile_Click(object sender, EventArgs e)
+        {
+            JsonManager.SaveJsonStringFile(RichSend.Text,"1");
         }
         
     }
