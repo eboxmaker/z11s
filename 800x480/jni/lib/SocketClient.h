@@ -11,7 +11,7 @@
 
 #define SERVER_IP_ADDR			"192.168.1.101"
 #define SERVER_PORT    			6000
-#define BUFFER_FILE_NAME		"/mnt/extsd/recv.jpg"
+#define FILE_DIR		"/mnt/extsd/"
 
 
 class SocketClient {

@@ -67,7 +67,8 @@ public:
 				//mTextview1Ptr->setText("");
 				//bHavePic = true;
 				//mTextview1Ptr->setBackgroundPic(msg);
-				mEditTextMSGPtr->setText("123");
+				//mEditTextMSGPtr->setText("123");
+				LOGE("FILE RECV OK!");
 			}
 		}
 	}

@@ -13,6 +13,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef enum
+{
+	PicFile = 0,
+	test
+}JsonCmd_t;
+
+JsonCmd_t getJsonCMD(const char * str);
+
 FILE *openfile(uint32_t *len);
 std::string get_id(const char *str);
 

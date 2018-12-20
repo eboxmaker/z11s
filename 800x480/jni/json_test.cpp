@@ -10,6 +10,22 @@
 
 using namespace std;
 
+JsonCmd_t getJsonCMD(const char * str)
+{
+	  Json::Reader reader;
+
+	  Json::Value root;
+	  JsonCmd_t cmd;
+
+	  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+
+		  cmd = root["cmd"].asInt();
+	  }
+
+	  return cmd;
+
+}
 std::string get_id(const char *str)
 {
 	  Json::Reader reader;

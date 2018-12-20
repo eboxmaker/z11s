@@ -24,6 +24,8 @@
 
 #include "SocketClient.h"
 #include "utils/Log.h"
+#include "json_test.h"
+#include "packageFile.h"
 
 #define BUFFER_SIZE 				4096
 #define FILENAME_MAX_SIZE 			512
@@ -244,15 +246,6 @@ void SocketClient::threadLoop() {
 	}
 
 	// 同步时间
-/*	char timeStr[20] = { 0 };
-	int len = read(mClientSocket, timeStr, 20);
-	LOGD("threadLoop len: %d, timeStr: %s\n", len, timeStr);
-	char dateStr[40] = { 0 };
-	sprintf(dateStr, "date -s\"%s\"", timeStr);
-
-	system(dateStr);*/
-
-	// 同步时间
 	char timeStr[20] = { 0 };
 	int len = read(mClientSocket, timeStr, 20);
 	if (len > 0) {
@@ -267,76 +260,42 @@ void SocketClient::threadLoop() {
 	int ret = setsockopt(mClientSocket, SOL_SOCKET, SO_RCVTIMEO,
 			(const char*)&timeout, sizeof(timeout));
 
-	while (mClientSocket > 0) {
-//		char fileSizeStr[15] = { 0 };
-//		int length = read(mClientSocket, fileSizeStr, 15);
-//		LOGD("read length: %d\n", length);
+	while (mClientSocket > 0)
+	{
 
-		int fileSize = 0;
-		int length = read(mClientSocket, &fileSize, sizeof(int));
-//		LOGD("read length: %d\n", length);
-
-		if (length > 0) {
-//			int fileSize = atoi(fileSizeStr);
-			LOGD("read fileSize: %d\n", fileSize);
-			if (fileSize <= 0) {
-				continue;
-			}
-
-			if (mSocketListener != NULL) {
-				mSocketListener->notify(0, E_SOCKET_STATUS_START_RECV, "");
-			}
-
-			bool ret = true;
-			FILE *fp = fopen(BUFFER_FILE_NAME, "w");
-			if (fp != NULL) {
-				int readLen = 0;
-				char buffer[BUFFER_SIZE] = { 0 };
-
-				while (fileSize > 0) {
-					readLen = (fileSize > BUFFER_SIZE) ? BUFFER_SIZE : fileSize;
-					length = read(mClientSocket, buffer, readLen);
-					if (length < 0) {
-						LOGE("Recieve Data From Server %s Failed! %s\n", SERVER_IP_ADDR, strerror(errno));
-						ret = false;
-						break;
-					} else if (length == 0) {
-						continue;
-					}
-
-					int writeLength = fwrite(buffer, sizeof(char), length, fp);
-					if (writeLength < length) {
-						LOGD("File:\t%s Write Failed\n", BUFFER_FILE_NAME);
-						ret = false;
-//						break;
-					}
-
-					fileSize -= length;
-
-					bzero(buffer, length);
-				}
-
-				if (fclose(fp) != 0) {
-					ret = false;
-				}
-
-				if (mSocketListener != NULL) {
-					mSocketListener->notify(0, ret ? E_SOCKET_STATUS_RECV_OK : E_SOCKET_STATUS_RECV_ERROR, BUFFER_FILE_NAME);
-				}
-			} else {
-				LOGE("%s open fail, erro: %s\n", BUFFER_FILE_NAME, strerror(errno));
-			}
-		} else if (length < 0) {
-			if (errno != EAGAIN) {
-				LOGD("read fileSize error %s\n", strerror(errno));
-				disconnect();
+		int length = 0;
+		char buffer[BUFFER_SIZE] = { 0 };
+		while(true)
+		{
+			length = read(mClientSocket, buffer, BUFFER_SIZE);
+			if(length < 0 || length >= BUFFER_SIZE)
+			{
+				LOGE("Recieve Data From Server %s Failed! %s\n", SERVER_IP_ADDR, strerror(errno));
+				ret = false;
 				break;
 			}
-		} else if (length == 0) {
-			LOGD("read length is 0......%s\n", strerror(errno));
-			disconnect();
-			break;
+			else
+			{
+				//std::string str = buffer;
+				JsonCmd_t cmd = getJsonCMD(buffer);
+				switch(cmd)
+				{
+				case PicFile:
+					SaveFile(buffer,FILE_DIR);
+					break;
+				case test:
+
+					break;
+				default:
+					break;
+				}
+				if (mSocketListener != NULL)
+				{
+					mSocketListener->notify(cmd, ret ? E_SOCKET_STATUS_RECV_OK : E_SOCKET_STATUS_RECV_ERROR, FILE_DIR);
+				}
+			}
 		}
+
 	}
 
 	LOGD("socket thread end.\n");
