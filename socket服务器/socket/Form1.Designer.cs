@@ -37,7 +37,7 @@
             this.RichRecv = new System.Windows.Forms.RichTextBox();
             this.btnSendMSG = new System.Windows.Forms.Button();
             this.RichSend = new System.Windows.Forms.RichTextBox();
-            this.btnReadBuf = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnStartServer
@@ -56,7 +56,7 @@
             this.tbServerPort.Name = "tbServerPort";
             this.tbServerPort.Size = new System.Drawing.Size(100, 21);
             this.tbServerPort.TabIndex = 1;
-            this.tbServerPort.Text = "80";
+            this.tbServerPort.Text = "6000";
             // 
             // cbLocalIPList
             // 
@@ -118,22 +118,22 @@
             this.RichSend.TabIndex = 8;
             this.RichSend.Text = "";
             // 
-            // btnReadBuf
+            // btnClear
             // 
-            this.btnReadBuf.Location = new System.Drawing.Point(596, 168);
-            this.btnReadBuf.Name = "btnReadBuf";
-            this.btnReadBuf.Size = new System.Drawing.Size(75, 23);
-            this.btnReadBuf.TabIndex = 9;
-            this.btnReadBuf.Text = "读取数据";
-            this.btnReadBuf.UseVisualStyleBackColor = true;
-            this.btnReadBuf.Click += new System.EventHandler(this.btnReadBuf_Click);
+            this.btnClear.Location = new System.Drawing.Point(596, 168);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(75, 23);
+            this.btnClear.TabIndex = 9;
+            this.btnClear.Text = "清空数据";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(683, 417);
-            this.Controls.Add(this.btnReadBuf);
+            this.Controls.Add(this.btnClear);
             this.Controls.Add(this.RichSend);
             this.Controls.Add(this.btnSendMSG);
             this.Controls.Add(this.RichRecv);
@@ -161,7 +161,7 @@
         private System.Windows.Forms.RichTextBox RichRecv;
         private System.Windows.Forms.Button btnSendMSG;
         private System.Windows.Forms.RichTextBox RichSend;
-        private System.Windows.Forms.Button btnReadBuf;
+        private System.Windows.Forms.Button btnClear;
     }
 }
 

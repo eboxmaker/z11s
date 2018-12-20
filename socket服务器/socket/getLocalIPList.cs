@@ -7,14 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace socket
+namespace MyFun
 {
-    class getLocalIPList
+    class IPHelper
     {
-
-
-
-        public  string[] GetLocalIP(ref int num)
+        public static string[] GetLocalIP(ref int num)
         {
 
                 string HostName = Dns.GetHostName(); //得到主机名
