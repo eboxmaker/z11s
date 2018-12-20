@@ -272,7 +272,13 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/mai
  C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Condition.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/window/ZKSlideWindow.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/logic/mainLogic.cc \
- C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolSender.h
+ C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolSender.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/simpleSocket/SimpleSocket.h \
+ D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream \
+ C:/Users/shentq/Documents/z11s/800x480/jni/simpleSocket/SimpleException.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/simpleSocket/SimpleMessage.h \
+ D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/strstream \
+ D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_strstream.h
 
 C:/Users/shentq/Documents/z11s/800x480/jni/activity/mainActivity.h:
 
@@ -819,3 +825,15 @@ C:/Users/shentq/Documents/z11s/800x480/jni/include/window/ZKSlideWindow.h:
 C:/Users/shentq/Documents/z11s/800x480/jni/logic/mainLogic.cc:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolSender.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/simpleSocket/SimpleSocket.h:
+
+D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/simpleSocket/SimpleException.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/simpleSocket/SimpleMessage.h:
+
+D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/strstream:
+
+D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_strstream.h:

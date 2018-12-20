@@ -4,6 +4,7 @@
 #include "networkActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKButton* mBtnBaseTestPtr;
 static ZKButton* mBtnSendPtr;
 static ZKEditText* mEdittext1Ptr;
 static ZKTextView* mTextview1Ptr;
@@ -47,6 +48,7 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_NETWORK_BtnBaseTest, onButtonClick_BtnBaseTest,
     ID_NETWORK_BtnSend, onButtonClick_BtnSend,
     ID_NETWORK_BtnConnectServer, onButtonClick_BtnConnectServer,
 };
@@ -132,6 +134,7 @@ const char* networkActivity::getAppName() const{
 //TAG:onCreate
 void networkActivity::onCreate() {
 	Activity::onCreate();
+    mBtnBaseTestPtr = (ZKButton*)findControlByID(ID_NETWORK_BtnBaseTest);
     mBtnSendPtr = (ZKButton*)findControlByID(ID_NETWORK_BtnSend);
     mEdittext1Ptr = (ZKEditText*)findControlByID(ID_NETWORK_Edittext1);if(mEdittext1Ptr!= NULL){mEdittext1Ptr->setTextChangeListener(this);}
     mTextview1Ptr = (ZKTextView*)findControlByID(ID_NETWORK_Textview1);

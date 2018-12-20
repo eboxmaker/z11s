@@ -26,6 +26,7 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_NETWORK_BtnBaseTest    20003
 #define ID_NETWORK_BtnSend    20002
 #define ID_NETWORK_Edittext1    51003
 #define ID_NETWORK_Textview1    50001

@@ -32,6 +32,7 @@
 #include "net/NetManager.h"
 #include "lib/SocketClient.h"
 #include "json_test.h"
+#include "base64.h"
 
 #include "os/SystemProperties.h"
 
@@ -209,5 +210,20 @@ static void onEditTextChanged_Edittext1(const std::string &text) {
 static bool onButtonClick_BtnSend(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnSend !!!\n");
 	mSocket->send("123");
+    return false;
+}
+static bool onButtonClick_Button1(ZKButton *pButton) {
+    //LOGD(" ButtonClick Button1 !!!\n");
+    return false;
+}
+static bool onButtonClick_BtnBaseTest(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnBaseTest !!!\n");
+	const std::string str = "test1";
+	std::string ostr;
+	string str2;
+	Base64::Encode(str, &ostr);
+	Base64::Decode(ostr, &str2);
+	LOGD("%s",ostr.c_str());
+	LOGD("%s",str2.c_str());
     return false;
 }
