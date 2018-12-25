@@ -27,7 +27,7 @@
 #include "json_test.h"
 #include "packageFile.h"
 
-#define BUFFER_SIZE 				4096
+#define BUFFER_SIZE 				40960
 #define FILENAME_MAX_SIZE 			512
 
 static int rtcSetTime(const struct tm *tm_time) {
@@ -234,6 +234,10 @@ void SocketClient::send(char *msg)
 	return ;
 }
 void SocketClient::threadLoop() {
+
+	std::string msg;
+
+
 	if (!connect(SERVER_IP_ADDR,SERVER_PORT)) {
 		LOGD("socket thread connect error return!\n");
 		return;
@@ -245,54 +249,79 @@ void SocketClient::threadLoop() {
 
 	}
 
-	// 同步时间
-	char timeStr[20] = { 0 };
-	int len = read(mClientSocket, timeStr, 20);
-	if (len > 0) {
-		setDateTime(timeStr);
 
-		if (mSocketListener != NULL) {
-			mSocketListener->notify(0, E_SOCKET_STATUS_UPDATE_DATE, "");
-		}
-	}
-
-	struct timeval timeout = { 1, 0 };     // 1s
+	struct timeval timeout = { 5, 0 };     // 1s
 	int ret = setsockopt(mClientSocket, SOL_SOCKET, SO_RCVTIMEO,
 			(const char*)&timeout, sizeof(timeout));
-
+	std::string fileFullName;
+	std::string filename;
 	while (mClientSocket > 0)
 	{
 
+		int counter = 0;
+		bool flag = false;
 		int length = 0;
 		char buffer[BUFFER_SIZE] = { 0 };
 		while(true)
 		{
-			length = read(mClientSocket, buffer, BUFFER_SIZE);
+			length = read(mClientSocket, &buffer[counter], BUFFER_SIZE);
 			if(length < 0 || length >= BUFFER_SIZE)
 			{
-				LOGE("Recieve Data From Server %s Failed! %s\n", SERVER_IP_ADDR, strerror(errno));
+				LOGE("Recieve Data From Server %s Failed;len = %d %s\n", SERVER_IP_ADDR, counter,strerror(errno));
 				ret = false;
 				break;
 			}
 			else
+			{
+				if(ParseJsonString(buffer))
+				{
+					counter+=length;
+					LOGE("ParseJsonString OK! len = %d\n",  counter);
+					flag = true;
+					ret = true;
+				}
+				else
+				{
+					counter+=length;
+					flag = false;
+					LOGE("ParseJsonString Failed! len = %d\n",  counter);
+				}
+
+			}
+			if(flag)
 			{
 				//std::string str = buffer;
 				JsonCmd_t cmd = getJsonCMD(buffer);
 				switch(cmd)
 				{
 				case PicFile:
+					LOGE("Pic Json File ok!\n");
 					SaveFile(buffer,FILE_DIR);
+
+					filename = GetFileName(buffer);
+					fileFullName = FILE_DIR;
+					fileFullName += filename;
+					LOGE("file:%s!\n",fileFullName.c_str());
+					if (mSocketListener != NULL)
+					{
+						mSocketListener->notify(cmd, ret ? E_SOCKET_STATUS_RECV_OK : E_SOCKET_STATUS_RECV_ERROR, fileFullName.c_str());
+					}
 					break;
 				case test:
+					msg = ParseCMD1(buffer);
+					if (mSocketListener != NULL)
+					{
+						mSocketListener->notify(cmd, ret ? E_SOCKET_STATUS_RECV_OK : E_SOCKET_STATUS_RECV_ERROR,msg.c_str() );
+					}
+					LOGE("Test CMD ok!\n");
 
 					break;
 				default:
 					break;
 				}
-				if (mSocketListener != NULL)
-				{
-					mSocketListener->notify(cmd, ret ? E_SOCKET_STATUS_RECV_OK : E_SOCKET_STATUS_RECV_ERROR, FILE_DIR);
-				}
+
+				counter = 0;
+				break;
 			}
 		}
 

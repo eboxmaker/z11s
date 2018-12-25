@@ -40,6 +40,8 @@
             this.btnClear = new System.Windows.Forms.Button();
             this.btnLoadFile = new System.Windows.Forms.Button();
             this.btnSaveFile = new System.Windows.Forms.Button();
+            this.btnOpen = new System.Windows.Forms.Button();
+            this.btnCloseLock = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnStartServer
@@ -132,7 +134,7 @@
             // 
             // btnLoadFile
             // 
-            this.btnLoadFile.Location = new System.Drawing.Point(13, 279);
+            this.btnLoadFile.Location = new System.Drawing.Point(13, 263);
             this.btnLoadFile.Name = "btnLoadFile";
             this.btnLoadFile.Size = new System.Drawing.Size(75, 23);
             this.btnLoadFile.TabIndex = 10;
@@ -142,7 +144,7 @@
             // 
             // btnSaveFile
             // 
-            this.btnSaveFile.Location = new System.Drawing.Point(13, 319);
+            this.btnSaveFile.Location = new System.Drawing.Point(13, 292);
             this.btnSaveFile.Name = "btnSaveFile";
             this.btnSaveFile.Size = new System.Drawing.Size(75, 23);
             this.btnSaveFile.TabIndex = 11;
@@ -150,11 +152,33 @@
             this.btnSaveFile.UseVisualStyleBackColor = true;
             this.btnSaveFile.Click += new System.EventHandler(this.btnSaveFile_Click);
             // 
+            // btnOpen
+            // 
+            this.btnOpen.Location = new System.Drawing.Point(13, 333);
+            this.btnOpen.Name = "btnOpen";
+            this.btnOpen.Size = new System.Drawing.Size(75, 23);
+            this.btnOpen.TabIndex = 12;
+            this.btnOpen.Text = "开锁";
+            this.btnOpen.UseVisualStyleBackColor = true;
+            this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
+            // 
+            // btnCloseLock
+            // 
+            this.btnCloseLock.Location = new System.Drawing.Point(13, 362);
+            this.btnCloseLock.Name = "btnCloseLock";
+            this.btnCloseLock.Size = new System.Drawing.Size(75, 23);
+            this.btnCloseLock.TabIndex = 13;
+            this.btnCloseLock.Text = "关锁";
+            this.btnCloseLock.UseVisualStyleBackColor = true;
+            this.btnCloseLock.Click += new System.EventHandler(this.btnCloseLock_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(683, 417);
+            this.Controls.Add(this.btnCloseLock);
+            this.Controls.Add(this.btnOpen);
             this.Controls.Add(this.btnSaveFile);
             this.Controls.Add(this.btnLoadFile);
             this.Controls.Add(this.btnClear);
@@ -188,6 +212,8 @@
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnLoadFile;
         private System.Windows.Forms.Button btnSaveFile;
+        private System.Windows.Forms.Button btnOpen;
+        private System.Windows.Forms.Button btnCloseLock;
     }
 }
 

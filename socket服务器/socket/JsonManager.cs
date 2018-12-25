@@ -106,6 +106,8 @@ namespace MyJson
             fs.Close();
             return true;
         }
+
+
         public static bool Save(string jstr, string filepath)
         {
             FileStream fs = File.Create(filepath);
@@ -203,6 +205,7 @@ namespace MyJson
             JObject obj = new JObject();
             string name = Path.GetFileName(FilePath);
             string data = FileToBase64(FilePath);
+            obj.Add("cmd", 0);
             obj.Add("name", name);
             obj.Add("data", data);
             string jstring = JsonConvert.SerializeObject(obj);

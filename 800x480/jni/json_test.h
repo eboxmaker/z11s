@@ -18,8 +18,9 @@ typedef enum
 	PicFile = 0,
 	test
 }JsonCmd_t;
-
+bool ParseJsonString(char *str);
 JsonCmd_t getJsonCMD(const char * str);
+std::string ParseCMD1(char *str);
 
 FILE *openfile(uint32_t *len);
 std::string get_id(const char *str);

@@ -11,6 +11,8 @@ using MyFun;
 using System.Net.Sockets;
 using System.Threading;
 using MyJson;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace socket
 {
@@ -155,6 +157,25 @@ namespace socket
         private void btnSaveFile_Click(object sender, EventArgs e)
         {
             JsonManager.SaveJsonStringFile(RichSend.Text,"1");
+        }
+
+        private void btnOpen_Click(object sender, EventArgs e)
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", 1);
+            obj.Add("value", 1);
+            string jstring = JsonConvert.SerializeObject(obj);
+            server.SendAll(jstring);
+
+        }
+
+        private void btnCloseLock_Click(object sender, EventArgs e)
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", 1);
+            obj.Add("value", 0);
+            string jstring = JsonConvert.SerializeObject(obj);
+            server.SendAll(jstring);
         }
         
     }

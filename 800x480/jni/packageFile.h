@@ -15,6 +15,7 @@
 #include <stdlib.h>
 
 
+std::string GetFileName(char *str);
 bool SaveFile(char *str, char* directory);
 
 

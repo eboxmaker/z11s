@@ -133,21 +133,23 @@ char str[4096000];
 uint32_t len;
 static bool onButtonClick_Button2(ZKButton *pButton) {
     //LOGD(" ButtonClick Button2 !!!\n");
-	char buf[10];
-	myfile = openfile(&len);
-
-	if(myfile != NULL)
-	{
-		fseek(myfile,0L,SEEK_SET);
-		fread(str,1,len,myfile);
-		sprintf(buf,"%d",len);
-		mTextview1Ptr->setText(buf);
-		mTextview1Ptr->setBackgroundPic("res/ui/yb.png");
-	}
-	else
-	{
-		mTextview1Ptr->setText("failed");
-	}
+//	char buf[10];
+//	myfile = openfile(&len);
+//
+//	if(myfile != NULL)
+//	{
+//		fseek(myfile,0L,SEEK_SET);
+//		fread(str,1,len,myfile);
+//		sprintf(buf,"%d",len);
+//		mTextview1Ptr->setText(buf);
+		//mTextview1Ptr->setBackgroundPic("res/ui/yb.png");
+		mTextview1Ptr->setBackgroundPic("/mnt/extsd/12345678.jpg");
+//
+//	}
+//	else
+//	{
+//		mTextview1Ptr->setText("failed");
+//	}
     return false;
 }
 static bool onButtonClick_BtnSetLanguage(ZKButton *pButton) {

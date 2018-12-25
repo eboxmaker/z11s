@@ -60,18 +60,29 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 class iWiFiSocketListener : public SocketClient::ISocketListener {
 public:
 	virtual void notify(int what, int status, const char *msg){
-		if(what == 0){
-			if(status == SocketClient::E_SOCKET_STATUS_RECV_OK){
-				//mButton1Ptr->setVisible(false);
-				//mButtonConnectSevPtr->setVisible(false);
-				//mTextview1Ptr->setText("");
-				//bHavePic = true;
-				//mTextview1Ptr->setBackgroundPic(msg);
-				//mEditTextMSGPtr->setText("123");
-				LOGE("FILE RECV OK!");
-			}
+		if(status == SocketClient::E_SOCKET_STATUS_RECV_OK){
+			LOGE("FILE RECV OK!");
+			LOGE("msg:%s",msg);
+		}
+		else
+		{
+			return ;
+		}
+
+		switch(what)
+		{
+		case 0:
+			mButton1Ptr->setText("");
+			//bHavePic = true;
+			mButton1Ptr->setBackgroundPic(msg);
+			break;
+		case 1:
+//			mEditTextMSGPtr->setText(msg);
+			break;
+
 		}
 	}
+
 };
 static iWiFiSocketListener mWifiSocket;
 

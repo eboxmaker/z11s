@@ -6,10 +6,21 @@
  */
 
 #include "json_test.h"
-
+#include "lib/itoa.h"
 
 using namespace std;
+bool ParseJsonString(char *str)
+{
+	  Json::Reader reader;
 
+	  Json::Value root;
+	  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+		  return true;
+	  }
+	  else
+		  return false;
+}
 JsonCmd_t getJsonCMD(const char * str)
 {
 	  Json::Reader reader;
@@ -20,12 +31,31 @@ JsonCmd_t getJsonCMD(const char * str)
 	  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
 
-		  cmd = root["cmd"].asInt();
+		  cmd = (JsonCmd_t)root["cmd"].asInt();
 	  }
 
 	  return cmd;
-
 }
+std::string ParseCMD1(char *str)
+{
+	  Json::Reader reader;
+
+	  Json::Value root;
+	  int value;
+	  std::string val_str;
+	  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+
+		  value = (int)root["value"].asInt();
+
+		  char temp[10];
+		  itoa(value,temp);
+		  val_str = temp;
+	  }
+
+	  return val_str;
+}
+
 std::string get_id(const char *str)
 {
 	  Json::Reader reader;
