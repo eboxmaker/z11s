@@ -217,6 +217,10 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 	// 向服务器发起连接,连接成功后clientSocket代表了客户机和服务器的一个socket连接
 	if (::connect(mClientSocket, (struct sockaddr *) &serverAddr, serverAddrLength) < 0) {
 		LOGD("Can Not Connect To %s!\n", SERVER_IP_ADDR);
+		if (mSocketListener != NULL)
+		{
+			mSocketListener->notify(2, E_SOCKET_STATUS_RECV_OK ,"close" );
+		}
 		disconnect();
 		return false;
 	}
