@@ -41,15 +41,16 @@ public:
 	void setSocketListener(ISocketListener *pListener) {
 		mSocketListener = pListener;
 	}
+	bool connected();
 
 private:
 	bool connect(char *ip, uint16_t port);
-	bool connected();
 	bool disconnect();
 
 private:
 	int mClientSocket;
 	ISocketListener *mSocketListener;
+	bool connectState;
 };
 
 #endif /* _SOCKET_SOCKETCLIENT_H_ */

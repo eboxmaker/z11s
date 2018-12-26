@@ -26,9 +26,14 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_SETTINGS_EditTextServerPort    51002
+#define ID_SETTINGS_EditTextServerIP    51001
+#define ID_SETTINGS_TvServerPort    50003
+#define ID_SETTINGS_TvServerIP    50002
+#define ID_SETTINGS_BtnServer    20004
+#define ID_SETTINGS_BtnNetWork    20001
 #define ID_SETTINGS_BtnSetLanguage    20003
 #define ID_SETTINGS_Textview1    50001
-#define ID_SETTINGS_BtnNetWord    20001
 #define ID_SETTINGS_Button2    20002
 /*TAG:Macro宏ID END*/
 

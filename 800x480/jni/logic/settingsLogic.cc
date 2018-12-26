@@ -1,6 +1,8 @@
 #pragma once
 #include "uart/ProtocolSender.h"
 #include "json_test.h"
+#include "globalVar.h"
+#include "storage/StoragePreferences.h"
 /*
 *此文件由GUI工具生成
 *文件功能：用于处理用户的逻辑相应代码
@@ -64,7 +66,12 @@ static void onUI_intent(const Intent *intentPtr) {
  */
 static void onUI_show() {
     EASYUICONTEXT->showStatusBar();
-
+    gServerIP = StoragePreferences::getString("gServerIP", "192.168.1.1");
+    LOGD("gServerIP %s\n", gServerIP.c_str());
+    gServerPort = StoragePreferences::getString("gServerPort", "6000");
+    LOGD("gServerIP %s\n", gServerPort.c_str());
+    mEditTextServerIPPtr->setText(gServerIP.c_str());
+    mEditTextServerPortPtr->setText(gServerPort.c_str());
 }
 
 /*
@@ -123,11 +130,6 @@ static bool onsettingsActivityTouchEvent(const MotionEvent &ev) {
 }
 
 
-static bool onButtonClick_BtnNetWord(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnNetWord !!!\n");
-	EASYUICONTEXT->openActivity("NetSettingActivity");
-    return false;
-}
 FILE *myfile;
 char str[4096000];
 uint32_t len;
@@ -156,4 +158,42 @@ static bool onButtonClick_BtnSetLanguage(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnSetLanguage !!!\n");
 	EASYUICONTEXT->openActivity("LanguageSettingActivity");
    return false;
+}
+static bool onButtonClick_BtnNetWork(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnNetWork !!!\n");
+	EASYUICONTEXT->openActivity("NetSettingActivity");
+    return false;
+}
+
+static bool onButtonClick_BtnServer(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnServer !!!\n");
+	gServerIP = mEditTextServerIPPtr->getText();
+	gServerPort = mEditTextServerPortPtr->getText();
+	uint16_t port = atoi(gServerPort.c_str());
+	// 设置一个socket地址结构serverAddr,代表服务器的internet地址, 端口
+	bzero(&gServerAddr, sizeof(gServerAddr));
+	gServerAddr.sin_family = AF_INET;
+	gServerAddr.sin_port=htons(port); //服务器端口号
+
+
+	if (inet_aton(gServerIP.c_str(), &gServerAddr.sin_addr) == 0) {     // 服务器的IP地址来自程序的参数
+		LOGD("Server IP Address Error!\n");
+		return false;
+	}
+	else
+	{
+		LOGD("Server IP Address OK!\n");
+	    StoragePreferences::putString("gServerIP", gServerIP.c_str());
+	    StoragePreferences::putString("gServerPort", gServerPort.c_str());
+	}
+
+	LOGE("%s:%s",gServerIP.c_str(),gServerPort.c_str());
+    return true;
+}
+static void onEditTextChanged_EditTextServerIP(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EditTextServerIP %s !!!\n", text.c_str());
+}
+
+static void onEditTextChanged_EditTextServerPort(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EditTextServerPort %s !!!\n", text.c_str());
 }

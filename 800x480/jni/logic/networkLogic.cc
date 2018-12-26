@@ -33,6 +33,7 @@
 #include "lib/SocketClient.h"
 #include "json_test.h"
 #include "base64.h"
+#include "globalVar.h"
 
 #include "os/SystemProperties.h"
 
@@ -44,7 +45,6 @@
 #define MAXLINE 4500
 
 SocketClient* mSocket=NULL;
-static bool bSocketConnect = false;
 const char* json_str = "{\"uploadid\": \"UP000000\",\"code\": 100,\"msg\": \"\",\"files\": \"\"}";
 
 /**
@@ -53,16 +53,17 @@ const char* json_str = "{\"uploadid\": \"UP000000\",\"code\": 100,\"msg\": \"\",
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	//{0,  6000}, //定时器id=0, 时间间隔6秒
+	{0,  1000}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
 };
 
 class iWiFiSocketListener : public SocketClient::ISocketListener {
 public:
 	virtual void notify(int what, int status, const char *msg){
+		string msg_string = msg;
 		if(status == SocketClient::E_SOCKET_STATUS_RECV_OK){
 			LOGE("FILE RECV OK!");
-			LOGE("msg:%s",msg);
+			LOGE("what:%d---msg:%s",what,msg);
 		}
 		else
 		{
@@ -77,7 +78,23 @@ public:
 			mButton1Ptr->setBackgroundPic(msg);
 			break;
 		case 1:
+			if(msg_string == "0")
+			{
+				gLockState = UnLock;
+				GpioHelper::output(GPIO_PIN_B_02, 1);
+				LOGD("Lock:1\n");
+			}
+			else
+			{
+				gLockState = Lock;
+				GpioHelper::output(GPIO_PIN_B_02, 0);
+				LOGD("Lock:0\n");
+			}
 //			mEditTextMSGPtr->setText(msg);
+			break;
+		case 2:
+			LOGD("close\n");
+			mBtnConnectServerPtr->setText("连接服务器");
 			break;
 
 		}
@@ -93,32 +110,6 @@ static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
 	mSocket = new SocketClient();
 	mSocket->setSocketListener(&mWifiSocket);
-
-
-
-	char hname[128];
-	struct hostent *hent;
-	int i;
-	char buf[128];
-	string str;
-	gethostname(hname, sizeof(hname));
-
-	//hent = gethostent();
-	hent = gethostbyname(hname);
-
-	sprintf(buf,"hostname: %s/naddress list: ", hent->h_name);
-	str += buf;
-	str += "\n";
-	for(i = 0; hent->h_addr_list[i]; i++) {
-		sprintf(buf,"%s/t", inet_ntoa(*(struct in_addr*)(hent->h_addr_list[i])));
-		str += buf;
-		str += "\n";
-	}
-	mEditTextClientIPPtr->setText(str);
-
-	string x = get_id(json_str);
-
-	mEditTextMSGPtr->setText(x);
 }
 
 /**
@@ -135,7 +126,7 @@ static void onUI_intent(const Intent *intentPtr) {
  */
 static void onUI_show() {
     EASYUICONTEXT->showStatusBar();
-	if(!bSocketConnect){
+	if(mSocket->connected()){
 		mBtnConnectServerPtr->setText("断开服务器");
 	}else{
 		mBtnConnectServerPtr->setText("连接服务器");
@@ -154,7 +145,7 @@ static void onUI_hide() {
  * 当界面完全退出时触发
  */
 static void onUI_quit() {
-
+	mSocket->stop();
 }
 
 /**
@@ -176,6 +167,16 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  */
 static bool onUI_Timer(int id){
 	switch (id) {
+	case 0:
+		if(gLockState==UnLock)
+		{
+			mEditTextMSGPtr->setText("UnLock");
+		}
+		else
+		{
+			mEditTextMSGPtr->setText("Lock");
+		}
+		break;
 
 		default:
 			break;
@@ -198,13 +199,11 @@ static bool onnetworkActivityTouchEvent(const MotionEvent &ev) {
 }
 static bool onButtonClick_BtnConnectServer(ZKButton *pButton) {
     //LOGD(" ButtonClick Button1 !!!\n");
-	if(!bSocketConnect){
+	if(!mSocket->connected()){
 		mSocket->start();
-		bSocketConnect = true;
 		mBtnConnectServerPtr->setText("断开服务器");
 	}else{
 		mSocket->stop();
-		bSocketConnect = false;
 		mBtnConnectServerPtr->setText("连接服务器");
 	}
     return true;

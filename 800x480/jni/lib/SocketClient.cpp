@@ -10,6 +10,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,7 +27,8 @@
 #include "utils/Log.h"
 #include "json_test.h"
 #include "packageFile.h"
-
+#include "globalVar.h"
+#include "check_nic.h"
 #define BUFFER_SIZE 				40960
 #define FILENAME_MAX_SIZE 			512
 
@@ -152,9 +154,23 @@ void SocketClient::start() {
 	LOGD("create socket thread success!\n");
 }
 
-void SocketClient::stop() {
-	disconnect();
+void SocketClient::stop()
+{
+	if (mClientSocket > 0)
+	{
+		send("");
+		disconnect();
+	}
 }
+#include <stdlib.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <sys/socket.h>
+#include <netinet/tcp.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#include "socket_keepalive.h"
 
 bool SocketClient::connect(char *ip, uint16_t port) {
 	// 设置一个socket地址结构clientAddr,代表客户机internet地址, 端口
@@ -165,6 +181,8 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 	clientAddr.sin_port = htons(0);    // 0表示让系统自动分配一个空闲端口
 	// 创建用于internet的流协议(TCP)socket,用clientSocket代表客户机socket
 	mClientSocket = socket(AF_INET, SOCK_STREAM, 0);
+
+	socket_set_keepalive(mClientSocket);
 	LOGD("Create Socket clientSocket: %d\n", mClientSocket);
 	if (mClientSocket < 0) {
 		LOGD("Create Socket Failed!\n");
@@ -204,7 +222,6 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 	}
 
 	LOGD("connect %s success!\n", SERVER_IP_ADDR);
-
 //	struct timeval timeout = { 1, 0 };     // 1s
 //	int ret = setsockopt(mClientSocket, SOL_SOCKET, SO_RCVTIMEO,
 //			(const char*)&timeout, sizeof(timeout));
@@ -213,7 +230,10 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 }
 bool SocketClient::connected()
 {
-
+	if(mClientSocket > 0)
+		return true;
+	else
+		return false;
 }
 
 bool SocketClient::disconnect() {
@@ -224,7 +244,6 @@ bool SocketClient::disconnect() {
 		close(mClientSocket);
 		mClientSocket = -1;
 	}
-
 	return true;
 }
 void SocketClient::send(char *msg)
@@ -255,75 +274,92 @@ void SocketClient::threadLoop() {
 			(const char*)&timeout, sizeof(timeout));
 	std::string fileFullName;
 	std::string filename;
-	while (mClientSocket > 0)
-	{
-
 		int counter = 0;
 		bool flag = false;
 		int length = 0;
 		char buffer[BUFFER_SIZE] = { 0 };
-		while(true)
+
+	while (mClientSocket > 0)
+	{
+		if(check_nic("eth0") == -1)
 		{
-			length = read(mClientSocket, &buffer[counter], BUFFER_SIZE);
-			if(length < 0 || length >= BUFFER_SIZE)
+			LOGE("NIC 掉线");
+			stop();
+			if (mSocketListener != NULL)
 			{
-				LOGE("Recieve Data From Server %s Failed;len = %d %s\n", SERVER_IP_ADDR, counter,strerror(errno));
-				ret = false;
-				break;
+				mSocketListener->notify(2,  E_SOCKET_STATUS_RECV_OK,"CLOSE" );
+			}
+		}
+
+		length = recv(mClientSocket, &buffer[counter], BUFFER_SIZE,0);
+		LOGE("Recieve Data From Server len = %d", length);
+		if(length < 0 || length >= BUFFER_SIZE)
+		{
+			LOGE("Recieve Data From Server %s Failed;len = %d %s\n", SERVER_IP_ADDR, length,strerror(errno));
+			ret = false;
+			flag = false;
+		}
+		else if(length == 0)
+		{
+			stop();
+			if (mSocketListener != NULL)
+			{
+				mSocketListener->notify(2,  E_SOCKET_STATUS_RECV_OK,"CLOSE" );
+			}
+		}
+		else
+		{
+			if(ParseJsonString(buffer))
+			{
+				counter+=length;
+				LOGE("ParseJsonString OK! len = %d\n",  counter);
+				flag = true;
+				ret = true;
 			}
 			else
 			{
-				if(ParseJsonString(buffer))
-				{
-					counter+=length;
-					LOGE("ParseJsonString OK! len = %d\n",  counter);
-					flag = true;
-					ret = true;
-				}
-				else
-				{
-					counter+=length;
-					flag = false;
-					LOGE("ParseJsonString Failed! len = %d\n",  counter);
-				}
-
+				counter+=length;
+				flag = false;
+				LOGE("ParseJsonString Failed! len = %d\n",  counter);
 			}
-			if(flag)
+
+		}
+		if(flag)
+		{
+			//std::string str = buffer;
+			JsonCmd_t cmd = getJsonCMD(buffer);
+			switch(cmd)
 			{
-				//std::string str = buffer;
-				JsonCmd_t cmd = getJsonCMD(buffer);
-				switch(cmd)
+			case PicFile:
+				LOGE("Pic Json File ok!\n");
+				SaveFile(buffer,FILE_DIR);
+
+				filename = GetFileName(buffer);
+				fileFullName = FILE_DIR;
+				fileFullName += filename;
+				LOGE("file:%s!\n",fileFullName.c_str());
+				if (mSocketListener != NULL)
 				{
-				case PicFile:
-					LOGE("Pic Json File ok!\n");
-					SaveFile(buffer,FILE_DIR);
+					mSocketListener->notify(cmd, ret ? E_SOCKET_STATUS_RECV_OK : E_SOCKET_STATUS_RECV_ERROR, fileFullName.c_str());
+				}
+				break;
+			case test:
+				msg = ParseCMD1(buffer);
 
-					filename = GetFileName(buffer);
-					fileFullName = FILE_DIR;
-					fileFullName += filename;
-					LOGE("file:%s!\n",fileFullName.c_str());
-					if (mSocketListener != NULL)
-					{
-						mSocketListener->notify(cmd, ret ? E_SOCKET_STATUS_RECV_OK : E_SOCKET_STATUS_RECV_ERROR, fileFullName.c_str());
-					}
-					break;
-				case test:
-					msg = ParseCMD1(buffer);
-					if (mSocketListener != NULL)
-					{
-						mSocketListener->notify(cmd, ret ? E_SOCKET_STATUS_RECV_OK : E_SOCKET_STATUS_RECV_ERROR,msg.c_str() );
-					}
-					LOGE("Test CMD ok!\n");
 
-					break;
-				default:
-					break;
+				if (mSocketListener != NULL)
+				{
+					mSocketListener->notify(cmd, ret ? E_SOCKET_STATUS_RECV_OK : E_SOCKET_STATUS_RECV_ERROR,msg.c_str() );
 				}
 
-				counter = 0;
+				break;
+			default:
 				break;
 			}
+
+			counter = 0;
 		}
+
 
 	}
 

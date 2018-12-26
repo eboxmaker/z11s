@@ -4,9 +4,14 @@
 #include "settingsActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKEditText* mEditTextServerPortPtr;
+static ZKEditText* mEditTextServerIPPtr;
+static ZKTextView* mTvServerPortPtr;
+static ZKTextView* mTvServerIPPtr;
+static ZKButton* mBtnServerPtr;
+static ZKButton* mBtnNetWorkPtr;
 static ZKButton* mBtnSetLanguagePtr;
 static ZKTextView* mTextview1Ptr;
-static ZKButton* mBtnNetWordPtr;
 static ZKButton* mButton2Ptr;
 static settingsActivity* mActivityPtr;
 
@@ -45,8 +50,9 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_SETTINGS_BtnServer, onButtonClick_BtnServer,
+    ID_SETTINGS_BtnNetWork, onButtonClick_BtnNetWork,
     ID_SETTINGS_BtnSetLanguage, onButtonClick_BtnSetLanguage,
-    ID_SETTINGS_BtnNetWord, onButtonClick_BtnNetWord,
     ID_SETTINGS_Button2, onButtonClick_Button2,
 };
 /***************/
@@ -93,6 +99,8 @@ typedef struct {
 }S_EditTextInputCallback;
 /*TAG:EditTextInputCallback*/
 static S_EditTextInputCallback SEditTextInputCallbackTab[] = {
+    ID_SETTINGS_EditTextServerPort, onEditTextChanged_EditTextServerPort,
+    ID_SETTINGS_EditTextServerIP, onEditTextChanged_EditTextServerIP,
 };
 
 typedef void (*VideoViewCallback)(ZKVideoView *pVideoView, int msg);
@@ -128,9 +136,14 @@ const char* settingsActivity::getAppName() const{
 //TAG:onCreate
 void settingsActivity::onCreate() {
 	Activity::onCreate();
+    mEditTextServerPortPtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditTextServerPort);if(mEditTextServerPortPtr!= NULL){mEditTextServerPortPtr->setTextChangeListener(this);}
+    mEditTextServerIPPtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditTextServerIP);if(mEditTextServerIPPtr!= NULL){mEditTextServerIPPtr->setTextChangeListener(this);}
+    mTvServerPortPtr = (ZKTextView*)findControlByID(ID_SETTINGS_TvServerPort);
+    mTvServerIPPtr = (ZKTextView*)findControlByID(ID_SETTINGS_TvServerIP);
+    mBtnServerPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnServer);
+    mBtnNetWorkPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnNetWork);
     mBtnSetLanguagePtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnSetLanguage);
     mTextview1Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview1);
-    mBtnNetWordPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnNetWord);
     mButton2Ptr = (ZKButton*)findControlByID(ID_SETTINGS_Button2);
 	mActivityPtr = this;
 	onUI_init();
