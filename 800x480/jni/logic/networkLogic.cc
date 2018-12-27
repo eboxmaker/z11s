@@ -44,8 +44,7 @@
 #include <arpa/inet.h>
 #define MAXLINE 4500
 
-SocketClient* mSocket=NULL;
-const char* json_str = "{\"uploadid\": \"UP000000\",\"code\": 100,\"msg\": \"\",\"files\": \"\"}";
+//SocketClient* mSocket=NULL;
 
 /**
  * 注册定时器
@@ -108,8 +107,9 @@ static iWiFiSocketListener mWifiSocket;
  */
 static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
-	mSocket = new SocketClient();
-	mSocket->setSocketListener(&mWifiSocket);
+	//mSocket = new SocketClient();
+	//mSocket->setSocketListener(&mWifiSocket);
+	//LOGE("new conncetion\n");
 }
 
 /**
@@ -126,7 +126,7 @@ static void onUI_intent(const Intent *intentPtr) {
  */
 static void onUI_show() {
     EASYUICONTEXT->showStatusBar();
-	if(mSocket->connected()){
+	if(gSocket->connected()){
 		mBtnConnectServerPtr->setText("断开服务器");
 	}else{
 		mBtnConnectServerPtr->setText("连接服务器");
@@ -145,7 +145,7 @@ static void onUI_hide() {
  * 当界面完全退出时触发
  */
 static void onUI_quit() {
-	mSocket->stop();
+	//mSocket->stop();
 }
 
 /**
@@ -176,8 +176,18 @@ static bool onUI_Timer(int id){
 		{
 			mEditTextMSGPtr->setText("Lock");
 		}
-		break;
 
+		if(!gSocket->connected())
+		{
+			mBtnConnectServerPtr->setText("连接服务器");
+		}
+		else
+		{
+			mBtnConnectServerPtr->setText("断开服务器");
+		}
+		mButton1Ptr->setText("");
+		mButton1Ptr->setBackgroundPic("/mnt/extsd/12345678.jpg");
+		break;
 		default:
 			break;
 	}
@@ -199,12 +209,12 @@ static bool onnetworkActivityTouchEvent(const MotionEvent &ev) {
 }
 static bool onButtonClick_BtnConnectServer(ZKButton *pButton) {
     //LOGD(" ButtonClick Button1 !!!\n");
-	if(!mSocket->connected()){
-		mSocket->start();
-		mBtnConnectServerPtr->setText("断开服务器");
+	if(!gSocket->connected()){
+		gSocket->start();
+		LOGD(" btn connect !!!\n");
 	}else{
-		mSocket->stop();
-		mBtnConnectServerPtr->setText("连接服务器");
+		gSocket->stop();
+		LOGD(" btn close !!!\n");
 	}
     return true;
 }
@@ -220,21 +230,19 @@ static void onEditTextChanged_Edittext1(const std::string &text) {
 
 static bool onButtonClick_BtnSend(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnSend !!!\n");
-	mSocket->send("123");
+	gSocket->send("123");
     return false;
 }
 static bool onButtonClick_Button1(ZKButton *pButton) {
     //LOGD(" ButtonClick Button1 !!!\n");
     return false;
 }
+
+#include "readdir.h"
+
 static bool onButtonClick_BtnBaseTest(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnBaseTest !!!\n");
-	const std::string str = "test1";
-	std::string ostr;
-	string str2;
-	Base64::Encode(str, &ostr);
-	Base64::Decode(ostr, &str2);
-	LOGD("%s",ostr.c_str());
-	LOGD("%s",str2.c_str());
+	read_dir();
+
     return false;
 }

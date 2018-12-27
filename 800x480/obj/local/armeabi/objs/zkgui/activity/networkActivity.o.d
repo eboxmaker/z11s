@@ -301,7 +301,9 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/net
  C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/os/SystemProperties.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/socket.h \
- D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netdb.h
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netdb.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/readdir.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/dirent.h
 
 C:/Users/shentq/Documents/z11s/800x480/jni/activity/networkActivity.h:
 
@@ -906,3 +908,7 @@ C:/Users/shentq/Documents/z11s/800x480/jni/include/os/SystemProperties.h:
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/socket.h:
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netdb.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/readdir.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/dirent.h:

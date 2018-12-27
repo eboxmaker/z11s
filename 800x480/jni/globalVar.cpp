@@ -15,7 +15,6 @@ string gServerIP ;
 string gServerPort ;
 struct sockaddr_in gServerAddr;
 SocketClient* gSocket= new SocketClient();
-
 void MySocketListener::notify(int what, int status, const char *msg){
 	string msg_string = msg;
 	if(status == SocketClient::E_SOCKET_STATUS_RECV_OK){
@@ -39,14 +38,17 @@ void MySocketListener::notify(int what, int status, const char *msg){
 		{
 			gLockState = UnLock;
 			GpioHelper::output(GPIO_PIN_B_02, 1);
-			LOGD("Lock:1\n");
+			LOGD("g Lock:1\n");
 		}
 		else
 		{
 			gLockState = Lock;
 			GpioHelper::output(GPIO_PIN_B_02, 0);
-			LOGD("Lock:0\n");
+			LOGD("g Lock:0\n");
 		}
+	case 2:
+		LOGD("g close\n");
+		//mBtnConnectServerPtr->setText("连接服务器");
 //			mEditTextMSGPtr->setText(msg);
 		break;
 

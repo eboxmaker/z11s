@@ -29,9 +29,11 @@ void onEasyUIDeinit(EasyUIContext *pContext) {
 
 const char* onStartupApp(EasyUIContext *pContext) {
 
+	gSocket->start();
+	gSocket->setSocketListener(&gSocketListener);
+
 	udp = new Udp();
 	udp->start(1245);
-
 	pthread_t threadID = 1;
 	pthread_attr_t attr; 		// 线程属性
 	pthread_attr_init(&attr);  	// 初始化线程属性
@@ -56,22 +58,21 @@ char buf[4096] = "hello world\n";
 char rbuf[4096] ;
 static void *MainLoop(void *lParam)
 {
-	gSocket->setSocketListener(&gSocketListener);
-	msg.ptr = buf;
-	msg.len = sizeof(buf);
-	rmsg.ptr = rbuf;
-	rmsg.len = sizeof(rbuf);
-	memset(&msg.remote,0,sizeof(msg.remote));
-	//数据初始化--清零
-	msg.remote.sin_family=AF_INET; //设置为IP通信
-	msg.remote.sin_addr.s_addr=inet_addr("192.168.1.101");//服务器IP地址
-	msg.remote.sin_port=htons(8000); //服务器端口号
+//	msg.ptr = buf;
+//	msg.len = sizeof(buf);
+//	rmsg.ptr = rbuf;
+//	rmsg.len = sizeof(rbuf);
+//	memset(&msg.remote,0,sizeof(msg.remote));
+//	//数据初始化--清零
+//	msg.remote.sin_family=AF_INET; //设置为IP通信
+//	msg.remote.sin_addr.s_addr=inet_addr("192.168.1.101");//服务器IP地址
+//	msg.remote.sin_port=htons(8000); //服务器端口号
 
 
 
 	while(1)
 	{
-		udp->send(&msg);
+//		udp->send(&msg);
 //		if(!gSocket->connected()){
 //			gSocket->start();
 //		}
@@ -86,10 +87,10 @@ static void *MainLoop(void *lParam)
 //				gSocket->start();
 //			}
 //		}
-		if(udp->recv(&rmsg)>0)
-		{
-			LOGE("%s:%d{%s}",udp->parseIP(&rmsg).c_str(),udp->parsePort(&rmsg),rbuf);
-		}
+//		if(udp->recv(&rmsg)>0)
+//		{
+//			LOGE("%s:%d{%s}",udp->parseIP(&rmsg).c_str(),udp->parsePort(&rmsg),rbuf);
+//		}
 
 		usleep(5000);
 	}

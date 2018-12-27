@@ -29,8 +29,9 @@
 #include "packageFile.h"
 #include "globalVar.h"
 #include "check_nic.h"
-#define BUFFER_SIZE 				40960
+#define BUFFER_SIZE 				1024000
 #define FILENAME_MAX_SIZE 			512
+char buffer[BUFFER_SIZE] = { 0 };
 
 static int rtcSetTime(const struct tm *tm_time) {
     int rtc_handle = -1;
@@ -159,18 +160,14 @@ void SocketClient::stop()
 	if (mClientSocket > 0)
 	{
 		send("");
-		disconnect();
 	}
+	if (mSocketListener != NULL)
+	{
+		mSocketListener->notify(2,  E_SOCKET_STATUS_RECV_OK,"CLOSE" );
+	}
+	disconnect();
 }
-#include <stdlib.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <sys/socket.h>
-#include <netinet/tcp.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#include "socket_keepalive.h"
+
 
 bool SocketClient::connect(char *ip, uint16_t port) {
 	// 设置一个socket地址结构clientAddr,代表客户机internet地址, 端口
@@ -182,7 +179,6 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 	// 创建用于internet的流协议(TCP)socket,用clientSocket代表客户机socket
 	mClientSocket = socket(AF_INET, SOCK_STREAM, 0);
 
-	socket_set_keepalive(mClientSocket);
 	LOGD("Create Socket clientSocket: %d\n", mClientSocket);
 	if (mClientSocket < 0) {
 		LOGD("Create Socket Failed!\n");
@@ -226,9 +222,6 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 	}
 
 	LOGD("connect %s success!\n", SERVER_IP_ADDR);
-//	struct timeval timeout = { 1, 0 };     // 1s
-//	int ret = setsockopt(mClientSocket, SOL_SOCKET, SO_RCVTIMEO,
-//			(const char*)&timeout, sizeof(timeout));
 
 	return true;
 }
@@ -278,10 +271,9 @@ void SocketClient::threadLoop() {
 			(const char*)&timeout, sizeof(timeout));
 	std::string fileFullName;
 	std::string filename;
-		int counter = 0;
-		bool flag = false;
-		int length = 0;
-		char buffer[BUFFER_SIZE] = { 0 };
+	int counter = 0;
+	bool flag = false;
+	int length = 0;
 
 	while (mClientSocket > 0)
 	{
@@ -289,27 +281,20 @@ void SocketClient::threadLoop() {
 		{
 			LOGE("NIC 掉线");
 			stop();
-			if (mSocketListener != NULL)
-			{
-				mSocketListener->notify(2,  E_SOCKET_STATUS_RECV_OK,"CLOSE" );
-			}
+
 		}
 
-		length = recv(mClientSocket, &buffer[counter], BUFFER_SIZE,0);
-		LOGE("Recieve Data From Server len = %d", length);
+		length = recv(mClientSocket, &buffer[counter], 4096,0);
 		if(length < 0 || length >= BUFFER_SIZE)
 		{
-			LOGE("Recieve Data From Server %s Failed;len = %d %s\n", SERVER_IP_ADDR, length,strerror(errno));
+			counter = 0;
+			//LOGE("Recieve Data From Server %s Failed;len = %d %s\n", SERVER_IP_ADDR, length,strerror(errno));
 			ret = false;
 			flag = false;
 		}
 		else if(length == 0)
 		{
 			stop();
-			if (mSocketListener != NULL)
-			{
-				mSocketListener->notify(2,  E_SOCKET_STATUS_RECV_OK,"CLOSE" );
-			}
 		}
 		else
 		{
@@ -346,6 +331,8 @@ void SocketClient::threadLoop() {
 				{
 					mSocketListener->notify(cmd, ret ? E_SOCKET_STATUS_RECV_OK : E_SOCKET_STATUS_RECV_ERROR, fileFullName.c_str());
 				}
+				counter = 0;
+				memset(buffer,0,sizeof(buffer));
 				break;
 			case test:
 				msg = ParseCMD1(buffer);
@@ -355,6 +342,7 @@ void SocketClient::threadLoop() {
 				{
 					mSocketListener->notify(cmd, ret ? E_SOCKET_STATUS_RECV_OK : E_SOCKET_STATUS_RECV_ERROR,msg.c_str() );
 				}
+				memset(buffer,0,sizeof(buffer));
 
 				break;
 			default:
