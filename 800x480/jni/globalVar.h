@@ -20,7 +20,7 @@ using namespace std;
 
 
 extern std::string gServerIP ;
-extern std::string gServerPort ;
+extern int gServerPort ;
 extern struct sockaddr_in gServerAddr;
 extern SocketClient* gSocket;
 

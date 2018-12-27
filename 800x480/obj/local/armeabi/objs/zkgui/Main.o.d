@@ -194,7 +194,8 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/Main.o: \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/check_nic.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/udp.h \
- D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/socket.h
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/socket.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/storage/StoragePreferences.h
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/entry/EasyUIContext.h:
 
@@ -585,3 +586,5 @@ C:/Users/shentq/Documents/z11s/800x480/jni/check_nic.h:
 C:/Users/shentq/Documents/z11s/800x480/jni/udp.h:
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/socket.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/include/storage/StoragePreferences.h:

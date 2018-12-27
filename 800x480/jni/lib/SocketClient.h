@@ -9,8 +9,6 @@
 #define _SOCKET_SOCKETCLIENT_H_
 
 
-#define SERVER_IP_ADDR			"192.168.1.101"
-#define SERVER_PORT    			6000
 #define FILE_DIR		"/mnt/extsd/"
 
 
@@ -42,7 +40,7 @@ public:
 		mSocketListener = pListener;
 	}
 	bool connected();
-
+	bool conncetState;
 private:
 	bool connect(char *ip, uint16_t port);
 	bool disconnect();

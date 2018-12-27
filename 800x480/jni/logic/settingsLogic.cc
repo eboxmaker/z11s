@@ -68,10 +68,12 @@ static void onUI_show() {
     EASYUICONTEXT->showStatusBar();
     gServerIP = StoragePreferences::getString("gServerIP", "192.168.1.1");
     LOGD("gServerIP %s\n", gServerIP.c_str());
-    gServerPort = StoragePreferences::getString("gServerPort", "6000");
-    LOGD("gServerIP %s\n", gServerPort.c_str());
+    gServerPort = StoragePreferences::getInt("gServerPort", 6000);
+    LOGD("gServerPort %d\n", gServerPort);
+    char temp[10];
+    sprintf(temp,"%d",gServerPort);
     mEditTextServerIPPtr->setText(gServerIP.c_str());
-    mEditTextServerPortPtr->setText(gServerPort.c_str());
+    mEditTextServerPortPtr->setText(temp);
 }
 
 /*
@@ -168,8 +170,8 @@ static bool onButtonClick_BtnNetWork(ZKButton *pButton) {
 static bool onButtonClick_BtnServer(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnServer !!!\n");
 	gServerIP = mEditTextServerIPPtr->getText();
-	gServerPort = mEditTextServerPortPtr->getText();
-	uint16_t port = atoi(gServerPort.c_str());
+	gServerPort = atoi(mEditTextServerPortPtr->getText().c_str());
+	uint16_t port = gServerPort;
 	// 设置一个socket地址结构serverAddr,代表服务器的internet地址, 端口
 	bzero(&gServerAddr, sizeof(gServerAddr));
 	gServerAddr.sin_family = AF_INET;
@@ -184,10 +186,10 @@ static bool onButtonClick_BtnServer(ZKButton *pButton) {
 	{
 		LOGD("Server IP Address OK!\n");
 	    StoragePreferences::putString("gServerIP", gServerIP.c_str());
-	    StoragePreferences::putString("gServerPort", gServerPort.c_str());
+	    StoragePreferences::putInt("gServerPort", gServerPort);
 	}
 
-	LOGE("%s:%s",gServerIP.c_str(),gServerPort.c_str());
+	LOGE("%s:%d",gServerIP.c_str(),gServerPort);
     return true;
 }
 static void onEditTextChanged_EditTextServerIP(const std::string &text) {

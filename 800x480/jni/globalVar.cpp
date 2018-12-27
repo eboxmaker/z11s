@@ -12,7 +12,7 @@
 lockState_t gLockState = UnLock;
 
 string gServerIP ;
-string gServerPort ;
+int gServerPort ;
 struct sockaddr_in gServerAddr;
 SocketClient* gSocket= new SocketClient();
 void MySocketListener::notify(int what, int status, const char *msg){

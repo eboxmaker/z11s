@@ -120,6 +120,7 @@ static void* socketThreadRx(void *lParam) {
 }
 
 SocketClient::SocketClient() :
+	conncetState(false),
 	mClientSocket(-1),
 	mSocketListener(NULL) {
 
@@ -165,11 +166,14 @@ void SocketClient::stop()
 	{
 		mSocketListener->notify(2,  E_SOCKET_STATUS_RECV_OK,"CLOSE" );
 	}
+	conncetState = false;
 	disconnect();
 }
 
 
 bool SocketClient::connect(char *ip, uint16_t port) {
+
+	LOGE("%s:%d\n",ip,port);
 	// 设置一个socket地址结构clientAddr,代表客户机internet地址, 端口
 	struct sockaddr_in clientAddr;
 	bzero(&clientAddr, sizeof(clientAddr)); // 把一段内存区的内容全部设置为0
@@ -204,7 +208,7 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 
 
 	if (inet_aton(ip, &serverAddr.sin_addr) == 0) {     // 服务器的IP地址来自程序的参数
-		LOGD("Server IP Address Error!\n");
+		LOGD("Server IP Address Error!%s\n",ip);
 		disconnect();
 		return false;
 	}
@@ -212,7 +216,7 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 	socklen_t serverAddrLength = sizeof(serverAddr);
 	// 向服务器发起连接,连接成功后clientSocket代表了客户机和服务器的一个socket连接
 	if (::connect(mClientSocket, (struct sockaddr *) &serverAddr, serverAddrLength) < 0) {
-		LOGD("Can Not Connect To %s!\n", SERVER_IP_ADDR);
+		LOGD("Can Not Connect To %s!\n", ip);
 		if (mSocketListener != NULL)
 		{
 			mSocketListener->notify(2, E_SOCKET_STATUS_RECV_OK ,"close" );
@@ -220,17 +224,14 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 		disconnect();
 		return false;
 	}
-
-	LOGD("connect %s success!\n", SERVER_IP_ADDR);
+	conncetState = true;
+	LOGD("connect %s success!\n", ip);
 
 	return true;
 }
 bool SocketClient::connected()
 {
-	if(mClientSocket > 0)
-		return true;
-	else
-		return false;
+	return conncetState;
 }
 
 bool SocketClient::disconnect() {
@@ -254,8 +255,9 @@ void SocketClient::threadLoop() {
 	std::string msg;
 
 
-	if (!connect(SERVER_IP_ADDR,SERVER_PORT)) {
+	if (!connect(gServerIP.c_str(),gServerPort)) {
 		LOGD("socket thread connect error return!\n");
+		stop();
 		return;
 	}
 	else
@@ -288,7 +290,8 @@ void SocketClient::threadLoop() {
 		if(length < 0 || length >= BUFFER_SIZE)
 		{
 			counter = 0;
-			//LOGE("Recieve Data From Server %s Failed;len = %d %s\n", SERVER_IP_ADDR, length,strerror(errno));
+			memset(buffer,0,sizeof(buffer));
+			LOGE("Recieve Data From Server %s Failed;len = %d %s\n", gServerIP.c_str(), length,strerror(errno));
 			ret = false;
 			flag = false;
 		}

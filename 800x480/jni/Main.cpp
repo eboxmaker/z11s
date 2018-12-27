@@ -9,6 +9,7 @@
 #include "check_nic.h"
 
 #include "udp.h"
+#include "storage/StoragePreferences.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,7 +18,14 @@ extern "C" {
 Udp *udp = NULL;
 
 static void *MainLoop(void *lParam);
+static void LoadParament()
+{
+    gServerIP = StoragePreferences::getString("gServerIP", "192.168.1.1");
+    LOGD("gServerIP %s\n", gServerIP.c_str());
+    gServerPort = StoragePreferences::getInt("gServerPort", 6000);
+    LOGD("gServerPort %d\n", gServerPort);
 
+}
 void onEasyUIInit(EasyUIContext *pContext) {
 	// 初始化时打开串口
 	UARTCONTEXT->openUart(CONFIGMANAGER->getUartName().c_str(), CONFIGMANAGER->getUartBaudRate());
@@ -29,6 +37,7 @@ void onEasyUIDeinit(EasyUIContext *pContext) {
 
 const char* onStartupApp(EasyUIContext *pContext) {
 
+	LoadParament();
 	gSocket->start();
 	gSocket->setSocketListener(&gSocketListener);
 
