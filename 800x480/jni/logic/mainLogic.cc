@@ -110,7 +110,7 @@ const char* IconTab[]={
 		"testTextActivity",
 		"settingsActivity",
 		"networkActivity",
-		"inputtextActivity",
+		"keyboardActivity",
 		"waveViewActivity",
 		"testpointerActivity",
 		"windowActivity",

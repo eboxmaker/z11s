@@ -283,7 +283,9 @@ void SocketClient::threadLoop() {
 		{
 			LOGE("NIC 掉线");
 			stop();
-
+		}
+		else
+		{
 		}
 
 		length = recv(mClientSocket, &buffer[counter], 4096,0);
@@ -298,6 +300,7 @@ void SocketClient::threadLoop() {
 		else if(length == 0)
 		{
 			stop();
+			break;
 		}
 		else
 		{

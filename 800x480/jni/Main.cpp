@@ -81,6 +81,26 @@ static void *MainLoop(void *lParam)
 
 	while(1)
 	{
+//		if(check_nic("eth0") == -1)
+//		{
+//			LOGE("NIC 掉线");
+//			gSocket->stop();
+//		}
+//		else
+//		{
+			if (!gSocket->connected())
+			{
+
+				gSocket->start();
+			}
+			else
+			{
+
+				LOGD("socket run...!\n");
+
+			}
+
+//		}
 //		udp->send(&msg);
 //		if(!gSocket->connected()){
 //			gSocket->start();
@@ -101,7 +121,7 @@ static void *MainLoop(void *lParam)
 //			LOGE("%s:%d{%s}",udp->parseIP(&rmsg).c_str(),udp->parsePort(&rmsg),rbuf);
 //		}
 
-		usleep(5000);
+		usleep(2000000);
 	}
 
 }
