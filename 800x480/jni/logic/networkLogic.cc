@@ -82,9 +82,9 @@ static void onUI_intent(const Intent *intentPtr) {
 static void onUI_show() {
     EASYUICONTEXT->showStatusBar();
 	if(gSocket->connected()){
-		mBtnConnectServerPtr->setText("断开服务器");
+		mBtnConnectServerPtr->setText("已连接");
 	}else{
-		mBtnConnectServerPtr->setText("连接服务器");
+		mBtnConnectServerPtr->setText("未连接");
 	}
 }
 
@@ -134,11 +134,11 @@ static bool onUI_Timer(int id){
 
 		if(!gSocket->connected())
 		{
-			mBtnConnectServerPtr->setText("连接服务器");
+			mBtnConnectServerPtr->setText("未连接");
 		}
 		else
 		{
-			mBtnConnectServerPtr->setText("断开服务器");
+			mBtnConnectServerPtr->setText("已连接");
 		}
 		mButton1Ptr->setText("");
 		mButton1Ptr->setBackgroundPic("/mnt/extsd/12345678.jpg");
@@ -165,10 +165,8 @@ static bool onnetworkActivityTouchEvent(const MotionEvent &ev) {
 static bool onButtonClick_BtnConnectServer(ZKButton *pButton) {
     //LOGD(" ButtonClick Button1 !!!\n");
 	if(!gSocket->connected()){
-		gSocket->start();
 		LOGD(" btn connect !!!\n");
 	}else{
-		gSocket->stop();
 		LOGD(" btn close !!!\n");
 	}
     return true;

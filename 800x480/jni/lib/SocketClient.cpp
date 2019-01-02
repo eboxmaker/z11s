@@ -166,7 +166,6 @@ void SocketClient::stop()
 	{
 		mSocketListener->notify(2,  E_SOCKET_STATUS_RECV_OK,"CLOSE" );
 	}
-	conncetState = false;
 	disconnect();
 }
 
@@ -236,6 +235,7 @@ bool SocketClient::connected()
 
 bool SocketClient::disconnect() {
 	LOGD("SocketClient disconnect\n");
+	conncetState = false;
 	if (mClientSocket > 0) {
 		LOGD("SocketClient close socket...\n");
 		// 关闭socket
@@ -252,62 +252,61 @@ void SocketClient::send(char *msg)
 }
 void SocketClient::threadLoop() {
 
+	bool ret;
 	std::string msg;
 
-
-	if (!connect(gServerIP.c_str(),gServerPort)) {
-		LOGD("socket thread connect error return!\n");
-		stop();
-		return;
-	}
-	else
-	{
-
-		LOGD("socket run...!\n");
-
-	}
-
-
 	struct timeval timeout = { 5, 0 };     // 1s
-	int ret = setsockopt(mClientSocket, SOL_SOCKET, SO_RCVTIMEO,
-			(const char*)&timeout, sizeof(timeout));
+
 	std::string fileFullName;
 	std::string filename;
 	int counter = 0;
 	bool flag = false;
 	int length = 0;
+	LOGD("socket thread START!\n");
 
-	while (mClientSocket > 0)
+	while (1)
 	{
+		LOGD("socket thread running!state:%d\n",connected());
+		if(connected() == false)
+		{
+			ret = connect(gServerIP.c_str(),gServerPort);
+			if(ret == true)
+			{
+				LOGD("socket thread connect OK!\n");
+				setsockopt(mClientSocket, SOL_SOCKET, SO_RCVTIMEO,
+						(const char*)&timeout, sizeof(timeout));
+			}
+			else
+				LOGD("socket thread connect error!\n");
+
+		}
 		if(check_nic("eth0") == -1)
 		{
 			LOGE("NIC 掉线");
-			stop();
+			disconnect();
+			sleep(1);
 		}
-		else
-		{
-		}
+
 
 		length = recv(mClientSocket, &buffer[counter], 4096,0);
 		if(length < 0 || length >= BUFFER_SIZE)
 		{
 			counter = 0;
 			memset(buffer,0,sizeof(buffer));
-			LOGE("Recieve Data From Server %s Failed;len = %d %s\n", gServerIP.c_str(), length,strerror(errno));
+			LOGE("Recieve Data Failed;len = %d,counter%d， %s\n", length,counter,strerror(errno));
 			ret = false;
 			flag = false;
 		}
 		else if(length == 0)
 		{
-			stop();
-			break;
+			disconnect();
 		}
-		else
+		else if(length > 0)
 		{
 			if(ParseJsonString(buffer))
 			{
 				counter+=length;
-				LOGE("ParseJsonString OK! len = %d\n",  counter);
+				LOGE("ParseJsonString ok! len = %d,counter = %d\n", length, counter);
 				flag = true;
 				ret = true;
 			}
@@ -315,7 +314,7 @@ void SocketClient::threadLoop() {
 			{
 				counter+=length;
 				flag = false;
-				LOGE("ParseJsonString Failed! len = %d\n",  counter);
+				LOGE("ParseJsonString Failed! len = %d,counter = %d\n", length, counter);
 			}
 
 		}

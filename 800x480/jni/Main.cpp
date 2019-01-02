@@ -77,6 +77,7 @@ static void *MainLoop(void *lParam)
 //	msg.remote.sin_addr.s_addr=inet_addr("192.168.1.101");//服务器IP地址
 //	msg.remote.sin_port=htons(8000); //服务器端口号
 
+	gSocket->start();
 
 
 	while(1)
@@ -88,16 +89,7 @@ static void *MainLoop(void *lParam)
 //		}
 //		else
 //		{
-			if (!gSocket->connected())
-			{
 
-				gSocket->start();
-			}
-			else
-			{
-				LOGD("socket run...!\n");
-
-			}
 
 //		}
 //		udp->send(&msg);
@@ -120,7 +112,7 @@ static void *MainLoop(void *lParam)
 //			LOGE("%s:%d{%s}",udp->parseIP(&rmsg).c_str(),udp->parsePort(&rmsg),rbuf);
 //		}
 
-		usleep(2000000);
+		sleep(1);
 	}
 
 }
