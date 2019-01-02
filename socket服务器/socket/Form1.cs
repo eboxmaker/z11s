@@ -39,6 +39,7 @@ namespace socket
 
         private void btnStartServer_Click(object sender, EventArgs e)
         {
+            ListBoxConnections.Items.Clear();
             ServerPort = Convert.ToInt32(tbServerPort.Text);
             if (serverOpenFlag == false)
             {
@@ -64,6 +65,10 @@ namespace socket
                 server.Stop();
                   btnStartServer.Text = "开启服务器";
                   serverOpenFlag = false;
+                for(int i = 0; i < server.clients.Count; i++)
+                {
+                    ListBoxConnections.Items.Add(server.clients[i].TcpClient.Client.RemoteEndPoint.ToString());
+                }
 
             }
 
@@ -98,7 +103,28 @@ namespace socket
             }
             else
             {
-                RichRecv.Text += sender.Client.RemoteEndPoint.ToString() + Encoding.Default.GetString(datagram);
+                string js = Encoding.Default.GetString(datagram);
+                RichRecv.Text += sender.Client.RemoteEndPoint.ToString() + js;
+                int cmd = JsonManager.GetJsonCMD(js);
+                switch (cmd)
+                {
+                    case 0: break;
+                    case 1: break;
+                    case 2: break;
+                    case 3:
+                        string pwd = JsonManager.ParseDoorPwd(js);
+                        if(pwd == "123456")
+                        {
+                            btnOpen.PerformClick();
+                        }
+                        else
+                        {
+                            btnCloseLock.PerformClick();
+                        }
+                        break;
+                    case 4: break;
+                }
+                    
             }
         }
         
@@ -161,22 +187,17 @@ namespace socket
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            JObject obj = new JObject();
-            obj.Add("cmd", 1);
-            obj.Add("value", 1);
-            string jstring = JsonConvert.SerializeObject(obj);
-            server.SendAll(jstring);
+            string str = JsonManager.MakeCMDDoor1(1);
+            server.SendAll(str);
 
         }
 
         private void btnCloseLock_Click(object sender, EventArgs e)
         {
-            JObject obj = new JObject();
-            obj.Add("cmd", 1);
-            obj.Add("value", 0);
-            string jstring = JsonConvert.SerializeObject(obj);
-            server.SendAll(jstring);
+            string str = JsonManager.MakeCMDDoor1(0);
+            server.SendAll(str);
         }
         
+
     }
 }

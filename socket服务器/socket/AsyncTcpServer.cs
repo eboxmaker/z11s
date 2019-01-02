@@ -67,7 +67,7 @@ namespace socket
         #region Fields
 
         private TcpListener listener;
-        private List<TcpClientState> clients;
+        public List<TcpClientState> clients;
         private bool disposed = false;
 
         #endregion

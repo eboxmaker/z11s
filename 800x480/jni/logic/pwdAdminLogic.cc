@@ -29,22 +29,7 @@
 *
 * 在Eclipse编辑器中  使用 “alt + /”  快捷键可以打开智能提示
 */
-#include "net/NetManager.h"
-#include "lib/SocketClient.h"
-#include "json_test.h"
-#include "base64.h"
-#include "globalVar.h"
 
-#include "os/SystemProperties.h"
-
-#include "string.h"
-#include<sys/socket.h>
-#include<netinet/in.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#define MAXLINE 4500
-
-//SocketClient* mSocket=NULL;
 
 /**
  * 注册定时器
@@ -52,19 +37,16 @@
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	{0,  1000}, //定时器id=0, 时间间隔6秒
+	//{0,  6000}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
 };
-
 
 /**
  * 当界面构造时触发
  */
 static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
-	//mSocket = new SocketClient();
-	//mSocket->setSocketListener(&mWifiSocket);
-	//LOGE("new conncetion\n");
+
 }
 
 /**
@@ -80,19 +62,13 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
-    EASYUICONTEXT->showStatusBar();
-	if(gSocket->connected()){
-		mBtnConnectServerPtr->setText("断开服务器");
-	}else{
-		mBtnConnectServerPtr->setText("连接服务器");
-	}
+
 }
 
 /*
  * 当界面隐藏时触发
  */
 static void onUI_hide() {
-	EASYUICONTEXT->hideStatusBar();
 
 }
 
@@ -100,7 +76,7 @@ static void onUI_hide() {
  * 当界面完全退出时触发
  */
 static void onUI_quit() {
-	//mSocket->stop();
+
 }
 
 /**
@@ -122,27 +98,7 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  */
 static bool onUI_Timer(int id){
 	switch (id) {
-	case 0:
-		if(gDoorState==UnLock)
-		{
-			mEditTextMSGPtr->setText("UnLock");
-		}
-		else
-		{
-			mEditTextMSGPtr->setText("Lock");
-		}
 
-		if(!gSocket->connected())
-		{
-			mBtnConnectServerPtr->setText("连接服务器");
-		}
-		else
-		{
-			mBtnConnectServerPtr->setText("断开服务器");
-		}
-		mButton1Ptr->setText("");
-		mButton1Ptr->setBackgroundPic("/mnt/extsd/12345678.jpg");
-		break;
 		default:
 			break;
 	}
@@ -158,46 +114,30 @@ static bool onUI_Timer(int id){
  *         false
  *            触摸事件将继续传递到控件上
  */
-static bool onnetworkActivityTouchEvent(const MotionEvent &ev) {
-
+static bool onpwdAdminActivityTouchEvent(const MotionEvent &ev) {
+    switch (ev.mActionStatus) {
+		case MotionEvent::E_ACTION_DOWN://触摸按下
+			//LOGD("时刻 = %ld 坐标  x = %d, y = %d", ev.mEventTime, ev.mX, ev.mY);
+			break;
+		case MotionEvent::E_ACTION_MOVE://触摸滑动
+			break;
+		case MotionEvent::E_ACTION_UP:  //触摸抬起
+			break;
+		default:
+			break;
+	}
 	return false;
 }
-static bool onButtonClick_BtnConnectServer(ZKButton *pButton) {
-    //LOGD(" ButtonClick Button1 !!!\n");
-	if(!gSocket->connected()){
-		gSocket->start();
-		LOGD(" btn connect !!!\n");
-	}else{
-		gSocket->stop();
-		LOGD(" btn close !!!\n");
-	}
-    return true;
+static bool onButtonClick_BtnOK(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnOK !!!\n");
+    return false;
 }
-static void onEditTextChanged_EditTextMSG(const std::string &text) {
-    //LOGD(" onEditTextChanged_ EditTextMSG %s !!!\n", text.c_str());
-}
-static void onEditTextChanged_EditTextClientIP(const std::string &text) {
-    //LOGD(" onEditTextChanged_ EditTextClientIP %s !!!\n", text.c_str());
-}
+
 static void onEditTextChanged_Edittext1(const std::string &text) {
     //LOGD(" onEditTextChanged_ Edittext1 %s !!!\n", text.c_str());
 }
 
-static bool onButtonClick_BtnSend(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnSend !!!\n");
-	gSocket->send("123");
-    return false;
-}
-static bool onButtonClick_Button1(ZKButton *pButton) {
-    //LOGD(" ButtonClick Button1 !!!\n");
-    return false;
-}
-
-#include "readdir.h"
-
-static bool onButtonClick_BtnBaseTest(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnBaseTest !!!\n");
-	read_dir();
-
+static bool onButtonClick_BtnCancel(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnCancel !!!\n");
     return false;
 }

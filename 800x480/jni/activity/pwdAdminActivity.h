@@ -1,8 +1,8 @@
 /***********************************************
 /gen auto by zuitools
 ***********************************************/
-#ifndef __MAINACTIVITY_H__
-#define __MAINACTIVITY_H__
+#ifndef __PWDADMINACTIVITY_H__
+#define __PWDADMINACTIVITY_H__
 
 
 #include "app/Activity.h"
@@ -26,11 +26,13 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
-#define ID_MAIN_Button1    20001
-#define ID_MAIN_Textview1    50001
+#define ID_PWDADMIN_Textview1    50001
+#define ID_PWDADMIN_BtnCancel    20002
+#define ID_PWDADMIN_Edittext1    51001
+#define ID_PWDADMIN_BtnOK    20001
 /*TAG:Macro宏ID END*/
 
-class mainActivity : public Activity, 
+class pwdAdminActivity : public Activity, 
                      public ZKSeekBar::ISeekBarChangeListener, 
                      public ZKListView::IItemClickListener,
                      public ZKListView::AbsListAdapter,
@@ -40,8 +42,21 @@ class mainActivity : public Activity,
                      public ZKVideoView::IVideoPlayerMessageListener
 {
 public:
-    mainActivity();
-    virtual ~mainActivity();
+    pwdAdminActivity();
+    virtual ~pwdAdminActivity();
+
+    /**
+     * 注册定时器
+     */
+	void registerUserTimer(int id, int time);
+	/**
+	 * 取消定时器
+	 */
+	void unregisterUserTimer(int id);
+	/**
+	 * 重置定时器
+	 */
+	void resetUserTimer(int id, int time);
 
 protected:
     /*TAG:PROTECTED_FUNCTION*/

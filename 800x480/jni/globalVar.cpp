@@ -9,12 +9,15 @@
 
 
 
-lockState_t gLockState = UnLock;
+doorState_t gDoorState = Lock;
 
 string gServerIP ;
 int gServerPort ;
 struct sockaddr_in gServerAddr;
 SocketClient* gSocket= new SocketClient();
+string gAdminPassword = "123456";
+string gDoorPassword = "123456";
+
 void MySocketListener::notify(int what, int status, const char *msg){
 	string msg_string = msg;
 	if(status == SocketClient::E_SOCKET_STATUS_RECV_OK){
@@ -36,13 +39,13 @@ void MySocketListener::notify(int what, int status, const char *msg){
 	case 1:
 		if(msg_string == "0")
 		{
-			gLockState = UnLock;
+			gDoorState = Lock;
 			GpioHelper::output(GPIO_PIN_B_02, 1);
 			LOGD("g Lock:1\n");
 		}
 		else
 		{
-			gLockState = Lock;
+			gDoorState = UnLock;
 			GpioHelper::output(GPIO_PIN_B_02, 0);
 			LOGD("g Lock:0\n");
 		}

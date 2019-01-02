@@ -95,7 +95,6 @@ static void *MainLoop(void *lParam)
 			}
 			else
 			{
-
 				LOGD("socket run...!\n");
 
 			}

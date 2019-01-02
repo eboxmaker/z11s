@@ -340,9 +340,8 @@ void SocketClient::threadLoop() {
 				counter = 0;
 				memset(buffer,0,sizeof(buffer));
 				break;
-			case test:
-				msg = ParseCMD1(buffer);
-
+			case Door1:
+				msg = ParseCMDDoor1(buffer);
 
 				if (mSocketListener != NULL)
 				{

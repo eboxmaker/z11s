@@ -26,7 +26,16 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
-#define ID_KEYBOARD_EditTextKey    51001
+#define ID_KEYBOARD_TvConnectState    50004
+#define ID_KEYBOARD_Textview3    50003
+#define ID_KEYBOARD_Window1    110002
+#define ID_KEYBOARD_EditTextAdminPassword    51002
+#define ID_KEYBOARD_EditTextDoorPassword    51001
+#define ID_KEYBOARD_BtnConfirm    20015
+#define ID_KEYBOARD_WinPwdAdmin    110001
+#define ID_KEYBOARD_BtnCancel    20016
+#define ID_KEYBOARD_Textview2    50002
+#define ID_KEYBOARD_BtnBackMain    20014
 #define ID_KEYBOARD_BtnBack    20012
 #define ID_KEYBOARD_Btn0    20013
 #define ID_KEYBOARD_BtnOK    20011

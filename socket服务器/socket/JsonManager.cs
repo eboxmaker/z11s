@@ -227,6 +227,28 @@ namespace MyJson
             fs.Close();
             return true;
         }
+        public static int GetJsonCMD(string jstr)
+        {
+            JObject obj = (JObject)JsonConvert.DeserializeObject(jstr);
+            int cmd = Convert.ToInt16( obj["cmd"].ToString());
+   
+            return cmd;
+
+        }
+        public static string MakeCMDDoor1(int value)
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", 1);
+            obj.Add("value", value);
+            string jstring = JsonConvert.SerializeObject(obj);
+            return jstring;
+        }
+        public static string ParseDoorPwd(string js)
+        {
+            JObject jo = (JObject)JsonConvert.DeserializeObject(js);
+            string pwd = jo["doorPwd"].ToString();
+            return pwd;
+        }
 
     }
 }

@@ -158,7 +158,7 @@
             this.btnOpen.Name = "btnOpen";
             this.btnOpen.Size = new System.Drawing.Size(75, 23);
             this.btnOpen.TabIndex = 12;
-            this.btnOpen.Text = "开锁";
+            this.btnOpen.Text = "开门";
             this.btnOpen.UseVisualStyleBackColor = true;
             this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
             // 
@@ -168,7 +168,7 @@
             this.btnCloseLock.Name = "btnCloseLock";
             this.btnCloseLock.Size = new System.Drawing.Size(75, 23);
             this.btnCloseLock.TabIndex = 13;
-            this.btnCloseLock.Text = "关锁";
+            this.btnCloseLock.Text = "关门";
             this.btnCloseLock.UseVisualStyleBackColor = true;
             this.btnCloseLock.Click += new System.EventHandler(this.btnCloseLock_Click);
             // 

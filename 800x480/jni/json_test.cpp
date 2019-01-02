@@ -8,7 +8,6 @@
 #include "json_test.h"
 #include "lib/itoa.h"
 
-using namespace std;
 bool ParseJsonString(char *str)
 {
 	  Json::Reader reader;
@@ -36,7 +35,7 @@ JsonCmd_t getJsonCMD(const char * str)
 
 	  return cmd;
 }
-std::string ParseCMD1(char *str)
+string ParseCMDDoor1(char *str)
 {
 	  Json::Reader reader;
 
@@ -55,7 +54,39 @@ std::string ParseCMD1(char *str)
 
 	  return val_str;
 }
+string MakeCMDDoor1Ack(int state)
+{
 
+}
+string ParseCMDDoor2(char *str)
+{
+	  Json::Reader reader;
+
+	  Json::Value root;
+	  int value;
+	  std::string val_str;
+	  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+
+		  value = (int)root["value"].asInt();
+
+		  char temp[10];
+		  itoa(value,temp);
+		  val_str = temp;
+	  }
+
+	  return val_str;
+}
+string MakeCMDDoorPassword(char *str)
+{
+
+	  Json::Value root;
+	  root["cmd"] = Json::Value(3);
+	  root["doorPwd"] = Json::Value(str);
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return temp;
+}
 std::string get_id(const char *str)
 {
 	  Json::Reader reader;

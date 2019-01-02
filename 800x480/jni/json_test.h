@@ -12,18 +12,20 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+using namespace std;
 typedef enum
 {
 	PicFile = 0,
-	test
+	Door1,
+	Door2,
 }JsonCmd_t;
 bool ParseJsonString(char *str);
 JsonCmd_t getJsonCMD(const char * str);
-std::string ParseCMD1(char *str);
-
+string ParseCMDDoor1(char *str);
+string ParseCMDDoor2(char *str);
+string MakeCMDDoorPassword(char *str);
 FILE *openfile(uint32_t *len);
-std::string get_id(const char *str);
+string get_id(const char *str);
 
 
 

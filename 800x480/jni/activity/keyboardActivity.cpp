@@ -4,7 +4,16 @@
 #include "keyboardActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
-static ZKEditText* mEditTextKeyPtr;
+static ZKTextView* mTvConnectStatePtr;
+static ZKTextView* mTextview3Ptr;
+static ZKWindow* mWindow1Ptr;
+static ZKEditText* mEditTextAdminPasswordPtr;
+static ZKEditText* mEditTextDoorPasswordPtr;
+static ZKButton* mBtnConfirmPtr;
+static ZKWindow* mWinPwdAdminPtr;
+static ZKButton* mBtnCancelPtr;
+static ZKTextView* mTextview2Ptr;
+static ZKButton* mBtnBackMainPtr;
 static ZKButton* mBtnBackPtr;
 static ZKButton* mBtn0Ptr;
 static ZKButton* mBtnOKPtr;
@@ -56,6 +65,9 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_KEYBOARD_BtnConfirm, onButtonClick_BtnConfirm,
+    ID_KEYBOARD_BtnCancel, onButtonClick_BtnCancel,
+    ID_KEYBOARD_BtnBackMain, onButtonClick_BtnBackMain,
     ID_KEYBOARD_BtnBack, onButtonClick_BtnBack,
     ID_KEYBOARD_Btn0, onButtonClick_Btn0,
     ID_KEYBOARD_BtnOK, onButtonClick_BtnOK,
@@ -114,7 +126,8 @@ typedef struct {
 }S_EditTextInputCallback;
 /*TAG:EditTextInputCallback*/
 static S_EditTextInputCallback SEditTextInputCallbackTab[] = {
-    ID_KEYBOARD_EditTextKey, onEditTextChanged_EditTextKey,
+    ID_KEYBOARD_EditTextAdminPassword, onEditTextChanged_EditTextAdminPassword,
+    ID_KEYBOARD_EditTextDoorPassword, onEditTextChanged_EditTextDoorPassword,
 };
 
 typedef void (*VideoViewCallback)(ZKVideoView *pVideoView, int msg);
@@ -150,7 +163,16 @@ const char* keyboardActivity::getAppName() const{
 //TAG:onCreate
 void keyboardActivity::onCreate() {
 	Activity::onCreate();
-    mEditTextKeyPtr = (ZKEditText*)findControlByID(ID_KEYBOARD_EditTextKey);if(mEditTextKeyPtr!= NULL){mEditTextKeyPtr->setTextChangeListener(this);}
+    mTvConnectStatePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TvConnectState);
+    mTextview3Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview3);
+    mWindow1Ptr = (ZKWindow*)findControlByID(ID_KEYBOARD_Window1);
+    mEditTextAdminPasswordPtr = (ZKEditText*)findControlByID(ID_KEYBOARD_EditTextAdminPassword);if(mEditTextAdminPasswordPtr!= NULL){mEditTextAdminPasswordPtr->setTextChangeListener(this);}
+    mEditTextDoorPasswordPtr = (ZKEditText*)findControlByID(ID_KEYBOARD_EditTextDoorPassword);if(mEditTextDoorPasswordPtr!= NULL){mEditTextDoorPasswordPtr->setTextChangeListener(this);}
+    mBtnConfirmPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnConfirm);
+    mWinPwdAdminPtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WinPwdAdmin);
+    mBtnCancelPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnCancel);
+    mTextview2Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview2);
+    mBtnBackMainPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnBackMain);
     mBtnBackPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnBack);
     mBtn0Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Btn0);
     mBtnOKPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnOK);

@@ -23,13 +23,15 @@ extern std::string gServerIP ;
 extern int gServerPort ;
 extern struct sockaddr_in gServerAddr;
 extern SocketClient* gSocket;
+extern std::string gAdminPassword;
+extern std::string gDoorPassword;
 
 typedef enum
 {
-	UnLock,
-	Lock
-}lockState_t;
-extern lockState_t gLockState;
+	Lock,
+	UnLock
+}doorState_t;
+extern doorState_t gDoorState;
 
 
 

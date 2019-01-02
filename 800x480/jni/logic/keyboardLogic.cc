@@ -1,5 +1,7 @@
 #pragma once
 #include "uart/ProtocolSender.h"
+#include "globalVar.h"
+#include "json_test.h"
 /*
 *此文件由GUI工具生成
 *文件功能：用于处理用户的逻辑相应代码
@@ -29,7 +31,8 @@
 *
 * 在Eclipse编辑器中  使用 “alt + /”  快捷键可以打开智能提示
 */
-
+static string doorPwd;
+static doorState_t lastDoorState;
 class LongClickListener : public ZKBase::ILongClickListener {
 
           virtual void onLongClick(ZKBase *pBase) {
@@ -39,9 +42,8 @@ class LongClickListener : public ZKBase::ILongClickListener {
                  char buf[128] = {0};
                  snprintf(buf, sizeof(buf), "长按事件触发次数 %d", ++count);
                  //每次触发长按事件，修改按键的文字
-             	string temp = mEditTextKeyPtr->getText();
-             	temp = temp.substr(0, temp.length() - 1);
-             	mEditTextKeyPtr->setText(temp.c_str());
+             	doorPwd = doorPwd.substr(0, doorPwd.length() - 1);
+             	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
           }
  };
 
@@ -53,7 +55,7 @@ static LongClickListener longButtonClickListener;
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	//{0,  6000}, //定时器id=0, 时间间隔6秒
+	{0,  500}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
 };
 
@@ -79,7 +81,10 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
-
+	mWinPwdAdminPtr->hideWnd();
+	mEditTextDoorPasswordPtr->setText("请输入密码");
+	lastDoorState = gDoorState;
+	doorPwd.clear();
 }
 
 /*
@@ -116,7 +121,24 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  */
 static bool onUI_Timer(int id){
 	switch (id) {
-
+	case 0:
+		if(gSocket->connected() == true)
+		{
+			mTvConnectStatePtr->setText("已连接");
+		}
+		else
+		{
+			mTvConnectStatePtr->setText("未连接");
+		}
+		if(gDoorState != lastDoorState)
+		{
+			lastDoorState = gDoorState;
+			if(gDoorState == UnLock)
+				mEditTextDoorPasswordPtr->setText("打开门");
+			else
+				mEditTextDoorPasswordPtr->setText("开门失败，请重试");
+		}
+		break;
 		default:
 			break;
 	}
@@ -153,96 +175,105 @@ static bool onButtonClick_NtnQR(ZKButton *pButton) {
 
 static bool onButtonClick_Btn0(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn0 !!!\n");
-	string temp = mEditTextKeyPtr->getText();
-	temp.append("0");
-	mEditTextKeyPtr->setText(temp.c_str());
+	doorPwd.append("0");
+	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
 
     return false;
 }
 static bool onButtonClick_Btn1(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn1 !!!\n");
-	string temp = mEditTextKeyPtr->getText();
-	temp.append("1");
-	mEditTextKeyPtr->setText(temp.c_str());
+	doorPwd.append("1");
+	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
 	return false;
 }
 
 static bool onButtonClick_Btn2(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn2 !!!\n");
-	string temp = mEditTextKeyPtr->getText();
-	temp.append("2");
-	mEditTextKeyPtr->setText(temp.c_str());
-    return false;
+	doorPwd.append("2");
+	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+   return false;
 }
 
 static bool onButtonClick_Btn3(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn3 !!!\n");
-	string temp = mEditTextKeyPtr->getText();
-	temp.append("3");
-	mEditTextKeyPtr->setText(temp.c_str());
+	doorPwd.append("3");
+	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
     return false;
 }
 
 static bool onButtonClick_Btn4(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn4 !!!\n");
-	string temp = mEditTextKeyPtr->getText();
-	temp.append("4");
-	mEditTextKeyPtr->setText(temp.c_str());
+	doorPwd.append("4");
+	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
     return false;
 }
 
 static bool onButtonClick_Btn5(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn5 !!!\n");
-	string temp = mEditTextKeyPtr->getText();
-	temp.append("5");
-	mEditTextKeyPtr->setText(temp.c_str());
+	doorPwd.append("5");
+	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
     return false;
 }
 
 static bool onButtonClick_Btn6(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn6 !!!\n");
-	string temp = mEditTextKeyPtr->getText();
-	temp.append("6");
-	mEditTextKeyPtr->setText(temp.c_str());
-    return false;
+	doorPwd.append("6");
+	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+   return false;
 }
 
 static bool onButtonClick_Btn7(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn7 !!!\n");
-	string temp = mEditTextKeyPtr->getText();
-	temp.append("7");
-	mEditTextKeyPtr->setText(temp.c_str());
+	doorPwd.append("7");
+	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
     return false;
 }
 
 static bool onButtonClick_Btn8(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn8 !!!\n");
-	string temp = mEditTextKeyPtr->getText();
-	temp.append("8");
-	mEditTextKeyPtr->setText(temp.c_str());
+	doorPwd.append("8");
+	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
     return false;
 }
 
 
 static bool onButtonClick_Btn9(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn9 !!!\n");
-	string temp = mEditTextKeyPtr->getText();
-	temp.append("9");
-	mEditTextKeyPtr->setText(temp.c_str());
+	doorPwd.append("9");
+	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
     return false;
 }
 
 
 static bool onButtonClick_BtnOK(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnOK !!!\n");
+	string jstr = MakeCMDDoorPassword(mEditTextDoorPasswordPtr->getText().c_str());
+	if(gSocket->connected() == true)
+	{
+		gSocket->send(jstr.c_str());
+		mEditTextDoorPasswordPtr->setText("正在请求开门");
+	}
+	else
+	{
+		mEditTextDoorPasswordPtr->setText("网络中断，请联系管理员");
+	}
+
+//	if(gDoorPassword ==  mEditTextDoorPasswordPtr->getText())
+//	{
+//		mEditTextDoorPasswordPtr->setText("正在请求开门");
+//	}
+//	else
+//	{
+//		mEditTextDoorPasswordPtr->setText("密码错误");
+//	}
+	doorPwd.clear();
     return false;
 }
 
 static bool onButtonClick_BtnBack(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnBackUp !!!\n");
-	string temp = mEditTextKeyPtr->getText();
-	temp = temp.substr(0, temp.length() - 1);
-	mEditTextKeyPtr->setText(temp.c_str());
+	doorPwd = doorPwd.substr(0, doorPwd.length() - 1);
+	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
     return false;
 }
 
@@ -254,4 +285,49 @@ static void onEditTextChanged_Edittext1(const std::string &text) {
 
 static void onEditTextChanged_EditTextKey(const std::string &text) {
     //LOGD(" onEditTextChanged_ EditTextKey %s !!!\n", text.c_str());
+}
+static bool onButtonClick_BtnBackMain(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnBackMain !!!\n");
+
+	mWinPwdAdminPtr->showWnd();
+	return false;
+}
+
+
+static bool onButtonClick_BtnCancel(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnCancel !!!\n");
+	mWinPwdAdminPtr->hideWnd();
+    return false;
+}
+static void onEditTextChanged_EdittextPassword(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EdittextPassword %s !!!\n", text.c_str());
+}
+
+static bool onButtonClick_BtnEnter(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnEnter !!!\n");
+    return false;
+}
+static bool onButtonClick_BtnConfirm(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnConfirm !!!\n");
+	string temp = mEditTextAdminPasswordPtr->getText();
+	if(temp == gAdminPassword)
+    {
+		EASYUICONTEXT->openActivity("mainActivity");
+    }
+	return false;
+
+}
+static void onEditTextChanged_EditTextOpenPassword(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EditTextOpenPassword %s !!!\n", text.c_str());
+}
+
+static void onEditTextChanged_EdittextAdminPassword(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EdittextAdminPassword %s !!!\n", text.c_str());
+}
+static void onEditTextChanged_EditTextDoorPassword(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EditTextDoorPassword %s !!!\n", text.c_str());
+}
+
+static void onEditTextChanged_EditTextAdminPassword(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EditTextAdminPassword %s !!!\n", text.c_str());
 }
