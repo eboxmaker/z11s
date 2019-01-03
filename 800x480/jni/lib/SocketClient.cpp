@@ -32,7 +32,7 @@
 #include <time.h>
 #include <signal.h>
 
-#define BUFFER_SIZE 				102400
+#define BUFFER_SIZE 				409600
 #define FILENAME_MAX_SIZE 			512
 char buffer[BUFFER_SIZE] = { 0 };
 
@@ -284,7 +284,6 @@ size_t SocketClient::read_json(char *msg,size_t max_len)
 	int state = 0;
 	while(1)
 	{
-
 		if(available())
 		{
 
@@ -385,34 +384,118 @@ bool SocketClient::setHeartbeat(int timeout,char *msg,size_t len)
 		LOGE("create timer thread ok, erro=%d\n",threadID);
 	}
 }
-
 void SocketClient::threadLoop() {
+
+	char *ptr;
+	std::string fileFullName;
+	std::string filename;
+	std::string msg;
 
 	int counter =0;
 	bool ret;
-	std::string msg;
 	int length = 0;
+	int len;
 
-	struct timeval timeout = { 1, 0 };     // 1s
+	struct timeval timeout = { 0, 500 };     // 1s
 
 	setsockopt(mClientSocket, SOL_SOCKET, SO_RCVTIMEO,
 			(const char*)&timeout, sizeof(timeout));
 	while (1)
 	{
-		length = recv(mClientSocket, buffer, BUFFER_SIZE,0);
+		length = recv(mClientSocket, &buffer[counter], BUFFER_SIZE,0);
 		if(length > 0)
 		{
-			//mutex.lock();
-			//LOGE("w加锁");
-			for(int i = 0 ; i < length; i++)
-			{
-				rxbuf.write(buffer[i]);
-				counter++;
-			}
-			//mutex.unlock();
-			//LOGE("w解锁");
-			//LOGE("w len:%d",counter);
+			counter += length;
+			LOGE("w len:%d",counter);
 		}
+		else
+		{
+			ret = ParseJsonString(buffer);
+			if(ret == true)
+			{
+				JsonCmd_t cmd = getJsonCMD(ptr);
+				switch(cmd)
+				{
+				case PicFile:
+					LOGE("接受到图片!\n");
+					SaveFile(ptr,FILE_DIR);
+					filename = GetFileName(ptr);
+					fileFullName = FILE_DIR;
+					fileFullName += filename;
+					LOGE("文件名:%s!\n",fileFullName.c_str());
+					while(1);
+					break;
+				case Door1:
+					msg = ParseCMDDoor1(ptr);
+					if(msg == "0")
+					{
+						gDoorState = Lock;
+						GpioHelper::output(GPIO_PIN_B_02, 1);
+						LOGD("door1:Lock\n");
+					}
+					else
+					{
+						gDoorState = UnLock;
+						GpioHelper::output(GPIO_PIN_B_02, 0);
+						LOGD("door1:UnLock\n");
+					}
+					break;
+				default:
+					break;
+				}
+			}
+
+		}
+
+//		{
+//			LOGE("解析·········");
+//			ptr = (char *)malloc(counter);
+//			memset(ptr,0,sizeof(ptr));
+//			len = read_json(ptr,counter);
+//			if(len > 0)
+//			{
+//
+//				JsonCmd_t cmd = getJsonCMD(ptr);
+//				switch(cmd)
+//				{
+//				case PicFile:
+//					LOGE("接受到图片!\n");
+//					SaveFile(ptr,FILE_DIR);
+//					filename = GetFileName(ptr);
+//					fileFullName = FILE_DIR;
+//					fileFullName += filename;
+//					LOGE("文件名:%s!\n",fileFullName.c_str());
+//					while(1);
+//					break;
+//				case Door1:
+//					msg = ParseCMDDoor1(ptr);
+//					if(msg == "0")
+//					{
+//						gDoorState = Lock;
+//						GpioHelper::output(GPIO_PIN_B_02, 1);
+//						LOGD("door1:Lock\n");
+//					}
+//					else
+//					{
+//						gDoorState = UnLock;
+//						GpioHelper::output(GPIO_PIN_B_02, 0);
+//						LOGD("door1:UnLock\n");
+//					}
+//					break;
+//				default:
+//					break;
+//				}
+//				counter = 0;
+//			}
+//			else
+//			{
+//				LOGE("数据不完整");
+//
+//			}
+//			free(ptr);
+//
+//		}
+
 
 
 		if(mClientSocket < 0)

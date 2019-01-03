@@ -80,9 +80,7 @@ static void *MainLoop(void *lParam)
 //	msg.remote.sin_family=AF_INET; //设置为IP通信
 //	msg.remote.sin_addr.s_addr=inet_addr("192.168.1.101");//服务器IP地址
 //	msg.remote.sin_port=htons(8000); //服务器端口号
-	std::string fileFullName;
-	std::string filename;
-	std::string msg;
+
 
 	ret = gSocket->connect(gServerIP.c_str(),gServerPort);
 	gSocket->setHeartbeat(5,"123",sizeof("123"));
@@ -99,45 +97,8 @@ static void *MainLoop(void *lParam)
 	{
 		//sleep(1);
 		//LOGE("r加锁");
-		len = gSocket->read_json(rbuf,409600);
 		//LOGE("r解锁");
-		if(len > 0)
-		{
-			JsonCmd_t cmd = getJsonCMD(rbuf);
-			switch(cmd)
-			{
-			case PicFile:
-				LOGE("接受到图片!\n");
-				SaveFile(rbuf,FILE_DIR);
 
-				filename = GetFileName(rbuf);
-				fileFullName = FILE_DIR;
-				fileFullName += filename;
-				LOGE("文件名:%s!\n",fileFullName.c_str());
-				memset(rbuf,0,sizeof(rbuf));
-				break;
-			case Door1:
-				msg = ParseCMDDoor1(rbuf);
-				memset(rbuf,0,sizeof(rbuf));
-				if(msg == "0")
-				{
-					gDoorState = Lock;
-					GpioHelper::output(GPIO_PIN_B_02, 1);
-					LOGD("door1:Lock\n");
-				}
-				else
-				{
-					gDoorState = UnLock;
-					GpioHelper::output(GPIO_PIN_B_02, 0);
-					LOGD("door1:UnLock\n");
-				}
-				break;
-			default:
-				break;
-			}
-			memset(rbuf,0,sizeof(rbuf));
-
-		}
 	}
 
 }
