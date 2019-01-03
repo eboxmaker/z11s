@@ -136,6 +136,7 @@ namespace socket
         private void btnSendMSG_Click(object sender, EventArgs e)
         {
             server.SendAll(RichSend.Text);
+            tbSendDataLength.Text = RichSend.Text.Length.ToString();
         }
 
         private void btnClear_Click(object sender, EventArgs e)

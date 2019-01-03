@@ -18,7 +18,7 @@
 
 using namespace std;
 
-
+extern Mutex mutex ;
 extern std::string gServerIP ;
 extern int gServerPort ;
 extern struct sockaddr_in gServerAddr;

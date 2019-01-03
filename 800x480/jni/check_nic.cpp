@@ -47,6 +47,7 @@ int check_nic(char *nic)
 
         return 0;  // 网卡已插上网线
 
-    else return -1;
+    else
+    	return -1;
 
 }

@@ -291,6 +291,8 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/set
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/in6.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/arpa/inet.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/lib/SocketClient.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/system/mutex.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/storage/StoragePreferences.h
 
@@ -875,6 +877,10 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/arpa/inet.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/lib/SocketClient.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/include/system/mutex.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h:
 

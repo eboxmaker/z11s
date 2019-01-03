@@ -250,7 +250,7 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 	string jstr = MakeCMDDoorPassword(mEditTextDoorPasswordPtr->getText().c_str());
 	if(gSocket->connected() == true)
 	{
-		gSocket->send(jstr.c_str());
+		gSocket->write_(jstr.c_str());
 		mEditTextDoorPasswordPtr->setText("正在请求开门");
 	}
 	else

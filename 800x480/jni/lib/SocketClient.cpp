@@ -29,7 +29,10 @@
 #include "packageFile.h"
 #include "globalVar.h"
 #include "check_nic.h"
-#define BUFFER_SIZE 				1024000
+#include <time.h>
+#include <signal.h>
+
+#define BUFFER_SIZE 				102400
 #define FILENAME_MAX_SIZE 			512
 char buffer[BUFFER_SIZE] = { 0 };
 
@@ -94,7 +97,7 @@ static int setDateTime(struct tm* ptm) {
 }
 
 static int setDateTime(const char *pDate) {
-	LOGD("setDateTime pDate: %s\n", pDate);
+	LOGE("setDateTime pDate: %s\n", pDate);
 
 	struct tm _tm;
 	struct timeval tv;
@@ -119,58 +122,27 @@ static void* socketThreadRx(void *lParam) {
 	return NULL;
 }
 
+static void* socketThreadHeatbeat(void *lParam) {
+	((SocketClient *) lParam)->timer_thread();
+	return NULL;
+}
+
 SocketClient::SocketClient() :
 	conncetState(false),
-	mClientSocket(-1),
-	mSocketListener(NULL) {
-
+	mClientSocket(-1){
+	rxbuf.begin(4096);
 }
 
 SocketClient::~SocketClient() {
-	stop();
-}
-
-void SocketClient::start() {
-	if (mClientSocket > 0) {
-		LOGD("socket thread had run...\n");
-		return;
-	}
-
-	pthread_t threadID = 0;
-	pthread_attr_t attr; 		// 线程属性
-	pthread_attr_init(&attr);  	// 初始化线程属性
-	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);      // 设置线程属性
-	int ret = pthread_create(&threadID, &attr, socketThreadRx, this);
-	pthread_attr_destroy(&attr);
-	if (ret || !threadID) {
-		LOGD("create socket thread error, erro=%s\n", strerror(errno));
-		disconnect();
-		return;
-	}
-	else
-	{
-
-		LOGD("create socket thread ok, erro=%d\n",threadID);
-	}
-
-	LOGD("create socket thread success!\n");
-}
-
-void SocketClient::stop()
-{
-	if (mClientSocket > 0)
-	{
-		send("");
-	}
-	if (mSocketListener != NULL)
-	{
-		mSocketListener->notify(2,  E_SOCKET_STATUS_RECV_OK,"CLOSE" );
-	}
 	disconnect();
+	free(hearbeatMsg);
 }
+
 
 
 bool SocketClient::connect(char *ip, uint16_t port) {
+
+	conncetState = false;
 
 	LOGE("%s:%d\n",ip,port);
 	// 设置一个socket地址结构clientAddr,代表客户机internet地址, 端口
@@ -182,9 +154,9 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 	// 创建用于internet的流协议(TCP)socket,用clientSocket代表客户机socket
 	mClientSocket = socket(AF_INET, SOCK_STREAM, 0);
 
-	LOGD("Create Socket clientSocket: %d\n", mClientSocket);
+	LOGE("Create Socket clientSocket: %d\n", mClientSocket);
 	if (mClientSocket < 0) {
-		LOGD("Create Socket Failed!\n");
+		LOGE("Create Socket Failed!\n");
 		disconnect();
 		return false;
 	}
@@ -192,12 +164,12 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 
 	// 把客户机的socket和客户机的socket地址结构联系起来
 	if (bind(mClientSocket, (struct sockaddr*) &clientAddr, sizeof(clientAddr))) {
-		LOGD("Client Bind Port Failed!\n");
+		LOGE("Client Bind Port Failed!\n");
 		disconnect();
 		return false;
 	}
 
-	LOGD("Client Bind OK!\n");
+	LOGE("Client Bind OK!\n");
 
 	// 设置一个socket地址结构serverAddr,代表服务器的internet地址, 端口
 	struct sockaddr_in serverAddr;
@@ -207,7 +179,7 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 
 
 	if (inet_aton(ip, &serverAddr.sin_addr) == 0) {     // 服务器的IP地址来自程序的参数
-		LOGD("Server IP Address Error!%s\n",ip);
+		LOGE("Server IP Address Error!%s\n",ip);
 		disconnect();
 		return false;
 	}
@@ -215,149 +187,238 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 	socklen_t serverAddrLength = sizeof(serverAddr);
 	// 向服务器发起连接,连接成功后clientSocket代表了客户机和服务器的一个socket连接
 	if (::connect(mClientSocket, (struct sockaddr *) &serverAddr, serverAddrLength) < 0) {
-		LOGD("Can Not Connect To %s!\n", ip);
-		if (mSocketListener != NULL)
-		{
-			mSocketListener->notify(2, E_SOCKET_STATUS_RECV_OK ,"close" );
-		}
+		LOGE("Can Not Connect To %s!\n", ip);
 		disconnect();
 		return false;
 	}
+	LOGE("connect %s success!\n", ip);
+
+
+	pthread_t threadID = 0;
+	pthread_attr_t attr; 		// 线程属性
+	pthread_attr_init(&attr);  	// 初始化线程属性
+	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);      // 设置线程属性
+	int ret = pthread_create(&threadID, &attr, socketThreadRx, this);
+	pthread_attr_destroy(&attr);
+	if (ret || !threadID) {
+		LOGE("create socket thread error, erro=%s\n", strerror(errno));
+		disconnect();
+		return false;
+	}
+	else
+	{
+
+		LOGE("create socket thread ok, erro=%d\n",threadID);
+	}
+
+	LOGE("create socket thread success!\n");
+
 	conncetState = true;
-	LOGD("connect %s success!\n", ip);
 
 	return true;
 }
 bool SocketClient::connected()
 {
+	int optval, optlen = sizeof(int);
+	getsockopt(mClientSocket, SOL_SOCKET, SO_ERROR,(char*) &optval, &optlen);
+
+	switch(optval){
+
+	case 0:
+		conncetState = true;
+		break;
+	default:
+		conncetState = false;
+		break;
+	}
 	return conncetState;
 }
 
 bool SocketClient::disconnect() {
-	LOGD("SocketClient disconnect\n");
+	LOGE("SocketClient disconnect\n");
 	conncetState = false;
 	if (mClientSocket > 0) {
-		LOGD("SocketClient close socket...\n");
+		write_("");
+		LOGE("SocketClient close socket...\n");
 		// 关闭socket
 		close(mClientSocket);
 		mClientSocket = -1;
 	}
 	return true;
 }
-void SocketClient::send(char *msg)
+void SocketClient::write_(char *msg)
 {
-
 	write(mClientSocket,msg, strlen(msg));
 	return ;
 }
-void SocketClient::threadLoop() {
+void SocketClient::write_(char *msg,size_t length)
+{
+	write(mClientSocket,msg, length);
+	return ;
+}
+char SocketClient::read_()
+{
+	return rxbuf.read();
+}
 
-	bool ret;
-	std::string msg;
-
-	struct timeval timeout = { 5, 0 };     // 1s
-
-	std::string fileFullName;
-	std::string filename;
-	int counter = 0;
-	bool flag = false;
-	int length = 0;
-	LOGD("socket thread START!\n");
-
-	while (1)
+void SocketClient::read_(char *msg,size_t length)
+{
+	for(int i = 0; i < length; i++)
 	{
-		LOGD("socket thread running!state:%d\n",connected());
-		if(connected() == false)
+		msg[i] = rxbuf.read();
+	}
+}
+size_t SocketClient::available()
+{
+	return rxbuf.available();
+}
+
+size_t SocketClient::read_json(char *msg,size_t max_len)
+{
+
+	time_t  last_time,now;
+
+	bool start_flag = false;
+
+	int counter = 0;
+	int state = 0;
+	while(1)
+	{
+
+		if(available())
 		{
-			ret = connect(gServerIP.c_str(),gServerPort);
-			if(ret == true)
+
+			if(state == 0)
 			{
-				LOGD("socket thread connect OK!\n");
-				setsockopt(mClientSocket, SOL_SOCKET, SO_RCVTIMEO,
-						(const char*)&timeout, sizeof(timeout));
-			}
-			else
-				LOGD("socket thread connect error!\n");
-
-		}
-		if(check_nic("eth0") == -1)
-		{
-			LOGE("NIC 掉线");
-			disconnect();
-			sleep(1);
-		}
-
-
-		length = recv(mClientSocket, &buffer[counter], 4096,0);
-		if(length < 0 || length >= BUFFER_SIZE)
-		{
-			counter = 0;
-			memset(buffer,0,sizeof(buffer));
-			LOGE("Recieve Data Failed;len = %d,counter%d， %s\n", length,counter,strerror(errno));
-			ret = false;
-			flag = false;
-		}
-		else if(length == 0)
-		{
-			disconnect();
-		}
-		else if(length > 0)
-		{
-			if(ParseJsonString(buffer))
-			{
-				counter+=length;
-				LOGE("ParseJsonString ok! len = %d,counter = %d\n", length, counter);
-				flag = true;
-				ret = true;
+				msg[counter] = read_();
+				if(msg[counter] == '{')
+				{
+					state = 1;
+					counter++;
+					start_flag = true;
+					last_time = time(&last_time);//开始解析，并记录时间；
+					LOGE("解析开始...");
+				}
 			}
 			else
 			{
-				counter+=length;
-				flag = false;
-				LOGE("ParseJsonString Failed! len = %d,counter = %d\n", length, counter);
+				msg[counter] = read_();
+				if(msg[counter] =='}')
+				{
+					LOGE("接受到结束符");
+					if(ParseJsonString(msg) == true)
+					{
+						LOGE("解析完成,size:%dbytes",counter);
+						return sizeof(msg);
+					}
+					else
+					{
+						LOGE("解析失败,继续尝试。。。");
+					}
+				}
+				counter++;
+				if(counter == max_len)
+				{
+					counter = -1;
+					LOGE("超出内存");
+					break;
+				}
 			}
-
 		}
-		if(flag)
+		else
 		{
-			//std::string str = buffer;
-			JsonCmd_t cmd = getJsonCMD(buffer);
-			switch(cmd)
+			if(start_flag == true)
 			{
-			case PicFile:
-				LOGE("Pic Json File ok!\n");
-				SaveFile(buffer,FILE_DIR);
-
-				filename = GetFileName(buffer);
-				fileFullName = FILE_DIR;
-				fileFullName += filename;
-				LOGE("file:%s!\n",fileFullName.c_str());
-				if (mSocketListener != NULL)
+				now = time(&now);
+				if(now - last_time > 2)//判断解析时间长度是否超时
 				{
-					mSocketListener->notify(cmd, ret ? E_SOCKET_STATUS_RECV_OK : E_SOCKET_STATUS_RECV_ERROR, fileFullName.c_str());
+					LOGE("解析超时");
+					return 0;
 				}
-				counter = 0;
-				memset(buffer,0,sizeof(buffer));
-				break;
-			case Door1:
-				msg = ParseCMDDoor1(buffer);
+				//LOGE("解析间隙");
 
-				if (mSocketListener != NULL)
-				{
-					mSocketListener->notify(cmd, ret ? E_SOCKET_STATUS_RECV_OK : E_SOCKET_STATUS_RECV_ERROR,msg.c_str() );
-				}
-				memset(buffer,0,sizeof(buffer));
-
-				break;
-			default:
+			}
+			else
+			{
 				break;
 			}
 
-			counter = 0;
 		}
 
 
 	}
+	return counter;
 
-	LOGD("socket thread end.\n");
+}
+void SocketClient::timer_thread()
+{
+	while(1)
+	{
+
+		sleep(heartbeatTime);
+		write_(hearbeatMsg);
+		if(mClientSocket < 0)
+			break;
+	}
+	LOGE("timer thread end");
+
+}
+bool SocketClient::setHeartbeat(int timeout,char *msg,size_t len)
+{
+	heartbeatTime = timeout;
+	hearbeatMsg = (char *)malloc(len*sizeof(char));
+	memcpy(hearbeatMsg,msg,len);
+
+	pthread_t threadID = 0;
+	pthread_attr_t attr; 		// 线程属性
+	pthread_attr_init(&attr);  	// 初始化线程属性
+	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);      // 设置线程属性
+	int ret = pthread_create(&threadID, &attr, socketThreadHeatbeat, this);
+	pthread_attr_destroy(&attr);
+	if (ret || !threadID) {
+		LOGE("create socket thread error, erro=%s\n", strerror(errno));
+		return false;
+	}
+	else
+	{
+
+		LOGE("create timer thread ok, erro=%d\n",threadID);
+	}
+}
+
+void SocketClient::threadLoop() {
+
+	int counter =0;
+	bool ret;
+	std::string msg;
+	int length = 0;
+
+	struct timeval timeout = { 1, 0 };     // 1s
+
+	setsockopt(mClientSocket, SOL_SOCKET, SO_RCVTIMEO,
+			(const char*)&timeout, sizeof(timeout));
+	while (1)
+	{
+		length = recv(mClientSocket, buffer, BUFFER_SIZE,0);
+		if(length > 0)
+		{
+			//mutex.lock();
+			//LOGE("w加锁");
+			for(int i = 0 ; i < length; i++)
+			{
+				rxbuf.write(buffer[i]);
+				counter++;
+			}
+			//mutex.unlock();
+			//LOGE("w解锁");
+			//LOGE("w len:%d",counter);
+		}
+
+
+		if(mClientSocket < 0)
+			break;
+
+	}
+
+	LOGE("socket thread end.\n");
 }

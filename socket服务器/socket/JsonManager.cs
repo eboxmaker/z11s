@@ -229,10 +229,20 @@ namespace MyJson
         }
         public static int GetJsonCMD(string jstr)
         {
-            JObject obj = (JObject)JsonConvert.DeserializeObject(jstr);
-            int cmd = Convert.ToInt16( obj["cmd"].ToString());
+            JObject obj = new JObject();
+            int cmd = -1;
+            try
+            {
+                obj = (JObject)JsonConvert.DeserializeObject(jstr);
+                cmd = Convert.ToInt16( obj["cmd"].ToString());
    
-            return cmd;
+            }
+            catch
+            {
+
+            }
+            return cmd;  
+
 
         }
         public static string MakeCMDDoor1(int value)

@@ -183,7 +183,7 @@ static void onEditTextChanged_Edittext1(const std::string &text) {
 
 static bool onButtonClick_BtnSend(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnSend !!!\n");
-	gSocket->send("123");
+	gSocket->write_("123");
     return false;
 }
 static bool onButtonClick_Button1(ZKButton *pButton) {

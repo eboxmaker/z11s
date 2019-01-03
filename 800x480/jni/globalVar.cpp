@@ -8,6 +8,7 @@
 #include "globalVar.h"
 
 
+Mutex mutex;
 
 doorState_t gDoorState = Lock;
 
@@ -20,14 +21,14 @@ string gDoorPassword = "123456";
 
 void MySocketListener::notify(int what, int status, const char *msg){
 	string msg_string = msg;
-	if(status == SocketClient::E_SOCKET_STATUS_RECV_OK){
-		LOGE("FILE RECV OK!");
-		LOGE("what:%d---msg:%s",what,msg);
-	}
-	else
-	{
-		return ;
-	}
+//	if(status == SocketClient::E_SOCKET_STATUS_RECV_OK){
+//		LOGE("FILE RECV OK!");
+//		LOGE("what:%d---msg:%s",what,msg);
+//	}
+//	else
+//	{
+//		return ;
+//	}
 
 	switch(what)
 	{

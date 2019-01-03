@@ -42,6 +42,7 @@
             this.btnSaveFile = new System.Windows.Forms.Button();
             this.btnOpen = new System.Windows.Forms.Button();
             this.btnCloseLock = new System.Windows.Forms.Button();
+            this.tbSendDataLength = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnStartServer
@@ -172,11 +173,19 @@
             this.btnCloseLock.UseVisualStyleBackColor = true;
             this.btnCloseLock.Click += new System.EventHandler(this.btnCloseLock_Click);
             // 
+            // tbSendDataLength
+            // 
+            this.tbSendDataLength.Location = new System.Drawing.Point(499, 384);
+            this.tbSendDataLength.Name = "tbSendDataLength";
+            this.tbSendDataLength.Size = new System.Drawing.Size(100, 21);
+            this.tbSendDataLength.TabIndex = 14;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(683, 417);
+            this.Controls.Add(this.tbSendDataLength);
             this.Controls.Add(this.btnCloseLock);
             this.Controls.Add(this.btnOpen);
             this.Controls.Add(this.btnSaveFile);
@@ -214,6 +223,7 @@
         private System.Windows.Forms.Button btnSaveFile;
         private System.Windows.Forms.Button btnOpen;
         private System.Windows.Forms.Button btnCloseLock;
+        private System.Windows.Forms.TextBox tbSendDataLength;
     }
 }
 

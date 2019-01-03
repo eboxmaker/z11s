@@ -8,6 +8,7 @@
 #ifndef _SOCKET_SOCKETCLIENT_H_
 #define _SOCKET_SOCKETCLIENT_H_
 
+#include "ringbuf.h"
 
 #define FILE_DIR		"/mnt/extsd/"
 
@@ -17,18 +18,24 @@ public:
 	SocketClient();
 	virtual ~SocketClient();
 
-	void start();
-	void stop();
-	void send(char *msg);
+	bool connect(char *ip, uint16_t port);
+	bool disconnect();
+	bool connected();
+
+	void write_(char *msg);
+	void write_(char *msg,size_t length);
+	void read_(char *msg,size_t length);
+	char read_();
+	size_t read_json(char *msg,size_t max_len);
+	size_t available();
+
+	bool setHeartbeat(int timeout,char *msg,size_t len);
 	void threadLoop();
 
-public:
-	typedef enum {
-		E_SOCKET_STATUS_START_RECV		= 0,
-		E_SOCKET_STATUS_RECV_OK			= 1,
-		E_SOCKET_STATUS_RECV_ERROR		= 2,
-		E_SOCKET_STATUS_UPDATE_DATE		= 3
-	} ESocketStatus;
+	void timer_thread();
+
+
+
 
 	class ISocketListener {
 	public:
@@ -39,16 +46,18 @@ public:
 	void setSocketListener(ISocketListener *pListener) {
 		mSocketListener = pListener;
 	}
-	bool connected();
-	bool conncetState;
-private:
-	bool connect(char *ip, uint16_t port);
-	bool disconnect();
 
 private:
+	RingBufInt8 rxbuf;
+	bool conncetState;
+
 	int mClientSocket;
-	ISocketListener *mSocketListener;
+	//ISocketListener *mSocketListener;
 	bool connectState;
+	int heartbeatTime;
+	char *hearbeatMsg;
+	ISocketListener *mSocketListener;
+
 };
 
 #endif /* _SOCKET_SOCKETCLIENT_H_ */

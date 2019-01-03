@@ -10,12 +10,15 @@
 
 #include "udp.h"
 #include "storage/StoragePreferences.h"
+#include "json_test.h"
+#include "packageFile.h"
+
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif  /* __cplusplus */
 
-Udp *udp = NULL;
 
 static void *MainLoop(void *lParam);
 static void LoadParament()
@@ -38,11 +41,9 @@ void onEasyUIDeinit(EasyUIContext *pContext) {
 const char* onStartupApp(EasyUIContext *pContext) {
 
 	LoadParament();
-	gSocket->start();
-	gSocket->setSocketListener(&gSocketListener);
 
-	udp = new Udp();
-	udp->start(1245);
+	//gSocket->setSocketListener(&gSocketListener);
+
 	pthread_t threadID = 1;
 	pthread_attr_t attr; 		// 线程属性
 	pthread_attr_init(&attr);  	// 初始化线程属性
@@ -61,12 +62,15 @@ const char* onStartupApp(EasyUIContext *pContext) {
 
 	return "mainActivity";
 }
-UDPMessage msg;
-UDPMessage rmsg;
 char buf[4096] = "hello world\n";
-char rbuf[4096] ;
+char rbuf[409600] ;
 static void *MainLoop(void *lParam)
 {
+    //pthread_mutex_init(&mutex,NULL);
+
+
+    bool ret;
+    int len;
 //	msg.ptr = buf;
 //	msg.len = sizeof(buf);
 //	rmsg.ptr = rbuf;
@@ -76,43 +80,64 @@ static void *MainLoop(void *lParam)
 //	msg.remote.sin_family=AF_INET; //设置为IP通信
 //	msg.remote.sin_addr.s_addr=inet_addr("192.168.1.101");//服务器IP地址
 //	msg.remote.sin_port=htons(8000); //服务器端口号
+	std::string fileFullName;
+	std::string filename;
+	std::string msg;
 
-	gSocket->start();
-
-
+	ret = gSocket->connect(gServerIP.c_str(),gServerPort);
+	gSocket->setHeartbeat(5,"123",sizeof("123"));
+	if(ret == true)
+	{
+		LOGE("socket thread connect OK!\n");
+	}
+	else
+	{
+		gSocket->disconnect();
+	}
+//	while(1);
 	while(1)
 	{
-//		if(check_nic("eth0") == -1)
-//		{
-//			LOGE("NIC 掉线");
-//			gSocket->stop();
-//		}
-//		else
-//		{
+		//sleep(1);
+		//LOGE("r加锁");
+		len = gSocket->read_json(rbuf,409600);
+		//LOGE("r解锁");
+		if(len > 0)
+		{
+			JsonCmd_t cmd = getJsonCMD(rbuf);
+			switch(cmd)
+			{
+			case PicFile:
+				LOGE("接受到图片!\n");
+				SaveFile(rbuf,FILE_DIR);
 
+				filename = GetFileName(rbuf);
+				fileFullName = FILE_DIR;
+				fileFullName += filename;
+				LOGE("文件名:%s!\n",fileFullName.c_str());
+				memset(rbuf,0,sizeof(rbuf));
+				break;
+			case Door1:
+				msg = ParseCMDDoor1(rbuf);
+				memset(rbuf,0,sizeof(rbuf));
+				if(msg == "0")
+				{
+					gDoorState = Lock;
+					GpioHelper::output(GPIO_PIN_B_02, 1);
+					LOGD("door1:Lock\n");
+				}
+				else
+				{
+					gDoorState = UnLock;
+					GpioHelper::output(GPIO_PIN_B_02, 0);
+					LOGD("door1:UnLock\n");
+				}
+				break;
+			default:
+				break;
+			}
+			memset(rbuf,0,sizeof(rbuf));
 
-//		}
-//		udp->send(&msg);
-//		if(!gSocket->connected()){
-//			gSocket->start();
-//		}
-//		if(check_nic("eth0") == -1)
-//		{
-//			gSocket->stop();
-//		}
-//		else
-//		{
-//
-//			if(!gSocket->connected()){
-//				gSocket->start();
-//			}
-//		}
-//		if(udp->recv(&rmsg)>0)
-//		{
-//			LOGE("%s:%d{%s}",udp->parseIP(&rmsg).c_str(),udp->parsePort(&rmsg),rbuf);
-//		}
-
-		sleep(1);
+		}
 	}
 
 }
