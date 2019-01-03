@@ -177,7 +177,33 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/json_test.o:
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/istream \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/json/writer.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/ostream \
- C:/Users/shentq/Documents/z11s/800x480/jni/lib/itoa.h
+ C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/system/mutex.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/Log.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/android/log.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/lib/itoa.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/globalVar.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/in.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/endian.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/endian.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/machine/endian.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/socket.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/socket.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/sockios.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/sockios.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/uio.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/in.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/byteorder.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/little_endian.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/swab.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/generic.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/in6.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/ipv6.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/in6.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/arpa/inet.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/lib/SocketClient.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h
 
 C:/Users/shentq/Documents/z11s/800x480/jni/json_test.h:
 
@@ -533,4 +559,56 @@ C:/Users/shentq/Documents/z11s/800x480/jni/include/json/writer.h:
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/ostream:
 
+C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/include/system/mutex.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/Log.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/android/log.h:
+
 C:/Users/shentq/Documents/z11s/800x480/jni/lib/itoa.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/globalVar.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/in.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/endian.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/endian.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/machine/endian.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/socket.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/socket.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/sockios.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/sockios.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/uio.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/in.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/byteorder.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/little_endian.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/swab.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/generic.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/in6.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/ipv6.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/in6.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/arpa/inet.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/lib/SocketClient.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h:

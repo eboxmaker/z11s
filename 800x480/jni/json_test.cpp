@@ -7,7 +7,59 @@
 
 #include "json_test.h"
 #include "lib/itoa.h"
+#include "globalVar.h"
+string cutOneJsonString(RingBufInt8 *msg)
+{
 
+	char buf[msg->available()];
+	string resault = "";
+	bool start_flag = false;
+
+	int counter = 0;
+	int state = 0;
+	while(1)
+	{
+		if(msg->available())
+		{
+			if(state == 0)
+			{
+				buf[counter] = msg->read();
+				if(buf[counter] == '{')
+				{
+					state = 1;
+					counter++;
+					start_flag = true;
+					LOGE("解析开始...");
+				}
+			}
+			else
+			{
+				buf[counter] = msg->read();
+				if(buf[counter] =='}')
+				{
+					//LOGE("接受到结束符");
+					if(ParseJsonString(buf) == true)
+					{
+						LOGE("解析完成,size:%dbytes",counter);
+						resault = buf;
+						return resault;
+					}
+					else
+					{
+						LOGE("解析失败,继续尝试。。。");
+					}
+				}
+				counter++;
+			}
+		}
+		else
+		{
+			//LOGE("解析失败。。。");
+			return resault;
+		}
+
+	}
+}
 bool ParseJsonString(char *str)
 {
 	  Json::Reader reader;
@@ -53,6 +105,15 @@ string ParseCMDDoor1(char *str)
 	  }
 
 	  return val_str;
+}
+string MakeCMDHeatbeat()
+{
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDHeartbeat);
+	  root["hello"] = Json::Value("123");
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return temp;
 }
 string MakeCMDDoor1Ack(int state)
 {

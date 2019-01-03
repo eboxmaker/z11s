@@ -82,23 +82,28 @@ static void *MainLoop(void *lParam)
 //	msg.remote.sin_port=htons(8000); //服务器端口号
 
 
-	ret = gSocket->connect(gServerIP.c_str(),gServerPort);
 	gSocket->setHeartbeat(5,"123",sizeof("123"));
-	if(ret == true)
-	{
-		LOGE("socket thread connect OK!\n");
-	}
-	else
-	{
-		gSocket->disconnect();
-	}
-//	while(1);
+
 	while(1)
 	{
-		//sleep(1);
-		//LOGE("r加锁");
-		//LOGE("r解锁");
 
+		if(gSocket->connected() == false)
+		{
+			ret = gSocket->connect(gServerIP.c_str(),gServerPort);
+			if(ret == true)
+			{
+				LOGE("连接服务器成功!\n");
+			}
+			else
+			{
+				gSocket->disconnect();
+				LOGE("连接服务器失败 !\n");
+
+			}
+		}
+
+
+		sleep(1);
 	}
 
 }

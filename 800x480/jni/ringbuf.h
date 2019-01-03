@@ -68,7 +68,7 @@ public:
         	ptr = (T *)realloc((void *)ptr, max * sizeof(T) +  1024 * sizeof(T));
         	max += 1024;
         	seek = (head + 1) % max;
-        	LOGE("扩充内存:%d",max);
+        	//LOGE("扩充内存:%d",max);
         }
         ptr[head] = c;
         head = seek;

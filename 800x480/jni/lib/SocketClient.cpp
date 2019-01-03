@@ -273,93 +273,19 @@ size_t SocketClient::available()
 	return rxbuf.available();
 }
 
-size_t SocketClient::read_json(char *msg,size_t max_len)
-{
-
-	time_t  last_time,now;
-
-	bool start_flag = false;
-
-	int counter = 0;
-	int state = 0;
-	while(1)
-	{
-		if(available())
-		{
-
-			if(state == 0)
-			{
-				msg[counter] = read_();
-				if(msg[counter] == '{')
-				{
-					state = 1;
-					counter++;
-					start_flag = true;
-					last_time = time(&last_time);//开始解析，并记录时间；
-					LOGE("解析开始...");
-				}
-			}
-			else
-			{
-				msg[counter] = read_();
-				if(msg[counter] =='}')
-				{
-					LOGE("接受到结束符");
-					if(ParseJsonString(msg) == true)
-					{
-						LOGE("解析完成,size:%dbytes",counter);
-						return sizeof(msg);
-					}
-					else
-					{
-						LOGE("解析失败,继续尝试。。。");
-					}
-				}
-				counter++;
-				if(counter == max_len)
-				{
-					counter = -1;
-					LOGE("超出内存");
-					break;
-				}
-			}
-		}
-		else
-		{
-			if(start_flag == true)
-			{
-				now = time(&now);
-				if(now - last_time > 2)//判断解析时间长度是否超时
-				{
-					LOGE("解析超时");
-					return 0;
-				}
-				//LOGE("解析间隙");
-
-			}
-			else
-			{
-				break;
-			}
-
-		}
-
-
-	}
-	return counter;
-
-}
 void SocketClient::timer_thread()
 {
+	string str = MakeCMDHeatbeat();
 	while(1)
 	{
 
 		sleep(heartbeatTime);
-		write_(hearbeatMsg);
-		if(mClientSocket < 0)
-			break;
+		if(mClientSocket > 0)
+		{
+			write_(str.c_str());
+			LOGE("timer thread running");
+		}
 	}
-	LOGE("timer thread end");
 
 }
 bool SocketClient::setHeartbeat(int timeout,char *msg,size_t len)
@@ -380,124 +306,46 @@ bool SocketClient::setHeartbeat(int timeout,char *msg,size_t len)
 	}
 	else
 	{
-
 		LOGE("create timer thread ok, erro=%d\n",threadID);
 	}
 }
 void SocketClient::threadLoop() {
 
-	char *ptr;
-	std::string fileFullName;
-	std::string filename;
-	std::string msg;
-
 	int counter =0;
 	bool ret;
 	int length = 0;
 	int len;
+	bool flag = false;
 
-	struct timeval timeout = { 0, 500 };     // 1s
+	struct timeval timeout = { 1,0  };     // 1s
 
 	setsockopt(mClientSocket, SOL_SOCKET, SO_RCVTIMEO,
 			(const char*)&timeout, sizeof(timeout));
 	while (1)
 	{
-		length = recv(mClientSocket, &buffer[counter], BUFFER_SIZE,0);
+		length = recv(mClientSocket, buffer, BUFFER_SIZE,0);
 		if(length > 0)
 		{
-			counter += length;
-			LOGE("w len:%d",counter);
+			for(int i = 0; i < length; i++)
+			{
+				rxbuf.write(buffer[i]);
+				if(buffer[i] == '}')
+					flag = true;
+			}
+			LOGE("w len:%d",rxbuf.available());
 		}
 		else
 		{
-			ret = ParseJsonString(buffer);
-			if(ret == true)
+			if(flag)
 			{
-				JsonCmd_t cmd = getJsonCMD(ptr);
-				switch(cmd)
+				string x = cutOneJsonString(&rxbuf);
+				if(x != "")
 				{
-				case PicFile:
-					LOGE("接受到图片!\n");
-					SaveFile(ptr,FILE_DIR);
-					filename = GetFileName(ptr);
-					fileFullName = FILE_DIR;
-					fileFullName += filename;
-					LOGE("文件名:%s!\n",fileFullName.c_str());
-					while(1);
-					break;
-				case Door1:
-					msg = ParseCMDDoor1(ptr);
-					if(msg == "0")
-					{
-						gDoorState = Lock;
-						GpioHelper::output(GPIO_PIN_B_02, 1);
-						LOGD("door1:Lock\n");
-					}
-					else
-					{
-						gDoorState = UnLock;
-						GpioHelper::output(GPIO_PIN_B_02, 0);
-						LOGD("door1:UnLock\n");
-					}
-					break;
-				default:
-					break;
+					exeCMD(&x);
 				}
 			}
-
+			//LOGE("剩余:%d;len = %d",rxbuf.available(),length);
 		}
-
-//		{
-//			LOGE("解析·········");
-//			ptr = (char *)malloc(counter);
-//			memset(ptr,0,sizeof(ptr));
-//			len = read_json(ptr,counter);
-//			if(len > 0)
-//			{
-//
-//				JsonCmd_t cmd = getJsonCMD(ptr);
-//				switch(cmd)
-//				{
-//				case PicFile:
-//					LOGE("接受到图片!\n");
-//					SaveFile(ptr,FILE_DIR);
-//					filename = GetFileName(ptr);
-//					fileFullName = FILE_DIR;
-//					fileFullName += filename;
-//					LOGE("文件名:%s!\n",fileFullName.c_str());
-//					while(1);
-//					break;
-//				case Door1:
-//					msg = ParseCMDDoor1(ptr);
-//					if(msg == "0")
-//					{
-//						gDoorState = Lock;
-//						GpioHelper::output(GPIO_PIN_B_02, 1);
-//						LOGD("door1:Lock\n");
-//					}
-//					else
-//					{
-//						gDoorState = UnLock;
-//						GpioHelper::output(GPIO_PIN_B_02, 0);
-//						LOGD("door1:UnLock\n");
-//					}
-//					break;
-//				default:
-//					break;
-//				}
-//				counter = 0;
-//			}
-//			else
-//			{
-//				LOGE("数据不完整");
-//
-//			}
-//			free(ptr);
-//
-//		}
-
-
-
 		if(mClientSocket < 0)
 			break;
 

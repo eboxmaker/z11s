@@ -12,6 +12,8 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "ringbuf.h"
+
 using namespace std;
 typedef enum
 {
@@ -19,6 +21,7 @@ typedef enum
 	Door1,
 	Door2,
 }JsonCmd_t;
+string cutOneJsonString(RingBufInt8 *msg);
 bool ParseJsonString(char *str);
 JsonCmd_t getJsonCMD(const char * str);
 string ParseCMDDoor1(char *str);
@@ -26,6 +29,7 @@ string ParseCMDDoor2(char *str);
 string MakeCMDDoorPassword(char *str);
 FILE *openfile(uint32_t *len);
 string get_id(const char *str);
+string MakeCMDHeatbeat();
 
 
 

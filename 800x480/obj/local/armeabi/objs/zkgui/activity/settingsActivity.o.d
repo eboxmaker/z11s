@@ -274,6 +274,8 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/set
  C:/Users/shentq/Documents/z11s/800x480/jni/logic/settingsLogic.cc \
  C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolSender.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/json_test.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/system/mutex.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/globalVar.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/in.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/socket.h \
@@ -292,7 +294,6 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/set
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/arpa/inet.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/lib/SocketClient.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/include/system/mutex.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/storage/StoragePreferences.h
 
@@ -844,6 +845,10 @@ C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolSender.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/json_test.h:
 
+C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/include/system/mutex.h:
+
 C:/Users/shentq/Documents/z11s/800x480/jni/globalVar.h:
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/in.h:
@@ -879,8 +884,6 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 C:/Users/shentq/Documents/z11s/800x480/jni/lib/SocketClient.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h:
-
-C:/Users/shentq/Documents/z11s/800x480/jni/include/system/mutex.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h:
 

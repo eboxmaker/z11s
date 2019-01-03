@@ -31,6 +31,18 @@ typedef enum
 	Lock,
 	UnLock
 }doorState_t;
+
+typedef enum
+{
+	CMDHeartbeat,
+	CMDSetHeartbeat,
+	CMDConfirm,
+	CMDAdminPwd,
+	CMDDoorPwd,
+	CMDDoorCtr,
+	CMDQR,
+	CMDAdvertisement,
+};
 extern doorState_t gDoorState;
 
 
@@ -41,5 +53,10 @@ class MySocketListener : public SocketClient::ISocketListener
 		virtual void notify(int what, int status, const char *msg);
 };
 static MySocketListener gSocketListener;
+
+
+
+
+void exeCMD(string *JsonString);
 
 #endif /* JNI_LIB_GLOBALVAR_H_ */

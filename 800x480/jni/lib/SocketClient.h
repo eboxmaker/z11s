@@ -26,7 +26,6 @@ public:
 	void write_(char *msg,size_t length);
 	void read_(char *msg,size_t length);
 	char read_();
-	size_t read_json(char *msg,size_t max_len);
 	size_t available();
 
 	bool setHeartbeat(int timeout,char *msg,size_t len);

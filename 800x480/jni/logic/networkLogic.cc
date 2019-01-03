@@ -52,7 +52,7 @@
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	{0,  1000}, //定时器id=0, 时间间隔6秒
+	{0,  100}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
 };
 

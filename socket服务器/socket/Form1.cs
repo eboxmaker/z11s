@@ -190,6 +190,7 @@ namespace socket
         {
             string str = JsonManager.MakeCMDDoor1(1);
             server.SendAll(str);
+            server.SendAll(str);
 
         }
 

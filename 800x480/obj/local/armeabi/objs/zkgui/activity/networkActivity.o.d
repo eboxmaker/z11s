@@ -282,6 +282,7 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/net
  C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/system/mutex.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/json_test.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/base64.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/globalVar.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/in.h \
@@ -870,6 +871,8 @@ C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h:
 C:/Users/shentq/Documents/z11s/800x480/jni/include/system/mutex.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/json_test.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/base64.h:
 
