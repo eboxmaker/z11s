@@ -4,6 +4,18 @@
 #include "settingsActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTVStatusPtr;
+static ZKTextView* mTextview5Ptr;
+static ZKButton* mBtnModifyAdminPwdPtr;
+static ZKWindow* mWndModifyAdminPwdPtr;
+static ZKButton* mBtnCancelPtr;
+static ZKButton* mBtnOKPtr;
+static ZKEditText* mEdittextNewAdminPwd2Ptr;
+static ZKTextView* mTextview4Ptr;
+static ZKEditText* mEdittextNewAdminPwd1Ptr;
+static ZKTextView* mTextview3Ptr;
+static ZKTextView* mTextview2Ptr;
+static ZKEditText* mEdittextOldAdminPwdPtr;
 static ZKEditText* mEditTextServerPortPtr;
 static ZKEditText* mEditTextServerIPPtr;
 static ZKTextView* mTvServerPortPtr;
@@ -11,8 +23,6 @@ static ZKTextView* mTvServerIPPtr;
 static ZKButton* mBtnServerPtr;
 static ZKButton* mBtnNetWorkPtr;
 static ZKButton* mBtnSetLanguagePtr;
-static ZKTextView* mTextview1Ptr;
-static ZKButton* mButton2Ptr;
 static settingsActivity* mActivityPtr;
 
 /*register activity*/
@@ -50,10 +60,12 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_SETTINGS_BtnModifyAdminPwd, onButtonClick_BtnModifyAdminPwd,
+    ID_SETTINGS_BtnCancel, onButtonClick_BtnCancel,
+    ID_SETTINGS_BtnOK, onButtonClick_BtnOK,
     ID_SETTINGS_BtnServer, onButtonClick_BtnServer,
     ID_SETTINGS_BtnNetWork, onButtonClick_BtnNetWork,
     ID_SETTINGS_BtnSetLanguage, onButtonClick_BtnSetLanguage,
-    ID_SETTINGS_Button2, onButtonClick_Button2,
 };
 /***************/
 
@@ -99,6 +111,9 @@ typedef struct {
 }S_EditTextInputCallback;
 /*TAG:EditTextInputCallback*/
 static S_EditTextInputCallback SEditTextInputCallbackTab[] = {
+    ID_SETTINGS_EdittextNewAdminPwd2, onEditTextChanged_EdittextNewAdminPwd2,
+    ID_SETTINGS_EdittextNewAdminPwd1, onEditTextChanged_EdittextNewAdminPwd1,
+    ID_SETTINGS_EdittextOldAdminPwd, onEditTextChanged_EdittextOldAdminPwd,
     ID_SETTINGS_EditTextServerPort, onEditTextChanged_EditTextServerPort,
     ID_SETTINGS_EditTextServerIP, onEditTextChanged_EditTextServerIP,
 };
@@ -136,6 +151,18 @@ const char* settingsActivity::getAppName() const{
 //TAG:onCreate
 void settingsActivity::onCreate() {
 	Activity::onCreate();
+    mTVStatusPtr = (ZKTextView*)findControlByID(ID_SETTINGS_TVStatus);
+    mTextview5Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview5);
+    mBtnModifyAdminPwdPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnModifyAdminPwd);
+    mWndModifyAdminPwdPtr = (ZKWindow*)findControlByID(ID_SETTINGS_WndModifyAdminPwd);
+    mBtnCancelPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnCancel);
+    mBtnOKPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnOK);
+    mEdittextNewAdminPwd2Ptr = (ZKEditText*)findControlByID(ID_SETTINGS_EdittextNewAdminPwd2);if(mEdittextNewAdminPwd2Ptr!= NULL){mEdittextNewAdminPwd2Ptr->setTextChangeListener(this);}
+    mTextview4Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview4);
+    mEdittextNewAdminPwd1Ptr = (ZKEditText*)findControlByID(ID_SETTINGS_EdittextNewAdminPwd1);if(mEdittextNewAdminPwd1Ptr!= NULL){mEdittextNewAdminPwd1Ptr->setTextChangeListener(this);}
+    mTextview3Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview3);
+    mTextview2Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview2);
+    mEdittextOldAdminPwdPtr = (ZKEditText*)findControlByID(ID_SETTINGS_EdittextOldAdminPwd);if(mEdittextOldAdminPwdPtr!= NULL){mEdittextOldAdminPwdPtr->setTextChangeListener(this);}
     mEditTextServerPortPtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditTextServerPort);if(mEditTextServerPortPtr!= NULL){mEditTextServerPortPtr->setTextChangeListener(this);}
     mEditTextServerIPPtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditTextServerIP);if(mEditTextServerIPPtr!= NULL){mEditTextServerIPPtr->setTextChangeListener(this);}
     mTvServerPortPtr = (ZKTextView*)findControlByID(ID_SETTINGS_TvServerPort);
@@ -143,8 +170,6 @@ void settingsActivity::onCreate() {
     mBtnServerPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnServer);
     mBtnNetWorkPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnNetWork);
     mBtnSetLanguagePtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnSetLanguage);
-    mTextview1Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview1);
-    mButton2Ptr = (ZKButton*)findControlByID(ID_SETTINGS_Button2);
 	mActivityPtr = this;
 	onUI_init();
     registerProtocolDataUpdateListener(onProtocolDataUpdate); 

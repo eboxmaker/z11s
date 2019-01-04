@@ -12,7 +12,7 @@
 #include "storage/StoragePreferences.h"
 #include "json_test.h"
 #include "packageFile.h"
-
+#include "readdir.h"
 
 
 #ifdef __cplusplus
@@ -27,7 +27,11 @@ static void LoadParament()
     LOGD("gServerIP %s\n", gServerIP.c_str());
     gServerPort = StoragePreferences::getInt("gServerPort", 6000);
     LOGD("gServerPort %d\n", gServerPort);
-
+    gAdminPwd = StoragePreferences::getString("gAdminPwd", "123456");
+    LOGD("gServerPort %s\n", gAdminPwd.c_str());
+    make_dir(QR_DIR);
+    make_dir(AD_DIR);
+    read_dir();
 }
 void onEasyUIInit(EasyUIContext *pContext) {
 	// 初始化时打开串口
@@ -60,7 +64,7 @@ const char* onStartupApp(EasyUIContext *pContext) {
 	}
 
 
-	return "mainActivity";
+	return "keyboardActivity";
 }
 char buf[4096] = "hello world\n";
 char rbuf[409600] ;
@@ -82,16 +86,18 @@ static void *MainLoop(void *lParam)
 //	msg.remote.sin_port=htons(8000); //服务器端口号
 
 
-	gSocket->setHeartbeat(5,"123",sizeof("123"));
+	gSocket->setHeartbeat(5);
 
 	while(1)
 	{
 
-		if(gSocket->connected() == false)
+		if(updateServerLiveState() == false)
 		{
+			gSocket->disconnect();
 			ret = gSocket->connect(gServerIP.c_str(),gServerPort);
 			if(ret == true)
 			{
+				setServerLiveState(true);
 				LOGE("连接服务器成功!\n");
 			}
 			else
@@ -102,8 +108,8 @@ static void *MainLoop(void *lParam)
 			}
 		}
 
-
-		sleep(1);
+		;
+		Thread::sleep(1000);
 	}
 
 }

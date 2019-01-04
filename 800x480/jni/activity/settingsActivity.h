@@ -26,6 +26,18 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_SETTINGS_TVStatus    50008
+#define ID_SETTINGS_Textview5    50007
+#define ID_SETTINGS_BtnModifyAdminPwd    20005
+#define ID_SETTINGS_WndModifyAdminPwd    110001
+#define ID_SETTINGS_BtnCancel    20007
+#define ID_SETTINGS_BtnOK    20006
+#define ID_SETTINGS_EdittextNewAdminPwd2    51005
+#define ID_SETTINGS_Textview4    50006
+#define ID_SETTINGS_EdittextNewAdminPwd1    51004
+#define ID_SETTINGS_Textview3    50005
+#define ID_SETTINGS_Textview2    50004
+#define ID_SETTINGS_EdittextOldAdminPwd    51003
 #define ID_SETTINGS_EditTextServerPort    51002
 #define ID_SETTINGS_EditTextServerIP    51001
 #define ID_SETTINGS_TvServerPort    50003
@@ -33,8 +45,6 @@
 #define ID_SETTINGS_BtnServer    20004
 #define ID_SETTINGS_BtnNetWork    20001
 #define ID_SETTINGS_BtnSetLanguage    20003
-#define ID_SETTINGS_Textview1    50001
-#define ID_SETTINGS_Button2    20002
 /*TAG:Macro宏ID END*/
 
 class settingsActivity : public Activity, 

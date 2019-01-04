@@ -74,6 +74,7 @@ static void onUI_show() {
     sprintf(temp,"%d",gServerPort);
     mEditTextServerIPPtr->setText(gServerIP.c_str());
     mEditTextServerPortPtr->setText(temp);
+    mWndModifyAdminPwdPtr->hideWnd();
 }
 
 /*
@@ -135,27 +136,7 @@ static bool onsettingsActivityTouchEvent(const MotionEvent &ev) {
 FILE *myfile;
 char str[4096000];
 uint32_t len;
-static bool onButtonClick_Button2(ZKButton *pButton) {
-    //LOGD(" ButtonClick Button2 !!!\n");
-//	char buf[10];
-//	myfile = openfile(&len);
-//
-//	if(myfile != NULL)
-//	{
-//		fseek(myfile,0L,SEEK_SET);
-//		fread(str,1,len,myfile);
-//		sprintf(buf,"%d",len);
-//		mTextview1Ptr->setText(buf);
-		//mTextview1Ptr->setBackgroundPic("res/ui/yb.png");
-		mTextview1Ptr->setBackgroundPic("/mnt/extsd/12345678.jpg");
-//
-//	}
-//	else
-//	{
-//		mTextview1Ptr->setText("failed");
-//	}
-    return false;
-}
+
 static bool onButtonClick_BtnSetLanguage(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnSetLanguage !!!\n");
 	EASYUICONTEXT->openActivity("LanguageSettingActivity");
@@ -169,24 +150,50 @@ static bool onButtonClick_BtnNetWork(ZKButton *pButton) {
 
 static bool onButtonClick_BtnServer(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnServer !!!\n");
-	gServerIP = mEditTextServerIPPtr->getText();
-	gServerPort = atoi(mEditTextServerPortPtr->getText().c_str());
-	uint16_t port = gServerPort;
+	string tempServerIP ;
+	int tempServerPort ;
+
+	tempServerIP = mEditTextServerIPPtr->getText();
+	tempServerPort = atoi(mEditTextServerPortPtr->getText().c_str());
+	if((tempServerIP == gServerIP ) && (tempServerPort = gServerPort))
+	{
+		return true;
+	}
 	// 设置一个socket地址结构serverAddr,代表服务器的internet地址, 端口
 	bzero(&gServerAddr, sizeof(gServerAddr));
 	gServerAddr.sin_family = AF_INET;
-	gServerAddr.sin_port=htons(port); //服务器端口号
+	gServerAddr.sin_port=htons(tempServerPort); //服务器端口号
 
 
-	if (inet_aton(gServerIP.c_str(), &gServerAddr.sin_addr) == 0) {     // 服务器的IP地址来自程序的参数
+	if (inet_aton(tempServerIP.c_str(), &gServerAddr.sin_addr) == 0) {     // 服务器的IP地址来自程序的参数
 		LOGD("Server IP Address Error!\n");
 		return false;
 	}
 	else
 	{
 		LOGD("Server IP Address OK!\n");
+		gServerIP = tempServerIP;
+		gServerPort = tempServerPort;
+
 	    StoragePreferences::putString("gServerIP", gServerIP.c_str());
 	    StoragePreferences::putInt("gServerPort", gServerPort);
+
+
+		gSocket->disconnect();
+		bool ret = gSocket->connect(gServerIP.c_str(),gServerPort);
+		if(ret == true)
+		{
+			setServerLiveState(true);
+			LOGE("连接服务器成功!\n");
+		}
+		else
+		{
+			setServerLiveState(false);
+			gSocket->disconnect();
+			LOGE("连接服务器失败 !\n");
+
+		}
+
 	}
 
 	LOGE("%s:%d",gServerIP.c_str(),gServerPort);
@@ -198,4 +205,57 @@ static void onEditTextChanged_EditTextServerIP(const std::string &text) {
 
 static void onEditTextChanged_EditTextServerPort(const std::string &text) {
     //LOGD(" onEditTextChanged_ EditTextServerPort %s !!!\n", text.c_str());
+}
+static bool onButtonClick_Button1(ZKButton *pButton) {
+    //LOGD(" ButtonClick Button1 !!!\n");
+    return false;
+}
+
+static void onEditTextChanged_EdittextOldAdminPwd(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EdittextOldAdminPwd %s !!!\n", text.c_str());
+}
+
+static void onEditTextChanged_EdittextNewAdminPwd1(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EdittextNewAdminPwd1 %s !!!\n", text.c_str());
+}
+
+static void onEditTextChanged_EdittextNewAdminPwd2(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EdittextNewAdminPwd2 %s !!!\n", text.c_str());
+}
+
+static bool onButtonClick_BtnOK(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnOK !!!\n");
+	string temp = mEdittextOldAdminPwdPtr->getText();
+	gAdminPwd = StoragePreferences::getString("gAdminPwd", "123456");
+	if(temp == gAdminPwd)
+	{
+		if(mEdittextNewAdminPwd1Ptr->getText() == mEdittextNewAdminPwd2Ptr->getText())
+		{
+			gAdminPwd = mEdittextNewAdminPwd1Ptr->getText();
+		    StoragePreferences::putString("gAdminPwd", gAdminPwd.c_str());
+		   // mWndModifyAdminPwdPtr->hideWnd();
+			mTVStatusPtr->setText("状态提示：修改成功");
+
+		}
+		else
+		{
+			mTVStatusPtr->setText("状态提示：两次新密码不同");
+		}
+	}
+	else
+	{
+		mTVStatusPtr->setText("状态提示：旧密码错误");
+	}
+    return false;
+}
+
+static bool onButtonClick_BtnCancel(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnCancel !!!\n");
+    mWndModifyAdminPwdPtr->hideWnd();
+    return false;
+}
+static bool onButtonClick_BtnModifyAdminPwd(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnModifyAdminPwd !!!\n");
+    mWndModifyAdminPwdPtr->showWnd();
+    return false;
 }

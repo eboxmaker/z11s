@@ -283,7 +283,6 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/net
  C:/Users/shentq/Documents/z11s/800x480/jni/include/system/mutex.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/json_test.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/base64.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/globalVar.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/in.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/socket.h \
@@ -302,6 +301,8 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/net
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/arpa/inet.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/lib/SocketClient.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/base64.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/globalVar.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/os/SystemProperties.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/socket.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netdb.h \
@@ -874,8 +875,6 @@ C:/Users/shentq/Documents/z11s/800x480/jni/json_test.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h:
 
-C:/Users/shentq/Documents/z11s/800x480/jni/base64.h:
-
 C:/Users/shentq/Documents/z11s/800x480/jni/globalVar.h:
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/in.h:
@@ -911,6 +910,10 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 C:/Users/shentq/Documents/z11s/800x480/jni/lib/SocketClient.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/base64.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/globalVar.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/os/SystemProperties.h:
 

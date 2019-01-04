@@ -10,7 +10,6 @@
 
 #include "ringbuf.h"
 
-#define FILE_DIR		"/mnt/extsd/"
 
 
 class SocketClient {
@@ -20,7 +19,7 @@ public:
 
 	bool connect(char *ip, uint16_t port);
 	bool disconnect();
-	bool connected();
+//	bool connected();
 
 	void write_(char *msg);
 	void write_(char *msg,size_t length);
@@ -28,7 +27,7 @@ public:
 	char read_();
 	size_t available();
 
-	bool setHeartbeat(int timeout,char *msg,size_t len);
+	bool setHeartbeat(int timeout);
 	void threadLoop();
 
 	void timer_thread();
@@ -54,7 +53,7 @@ private:
 	//ISocketListener *mSocketListener;
 	bool connectState;
 	int heartbeatTime;
-	char *hearbeatMsg;
+	char hearbeatMsg[100];
 	ISocketListener *mSocketListener;
 
 };

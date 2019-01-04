@@ -222,7 +222,10 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/Main.o: \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/json/writer.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/ostream \
  C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/packageFile.h
+ C:/Users/shentq/Documents/z11s/800x480/jni/packageFile.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/readdir.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/dirent.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/globalvar.h
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/entry/EasyUIContext.h:
 
@@ -669,3 +672,9 @@ D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/ostream:
 C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/packageFile.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/readdir.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/dirent.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/globalvar.h:

@@ -108,21 +108,32 @@ namespace socket
                 int cmd = JsonManager.GetJsonCMD(js);
                 switch (cmd)
                 {
-                    case 0: break;
-                    case 1: break;
-                    case 2: break;
-                    case 3:
+                    case (int)JsonManager.CMDType.Heartbeat:
+                        JsonManager.ParseCMDHeartbeat(js);
+                        string str = JsonManager.MakeCMDHeartbeat();
+                        server.SendAll(str);
+                        break;
+                    case (int)JsonManager.CMDType.DoorPwd: 
                         string pwd = JsonManager.ParseDoorPwd(js);
+                        string resault;
                         if(pwd == "123456")
                         {
+                            resault = JsonManager.MakeCMDDoorPwdAck(1);
+                            server.SendAll(resault);
                             btnOpen.PerformClick();
                         }
                         else
                         {
+                            resault = JsonManager.MakeCMDDoorPwdAck(0);
+                            server.SendAll(resault);
                             btnCloseLock.PerformClick();
                         }
                         break;
-                    case 4: break;
+                    case (int)JsonManager.CMDType.AdminPwd:
+                        break;
+                    case (int)JsonManager.CMDType.Confirm:
+  
+                        break;
                 }
                     
             }
@@ -177,8 +188,29 @@ namespace socket
 
         private void btnLoadFile_Click(object sender, EventArgs e)
         {
-           string str =  JsonManager.PackageFileToJsonString("12345678.jpg");
+            string str = JsonManager.PackageFileToJsonString("1.jpg", (int)JsonManager.CMDType.Advertisement);
            RichSend.Text = str;
+        }
+
+        private void btnLoadFile2_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.PackageFileToJsonString("2.jpg", (int)JsonManager.CMDType.Advertisement);
+            RichSend.Text = str;
+        }
+        private void btnLoadFile3_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.PackageFileToJsonString("3.jpg", (int)JsonManager.CMDType.Advertisement);
+            RichSend.Text = str;
+        }
+        private void btnLoadQR_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.PackageFileToJsonString("qr1.jpg", (int)JsonManager.CMDType.QR);
+            RichSend.Text = str;
+        }
+        private void btnLoadQR2_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.PackageFileToJsonString("qr2.jpg", (int)JsonManager.CMDType.QR);
+            RichSend.Text = str;
         }
 
         private void btnSaveFile_Click(object sender, EventArgs e)
@@ -199,6 +231,11 @@ namespace socket
             string str = JsonManager.MakeCMDDoor1(0);
             server.SendAll(str);
         }
+
+
+
+
+  
         
 
     }

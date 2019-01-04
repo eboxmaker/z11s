@@ -1,8 +1,8 @@
 /***********************************************
 /gen auto by zuitools
 ***********************************************/
-#ifndef __PWDADMINACTIVITY_H__
-#define __PWDADMINACTIVITY_H__
+#ifndef __VERIFYADMINPWDACTIVITY_H__
+#define __VERIFYADMINPWDACTIVITY_H__
 
 
 #include "app/Activity.h"
@@ -26,13 +26,15 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
-#define ID_PWDADMIN_Textview1    50001
-#define ID_PWDADMIN_BtnCancel    20002
-#define ID_PWDADMIN_Edittext1    51001
-#define ID_PWDADMIN_BtnOK    20001
+#define ID_VERIFYADMINPWD_EditTextAdminPassword    51001
+#define ID_VERIFYADMINPWD_TVNote    50002
+#define ID_VERIFYADMINPWD_WindInAdminPwd    110001
+#define ID_VERIFYADMINPWD_BtnCancel    20002
+#define ID_VERIFYADMINPWD_BtnConfirm    20001
+#define ID_VERIFYADMINPWD_Textview1    50001
 /*TAG:Macro宏ID END*/
 
-class pwdAdminActivity : public Activity, 
+class verifyAdminPwdActivity : public Activity, 
                      public ZKSeekBar::ISeekBarChangeListener, 
                      public ZKListView::IItemClickListener,
                      public ZKListView::AbsListAdapter,
@@ -42,8 +44,8 @@ class pwdAdminActivity : public Activity,
                      public ZKVideoView::IVideoPlayerMessageListener
 {
 public:
-    pwdAdminActivity();
-    virtual ~pwdAdminActivity();
+    verifyAdminPwdActivity();
+    virtual ~verifyAdminPwdActivity();
 
     /**
      * 注册定时器

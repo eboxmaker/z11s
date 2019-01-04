@@ -4,6 +4,8 @@
 #include "keyboardActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKButton* mBtnQRPtr;
+static ZKTextView* mTVNotePtr;
 static ZKTextView* mTvConnectStatePtr;
 static ZKTextView* mTextview3Ptr;
 static ZKWindow* mWindow1Ptr;
@@ -26,7 +28,6 @@ static ZKButton* mBtn5Ptr;
 static ZKButton* mBtn3Ptr;
 static ZKButton* mBtn2Ptr;
 static ZKButton* mBtn1Ptr;
-static ZKButton* mNtnQRPtr;
 static ZKTextView* mTextview1Ptr;
 static keyboardActivity* mActivityPtr;
 
@@ -65,6 +66,7 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_KEYBOARD_BtnQR, onButtonClick_BtnQR,
     ID_KEYBOARD_BtnConfirm, onButtonClick_BtnConfirm,
     ID_KEYBOARD_BtnCancel, onButtonClick_BtnCancel,
     ID_KEYBOARD_BtnBackMain, onButtonClick_BtnBackMain,
@@ -80,7 +82,6 @@ static S_ButtonCallback sButtonCallbackTab[] = {
     ID_KEYBOARD_Btn3, onButtonClick_Btn3,
     ID_KEYBOARD_Btn2, onButtonClick_Btn2,
     ID_KEYBOARD_Btn1, onButtonClick_Btn1,
-    ID_KEYBOARD_NtnQR, onButtonClick_NtnQR,
 };
 /***************/
 
@@ -163,6 +164,8 @@ const char* keyboardActivity::getAppName() const{
 //TAG:onCreate
 void keyboardActivity::onCreate() {
 	Activity::onCreate();
+    mBtnQRPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnQR);
+    mTVNotePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TVNote);
     mTvConnectStatePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TvConnectState);
     mTextview3Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview3);
     mWindow1Ptr = (ZKWindow*)findControlByID(ID_KEYBOARD_Window1);
@@ -185,7 +188,6 @@ void keyboardActivity::onCreate() {
     mBtn3Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Btn3);
     mBtn2Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Btn2);
     mBtn1Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Btn1);
-    mNtnQRPtr = (ZKButton*)findControlByID(ID_KEYBOARD_NtnQR);
     mTextview1Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview1);
 	mActivityPtr = this;
 	onUI_init();

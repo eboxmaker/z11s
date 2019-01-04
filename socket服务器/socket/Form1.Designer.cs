@@ -43,6 +43,10 @@
             this.btnOpen = new System.Windows.Forms.Button();
             this.btnCloseLock = new System.Windows.Forms.Button();
             this.tbSendDataLength = new System.Windows.Forms.TextBox();
+            this.btnLoadQR1 = new System.Windows.Forms.Button();
+            this.btnLoadQR2 = new System.Windows.Forms.Button();
+            this.btnLoadFile2 = new System.Windows.Forms.Button();
+            this.btnLoadFile3 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnStartServer
@@ -145,7 +149,7 @@
             // 
             // btnSaveFile
             // 
-            this.btnSaveFile.Location = new System.Drawing.Point(13, 292);
+            this.btnSaveFile.Location = new System.Drawing.Point(13, 353);
             this.btnSaveFile.Name = "btnSaveFile";
             this.btnSaveFile.Size = new System.Drawing.Size(75, 23);
             this.btnSaveFile.TabIndex = 11;
@@ -155,7 +159,7 @@
             // 
             // btnOpen
             // 
-            this.btnOpen.Location = new System.Drawing.Point(13, 333);
+            this.btnOpen.Location = new System.Drawing.Point(13, 382);
             this.btnOpen.Name = "btnOpen";
             this.btnOpen.Size = new System.Drawing.Size(75, 23);
             this.btnOpen.TabIndex = 12;
@@ -165,7 +169,7 @@
             // 
             // btnCloseLock
             // 
-            this.btnCloseLock.Location = new System.Drawing.Point(13, 362);
+            this.btnCloseLock.Location = new System.Drawing.Point(94, 382);
             this.btnCloseLock.Name = "btnCloseLock";
             this.btnCloseLock.Size = new System.Drawing.Size(75, 23);
             this.btnCloseLock.TabIndex = 13;
@@ -180,11 +184,55 @@
             this.tbSendDataLength.Size = new System.Drawing.Size(100, 21);
             this.tbSendDataLength.TabIndex = 14;
             // 
+            // btnLoadQR1
+            // 
+            this.btnLoadQR1.Location = new System.Drawing.Point(94, 263);
+            this.btnLoadQR1.Name = "btnLoadQR1";
+            this.btnLoadQR1.Size = new System.Drawing.Size(94, 23);
+            this.btnLoadQR1.TabIndex = 15;
+            this.btnLoadQR1.Text = "加载二维码1";
+            this.btnLoadQR1.UseVisualStyleBackColor = true;
+            this.btnLoadQR1.Click += new System.EventHandler(this.btnLoadQR_Click);
+            // 
+            // btnLoadQR2
+            // 
+            this.btnLoadQR2.Location = new System.Drawing.Point(94, 292);
+            this.btnLoadQR2.Name = "btnLoadQR2";
+            this.btnLoadQR2.Size = new System.Drawing.Size(94, 23);
+            this.btnLoadQR2.TabIndex = 16;
+            this.btnLoadQR2.Text = "加载二维码2";
+            this.btnLoadQR2.UseVisualStyleBackColor = true;
+            this.btnLoadQR2.Click += new System.EventHandler(this.btnLoadQR2_Click);
+            // 
+            // btnLoadFile2
+            // 
+            this.btnLoadFile2.Location = new System.Drawing.Point(12, 292);
+            this.btnLoadFile2.Name = "btnLoadFile2";
+            this.btnLoadFile2.Size = new System.Drawing.Size(75, 23);
+            this.btnLoadFile2.TabIndex = 17;
+            this.btnLoadFile2.Text = "加载文件";
+            this.btnLoadFile2.UseVisualStyleBackColor = true;
+            this.btnLoadFile2.Click += new System.EventHandler(this.btnLoadFile2_Click);
+            // 
+            // btnLoadFile3
+            // 
+            this.btnLoadFile3.Location = new System.Drawing.Point(13, 321);
+            this.btnLoadFile3.Name = "btnLoadFile3";
+            this.btnLoadFile3.Size = new System.Drawing.Size(75, 23);
+            this.btnLoadFile3.TabIndex = 18;
+            this.btnLoadFile3.Text = "加载文件";
+            this.btnLoadFile3.UseVisualStyleBackColor = true;
+            this.btnLoadFile3.Click += new System.EventHandler(this.btnLoadFile3_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(683, 417);
+            this.Controls.Add(this.btnLoadFile3);
+            this.Controls.Add(this.btnLoadFile2);
+            this.Controls.Add(this.btnLoadQR2);
+            this.Controls.Add(this.btnLoadQR1);
             this.Controls.Add(this.tbSendDataLength);
             this.Controls.Add(this.btnCloseLock);
             this.Controls.Add(this.btnOpen);
@@ -224,6 +272,10 @@
         private System.Windows.Forms.Button btnOpen;
         private System.Windows.Forms.Button btnCloseLock;
         private System.Windows.Forms.TextBox tbSendDataLength;
+        private System.Windows.Forms.Button btnLoadQR1;
+        private System.Windows.Forms.Button btnLoadQR2;
+        private System.Windows.Forms.Button btnLoadFile2;
+        private System.Windows.Forms.Button btnLoadFile3;
     }
 }
 

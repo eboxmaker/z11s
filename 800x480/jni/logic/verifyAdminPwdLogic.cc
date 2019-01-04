@@ -1,5 +1,6 @@
 #pragma once
 #include "uart/ProtocolSender.h"
+#include "globalvar.h"
 /*
 *此文件由GUI工具生成
 *文件功能：用于处理用户的逻辑相应代码
@@ -29,85 +30,24 @@
 *
 * 在Eclipse编辑器中  使用 “alt + /”  快捷键可以打开智能提示
 */
-#include "net/NetManager.h"
-#include "lib/SocketClient.h"
-#include "json_test.h"
-#include "base64.h"
-#include "globalVar.h"
 
-#include "os/SystemProperties.h"
 
-#include "string.h"
-#include<sys/socket.h>
-#include<netinet/in.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#include "readdir.h"
-#define MAXLINE 4500
-
-//SocketClient* mSocket=NULL;
-string picPath[100];
-static int pic_total = 0;
-static int pic_counter = 0;
-static void onNetWrokDataUpdate(JsonCmd_t cmd,string &str)
-{
-	LOGE("%s",str.c_str());
-
-	switch(cmd)
-	{
-	case CMDDoorCtr:
-		if(str == "1")
-		{
-			mEditTextMSGPtr->setText("UnLock");
-		}
-		else
-		{
-			mEditTextMSGPtr->setText("Lock");
-		}
-		break;
-	case CMDQR:
-		mBtnQRPtr->setText("");
-		mBtnQRPtr->setBackgroundPic(str.c_str());
-		 break;
-	case CMDAdvertisement:
-		mBtnPicPtr->setText("");
-		mBtnPicPtr->setBackgroundPic(str.c_str());
-		stringList list = get_all_ad_full_name();
-		pic_total = 0;
-		 for(stringList::iterator it = list.begin() ; it !=list.end(); it++)
-		 {
-			 picPath[pic_total] = *it;
-			LOGE("文件全名:%s",picPath[pic_total].c_str());
-			pic_total++;
-		 }
-		 break;
-	}
-
-}
 /**
  * 注册定时器
  * 填充数组用于注册定时器
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	{0,  1000}, //定时器id=0, 时间间隔6秒
+	//{0,  6000}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
 };
-
 
 /**
  * 当界面构造时触发
  */
 static void onUI_init(){
-	AdvertisementCallback = onNetWrokDataUpdate;
-	pic_total = 0;
-	stringList list = get_all_ad_full_name();
-	 for(stringList::iterator it = list.begin() ; it !=list.end(); it++)
-	 {
-		 picPath[pic_total] = *it;
-		LOGE("文件全名:%s",picPath[pic_total].c_str());
-		pic_total++;
-	 }
+    //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
+
 }
 
 /**
@@ -123,19 +63,13 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
-    EASYUICONTEXT->showStatusBar();
-	if(updateServerLiveState()){
-		mTVConnectStatePtr->setText("已连接");
-	}else{
-		mTVConnectStatePtr->setText("未连接");
-	}
+
 }
 
 /*
  * 当界面隐藏时触发
  */
 static void onUI_hide() {
-	EASYUICONTEXT->hideStatusBar();
 
 }
 
@@ -143,7 +77,6 @@ static void onUI_hide() {
  * 当界面完全退出时触发
  */
 static void onUI_quit() {
-	AdvertisementCallback = NULL;
 
 }
 
@@ -166,32 +99,7 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  */
 static bool onUI_Timer(int id){
 	switch (id) {
-	case 0:
 
-
-		if(!updateServerLiveState())
-		{
-			mTVConnectStatePtr->setText("未连接");
-		}
-		else
-		{
-			mTVConnectStatePtr->setText("已连接");
-		}
-
-		if(pic_counter < pic_total )
-		{
-
-			mBtnPicPtr->setText("");
-			mBtnPicPtr->setBackgroundPic(picPath[pic_counter].c_str());
-			pic_counter++;
-		}
-		else
-		{
-			pic_counter = 0;
-		}
-
-
-		break;
 		default:
 			break;
 	}
@@ -207,50 +115,43 @@ static bool onUI_Timer(int id){
  *         false
  *            触摸事件将继续传递到控件上
  */
-static bool onnetworkActivityTouchEvent(const MotionEvent &ev) {
-
+static bool onverifyAdminPwdActivityTouchEvent(const MotionEvent &ev) {
+    switch (ev.mActionStatus) {
+		case MotionEvent::E_ACTION_DOWN://触摸按下
+			//LOGD("时刻 = %ld 坐标  x = %d, y = %d", ev.mEventTime, ev.mX, ev.mY);
+			break;
+		case MotionEvent::E_ACTION_MOVE://触摸滑动
+			break;
+		case MotionEvent::E_ACTION_UP:  //触摸抬起
+			break;
+		default:
+			break;
+	}
 	return false;
-}
-
-static void onEditTextChanged_EditTextMSG(const std::string &text) {
-    //LOGD(" onEditTextChanged_ EditTextMSG %s !!!\n", text.c_str());
-}
-static void onEditTextChanged_EditTextClientIP(const std::string &text) {
-    //LOGD(" onEditTextChanged_ EditTextClientIP %s !!!\n", text.c_str());
 }
 static void onEditTextChanged_Edittext1(const std::string &text) {
     //LOGD(" onEditTextChanged_ Edittext1 %s !!!\n", text.c_str());
 }
 
-static bool onButtonClick_BtnSend(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnSend !!!\n");
-	gSocket->write_("123");
-    return false;
+static bool onButtonClick_BtnConfirm(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnConfirm !!!\n");
+	string temp = mEditTextAdminPasswordPtr->getText();
+	if(temp == gAdminPwd)
+    {
+		EASYUICONTEXT->openActivity("mainActivity");
+    }
+	else
+	{
+		mTVNotePtr->setText("提示：管理员密码错误");
+		LOGE("管理员密码：%s",gAdminPwd.c_str());
+	}
+	return false;
 }
 
-
-#include "readdir.h"
-
-static bool onButtonClick_BtnBaseTest(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnBaseTest !!!\n");
-	read_dir();
-
+static bool onButtonClick_BtnCancel(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnCancel !!!\n");
     return false;
 }
-static bool onButtonClick_Button1(ZKButton *pButton) {
-    //LOGD(" ButtonClick Button1 !!!\n");
-    return false;
-}
-static bool onButtonClick_BtnPicTest(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnPicTest !!!\n");
-    return false;
-}
-static bool onButtonClick_BtnQR(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnQR !!!\n");
-    return false;
-}
-
-static bool onButtonClick_BtnPic(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnPic !!!\n");
-    return false;
+static void onEditTextChanged_EditTextAdminPassword(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EditTextAdminPassword %s !!!\n", text.c_str());
 }

@@ -110,7 +110,7 @@ string MakeCMDHeatbeat()
 {
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDHeartbeat);
-	  root["hello"] = Json::Value("123");
+	  root["value"] = Json::Value("hello");
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
 	  return temp;
@@ -142,11 +142,31 @@ string MakeCMDDoorPassword(char *str)
 {
 
 	  Json::Value root;
-	  root["cmd"] = Json::Value(3);
+	  root["cmd"] = Json::Value(CMDDoorPwd);
 	  root["doorPwd"] = Json::Value(str);
+	  root["status"] = Json::Value("0");
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
 	  return temp;
+}
+string ParseCMDDoorPwdStatus(char *str)
+{
+	  Json::Reader reader;
+
+	  Json::Value root;
+	  int value;
+	  std::string val_str;
+	  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+
+		  value = (int)root["status"].asInt();
+
+		  char temp[10];
+		  itoa(value,temp);
+		  val_str = temp;
+	  }
+
+	  return val_str;
 }
 std::string get_id(const char *str)
 {

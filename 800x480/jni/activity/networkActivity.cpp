@@ -4,15 +4,15 @@
 #include "networkActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
-static ZKButton* mButton1Ptr;
-static ZKTextView* mTextview2Ptr;
-static ZKButton* mBtnBaseTestPtr;
+static ZKButton* mBtnPicPtr;
+static ZKButton* mBtnQRPtr;
+static ZKTextView* mTVConnectStatePtr;
+static ZKTextView* mTVNotePtr;
+static ZKTextView* mTextview3Ptr;
+static ZKWindow* mWindow1Ptr;
 static ZKButton* mBtnSendPtr;
 static ZKEditText* mEdittext1Ptr;
-static ZKTextView* mTextview1Ptr;
-static ZKEditText* mEditTextClientIPPtr;
 static ZKEditText* mEditTextMSGPtr;
-static ZKButton* mBtnConnectServerPtr;
 static networkActivity* mActivityPtr;
 
 /*register activity*/
@@ -50,10 +50,9 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
-    ID_NETWORK_Button1, onButtonClick_Button1,
-    ID_NETWORK_BtnBaseTest, onButtonClick_BtnBaseTest,
+    ID_NETWORK_BtnPic, onButtonClick_BtnPic,
+    ID_NETWORK_BtnQR, onButtonClick_BtnQR,
     ID_NETWORK_BtnSend, onButtonClick_BtnSend,
-    ID_NETWORK_BtnConnectServer, onButtonClick_BtnConnectServer,
 };
 /***************/
 
@@ -100,7 +99,6 @@ typedef struct {
 /*TAG:EditTextInputCallback*/
 static S_EditTextInputCallback SEditTextInputCallbackTab[] = {
     ID_NETWORK_Edittext1, onEditTextChanged_Edittext1,
-    ID_NETWORK_EditTextClientIP, onEditTextChanged_EditTextClientIP,
     ID_NETWORK_EditTextMSG, onEditTextChanged_EditTextMSG,
 };
 
@@ -137,15 +135,15 @@ const char* networkActivity::getAppName() const{
 //TAG:onCreate
 void networkActivity::onCreate() {
 	Activity::onCreate();
-    mButton1Ptr = (ZKButton*)findControlByID(ID_NETWORK_Button1);
-    mTextview2Ptr = (ZKTextView*)findControlByID(ID_NETWORK_Textview2);
-    mBtnBaseTestPtr = (ZKButton*)findControlByID(ID_NETWORK_BtnBaseTest);
+    mBtnPicPtr = (ZKButton*)findControlByID(ID_NETWORK_BtnPic);
+    mBtnQRPtr = (ZKButton*)findControlByID(ID_NETWORK_BtnQR);
+    mTVConnectStatePtr = (ZKTextView*)findControlByID(ID_NETWORK_TVConnectState);
+    mTVNotePtr = (ZKTextView*)findControlByID(ID_NETWORK_TVNote);
+    mTextview3Ptr = (ZKTextView*)findControlByID(ID_NETWORK_Textview3);
+    mWindow1Ptr = (ZKWindow*)findControlByID(ID_NETWORK_Window1);
     mBtnSendPtr = (ZKButton*)findControlByID(ID_NETWORK_BtnSend);
     mEdittext1Ptr = (ZKEditText*)findControlByID(ID_NETWORK_Edittext1);if(mEdittext1Ptr!= NULL){mEdittext1Ptr->setTextChangeListener(this);}
-    mTextview1Ptr = (ZKTextView*)findControlByID(ID_NETWORK_Textview1);
-    mEditTextClientIPPtr = (ZKEditText*)findControlByID(ID_NETWORK_EditTextClientIP);if(mEditTextClientIPPtr!= NULL){mEditTextClientIPPtr->setTextChangeListener(this);}
     mEditTextMSGPtr = (ZKEditText*)findControlByID(ID_NETWORK_EditTextMSG);if(mEditTextMSGPtr!= NULL){mEditTextMSGPtr->setTextChangeListener(this);}
-    mBtnConnectServerPtr = (ZKButton*)findControlByID(ID_NETWORK_BtnConnectServer);
 	mActivityPtr = this;
 	onUI_init();
     registerProtocolDataUpdateListener(onProtocolDataUpdate); 

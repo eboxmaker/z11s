@@ -26,15 +26,15 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
-#define ID_NETWORK_Button1    20004
-#define ID_NETWORK_Textview2    50002
-#define ID_NETWORK_BtnBaseTest    20003
+#define ID_NETWORK_BtnPic    20001
+#define ID_NETWORK_BtnQR    20004
+#define ID_NETWORK_TVConnectState    50004
+#define ID_NETWORK_TVNote    50005
+#define ID_NETWORK_Textview3    50003
+#define ID_NETWORK_Window1    110002
 #define ID_NETWORK_BtnSend    20002
 #define ID_NETWORK_Edittext1    51003
-#define ID_NETWORK_Textview1    50001
-#define ID_NETWORK_EditTextClientIP    51002
 #define ID_NETWORK_EditTextMSG    51001
-#define ID_NETWORK_BtnConnectServer    20001
 /*TAG:Macro宏ID END*/
 
 class networkActivity : public Activity, 

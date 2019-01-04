@@ -49,6 +49,32 @@ class LongClickListener : public ZKBase::ILongClickListener {
 
 static LongClickListener longButtonClickListener;
 
+
+
+//网络数据回调接口
+static void onNetWrokDataUpdate(JsonCmd_t cmd,string &str)
+{
+	LOGE("%s",str.c_str());
+
+	switch(cmd)
+	{
+	case CMDQR:
+		mBtnQRPtr->setText("");
+		mBtnQRPtr->setBackgroundPic(str.c_str());
+	case CMDDoorPwd:
+		if(str == "1")
+		{
+			mTVNotePtr->setText("提示：密码正确");
+		}
+		else
+		{
+			mTVNotePtr->setText("提示：密码错误");
+		}
+		break;
+
+	}
+
+}
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -66,6 +92,8 @@ static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
     //注册按键长按监听
     mBtnBackPtr->setLongClickListener(&longButtonClickListener);
+    keyboardCallback = onNetWrokDataUpdate;
+    mTVNotePtr->setText("提示：...");
 }
 
 /**
@@ -81,8 +109,8 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
+	EASYUICONTEXT->hideStatusBar();
 	mWinPwdAdminPtr->hideWnd();
-	mEditTextDoorPasswordPtr->setText("请输入密码");
 	lastDoorState = gDoorState;
 	doorPwd.clear();
 }
@@ -91,6 +119,7 @@ static void onUI_show() {
  * 当界面隐藏时触发
  */
 static void onUI_hide() {
+	EASYUICONTEXT->hideStatusBar();
 
 }
 
@@ -100,6 +129,8 @@ static void onUI_hide() {
 static void onUI_quit() {
     //取消按键长按监听
 	mBtnBackPtr->setLongClickListener(NULL);
+    keyboardCallback = NULL;
+
 }
 
 /**
@@ -108,6 +139,7 @@ static void onUI_quit() {
 static void onProtocolDataUpdate(const SProtocolData &data) {
 
 }
+
 
 /**
  * 定时器触发函数
@@ -122,7 +154,7 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
 static bool onUI_Timer(int id){
 	switch (id) {
 	case 0:
-		if(gSocket->connected() == true)
+		if(updateServerLiveState() == true)
 		{
 			mTvConnectStatePtr->setText("已连接");
 		}
@@ -130,14 +162,7 @@ static bool onUI_Timer(int id){
 		{
 			mTvConnectStatePtr->setText("未连接");
 		}
-		if(gDoorState != lastDoorState)
-		{
-			lastDoorState = gDoorState;
-			if(gDoorState == UnLock)
-				mEditTextDoorPasswordPtr->setText("打开门");
-			else
-				mEditTextDoorPasswordPtr->setText("开门失败，请重试");
-		}
+
 		break;
 		default:
 			break;
@@ -247,26 +272,18 @@ static bool onButtonClick_Btn9(ZKButton *pButton) {
 
 static bool onButtonClick_BtnOK(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnOK !!!\n");
-	string jstr = MakeCMDDoorPassword(mEditTextDoorPasswordPtr->getText().c_str());
-	if(gSocket->connected() == true)
+	string  jstr = MakeCMDDoorPassword(doorPwd.c_str());
+	if(updateServerLiveState())
 	{
 		gSocket->write_(jstr.c_str());
-		mEditTextDoorPasswordPtr->setText("正在请求开门");
+		mTVNotePtr->setText("提示：密码验证中");
 	}
 	else
 	{
-		mEditTextDoorPasswordPtr->setText("网络中断，请联系管理员");
+		mTVNotePtr->setText("提示：网络中断，请联系管理员");
 	}
-
-//	if(gDoorPassword ==  mEditTextDoorPasswordPtr->getText())
-//	{
-//		mEditTextDoorPasswordPtr->setText("正在请求开门");
-//	}
-//	else
-//	{
-//		mEditTextDoorPasswordPtr->setText("密码错误");
-//	}
 	doorPwd.clear();
+	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
     return false;
 }
 
@@ -289,6 +306,7 @@ static void onEditTextChanged_EditTextKey(const std::string &text) {
 static bool onButtonClick_BtnBackMain(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnBackMain !!!\n");
 
+	//WindInAdminPwd->showWnd();
 	mWinPwdAdminPtr->showWnd();
 	return false;
 }
@@ -310,10 +328,15 @@ static bool onButtonClick_BtnEnter(ZKButton *pButton) {
 static bool onButtonClick_BtnConfirm(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnConfirm !!!\n");
 	string temp = mEditTextAdminPasswordPtr->getText();
-	if(temp == gAdminPassword)
+	if(temp == gAdminPwd)
     {
 		EASYUICONTEXT->openActivity("mainActivity");
     }
+	else
+	{
+		mTVNotePtr->setText("提示：管理员密码错误");
+		LOGE("管理员密码：%s",gAdminPwd.c_str());
+	}
 	return false;
 
 }
@@ -330,4 +353,8 @@ static void onEditTextChanged_EditTextDoorPassword(const std::string &text) {
 
 static void onEditTextChanged_EditTextAdminPassword(const std::string &text) {
     //LOGD(" onEditTextChanged_ EditTextAdminPassword %s !!!\n", text.c_str());
+}
+static bool onButtonClick_BtnQR(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnQR !!!\n");
+    return false;
 }

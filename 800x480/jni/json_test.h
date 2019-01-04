@@ -13,14 +13,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ringbuf.h"
+#include "globalVar.h"
 
 using namespace std;
-typedef enum
-{
-	PicFile = 0,
-	Door1,
-	Door2,
-}JsonCmd_t;
+
 string cutOneJsonString(RingBufInt8 *msg);
 bool ParseJsonString(char *str);
 JsonCmd_t getJsonCMD(const char * str);
@@ -30,6 +26,7 @@ string MakeCMDDoorPassword(char *str);
 FILE *openfile(uint32_t *len);
 string get_id(const char *str);
 string MakeCMDHeatbeat();
+string ParseCMDDoorPwdStatus(char *str);
 
 
 

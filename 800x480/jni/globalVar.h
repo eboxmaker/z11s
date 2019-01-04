@@ -15,22 +15,17 @@
 #include "lib/SocketClient.h"
 #include "include/utils/GpioHelper.h"
 #include "utils/Log.h"
-
+#include <vector>
 using namespace std;
 
-extern Mutex mutex ;
-extern std::string gServerIP ;
-extern int gServerPort ;
-extern struct sockaddr_in gServerAddr;
-extern SocketClient* gSocket;
-extern std::string gAdminPassword;
-extern std::string gDoorPassword;
-
+#define QR_DIR		"/mnt/extsd/qr/"
+#define AD_DIR		"/mnt/extsd/ad/"
 typedef enum
 {
 	Lock,
 	UnLock
 }doorState_t;
+
 
 typedef enum
 {
@@ -42,21 +37,40 @@ typedef enum
 	CMDDoorCtr,
 	CMDQR,
 	CMDAdvertisement,
-};
+}JsonCmd_t;
+
+typedef std::vector<std::string> stringList;
+
+typedef void (*myNotify_t)(JsonCmd_t,string &);
+
+extern Mutex mutex ;
+extern string gServerIP ;
+extern int gServerPort ;
+extern struct sockaddr_in gServerAddr;
+extern SocketClient* gSocket;
+extern string gAdminPwd;
+extern string gDoorPassword;
+extern unsigned long long gLastHelloTime;
+extern bool gDoorPwdState ;
+
+
 extern doorState_t gDoorState;
 
 
 
-class MySocketListener : public SocketClient::ISocketListener
-{
-	public:
-		virtual void notify(int what, int status, const char *msg);
-};
-static MySocketListener gSocketListener;
-
-
-
+//class MySocketListener : public SocketClient::ISocketListener
+//{
+//	public:
+//		virtual void notify(int what, int status, const char *msg);
+//};
+//static MySocketListener gSocketListener;
+//
+//回调函数声明区域
+extern myNotify_t keyboardCallback;
+extern myNotify_t AdvertisementCallback;
 
 void exeCMD(string *JsonString);
+bool updateServerLiveState();
+bool setServerLiveState(bool state);
 
 #endif /* JNI_LIB_GLOBALVAR_H_ */

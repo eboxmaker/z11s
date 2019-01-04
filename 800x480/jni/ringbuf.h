@@ -35,7 +35,6 @@ public:
         head = 0;
         tail = 0;
         ptr = 0;
-        lock = false;
     }
 
 
@@ -44,7 +43,7 @@ public:
         free(ptr);
     }
 
-    bool begin(uint16_t size)
+    bool begin(uint32_t size)
     {
         ptr = (T *)malloc(size * sizeof(T));
         max = size;
@@ -130,7 +129,6 @@ private:
     volatile int tail;
     int max;
     T *ptr;
-    bool lock;
 ;
 };
 typedef RingBuf<uint8_t>    RingBufUint8;

@@ -130,7 +130,7 @@ static void* socketThreadHeatbeat(void *lParam) {
 SocketClient::SocketClient() :
 	conncetState(false),
 	mClientSocket(-1){
-	rxbuf.begin(4096);
+	rxbuf.begin(409600);
 }
 
 SocketClient::~SocketClient() {
@@ -217,33 +217,33 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 
 	return true;
 }
-bool SocketClient::connected()
-{
-	int optval, optlen = sizeof(int);
-	getsockopt(mClientSocket, SOL_SOCKET, SO_ERROR,(char*) &optval, &optlen);
-
-	switch(optval){
-
-	case 0:
-		conncetState = true;
-		break;
-	default:
-		conncetState = false;
-		break;
-	}
-	return conncetState;
-}
+//bool SocketClient::connected()
+//{
+//	int optval, optlen = sizeof(int);
+//	getsockopt(mClientSocket, SOL_SOCKET, SO_ERROR,(char*) &optval, &optlen);
+//
+//	switch(optval){
+//
+//	case 0:
+//		conncetState = true;
+//		break;
+//	default:
+//		conncetState = false;
+//		break;
+//	}
+//	return conncetState;
+//}
 
 bool SocketClient::disconnect() {
 	LOGE("SocketClient disconnect\n");
 	conncetState = false;
-	if (mClientSocket > 0) {
-		write_("");
-		LOGE("SocketClient close socket...\n");
-		// 关闭socket
-		close(mClientSocket);
-		mClientSocket = -1;
-	}
+//	if (mClientSocket > 0) {
+//		write_("");
+//		LOGE("SocketClient close socket...\n");
+//	}
+	// 关闭socket
+	close(mClientSocket);
+	mClientSocket = -1;
 	return true;
 }
 void SocketClient::write_(char *msg)
@@ -256,18 +256,18 @@ void SocketClient::write_(char *msg,size_t length)
 	write(mClientSocket,msg, length);
 	return ;
 }
-char SocketClient::read_()
-{
-	return rxbuf.read();
-}
-
-void SocketClient::read_(char *msg,size_t length)
-{
-	for(int i = 0; i < length; i++)
-	{
-		msg[i] = rxbuf.read();
-	}
-}
+//char SocketClient::read_()
+//{
+//	return rxbuf.read();
+//}
+//
+//void SocketClient::read_(char *msg,size_t length)
+//{
+//	for(int i = 0; i < length; i++)
+//	{
+//		msg[i] = rxbuf.read();
+//	}
+//}
 size_t SocketClient::available()
 {
 	return rxbuf.available();
@@ -275,24 +275,24 @@ size_t SocketClient::available()
 
 void SocketClient::timer_thread()
 {
-	string str = MakeCMDHeatbeat();
 	while(1)
 	{
 
 		sleep(heartbeatTime);
 		if(mClientSocket > 0)
 		{
-			write_(str.c_str());
+			write_(hearbeatMsg);
 			LOGE("timer thread running");
 		}
 	}
 
 }
-bool SocketClient::setHeartbeat(int timeout,char *msg,size_t len)
+bool SocketClient::setHeartbeat(int timeout)
 {
 	heartbeatTime = timeout;
-	hearbeatMsg = (char *)malloc(len*sizeof(char));
-	memcpy(hearbeatMsg,msg,len);
+	string str = MakeCMDHeatbeat();
+	memset(hearbeatMsg,0,sizeof(hearbeatMsg));
+	memcpy(hearbeatMsg,str.c_str(),str.length());
 
 	pthread_t threadID = 0;
 	pthread_attr_t attr; 		// 线程属性
@@ -332,18 +332,18 @@ void SocketClient::threadLoop() {
 				if(buffer[i] == '}')
 					flag = true;
 			}
-			LOGE("w len:%d",rxbuf.available());
 		}
 		else
 		{
-			if(flag)
-			{
+
 				string x = cutOneJsonString(&rxbuf);
 				if(x != "")
 				{
 					exeCMD(&x);
 				}
-			}
+				flag = false;
+				//LOGE("缓冲区可用数据:%d",rxbuf.available());
+
 			//LOGE("剩余:%d;len = %d",rxbuf.available(),length);
 		}
 		if(mClientSocket < 0)

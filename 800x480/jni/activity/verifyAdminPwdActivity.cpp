@@ -1,24 +1,26 @@
 /***********************************************
 /gen auto by zuitools
 ***********************************************/
-#include "pwdAdminActivity.h"
+#include "verifyAdminPwdActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
-static ZKTextView* mTextview1Ptr;
+static ZKEditText* mEditTextAdminPasswordPtr;
+static ZKTextView* mTVNotePtr;
+static ZKWindow* mWindInAdminPwdPtr;
 static ZKButton* mBtnCancelPtr;
-static ZKEditText* mEdittext1Ptr;
-static ZKButton* mBtnOKPtr;
-static pwdAdminActivity* mActivityPtr;
+static ZKButton* mBtnConfirmPtr;
+static ZKTextView* mTextview1Ptr;
+static verifyAdminPwdActivity* mActivityPtr;
 
 /*register activity*/
-REGISTER_ACTIVITY(pwdAdminActivity);
+REGISTER_ACTIVITY(verifyAdminPwdActivity);
 
 typedef struct {
 	int id; // 定时器ID ， 不能重复
 	int time; // 定时器  时间间隔  单位 毫秒
 }S_ACTIVITY_TIMEER;
 
-#include "logic/pwdAdminLogic.cc"
+#include "logic/verifyAdminPwdLogic.cc"
 
 /***********/
 typedef struct {
@@ -45,8 +47,8 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
-    ID_PWDADMIN_BtnCancel, onButtonClick_BtnCancel,
-    ID_PWDADMIN_BtnOK, onButtonClick_BtnOK,
+    ID_VERIFYADMINPWD_BtnCancel, onButtonClick_BtnCancel,
+    ID_VERIFYADMINPWD_BtnConfirm, onButtonClick_BtnConfirm,
 };
 /***************/
 
@@ -92,7 +94,7 @@ typedef struct {
 }S_EditTextInputCallback;
 /*TAG:EditTextInputCallback*/
 static S_EditTextInputCallback SEditTextInputCallbackTab[] = {
-    ID_PWDADMIN_Edittext1, onEditTextChanged_Edittext1,
+    ID_VERIFYADMINPWD_EditTextAdminPassword, onEditTextChanged_EditTextAdminPassword,
 };
 
 typedef void (*VideoViewCallback)(ZKVideoView *pVideoView, int msg);
@@ -107,13 +109,13 @@ static S_VideoViewCallback SVideoViewCallbackTab[] = {
 };
 
 
-pwdAdminActivity::pwdAdminActivity() {
+verifyAdminPwdActivity::verifyAdminPwdActivity() {
 	//todo add init code here
 	mVideoLoopIndex = 0;
 	mVideoLoopErrorCount = 0;
 }
 
-pwdAdminActivity::~pwdAdminActivity() {
+verifyAdminPwdActivity::~verifyAdminPwdActivity() {
 	//todo add init file here
     // 退出应用时需要反注册
     EASYUICONTEXT->unregisterGlobalTouchListener(this);
@@ -121,24 +123,26 @@ pwdAdminActivity::~pwdAdminActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
 }
 
-const char* pwdAdminActivity::getAppName() const{
-	return "pwdAdmin.ftu";
+const char* verifyAdminPwdActivity::getAppName() const{
+	return "verifyAdminPwd.ftu";
 }
 
 //TAG:onCreate
-void pwdAdminActivity::onCreate() {
+void verifyAdminPwdActivity::onCreate() {
 	Activity::onCreate();
-    mTextview1Ptr = (ZKTextView*)findControlByID(ID_PWDADMIN_Textview1);
-    mBtnCancelPtr = (ZKButton*)findControlByID(ID_PWDADMIN_BtnCancel);
-    mEdittext1Ptr = (ZKEditText*)findControlByID(ID_PWDADMIN_Edittext1);if(mEdittext1Ptr!= NULL){mEdittext1Ptr->setTextChangeListener(this);}
-    mBtnOKPtr = (ZKButton*)findControlByID(ID_PWDADMIN_BtnOK);
+    mEditTextAdminPasswordPtr = (ZKEditText*)findControlByID(ID_VERIFYADMINPWD_EditTextAdminPassword);if(mEditTextAdminPasswordPtr!= NULL){mEditTextAdminPasswordPtr->setTextChangeListener(this);}
+    mTVNotePtr = (ZKTextView*)findControlByID(ID_VERIFYADMINPWD_TVNote);
+    mWindInAdminPwdPtr = (ZKWindow*)findControlByID(ID_VERIFYADMINPWD_WindInAdminPwd);
+    mBtnCancelPtr = (ZKButton*)findControlByID(ID_VERIFYADMINPWD_BtnCancel);
+    mBtnConfirmPtr = (ZKButton*)findControlByID(ID_VERIFYADMINPWD_BtnConfirm);
+    mTextview1Ptr = (ZKTextView*)findControlByID(ID_VERIFYADMINPWD_Textview1);
 	mActivityPtr = this;
 	onUI_init();
     registerProtocolDataUpdateListener(onProtocolDataUpdate); 
     rigesterActivityTimer();
 }
 
-void pwdAdminActivity::onClick(ZKBase *pBase) {
+void verifyAdminPwdActivity::onClick(ZKBase *pBase) {
 	//TODO: add widget onClik code 
     int buttonTablen = sizeof(sButtonCallbackTab) / sizeof(S_ButtonCallback);
     for (int i = 0; i < buttonTablen; ++i) {
@@ -162,30 +166,30 @@ void pwdAdminActivity::onClick(ZKBase *pBase) {
 	Activity::onClick(pBase);
 }
 
-void pwdAdminActivity::onResume() {
+void verifyAdminPwdActivity::onResume() {
 	Activity::onResume();
 	EASYUICONTEXT->registerGlobalTouchListener(this);
 	startVideoLoopPlayback();
 	onUI_show();
 }
 
-void pwdAdminActivity::onPause() {
+void verifyAdminPwdActivity::onPause() {
 	Activity::onPause();
 	EASYUICONTEXT->unregisterGlobalTouchListener(this);
 	stopVideoLoopPlayback();
 	onUI_hide();
 }
 
-void pwdAdminActivity::onIntent(const Intent *intentPtr) {
+void verifyAdminPwdActivity::onIntent(const Intent *intentPtr) {
 	Activity::onIntent(intentPtr);
 	onUI_intent(intentPtr);
 }
 
-bool pwdAdminActivity::onTimer(int id) {
+bool verifyAdminPwdActivity::onTimer(int id) {
 	return onUI_Timer(id);
 }
 
-void pwdAdminActivity::onProgressChanged(ZKSeekBar *pSeekBar, int progress){
+void verifyAdminPwdActivity::onProgressChanged(ZKSeekBar *pSeekBar, int progress){
 
     int seekBarTablen = sizeof(SZKSeekBarCallbackTab) / sizeof(S_ZKSeekBarCallback);
     for (int i = 0; i < seekBarTablen; ++i) {
@@ -196,7 +200,7 @@ void pwdAdminActivity::onProgressChanged(ZKSeekBar *pSeekBar, int progress){
     }
 }
 
-int pwdAdminActivity::getListItemCount(const ZKListView *pListView) const{
+int verifyAdminPwdActivity::getListItemCount(const ZKListView *pListView) const{
     int tablen = sizeof(SListViewFunctionsCallbackTab) / sizeof(S_ListViewFunctionsCallback);
     for (int i = 0; i < tablen; ++i) {
         if (SListViewFunctionsCallbackTab[i].id == pListView->getID()) {
@@ -207,7 +211,7 @@ int pwdAdminActivity::getListItemCount(const ZKListView *pListView) const{
     return 0;
 }
 
-void pwdAdminActivity::obtainListItemData(ZKListView *pListView,ZKListView::ZKListItem *pListItem, int index){
+void verifyAdminPwdActivity::obtainListItemData(ZKListView *pListView,ZKListView::ZKListItem *pListItem, int index){
     int tablen = sizeof(SListViewFunctionsCallbackTab) / sizeof(S_ListViewFunctionsCallback);
     for (int i = 0; i < tablen; ++i) {
         if (SListViewFunctionsCallbackTab[i].id == pListView->getID()) {
@@ -217,7 +221,7 @@ void pwdAdminActivity::obtainListItemData(ZKListView *pListView,ZKListView::ZKLi
     }
 }
 
-void pwdAdminActivity::onItemClick(ZKListView *pListView, int index, int id){
+void verifyAdminPwdActivity::onItemClick(ZKListView *pListView, int index, int id){
     int tablen = sizeof(SListViewFunctionsCallbackTab) / sizeof(S_ListViewFunctionsCallback);
     for (int i = 0; i < tablen; ++i) {
         if (SListViewFunctionsCallbackTab[i].id == pListView->getID()) {
@@ -227,7 +231,7 @@ void pwdAdminActivity::onItemClick(ZKListView *pListView, int index, int id){
     }
 }
 
-void pwdAdminActivity::onSlideItemClick(ZKSlideWindow *pSlideWindow, int index) {
+void verifyAdminPwdActivity::onSlideItemClick(ZKSlideWindow *pSlideWindow, int index) {
     int tablen = sizeof(SSlideWindowItemClickCallbackTab) / sizeof(S_SlideWindowItemClickCallback);
     for (int i = 0; i < tablen; ++i) {
         if (SSlideWindowItemClickCallbackTab[i].id == pSlideWindow->getID()) {
@@ -237,11 +241,11 @@ void pwdAdminActivity::onSlideItemClick(ZKSlideWindow *pSlideWindow, int index) 
     }
 }
 
-bool pwdAdminActivity::onTouchEvent(const MotionEvent &ev) {
-    return onpwdAdminActivityTouchEvent(ev);
+bool verifyAdminPwdActivity::onTouchEvent(const MotionEvent &ev) {
+    return onverifyAdminPwdActivityTouchEvent(ev);
 }
 
-void pwdAdminActivity::onTextChanged(ZKTextView *pTextView, const std::string &text) {
+void verifyAdminPwdActivity::onTextChanged(ZKTextView *pTextView, const std::string &text) {
     int tablen = sizeof(SEditTextInputCallbackTab) / sizeof(S_EditTextInputCallback);
     for (int i = 0; i < tablen; ++i) {
         if (SEditTextInputCallbackTab[i].id == pTextView->getID()) {
@@ -251,7 +255,7 @@ void pwdAdminActivity::onTextChanged(ZKTextView *pTextView, const std::string &t
     }
 }
 
-void pwdAdminActivity::rigesterActivityTimer() {
+void verifyAdminPwdActivity::rigesterActivityTimer() {
     int tablen = sizeof(REGISTER_ACTIVITY_TIMER_TAB) / sizeof(S_ACTIVITY_TIMEER);
     for (int i = 0; i < tablen; ++i) {
         S_ACTIVITY_TIMEER temp = REGISTER_ACTIVITY_TIMER_TAB[i];
@@ -260,7 +264,7 @@ void pwdAdminActivity::rigesterActivityTimer() {
 }
 
 
-void pwdAdminActivity::onVideoPlayerMessage(ZKVideoView *pVideoView, int msg) {
+void verifyAdminPwdActivity::onVideoPlayerMessage(ZKVideoView *pVideoView, int msg) {
     int tablen = sizeof(SVideoViewCallbackTab) / sizeof(S_VideoViewCallback);
     for (int i = 0; i < tablen; ++i) {
         if (SVideoViewCallbackTab[i].id == pVideoView->getID()) {
@@ -275,7 +279,7 @@ void pwdAdminActivity::onVideoPlayerMessage(ZKVideoView *pVideoView, int msg) {
     }
 }
 
-void pwdAdminActivity::videoLoopPlayback(ZKVideoView *pVideoView, int msg, int callbackTabIndex) {
+void verifyAdminPwdActivity::videoLoopPlayback(ZKVideoView *pVideoView, int msg, int callbackTabIndex) {
 
 	switch (msg) {
 	case ZKVideoView::E_MSGTYPE_VIDEO_PLAY_STARTED:
@@ -312,7 +316,7 @@ void pwdAdminActivity::videoLoopPlayback(ZKVideoView *pVideoView, int msg, int c
 	}
 }
 
-void pwdAdminActivity::startVideoLoopPlayback() {
+void verifyAdminPwdActivity::startVideoLoopPlayback() {
     int tablen = sizeof(SVideoViewCallbackTab) / sizeof(S_VideoViewCallback);
     for (int i = 0; i < tablen; ++i) {
     	if (SVideoViewCallbackTab[i].loop) {
@@ -327,7 +331,7 @@ void pwdAdminActivity::startVideoLoopPlayback() {
     }
 }
 
-void pwdAdminActivity::stopVideoLoopPlayback() {
+void verifyAdminPwdActivity::stopVideoLoopPlayback() {
     int tablen = sizeof(SVideoViewCallbackTab) / sizeof(S_VideoViewCallback);
     for (int i = 0; i < tablen; ++i) {
     	if (SVideoViewCallbackTab[i].loop) {
@@ -343,7 +347,7 @@ void pwdAdminActivity::stopVideoLoopPlayback() {
     }
 }
 
-bool pwdAdminActivity::parseVideoFileList(const char *pFileListPath, std::vector<string>& mediaFileList) {
+bool verifyAdminPwdActivity::parseVideoFileList(const char *pFileListPath, std::vector<string>& mediaFileList) {
 	mediaFileList.clear();
 	if (NULL == pFileListPath || 0 == strlen(pFileListPath)) {
         LOGD("video file list is null!");
@@ -375,7 +379,7 @@ bool pwdAdminActivity::parseVideoFileList(const char *pFileListPath, std::vector
 	return true;
 }
 
-int pwdAdminActivity::removeCharFromString(string& nString, char c) {
+int verifyAdminPwdActivity::removeCharFromString(string& nString, char c) {
     string::size_type   pos;
     while(1) {
         pos = nString.find(c);
@@ -388,14 +392,14 @@ int pwdAdminActivity::removeCharFromString(string& nString, char c) {
     return (int)nString.size();
 }
 
-void pwdAdminActivity::registerUserTimer(int id, int time) {
+void verifyAdminPwdActivity::registerUserTimer(int id, int time) {
 	registerTimer(id, time);
 }
 
-void pwdAdminActivity::unregisterUserTimer(int id) {
+void verifyAdminPwdActivity::unregisterUserTimer(int id) {
 	unregisterTimer(id);
 }
 
-void pwdAdminActivity::resetUserTimer(int id, int time) {
+void verifyAdminPwdActivity::resetUserTimer(int id, int time) {
 	resetTimer(id, time);
 }

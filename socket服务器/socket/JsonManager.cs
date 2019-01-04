@@ -11,8 +11,21 @@ using System.Threading.Tasks;
 
 namespace MyJson
 {
+
     class JsonManager
     {
+    public enum CMDType  //枚举类型，体会xml注释的样子
+    {
+        	Heartbeat,
+	        SetHeartbeat,
+	        Confirm,
+	        AdminPwd,
+	        DoorPwd,
+	        DoorCtr,
+	        QR,
+	        Advertisement,
+    }//同
+
        // public JObject jo;
 
         public static JObject OpenFile(string path)
@@ -200,12 +213,12 @@ namespace MyJson
             string x = Convert.ToBase64String(byteArray);
             return x;
         }
-        public static string PackageFileToJsonString(string FilePath)
+        public static string PackageFileToJsonString(string FilePath, int FileType)
         {
             JObject obj = new JObject();
             string name = Path.GetFileName(FilePath);
             string data = FileToBase64(FilePath);
-            obj.Add("cmd", 0);
+            obj.Add("cmd", FileType);
             obj.Add("name", name);
             obj.Add("data", data);
             string jstring = JsonConvert.SerializeObject(obj);
@@ -245,10 +258,26 @@ namespace MyJson
 
 
         }
+
+        public static string ParseCMDHeartbeat(string js)
+        {
+
+            JObject jo = (JObject)JsonConvert.DeserializeObject(js);
+            string str = jo["value"].ToString();
+            return str;
+        }
+        public static string MakeCMDHeartbeat()
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.Heartbeat);
+            obj.Add("value", "hello");
+            string jstring = JsonConvert.SerializeObject(obj);
+            return jstring;
+        }
         public static string MakeCMDDoor1(int value)
         {
             JObject obj = new JObject();
-            obj.Add("cmd", 1);
+            obj.Add("cmd", (int)CMDType.DoorCtr);
             obj.Add("value", value);
             string jstring = JsonConvert.SerializeObject(obj);
             return jstring;
@@ -259,6 +288,14 @@ namespace MyJson
             string pwd = jo["doorPwd"].ToString();
             return pwd;
         }
-
+        public static string MakeCMDDoorPwdAck(int status)
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.DoorPwd);
+            obj.Add("doorPwd", "***");
+            obj.Add("status", status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            return jstring;
+        }
     }
 }

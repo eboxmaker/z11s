@@ -26,6 +26,8 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_KEYBOARD_BtnQR    20001
+#define ID_KEYBOARD_TVNote    50005
 #define ID_KEYBOARD_TvConnectState    50004
 #define ID_KEYBOARD_Textview3    50003
 #define ID_KEYBOARD_Window1    110002
@@ -48,7 +50,6 @@
 #define ID_KEYBOARD_Btn3    20004
 #define ID_KEYBOARD_Btn2    20003
 #define ID_KEYBOARD_Btn1    20002
-#define ID_KEYBOARD_NtnQR    20001
 #define ID_KEYBOARD_Textview1    50001
 /*TAG:Macro宏ID END*/
 

@@ -295,6 +295,7 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/set
  C:/Users/shentq/Documents/z11s/800x480/jni/lib/SocketClient.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/globalVar.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/storage/StoragePreferences.h
 
 C:/Users/shentq/Documents/z11s/800x480/jni/activity/settingsActivity.h:
@@ -886,5 +887,7 @@ C:/Users/shentq/Documents/z11s/800x480/jni/lib/SocketClient.h:
 C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/globalVar.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/storage/StoragePreferences.h:
