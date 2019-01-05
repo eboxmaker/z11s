@@ -19,7 +19,7 @@
 
 void read_dir();
 void make_dir(char *path);
-stringList get_all_ad_full_name();
+void get_all_ad_full_name(stringList &list);
 
 
 #endif /* JNI_READDIR_H_ */

@@ -9,7 +9,7 @@
 #define _SOCKET_SOCKETCLIENT_H_
 
 #include "ringbuf.h"
-
+#include <fstream>
 
 
 class SocketClient {
@@ -21,8 +21,10 @@ public:
 	bool disconnect();
 //	bool connected();
 
+	void write_(std::string &msg);
 	void write_(char *msg);
 	void write_(char *msg,size_t length);
+
 	void read_(char *msg,size_t length);
 	char read_();
 	size_t available();

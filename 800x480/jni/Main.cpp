@@ -24,14 +24,34 @@ static void *MainLoop(void *lParam);
 static void LoadParament()
 {
     gServerIP = StoragePreferences::getString("gServerIP", "192.168.1.1");
-    LOGD("gServerIP %s\n", gServerIP.c_str());
+    LOGE("gServerIP %s\n", gServerIP.c_str());
     gServerPort = StoragePreferences::getInt("gServerPort", 6000);
-    LOGD("gServerPort %d\n", gServerPort);
+    LOGE("gServerPort %d\n", gServerPort);
     gAdminPwd = StoragePreferences::getString("gAdminPwd", "123456");
-    LOGD("gServerPort %s\n", gAdminPwd.c_str());
+    LOGE("gServerPort %s\n", gAdminPwd.c_str());
+
+//    StoragePreferences::remove("gDisplayAdAfterTime");
+//    StoragePreferences::remove("gSwitchAdTime");
+//    StoragePreferences::remove("gAdEnable");
+    gDisplayAdAfterTime = StoragePreferences::getInt("gDisplayAdAfterTime", 20);
+    gSwitchAdTime = StoragePreferences::getInt("gSwitchAdTime", 5);
+    gAdEnable = StoragePreferences::getInt("gAdEnable", 1);
+
+    LOGE("gDisplayAdAfterTime %D\n", gDisplayAdAfterTime);
+    LOGE("gSwitchAdTime %D\n",gSwitchAdTime);
+    LOGE("gAdEnable %D\n",gAdEnable);
     make_dir(QR_DIR);
     make_dir(AD_DIR);
-    read_dir();
+//	stringList list = get_all_ad_full_name();
+//	adTotal = 0;
+//	 for(stringList::iterator it = list.begin() ; it !=list.end(); it++)
+//	 {
+//		 list[0]
+//		picPath[pic_total] = *it;
+//		LOGE("文件全名:%s",picPath[pic_total].c_str());
+//		adTotal++;
+//	 }
+
 }
 void onEasyUIInit(EasyUIContext *pContext) {
 	// 初始化时打开串口
@@ -66,13 +86,13 @@ const char* onStartupApp(EasyUIContext *pContext) {
 
 	return "keyboardActivity";
 }
-char buf[4096] = "hello world\n";
-char rbuf[409600] ;
+
 static void *MainLoop(void *lParam)
 {
     //pthread_mutex_init(&mutex,NULL);
 
-
+	string cAppName;
+	long long timeNow;
     bool ret;
     int len;
 //	msg.ptr = buf;
@@ -90,6 +110,7 @@ static void *MainLoop(void *lParam)
 
 	while(1)
 	{
+		Thread::sleep(1000);
 
 		if(updateServerLiveState() == false)
 		{
@@ -108,8 +129,27 @@ static void *MainLoop(void *lParam)
 			}
 		}
 
-		;
-		Thread::sleep(1000);
+		const char *ptr;
+		ptr = EASYUICONTEXT->currentAppName();
+		cAppName = ptr;
+		timeNow = time(NULL);
+		if(cAppName == "keyboardActivity")
+		{
+			if(timeNow - gKeyboardLastActionTime > gDisplayAdAfterTime)
+			{
+				EASYUICONTEXT->openActivity("AdvertisementActivity");
+				LOGE("切换成功");
+			}
+			else
+			{
+				LOGE("TIME:%D",timeNow - gKeyboardLastActionTime);
+			}
+		}
+		else
+		{
+			//LOGE("xxxTIME:%D",timeNow - gKeyboardLastActionTime);
+
+		}
 	}
 
 }

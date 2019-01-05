@@ -33,9 +33,8 @@ void read_dir()
 }
 
 
-stringList get_all_ad_full_name()
+void get_all_ad_full_name(stringList &list)
 {
-	stringList list;
 
     DIR    *dir;
     struct    dirent    *ptr;
@@ -55,7 +54,7 @@ stringList get_all_ad_full_name()
     //	LOGE("d_type:%d d_name: %s\n", ptr->d_type,ptr->d_name);
     }
     closedir(dir);
-    return list;
+    return ;
 }
 void make_dir(char *path)
 {

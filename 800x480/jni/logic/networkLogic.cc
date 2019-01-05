@@ -46,17 +46,17 @@
 #define MAXLINE 4500
 
 //SocketClient* mSocket=NULL;
-string picPath[100];
-static int pic_total = 0;
+
 static int pic_counter = 0;
-static void onNetWrokDataUpdate(JsonCmd_t cmd,string &str)
+
+static void onNetWrokDataUpdate(JsonCmd_t cmd,string &msg)
 {
-	LOGE("%s",str.c_str());
+	LOGE("%s",msg.c_str());
 
 	switch(cmd)
 	{
 	case CMDDoorCtr:
-		if(str == "1")
+		if(msg == "1")
 		{
 			mEditTextMSGPtr->setText("UnLock");
 		}
@@ -67,22 +67,14 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd,string &str)
 		break;
 	case CMDQR:
 		mBtnQRPtr->setText("");
-		mBtnQRPtr->setBackgroundPic(str.c_str());
+		mBtnQRPtr->setBackgroundPic(msg.c_str());
 		 break;
 	case CMDAdvertisement:
 		mBtnPicPtr->setText("");
-		mBtnPicPtr->setBackgroundPic(str.c_str());
-		stringList list = get_all_ad_full_name();
-		pic_total = 0;
-		 for(stringList::iterator it = list.begin() ; it !=list.end(); it++)
-		 {
-			 picPath[pic_total] = *it;
-			LOGE("文件全名:%s",picPath[pic_total].c_str());
-			pic_total++;
-		 }
+		mBtnPicPtr->setBackgroundPic(msg.c_str());
+		get_all_ad_full_name(gAdPicList);
 		 break;
 	}
-
 }
 /**
  * 注册定时器
@@ -99,15 +91,8 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
  * 当界面构造时触发
  */
 static void onUI_init(){
-	AdvertisementCallback = onNetWrokDataUpdate;
-	pic_total = 0;
-	stringList list = get_all_ad_full_name();
-	 for(stringList::iterator it = list.begin() ; it !=list.end(); it++)
-	 {
-		 picPath[pic_total] = *it;
-		LOGE("文件全名:%s",picPath[pic_total].c_str());
-		pic_total++;
-	 }
+	networkTestCallback = onNetWrokDataUpdate;
+	get_all_ad_full_name(gAdPicList);
 }
 
 /**
@@ -124,7 +109,7 @@ static void onUI_intent(const Intent *intentPtr) {
  */
 static void onUI_show() {
     EASYUICONTEXT->showStatusBar();
-	if(updateServerLiveState()){
+	if(getServerLiveState()){
 		mTVConnectStatePtr->setText("已连接");
 	}else{
 		mTVConnectStatePtr->setText("未连接");
@@ -143,7 +128,7 @@ static void onUI_hide() {
  * 当界面完全退出时触发
  */
 static void onUI_quit() {
-	AdvertisementCallback = NULL;
+	networkTestCallback = NULL;
 
 }
 
@@ -178,11 +163,11 @@ static bool onUI_Timer(int id){
 			mTVConnectStatePtr->setText("已连接");
 		}
 
-		if(pic_counter < pic_total )
+		if(pic_counter < gAdPicList.size() )
 		{
 
 			mBtnPicPtr->setText("");
-			mBtnPicPtr->setBackgroundPic(picPath[pic_counter].c_str());
+			mBtnPicPtr->setBackgroundPic(gAdPicList[pic_counter].c_str());
 			pic_counter++;
 		}
 		else

@@ -1,8 +1,8 @@
 /***********************************************
 /gen auto by zuitools
 ***********************************************/
-#ifndef __KEYBOARDACTIVITY_H__
-#define __KEYBOARDACTIVITY_H__
+#ifndef __ADVERTISEMENTACTIVITY_H__
+#define __ADVERTISEMENTACTIVITY_H__
 
 
 #include "app/Activity.h"
@@ -26,40 +26,10 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
-#define ID_KEYBOARD_TextWeek    50006
-#define ID_KEYBOARD_TextNotice    50007
-#define ID_KEYBOARD_Window2    110004
-#define ID_KEYBOARD_TextTime    50010
-#define ID_KEYBOARD_TextDate    50009
-#define ID_KEYBOARD_WindNote    110003
-#define ID_KEYBOARD_BtnQR    20001
-#define ID_KEYBOARD_TVNote    50005
-#define ID_KEYBOARD_TvConnectState    50004
-#define ID_KEYBOARD_Textview3    50003
-#define ID_KEYBOARD_Window1    110002
-#define ID_KEYBOARD_EditTextAdminPassword    51002
-#define ID_KEYBOARD_EditTextDoorPassword    51001
-#define ID_KEYBOARD_BtnConfirm    20015
-#define ID_KEYBOARD_WinPwdAdmin    110001
-#define ID_KEYBOARD_BtnCancel    20016
-#define ID_KEYBOARD_Textview2    50002
-#define ID_KEYBOARD_BtnBackMain    20014
-#define ID_KEYBOARD_BtnBack    20012
-#define ID_KEYBOARD_Btn0    20013
-#define ID_KEYBOARD_BtnOK    20011
-#define ID_KEYBOARD_Btn7    20010
-#define ID_KEYBOARD_Btn9    20009
-#define ID_KEYBOARD_Btn8    20008
-#define ID_KEYBOARD_Btn4    20007
-#define ID_KEYBOARD_Btn6    20006
-#define ID_KEYBOARD_Btn5    20005
-#define ID_KEYBOARD_Btn3    20004
-#define ID_KEYBOARD_Btn2    20003
-#define ID_KEYBOARD_Btn1    20002
-#define ID_KEYBOARD_Textview1    50001
+#define ID_ADVERTISEMENT_BtnPic    20001
 /*TAG:Macro宏ID END*/
 
-class keyboardActivity : public Activity, 
+class AdvertisementActivity : public Activity, 
                      public ZKSeekBar::ISeekBarChangeListener, 
                      public ZKListView::IItemClickListener,
                      public ZKListView::AbsListAdapter,
@@ -69,8 +39,8 @@ class keyboardActivity : public Activity,
                      public ZKVideoView::IVideoPlayerMessageListener
 {
 public:
-    keyboardActivity();
-    virtual ~keyboardActivity();
+    AdvertisementActivity();
+    virtual ~AdvertisementActivity();
 
     /**
      * 注册定时器

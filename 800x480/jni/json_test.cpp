@@ -11,7 +11,7 @@
 string cutOneJsonString(RingBufInt8 *msg)
 {
 
-	char buf[msg->available()];
+	char buf[msg->available() +100];
 	string resault = "";
 	bool start_flag = false;
 
@@ -40,7 +40,8 @@ string cutOneJsonString(RingBufInt8 *msg)
 					//LOGE("接受到结束符");
 					if(ParseJsonString(buf) == true)
 					{
-						LOGE("解析完成,size:%dbytes",counter);
+						LOGE("解析完成,%s,size:%dbytes",buf,counter);
+						buf[counter + 1] = '\0';
 						resault = buf;
 						return resault;
 					}
@@ -72,7 +73,7 @@ bool ParseJsonString(char *str)
 	  else
 		  return false;
 }
-JsonCmd_t getJsonCMD(const char * str)
+JsonCmd_t getJsonCMD(string &str)
 {
 	  Json::Reader reader;
 
@@ -87,7 +88,7 @@ JsonCmd_t getJsonCMD(const char * str)
 
 	  return cmd;
 }
-string ParseCMDDoor1(char *str)
+string ParseCMDDoor1(string &str)
 {
 	  Json::Reader reader;
 
@@ -149,7 +150,7 @@ string MakeCMDDoorPassword(char *str)
 	  string temp =  fw.write(root);
 	  return temp;
 }
-string ParseCMDDoorPwdStatus(char *str)
+string ParseCMDDoorPwdStatus(string &str)
 {
 	  Json::Reader reader;
 
@@ -167,6 +168,33 @@ string ParseCMDDoorPwdStatus(char *str)
 	  }
 
 	  return val_str;
+}
+
+string MakeCMDSyncDateTime(string &str)
+{
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDSyncDateTime);
+	  root["dateTime"] = Json::Value(str);
+	  root["status"] = Json::Value("0");
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return temp;
+}
+string ParseCMDSyncDateTime(string &str)
+{
+	  Json::Reader reader;
+
+	  Json::Value root;
+	  int value;
+	  string dateTime;
+	  std::string val_str;
+	  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+		  value = (int)root["status"].asInt();
+		  dateTime = root["dateTime"].asString();
+	  }
+
+	  return dateTime;
 }
 std::string get_id(const char *str)
 {

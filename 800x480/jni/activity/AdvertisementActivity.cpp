@@ -1,57 +1,21 @@
 /***********************************************
 /gen auto by zuitools
 ***********************************************/
-#include "settingsActivity.h"
+#include "AdvertisementActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
-static ZKButton* mBtnServerStatePtr;
-static ZKTextView* mTextview8Ptr;
-static ZKButton* mBtnAdEnablePtr;
-static ZKTextView* mTextAdSetNotePtr;
-static ZKButton* mBtnAdCancelPtr;
-static ZKButton* mBtnAdOKPtr;
-static ZKTextView* mTextview7Ptr;
-static ZKEditText* mEditSwitchAdTimePtr;
-static ZKEditText* mEditDisplayAdAfterTimePtr;
-static ZKTextView* mTextview6Ptr;
-static ZKTextView* mTextview1Ptr;
-static ZKTextView* mTextAdEnavlePtr;
-static ZKWindow* mWndAdSetPtr;
-static ZKButton* mBtnAdSetPtr;
-static ZKButton* mBtnSyncDateTimePtr;
-static ZKTextView* mTextTimePtr;
-static ZKTextView* mTextDatePtr;
-static ZKTextView* mTextWeekPtr;
-static ZKTextView* mTVStatusPtr;
-static ZKTextView* mTextview5Ptr;
-static ZKButton* mBtnModifyAdminPwdPtr;
-static ZKWindow* mWndModifyAdminPwdPtr;
-static ZKButton* mBtnCancelPtr;
-static ZKButton* mBtnOKPtr;
-static ZKEditText* mEdittextNewAdminPwd2Ptr;
-static ZKTextView* mTextview4Ptr;
-static ZKEditText* mEdittextNewAdminPwd1Ptr;
-static ZKTextView* mTextview3Ptr;
-static ZKTextView* mTextview2Ptr;
-static ZKEditText* mEdittextOldAdminPwdPtr;
-static ZKEditText* mEditTextServerPortPtr;
-static ZKEditText* mEditTextServerIPPtr;
-static ZKTextView* mTvServerPortPtr;
-static ZKTextView* mTvServerIPPtr;
-static ZKButton* mBtnServerPtr;
-static ZKButton* mBtnNetWorkPtr;
-static ZKButton* mBtnSetLanguagePtr;
-static settingsActivity* mActivityPtr;
+static ZKButton* mBtnPicPtr;
+static AdvertisementActivity* mActivityPtr;
 
 /*register activity*/
-REGISTER_ACTIVITY(settingsActivity);
+REGISTER_ACTIVITY(AdvertisementActivity);
 
 typedef struct {
 	int id; // 定时器ID ， 不能重复
 	int time; // 定时器  时间间隔  单位 毫秒
 }S_ACTIVITY_TIMEER;
 
-#include "logic/settingsLogic.cc"
+#include "logic/AdvertisementLogic.cc"
 
 /***********/
 typedef struct {
@@ -78,18 +42,7 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
-    ID_SETTINGS_BtnServerState, onButtonClick_BtnServerState,
-    ID_SETTINGS_BtnAdEnable, onButtonClick_BtnAdEnable,
-    ID_SETTINGS_BtnAdCancel, onButtonClick_BtnAdCancel,
-    ID_SETTINGS_BtnAdOK, onButtonClick_BtnAdOK,
-    ID_SETTINGS_BtnAdSet, onButtonClick_BtnAdSet,
-    ID_SETTINGS_BtnSyncDateTime, onButtonClick_BtnSyncDateTime,
-    ID_SETTINGS_BtnModifyAdminPwd, onButtonClick_BtnModifyAdminPwd,
-    ID_SETTINGS_BtnCancel, onButtonClick_BtnCancel,
-    ID_SETTINGS_BtnOK, onButtonClick_BtnOK,
-    ID_SETTINGS_BtnServer, onButtonClick_BtnServer,
-    ID_SETTINGS_BtnNetWork, onButtonClick_BtnNetWork,
-    ID_SETTINGS_BtnSetLanguage, onButtonClick_BtnSetLanguage,
+    ID_ADVERTISEMENT_BtnPic, onButtonClick_BtnPic,
 };
 /***************/
 
@@ -135,13 +88,6 @@ typedef struct {
 }S_EditTextInputCallback;
 /*TAG:EditTextInputCallback*/
 static S_EditTextInputCallback SEditTextInputCallbackTab[] = {
-    ID_SETTINGS_EditSwitchAdTime, onEditTextChanged_EditSwitchAdTime,
-    ID_SETTINGS_EditDisplayAdAfterTime, onEditTextChanged_EditDisplayAdAfterTime,
-    ID_SETTINGS_EdittextNewAdminPwd2, onEditTextChanged_EdittextNewAdminPwd2,
-    ID_SETTINGS_EdittextNewAdminPwd1, onEditTextChanged_EdittextNewAdminPwd1,
-    ID_SETTINGS_EdittextOldAdminPwd, onEditTextChanged_EdittextOldAdminPwd,
-    ID_SETTINGS_EditTextServerPort, onEditTextChanged_EditTextServerPort,
-    ID_SETTINGS_EditTextServerIP, onEditTextChanged_EditTextServerIP,
 };
 
 typedef void (*VideoViewCallback)(ZKVideoView *pVideoView, int msg);
@@ -156,13 +102,13 @@ static S_VideoViewCallback SVideoViewCallbackTab[] = {
 };
 
 
-settingsActivity::settingsActivity() {
+AdvertisementActivity::AdvertisementActivity() {
 	//todo add init code here
 	mVideoLoopIndex = 0;
 	mVideoLoopErrorCount = 0;
 }
 
-settingsActivity::~settingsActivity() {
+AdvertisementActivity::~AdvertisementActivity() {
 	//todo add init file here
     // 退出应用时需要反注册
     EASYUICONTEXT->unregisterGlobalTouchListener(this);
@@ -170,57 +116,21 @@ settingsActivity::~settingsActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
 }
 
-const char* settingsActivity::getAppName() const{
-	return "settings.ftu";
+const char* AdvertisementActivity::getAppName() const{
+	return "Advertisement.ftu";
 }
 
 //TAG:onCreate
-void settingsActivity::onCreate() {
+void AdvertisementActivity::onCreate() {
 	Activity::onCreate();
-    mBtnServerStatePtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnServerState);
-    mTextview8Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview8);
-    mBtnAdEnablePtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnAdEnable);
-    mTextAdSetNotePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextAdSetNote);
-    mBtnAdCancelPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnAdCancel);
-    mBtnAdOKPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnAdOK);
-    mTextview7Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview7);
-    mEditSwitchAdTimePtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditSwitchAdTime);if(mEditSwitchAdTimePtr!= NULL){mEditSwitchAdTimePtr->setTextChangeListener(this);}
-    mEditDisplayAdAfterTimePtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditDisplayAdAfterTime);if(mEditDisplayAdAfterTimePtr!= NULL){mEditDisplayAdAfterTimePtr->setTextChangeListener(this);}
-    mTextview6Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview6);
-    mTextview1Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview1);
-    mTextAdEnavlePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextAdEnavle);
-    mWndAdSetPtr = (ZKWindow*)findControlByID(ID_SETTINGS_WndAdSet);
-    mBtnAdSetPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnAdSet);
-    mBtnSyncDateTimePtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnSyncDateTime);
-    mTextTimePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextTime);
-    mTextDatePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextDate);
-    mTextWeekPtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextWeek);
-    mTVStatusPtr = (ZKTextView*)findControlByID(ID_SETTINGS_TVStatus);
-    mTextview5Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview5);
-    mBtnModifyAdminPwdPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnModifyAdminPwd);
-    mWndModifyAdminPwdPtr = (ZKWindow*)findControlByID(ID_SETTINGS_WndModifyAdminPwd);
-    mBtnCancelPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnCancel);
-    mBtnOKPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnOK);
-    mEdittextNewAdminPwd2Ptr = (ZKEditText*)findControlByID(ID_SETTINGS_EdittextNewAdminPwd2);if(mEdittextNewAdminPwd2Ptr!= NULL){mEdittextNewAdminPwd2Ptr->setTextChangeListener(this);}
-    mTextview4Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview4);
-    mEdittextNewAdminPwd1Ptr = (ZKEditText*)findControlByID(ID_SETTINGS_EdittextNewAdminPwd1);if(mEdittextNewAdminPwd1Ptr!= NULL){mEdittextNewAdminPwd1Ptr->setTextChangeListener(this);}
-    mTextview3Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview3);
-    mTextview2Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview2);
-    mEdittextOldAdminPwdPtr = (ZKEditText*)findControlByID(ID_SETTINGS_EdittextOldAdminPwd);if(mEdittextOldAdminPwdPtr!= NULL){mEdittextOldAdminPwdPtr->setTextChangeListener(this);}
-    mEditTextServerPortPtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditTextServerPort);if(mEditTextServerPortPtr!= NULL){mEditTextServerPortPtr->setTextChangeListener(this);}
-    mEditTextServerIPPtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditTextServerIP);if(mEditTextServerIPPtr!= NULL){mEditTextServerIPPtr->setTextChangeListener(this);}
-    mTvServerPortPtr = (ZKTextView*)findControlByID(ID_SETTINGS_TvServerPort);
-    mTvServerIPPtr = (ZKTextView*)findControlByID(ID_SETTINGS_TvServerIP);
-    mBtnServerPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnServer);
-    mBtnNetWorkPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnNetWork);
-    mBtnSetLanguagePtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnSetLanguage);
+    mBtnPicPtr = (ZKButton*)findControlByID(ID_ADVERTISEMENT_BtnPic);
 	mActivityPtr = this;
 	onUI_init();
     registerProtocolDataUpdateListener(onProtocolDataUpdate); 
     rigesterActivityTimer();
 }
 
-void settingsActivity::onClick(ZKBase *pBase) {
+void AdvertisementActivity::onClick(ZKBase *pBase) {
 	//TODO: add widget onClik code 
     int buttonTablen = sizeof(sButtonCallbackTab) / sizeof(S_ButtonCallback);
     for (int i = 0; i < buttonTablen; ++i) {
@@ -244,30 +154,30 @@ void settingsActivity::onClick(ZKBase *pBase) {
 	Activity::onClick(pBase);
 }
 
-void settingsActivity::onResume() {
+void AdvertisementActivity::onResume() {
 	Activity::onResume();
 	EASYUICONTEXT->registerGlobalTouchListener(this);
 	startVideoLoopPlayback();
 	onUI_show();
 }
 
-void settingsActivity::onPause() {
+void AdvertisementActivity::onPause() {
 	Activity::onPause();
 	EASYUICONTEXT->unregisterGlobalTouchListener(this);
 	stopVideoLoopPlayback();
 	onUI_hide();
 }
 
-void settingsActivity::onIntent(const Intent *intentPtr) {
+void AdvertisementActivity::onIntent(const Intent *intentPtr) {
 	Activity::onIntent(intentPtr);
 	onUI_intent(intentPtr);
 }
 
-bool settingsActivity::onTimer(int id) {
+bool AdvertisementActivity::onTimer(int id) {
 	return onUI_Timer(id);
 }
 
-void settingsActivity::onProgressChanged(ZKSeekBar *pSeekBar, int progress){
+void AdvertisementActivity::onProgressChanged(ZKSeekBar *pSeekBar, int progress){
 
     int seekBarTablen = sizeof(SZKSeekBarCallbackTab) / sizeof(S_ZKSeekBarCallback);
     for (int i = 0; i < seekBarTablen; ++i) {
@@ -278,7 +188,7 @@ void settingsActivity::onProgressChanged(ZKSeekBar *pSeekBar, int progress){
     }
 }
 
-int settingsActivity::getListItemCount(const ZKListView *pListView) const{
+int AdvertisementActivity::getListItemCount(const ZKListView *pListView) const{
     int tablen = sizeof(SListViewFunctionsCallbackTab) / sizeof(S_ListViewFunctionsCallback);
     for (int i = 0; i < tablen; ++i) {
         if (SListViewFunctionsCallbackTab[i].id == pListView->getID()) {
@@ -289,7 +199,7 @@ int settingsActivity::getListItemCount(const ZKListView *pListView) const{
     return 0;
 }
 
-void settingsActivity::obtainListItemData(ZKListView *pListView,ZKListView::ZKListItem *pListItem, int index){
+void AdvertisementActivity::obtainListItemData(ZKListView *pListView,ZKListView::ZKListItem *pListItem, int index){
     int tablen = sizeof(SListViewFunctionsCallbackTab) / sizeof(S_ListViewFunctionsCallback);
     for (int i = 0; i < tablen; ++i) {
         if (SListViewFunctionsCallbackTab[i].id == pListView->getID()) {
@@ -299,7 +209,7 @@ void settingsActivity::obtainListItemData(ZKListView *pListView,ZKListView::ZKLi
     }
 }
 
-void settingsActivity::onItemClick(ZKListView *pListView, int index, int id){
+void AdvertisementActivity::onItemClick(ZKListView *pListView, int index, int id){
     int tablen = sizeof(SListViewFunctionsCallbackTab) / sizeof(S_ListViewFunctionsCallback);
     for (int i = 0; i < tablen; ++i) {
         if (SListViewFunctionsCallbackTab[i].id == pListView->getID()) {
@@ -309,7 +219,7 @@ void settingsActivity::onItemClick(ZKListView *pListView, int index, int id){
     }
 }
 
-void settingsActivity::onSlideItemClick(ZKSlideWindow *pSlideWindow, int index) {
+void AdvertisementActivity::onSlideItemClick(ZKSlideWindow *pSlideWindow, int index) {
     int tablen = sizeof(SSlideWindowItemClickCallbackTab) / sizeof(S_SlideWindowItemClickCallback);
     for (int i = 0; i < tablen; ++i) {
         if (SSlideWindowItemClickCallbackTab[i].id == pSlideWindow->getID()) {
@@ -319,11 +229,11 @@ void settingsActivity::onSlideItemClick(ZKSlideWindow *pSlideWindow, int index) 
     }
 }
 
-bool settingsActivity::onTouchEvent(const MotionEvent &ev) {
-    return onsettingsActivityTouchEvent(ev);
+bool AdvertisementActivity::onTouchEvent(const MotionEvent &ev) {
+    return onAdvertisementActivityTouchEvent(ev);
 }
 
-void settingsActivity::onTextChanged(ZKTextView *pTextView, const std::string &text) {
+void AdvertisementActivity::onTextChanged(ZKTextView *pTextView, const std::string &text) {
     int tablen = sizeof(SEditTextInputCallbackTab) / sizeof(S_EditTextInputCallback);
     for (int i = 0; i < tablen; ++i) {
         if (SEditTextInputCallbackTab[i].id == pTextView->getID()) {
@@ -333,7 +243,7 @@ void settingsActivity::onTextChanged(ZKTextView *pTextView, const std::string &t
     }
 }
 
-void settingsActivity::rigesterActivityTimer() {
+void AdvertisementActivity::rigesterActivityTimer() {
     int tablen = sizeof(REGISTER_ACTIVITY_TIMER_TAB) / sizeof(S_ACTIVITY_TIMEER);
     for (int i = 0; i < tablen; ++i) {
         S_ACTIVITY_TIMEER temp = REGISTER_ACTIVITY_TIMER_TAB[i];
@@ -342,7 +252,7 @@ void settingsActivity::rigesterActivityTimer() {
 }
 
 
-void settingsActivity::onVideoPlayerMessage(ZKVideoView *pVideoView, int msg) {
+void AdvertisementActivity::onVideoPlayerMessage(ZKVideoView *pVideoView, int msg) {
     int tablen = sizeof(SVideoViewCallbackTab) / sizeof(S_VideoViewCallback);
     for (int i = 0; i < tablen; ++i) {
         if (SVideoViewCallbackTab[i].id == pVideoView->getID()) {
@@ -357,7 +267,7 @@ void settingsActivity::onVideoPlayerMessage(ZKVideoView *pVideoView, int msg) {
     }
 }
 
-void settingsActivity::videoLoopPlayback(ZKVideoView *pVideoView, int msg, int callbackTabIndex) {
+void AdvertisementActivity::videoLoopPlayback(ZKVideoView *pVideoView, int msg, int callbackTabIndex) {
 
 	switch (msg) {
 	case ZKVideoView::E_MSGTYPE_VIDEO_PLAY_STARTED:
@@ -394,7 +304,7 @@ void settingsActivity::videoLoopPlayback(ZKVideoView *pVideoView, int msg, int c
 	}
 }
 
-void settingsActivity::startVideoLoopPlayback() {
+void AdvertisementActivity::startVideoLoopPlayback() {
     int tablen = sizeof(SVideoViewCallbackTab) / sizeof(S_VideoViewCallback);
     for (int i = 0; i < tablen; ++i) {
     	if (SVideoViewCallbackTab[i].loop) {
@@ -409,7 +319,7 @@ void settingsActivity::startVideoLoopPlayback() {
     }
 }
 
-void settingsActivity::stopVideoLoopPlayback() {
+void AdvertisementActivity::stopVideoLoopPlayback() {
     int tablen = sizeof(SVideoViewCallbackTab) / sizeof(S_VideoViewCallback);
     for (int i = 0; i < tablen; ++i) {
     	if (SVideoViewCallbackTab[i].loop) {
@@ -425,7 +335,7 @@ void settingsActivity::stopVideoLoopPlayback() {
     }
 }
 
-bool settingsActivity::parseVideoFileList(const char *pFileListPath, std::vector<string>& mediaFileList) {
+bool AdvertisementActivity::parseVideoFileList(const char *pFileListPath, std::vector<string>& mediaFileList) {
 	mediaFileList.clear();
 	if (NULL == pFileListPath || 0 == strlen(pFileListPath)) {
         LOGD("video file list is null!");
@@ -457,7 +367,7 @@ bool settingsActivity::parseVideoFileList(const char *pFileListPath, std::vector
 	return true;
 }
 
-int settingsActivity::removeCharFromString(string& nString, char c) {
+int AdvertisementActivity::removeCharFromString(string& nString, char c) {
     string::size_type   pos;
     while(1) {
         pos = nString.find(c);
@@ -470,14 +380,14 @@ int settingsActivity::removeCharFromString(string& nString, char c) {
     return (int)nString.size();
 }
 
-void settingsActivity::registerUserTimer(int id, int time) {
+void AdvertisementActivity::registerUserTimer(int id, int time) {
 	registerTimer(id, time);
 }
 
-void settingsActivity::unregisterUserTimer(int id) {
+void AdvertisementActivity::unregisterUserTimer(int id) {
 	unregisterTimer(id);
 }
 
-void settingsActivity::resetUserTimer(int id, int time) {
-	resetUserTimer(id, time);
+void AdvertisementActivity::resetUserTimer(int id, int time) {
+	resetTimer(id, time);
 }

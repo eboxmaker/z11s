@@ -2,6 +2,8 @@
 #include "uart/ProtocolSender.h"
 #include "globalVar.h"
 #include "json_test.h"
+#include "utils/TimeHelper.h"
+
 /*
 *此文件由GUI工具生成
 *文件功能：用于处理用户的逻辑相应代码
@@ -52,17 +54,19 @@ static LongClickListener longButtonClickListener;
 
 
 //网络数据回调接口
-static void onNetWrokDataUpdate(JsonCmd_t cmd,string &str)
+static void onNetWrokDataUpdate(JsonCmd_t cmd,string &msg)
 {
-	LOGE("%s",str.c_str());
+	LOGE("%s",msg.c_str());
 
 	switch(cmd)
 	{
 	case CMDQR:
 		mBtnQRPtr->setText("");
-		mBtnQRPtr->setBackgroundPic(str.c_str());
+		mBtnQRPtr->setBackgroundPic(msg.c_str());
+		break;
 	case CMDDoorPwd:
-		if(str == "1")
+		mWindNotePtr->showWnd();
+		if(msg == "1")
 		{
 			mTVNotePtr->setText("提示：密码正确");
 		}
@@ -71,9 +75,28 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd,string &str)
 			mTVNotePtr->setText("提示：密码错误");
 		}
 		break;
+	case CMDDoorCtr:
+
+		break;
 
 	}
 
+}
+
+
+static void updateUI_time() {
+	char timeStr[20];
+	struct tm *t = TimeHelper::getDateTime();
+
+	sprintf(timeStr, "%02d:%02d:%02d", t->tm_hour,t->tm_min,t->tm_sec);
+	mTextTimePtr->setText(timeStr); // 注意修改控件名称
+
+	sprintf(timeStr, "%d年%02d月%02d日", 1900 + t->tm_year, t->tm_mon + 1, t->tm_mday);
+	mTextDatePtr->setText(timeStr); // 注意修改控件名称
+
+	static const char *day[] = { "日", "一", "二", "三", "四", "五", "六" };
+	sprintf(timeStr, "星期%s", day[t->tm_wday]);
+	mTextWeekPtr->setText(timeStr); // 注意修改控件名称
 }
 /**
  * 注册定时器
@@ -82,7 +105,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd,string &str)
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 	{0,  500}, //定时器id=0, 时间间隔6秒
-	//{1,  1000},
+	{1,  1000},
 };
 
 /**
@@ -94,6 +117,7 @@ static void onUI_init(){
     mBtnBackPtr->setLongClickListener(&longButtonClickListener);
     keyboardCallback = onNetWrokDataUpdate;
     mTVNotePtr->setText("提示：...");
+    gKeyboardLastActionTime = time(NULL);
 }
 
 /**
@@ -110,9 +134,12 @@ static void onUI_intent(const Intent *intentPtr) {
  */
 static void onUI_show() {
 	EASYUICONTEXT->hideStatusBar();
+	mWindNotePtr->hideWnd();
 	mWinPwdAdminPtr->hideWnd();
 	lastDoorState = gDoorState;
 	doorPwd.clear();
+    gKeyboardLastActionTime = time(NULL);
+
 }
 
 /*
@@ -154,7 +181,7 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
 static bool onUI_Timer(int id){
 	switch (id) {
 	case 0:
-		if(updateServerLiveState() == true)
+		if(getServerLiveState() == true)
 		{
 			mTvConnectStatePtr->setText("已连接");
 		}
@@ -163,6 +190,9 @@ static bool onUI_Timer(int id){
 			mTvConnectStatePtr->setText("未连接");
 		}
 
+		break;
+	case 1:
+		updateUI_time();
 		break;
 		default:
 			break;
@@ -193,15 +223,12 @@ static bool onkeyboardActivityTouchEvent(const MotionEvent &ev) {
 	}
 	return false;
 }
-static bool onButtonClick_NtnQR(ZKButton *pButton) {
-    //LOGD(" ButtonClick NtnQR !!!\n");
-    return false;
-}
 
 static bool onButtonClick_Btn0(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn0 !!!\n");
 	doorPwd.append("0");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+    gKeyboardLastActionTime = time(NULL);
 
     return false;
 }
@@ -209,6 +236,7 @@ static bool onButtonClick_Btn1(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn1 !!!\n");
 	doorPwd.append("1");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+    gKeyboardLastActionTime = time(NULL);
 	return false;
 }
 
@@ -216,6 +244,7 @@ static bool onButtonClick_Btn2(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn2 !!!\n");
 	doorPwd.append("2");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+    gKeyboardLastActionTime = time(NULL);
    return false;
 }
 
@@ -223,6 +252,7 @@ static bool onButtonClick_Btn3(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn3 !!!\n");
 	doorPwd.append("3");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+    gKeyboardLastActionTime = time(NULL);
     return false;
 }
 
@@ -230,6 +260,7 @@ static bool onButtonClick_Btn4(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn4 !!!\n");
 	doorPwd.append("4");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+    gKeyboardLastActionTime = time(NULL);
     return false;
 }
 
@@ -237,6 +268,7 @@ static bool onButtonClick_Btn5(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn5 !!!\n");
 	doorPwd.append("5");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+    gKeyboardLastActionTime = time(NULL);
     return false;
 }
 
@@ -244,13 +276,15 @@ static bool onButtonClick_Btn6(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn6 !!!\n");
 	doorPwd.append("6");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
-   return false;
+    gKeyboardLastActionTime = time(NULL);
+  return false;
 }
 
 static bool onButtonClick_Btn7(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn7 !!!\n");
 	doorPwd.append("7");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+    gKeyboardLastActionTime = time(NULL);
     return false;
 }
 
@@ -258,6 +292,7 @@ static bool onButtonClick_Btn8(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn8 !!!\n");
 	doorPwd.append("8");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+    gKeyboardLastActionTime = time(NULL);
     return false;
 }
 
@@ -266,6 +301,7 @@ static bool onButtonClick_Btn9(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn9 !!!\n");
 	doorPwd.append("9");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+    gKeyboardLastActionTime = time(NULL);
     return false;
 }
 
@@ -273,6 +309,7 @@ static bool onButtonClick_Btn9(ZKButton *pButton) {
 static bool onButtonClick_BtnOK(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnOK !!!\n");
 	string  jstr = MakeCMDDoorPassword(doorPwd.c_str());
+	mWindNotePtr->showWnd();
 	if(updateServerLiveState())
 	{
 		gSocket->write_(jstr.c_str());
@@ -284,6 +321,7 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 	}
 	doorPwd.clear();
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+    gKeyboardLastActionTime = time(NULL);
     return false;
 }
 
@@ -291,6 +329,7 @@ static bool onButtonClick_BtnBack(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnBackUp !!!\n");
 	doorPwd = doorPwd.substr(0, doorPwd.length() - 1);
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+    gKeyboardLastActionTime = time(NULL);
     return false;
 }
 
@@ -308,6 +347,7 @@ static bool onButtonClick_BtnBackMain(ZKButton *pButton) {
 
 	//WindInAdminPwd->showWnd();
 	mWinPwdAdminPtr->showWnd();
+    gKeyboardLastActionTime = time(NULL);
 	return false;
 }
 
@@ -315,16 +355,13 @@ static bool onButtonClick_BtnBackMain(ZKButton *pButton) {
 static bool onButtonClick_BtnCancel(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnCancel !!!\n");
 	mWinPwdAdminPtr->hideWnd();
+    gKeyboardLastActionTime = time(NULL);
     return false;
 }
 static void onEditTextChanged_EdittextPassword(const std::string &text) {
     //LOGD(" onEditTextChanged_ EdittextPassword %s !!!\n", text.c_str());
 }
 
-static bool onButtonClick_BtnEnter(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnEnter !!!\n");
-    return false;
-}
 static bool onButtonClick_BtnConfirm(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnConfirm !!!\n");
 	string temp = mEditTextAdminPasswordPtr->getText();
@@ -337,6 +374,7 @@ static bool onButtonClick_BtnConfirm(ZKButton *pButton) {
 		mTVNotePtr->setText("提示：管理员密码错误");
 		LOGE("管理员密码：%s",gAdminPwd.c_str());
 	}
+    gKeyboardLastActionTime = time(NULL);
 	return false;
 
 }

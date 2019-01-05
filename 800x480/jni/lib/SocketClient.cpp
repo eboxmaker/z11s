@@ -246,6 +246,11 @@ bool SocketClient::disconnect() {
 	mClientSocket = -1;
 	return true;
 }
+void SocketClient::write_(string &msg)
+{
+	write(mClientSocket,msg.c_str(), msg.length());
+	return ;
+}
 void SocketClient::write_(char *msg)
 {
 	write(mClientSocket,msg, strlen(msg));
@@ -339,7 +344,7 @@ void SocketClient::threadLoop() {
 				string x = cutOneJsonString(&rxbuf);
 				if(x != "")
 				{
-					exeCMD(&x);
+					exeCMD(x);
 				}
 				flag = false;
 				//LOGE("缓冲区可用数据:%d",rxbuf.available());

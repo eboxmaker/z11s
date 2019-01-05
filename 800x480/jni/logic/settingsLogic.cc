@@ -3,6 +3,8 @@
 #include "json_test.h"
 #include "globalVar.h"
 #include "storage/StoragePreferences.h"
+#include "utils/TimeHelper.h"
+#include "lib/itoa.h"
 /*
 *此文件由GUI工具生成
 *文件功能：用于处理用户的逻辑相应代码
@@ -34,13 +36,62 @@
 */
 
 
+static void updateUI_time() {
+	char timeStr[20];
+	struct tm *t = TimeHelper::getDateTime();
+
+	sprintf(timeStr, "%02d:%02d:%02d", t->tm_hour,t->tm_min,t->tm_sec);
+	mTextTimePtr->setText(timeStr); // 注意修改控件名称
+
+	sprintf(timeStr, "%d年%02d月%02d日", 1900 + t->tm_year, t->tm_mon + 1, t->tm_mday);
+	mTextDatePtr->setText(timeStr); // 注意修改控件名称
+
+	static const char *day[] = { "日", "一", "二", "三", "四", "五", "六" };
+	sprintf(timeStr, "星期%s", day[t->tm_wday]);
+	mTextWeekPtr->setText(timeStr); // 注意修改控件名称
+}
+
+//static void updateDateEditText() {
+//	struct tm *t = TimeHelper::getDateTime();
+//	mYearEdittextPtr->setText(t->tm_year + 1900);
+//	mMonthEdittextPtr->setText(t->tm_mon + 1);
+//	mDayEdittextPtr->setText(t->tm_mday);
+//}
+
+//static void setSystemTime() {
+//	struct tm t;
+//	t.tm_year = atoi(mYearEdittextPtr->getText().c_str()) - 1900;		//年
+//	t.tm_mon = atoi(mMonthEdittextPtr->getText().c_str()) - 1;			//月
+//	t.tm_mday = atoi(mDayEdittextPtr->getText().c_str());				//日
+//	t.tm_hour = 0;		//时
+//	t.tm_min = 0;		//分
+//	t.tm_sec = 0;		//秒
+//
+//	TimeHelper::setDateTime(&t);
+//}
+
+
+
+//网络数据回调接口
+static void onNetWrokDataUpdate(JsonCmd_t cmd,string &msg)
+{
+	switch(cmd)
+	{
+	case CMDSyncDateTime:
+		TimeHelper::setDateTime(msg.c_str());
+		break;
+
+	}
+
+}
+
 /**
  * 注册定时器
  * 填充数组用于注册定时器
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	//{0,  6000}, //定时器id=0, 时间间隔6秒
+	{0,  1000}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
 };
 
@@ -49,7 +100,7 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
  */
 static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
-
+	settingsCallback = onNetWrokDataUpdate;
 }
 
 /**
@@ -74,7 +125,12 @@ static void onUI_show() {
     sprintf(temp,"%d",gServerPort);
     mEditTextServerIPPtr->setText(gServerIP.c_str());
     mEditTextServerPortPtr->setText(temp);
+
     mWndModifyAdminPwdPtr->hideWnd();
+    mWndAdSetPtr->hideWnd();
+
+
+
 }
 
 /*
@@ -89,6 +145,7 @@ static void onUI_hide() {
  * 当界面完全退出时触发
  */
 static void onUI_quit() {
+	settingsCallback = NULL;
 
 }
 
@@ -111,6 +168,14 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  */
 static bool onUI_Timer(int id){
 	switch (id) {
+	case 0:
+		updateUI_time();
+		if(getServerLiveState() == true)
+			mBtnServerStatePtr->setBackgroundPic("kai.png");
+		else
+			mBtnServerStatePtr->setBackgroundPic("guan.png");
+
+		break;
 
 		default:
 			break;
@@ -206,10 +271,6 @@ static void onEditTextChanged_EditTextServerIP(const std::string &text) {
 static void onEditTextChanged_EditTextServerPort(const std::string &text) {
     //LOGD(" onEditTextChanged_ EditTextServerPort %s !!!\n", text.c_str());
 }
-static bool onButtonClick_Button1(ZKButton *pButton) {
-    //LOGD(" ButtonClick Button1 !!!\n");
-    return false;
-}
 
 static void onEditTextChanged_EdittextOldAdminPwd(const std::string &text) {
     //LOGD(" onEditTextChanged_ EdittextOldAdminPwd %s !!!\n", text.c_str());
@@ -257,5 +318,122 @@ static bool onButtonClick_BtnCancel(ZKButton *pButton) {
 static bool onButtonClick_BtnModifyAdminPwd(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnModifyAdminPwd !!!\n");
     mWndModifyAdminPwdPtr->showWnd();
+    return false;
+}
+static bool onButtonClick_BtnSyncDateTime(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnSyncDateTime !!!\n");
+	char temp[20];
+	string timeStr;
+	struct tm *t = TimeHelper::getDateTime();
+	sprintf(temp, "%d-%02d-%02d %02d:%02d:%02d", 1900 + t->tm_year, t->tm_mon + 1, t->tm_mday,t->tm_hour,t->tm_min,t->tm_sec);
+	timeStr = temp;
+	string str = MakeCMDSyncDateTime(timeStr);
+	gSocket->write_(str);
+    return false;
+}
+static bool onButtonClick_BtnAdSet(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnAdSet !!!\n");
+
+    StoragePreferences::getInt("gAdEnable", gAdEnable);
+    StoragePreferences::getInt("gDisplayAdAfterTime", gDisplayAdAfterTime);
+    StoragePreferences::getInt("gDisplayAdAfterTime", gSwitchAdTime);
+	if(gAdEnable == 1)
+	{
+		mBtnAdEnablePtr->setBackgroundPic("kai.png");
+	}
+	else
+	{
+		mBtnAdEnablePtr->setBackgroundPic("guan.png");
+	}
+
+    char buf[10];
+    memset(buf,0,10);
+    itoa(gDisplayAdAfterTime,buf);
+    LOGE("%D,%s",gDisplayAdAfterTime,buf);
+    mEditDisplayAdAfterTimePtr->setText(buf);
+
+
+    memset(buf,0,10);
+    itoa(gSwitchAdTime,buf);
+    mEditSwitchAdTimePtr->setText(buf);
+    LOGE("%D,%s",gSwitchAdTime,buf);
+
+
+
+    mWndAdSetPtr->showWnd();
+
+    return false;
+}
+
+static void onEditTextChanged_EditDisplayAdAfterTime(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EditDisplayAdAfterTime %s !!!\n", text.c_str());
+	string str = mEditDisplayAdAfterTimePtr->getText();
+	int temp = atoi(str.c_str());
+	if(temp > 100)
+		mEditDisplayAdAfterTimePtr->setText("100");
+	else if(temp <= 10)
+		mEditDisplayAdAfterTimePtr->setText("10");
+	else
+	{
+
+	}
+}
+
+static void onEditTextChanged_EditSwitchAdTime(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EditSwitchAdTime %s !!!\n", text.c_str());
+	string str = mEditSwitchAdTimePtr->getText();
+	int temp = atoi(str.c_str());
+	if(temp > 100)
+		mEditSwitchAdTimePtr->setText("100");
+	else if(temp <= 3)
+		mEditSwitchAdTimePtr->setText("3");
+	else
+	{
+
+	}
+}
+
+static bool onButtonClick_BtnAdOK(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnAdOK !!!\n");
+	string str = mEditDisplayAdAfterTimePtr->getText();
+	int temp = atoi(str.c_str());
+	gDisplayAdAfterTime = temp;
+
+	str = mEditSwitchAdTimePtr->getText();
+	temp = atoi(str.c_str());
+	gSwitchAdTime = temp;
+
+    StoragePreferences::putInt("gDisplayAdAfterTime", gDisplayAdAfterTime);
+    StoragePreferences::putInt("gSwitchAdTime", gSwitchAdTime);
+    StoragePreferences::putInt("gAdEnable", gAdEnable);
+    char buf[20];
+    sprintf(buf,"%d,%d",gDisplayAdAfterTime,gSwitchAdTime);
+    mTextAdSetNotePtr->setText(buf);
+
+
+    return false;
+}
+
+static bool onButtonClick_BtnAdCancel(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnAdCancel !!!\n");
+	mWndAdSetPtr->hideWnd();
+    return false;
+}
+static bool onButtonClick_BtnAdEnable(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnAdEnable !!!\n");
+	if(gAdEnable == 1)
+	{
+		mBtnAdEnablePtr->setBackgroundPic("guan.png");
+		gAdEnable = 0;
+	}
+	else
+	{
+		mBtnAdEnablePtr->setBackgroundPic("kai.png");
+		gAdEnable = 1;
+	}
+    return false;
+}
+static bool onButtonClick_BtnServerState(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnServerState !!!\n");
     return false;
 }

@@ -19,15 +19,16 @@ using namespace std;
 
 string cutOneJsonString(RingBufInt8 *msg);
 bool ParseJsonString(char *str);
-JsonCmd_t getJsonCMD(const char * str);
-string ParseCMDDoor1(char *str);
+JsonCmd_t getJsonCMD(string &str);
+string ParseCMDDoor1(string &str);
 string ParseCMDDoor2(char *str);
 string MakeCMDDoorPassword(char *str);
 FILE *openfile(uint32_t *len);
 string get_id(const char *str);
 string MakeCMDHeatbeat();
-string ParseCMDDoorPwdStatus(char *str);
-
+string ParseCMDDoorPwdStatus(string &str);
+string MakeCMDSyncDateTime(string &str);
+string ParseCMDSyncDateTime(string &str);
 
 
 

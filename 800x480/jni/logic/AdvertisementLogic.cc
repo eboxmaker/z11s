@@ -1,5 +1,11 @@
 #pragma once
 #include "uart/ProtocolSender.h"
+#include "json_test.h"
+#include "readdir.h"
+#include "globalVar.h"
+#include "storage/StoragePreferences.h"
+
+
 /*
 *此文件由GUI工具生成
 *文件功能：用于处理用户的逻辑相应代码
@@ -29,7 +35,19 @@
 *
 * 在Eclipse编辑器中  使用 “alt + /”  快捷键可以打开智能提示
 */
+static void onNetWrokDataUpdate(JsonCmd_t cmd,string &msg)
+{
+	LOGE("%s",msg.c_str());
 
+	switch(cmd)
+	{
+	case CMDAdvertisement:
+		mBtnPicPtr->setText("");
+		mBtnPicPtr->setBackgroundPic(msg.c_str());
+		get_all_ad_full_name(gAdPicList);
+		 break;
+	}
+}
 
 /**
  * 注册定时器
@@ -37,7 +55,7 @@
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	//{0,  6000}, //定时器id=0, 时间间隔6秒
+	{0,  3000}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
 };
 
@@ -46,7 +64,16 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
  */
 static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
-
+	get_all_ad_full_name(gAdPicList);
+	if(gAdPicList.size() > 0)
+	{
+		mBtnPicPtr->setText("");
+		mBtnPicPtr->setBackgroundPic(gAdPicList[0].c_str());
+	}
+	AdvertisementCallback = onNetWrokDataUpdate;
+	REGISTER_ACTIVITY_TIMER_TAB[0] = {0,gSwitchAdTime*1000};
+    gDisplayAdAfterTime = StoragePreferences::getInt("gDisplayAdAfterTime", 10);
+    gSwitchAdTime = StoragePreferences::getInt("gSwitchAdTime", 4);
 }
 
 /**
@@ -62,7 +89,8 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
-
+    gDisplayAdAfterTime = StoragePreferences::getInt("gDisplayAdAfterTime", 10);
+    gSwitchAdTime = StoragePreferences::getInt("gSwitchAdTime", 4);
 }
 
 /*
@@ -76,7 +104,7 @@ static void onUI_hide() {
  * 当界面完全退出时触发
  */
 static void onUI_quit() {
-
+	AdvertisementCallback = NULL;
 }
 
 /**
@@ -96,8 +124,23 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  *         false
  *             停止运行当前定时器
  */
+static int pic_counter = 0;
 static bool onUI_Timer(int id){
 	switch (id) {
+	case 0:
+		if(pic_counter < gAdPicList.size() )
+		{
+
+
+			pic_counter++;
+		}
+		else
+		{
+			pic_counter = 0;
+		}
+		mBtnPicPtr->setText("");
+		mBtnPicPtr->setBackgroundPic(gAdPicList[pic_counter].c_str());
+		break;
 
 		default:
 			break;
@@ -114,7 +157,7 @@ static bool onUI_Timer(int id){
  *         false
  *            触摸事件将继续传递到控件上
  */
-static bool onpwdAdminActivityTouchEvent(const MotionEvent &ev) {
+static bool onAdvertisementActivityTouchEvent(const MotionEvent &ev) {
     switch (ev.mActionStatus) {
 		case MotionEvent::E_ACTION_DOWN://触摸按下
 			//LOGD("时刻 = %ld 坐标  x = %d, y = %d", ev.mEventTime, ev.mX, ev.mY);
@@ -128,16 +171,9 @@ static bool onpwdAdminActivityTouchEvent(const MotionEvent &ev) {
 	}
 	return false;
 }
-static bool onButtonClick_BtnOK(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnOK !!!\n");
-    return false;
-}
+static bool onButtonClick_BtnPic(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnPic !!!\n");
+	EASYUICONTEXT->openActivity("keyboardActivity");
 
-static void onEditTextChanged_Edittext1(const std::string &text) {
-    //LOGD(" onEditTextChanged_ Edittext1 %s !!!\n", text.c_str());
-}
-
-static bool onButtonClick_BtnCancel(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnCancel !!!\n");
     return false;
 }

@@ -4,6 +4,12 @@
 #include "keyboardActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextWeekPtr;
+static ZKTextView* mTextNoticePtr;
+static ZKWindow* mWindow2Ptr;
+static ZKTextView* mTextTimePtr;
+static ZKTextView* mTextDatePtr;
+static ZKWindow* mWindNotePtr;
 static ZKButton* mBtnQRPtr;
 static ZKTextView* mTVNotePtr;
 static ZKTextView* mTvConnectStatePtr;
@@ -164,6 +170,12 @@ const char* keyboardActivity::getAppName() const{
 //TAG:onCreate
 void keyboardActivity::onCreate() {
 	Activity::onCreate();
+    mTextWeekPtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextWeek);
+    mTextNoticePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextNotice);
+    mWindow2Ptr = (ZKWindow*)findControlByID(ID_KEYBOARD_Window2);
+    mTextTimePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextTime);
+    mTextDatePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextDate);
+    mWindNotePtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindNote);
     mBtnQRPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnQR);
     mTVNotePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TVNote);
     mTvConnectStatePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TvConnectState);

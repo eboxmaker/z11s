@@ -24,6 +24,7 @@ namespace MyJson
 	        DoorCtr,
 	        QR,
 	        Advertisement,
+            SyncDateTime,
     }//同
 
        // public JObject jo;
@@ -293,6 +294,24 @@ namespace MyJson
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.DoorPwd);
             obj.Add("doorPwd", "***");
+            obj.Add("status", status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            return jstring;
+        }
+
+
+        public static string ParseSyncDateTime(string js)
+        {
+            JObject jo = (JObject)JsonConvert.DeserializeObject(js);
+            string pwd = jo["status"].ToString();
+            return pwd;
+        }
+        public static string MakeCMDSyncDateTime(int status)
+        {
+            string dateTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.SyncDateTime);
+            obj.Add("dateTime", dateTime);
             obj.Add("status", status);
             string jstring = JsonConvert.SerializeObject(obj);
             return jstring;

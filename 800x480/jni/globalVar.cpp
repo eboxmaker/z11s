@@ -23,6 +23,12 @@ string gDoorPassword = "123456";
 unsigned long long gLastHelloTime = 0;
 bool gServerLiveState = false;
 
+long long gKeyboardLastActionTime = 0;
+int gDisplayAdAfterTime = 20;
+int gSwitchAdTime = 5;
+int gAdEnable = 1;
+stringList gAdPicList;
+
 //void MySocketListener::notify(int what, int status, const char *msg){
 //	string msg_string = msg;
 ////	if(status == SocketClient::E_SOCKET_STATUS_RECV_OK){
@@ -65,21 +71,21 @@ bool gServerLiveState = false;
 //
 myNotify_t keyboardCallback;
 myNotify_t AdvertisementCallback;
+myNotify_t networkTestCallback;
+myNotify_t settingsCallback;
 
 
-void exeCMD(string *JsonString)
+void exeCMD(string &JsonString)
 {
-	std::string fileFullName;
-	std::string filename;
 	std::string msg;
 
 	int counter =0;
 	bool ret;
 
-	ret = ParseJsonString(JsonString->c_str());
+	ret = ParseJsonString(JsonString.c_str());
 	if(ret == true)
 	{
-		JsonCmd_t cmd = getJsonCMD(JsonString->c_str());
+		JsonCmd_t cmd = getJsonCMD(JsonString);
 		LOGE("CMD :%d",cmd);
 		switch(cmd)
 		{
@@ -89,30 +95,26 @@ void exeCMD(string *JsonString)
 			break;
 		case CMDQR:
 			LOGE("接受到二维码!\n");
-			SaveFile(JsonString->c_str(),QR_DIR);
-			filename = GetFileName(JsonString->c_str());
-			fileFullName = QR_DIR;
-			fileFullName += filename;
+			SaveFile(JsonString.c_str(),QR_DIR);
+			msg = QR_DIR;
+			msg += GetFileName(JsonString.c_str());
 			//LOGE("文件名:%s!\n",fileFullName.c_str());
 			if(keyboardCallback != NULL)
-				keyboardCallback(CMDQR,fileFullName);
-			if(AdvertisementCallback != NULL)
-				AdvertisementCallback(CMDQR,fileFullName);
+				keyboardCallback(CMDQR,msg);
 			break;
 		case CMDAdvertisement:
 			LOGE("接受到图片!\n");
-			SaveFile(JsonString->c_str(),AD_DIR);
-			filename = GetFileName(JsonString->c_str());
-			fileFullName = AD_DIR;
-			fileFullName += filename;
+			SaveFile(JsonString.c_str(),AD_DIR);
+			msg = AD_DIR;
+			msg += GetFileName(JsonString.c_str());
 			//LOGE("文件名:%s!\n",fileFullName.c_str());
 			if(AdvertisementCallback != NULL)
 			{
-				AdvertisementCallback(CMDAdvertisement,fileFullName);
+				AdvertisementCallback(CMDAdvertisement,msg);
 			}
 			break;
 		case CMDDoorCtr:
-			msg = ParseCMDDoor1(JsonString->c_str());
+			msg = ParseCMDDoor1(JsonString);
 			if(msg == "0")
 			{
 				gDoorState = Lock;
@@ -125,42 +127,45 @@ void exeCMD(string *JsonString)
 				GpioHelper::output(GPIO_PIN_B_02, 0);
 				LOGD("door1:UnLock\n");
 			}
-			if(AdvertisementCallback != NULL)
-				AdvertisementCallback(CMDDoorCtr,msg);
 			break;
 		case CMDDoorPwd:
-			msg = ParseCMDDoorPwdStatus(JsonString->c_str());
-
-			LOGE("msg:%s\n",msg.c_str());
-
-			if(msg == "0")
-			{
-				LOGD("door 密码错误\n");
-			}
-			else
-			{
-				LOGD("door 密码正确\n");
-			}
+			msg = ParseCMDDoorPwdStatus(JsonString);
 			if(keyboardCallback != NULL)
 				keyboardCallback(CMDDoorPwd,msg);
+			break;
+		case CMDSyncDateTime:
+			msg = ParseCMDSyncDateTime(JsonString);
+			if(settingsCallback != NULL)
+				settingsCallback(CMDSyncDateTime,msg);
 			break;
 		default:
 			break;
 		}
+		if(networkTestCallback != NULL)
+			networkTestCallback(cmd,msg);
+
 	}
 }
 
 bool updateServerLiveState()
 {
-	if(time(NULL) - gLastHelloTime > 10)
+	if(gServerLiveState == true)
 	{
-		gServerLiveState = false;
-		LOGE("服务器离线");
+		if(time(NULL) - gLastHelloTime > 10)
+		{
+			gServerLiveState = false;
+			LOGE("服务器离线");
+		}
+		else
+		{
+			gServerLiveState = true;
+		}
 	}
 	else
 	{
-		gServerLiveState = true;
+
 	}
+
 	return gServerLiveState;
 }
 bool setServerLiveState(bool state)
@@ -169,4 +174,8 @@ bool setServerLiveState(bool state)
 	gServerLiveState = state;
 	return gServerLiveState;
 
+}
+bool getServerLiveState()
+{
+	return gServerLiveState;
 }

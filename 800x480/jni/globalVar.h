@@ -37,22 +37,30 @@ typedef enum
 	CMDDoorCtr,
 	CMDQR,
 	CMDAdvertisement,
+	CMDSyncDateTime,
 }JsonCmd_t;
 
 typedef std::vector<std::string> stringList;
 
 typedef void (*myNotify_t)(JsonCmd_t,string &);
 
-extern Mutex mutex ;
 extern string gServerIP ;
 extern int gServerPort ;
 extern struct sockaddr_in gServerAddr;
 extern SocketClient* gSocket;
-extern string gAdminPwd;
+
+extern string gAdminPwd;//需要存储
 extern string gDoorPassword;
 extern unsigned long long gLastHelloTime;
 extern bool gDoorPwdState ;
 
+extern long long gKeyboardLastActionTime;
+
+extern int gAdEnable;//需要存储
+extern int gDisplayAdAfterTime;//需要存储
+extern int gSwitchAdTime;//需要存储
+
+extern stringList gAdPicList;
 
 extern doorState_t gDoorState;
 
@@ -68,9 +76,12 @@ extern doorState_t gDoorState;
 //回调函数声明区域
 extern myNotify_t keyboardCallback;
 extern myNotify_t AdvertisementCallback;
+extern myNotify_t networkTestCallback;
+extern myNotify_t settingsCallback;
 
-void exeCMD(string *JsonString);
+void exeCMD(string &JsonString);
 bool updateServerLiveState();
 bool setServerLiveState(bool state);
+bool getServerLiveState();
 
 #endif /* JNI_LIB_GLOBALVAR_H_ */

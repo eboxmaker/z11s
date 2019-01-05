@@ -132,7 +132,10 @@ namespace socket
                     case (int)JsonManager.CMDType.AdminPwd:
                         break;
                     case (int)JsonManager.CMDType.Confirm:
-  
+                        break;
+                    case (int) JsonManager.CMDType.SyncDateTime:
+                        resault = JsonManager.MakeCMDSyncDateTime(1);
+                        server.SendAll(resault);
                         break;
                 }
                     
