@@ -331,13 +331,14 @@ static bool onButtonClick_BtnSyncDateTime(ZKButton *pButton) {
 	gSocket->write_(str);
     return false;
 }
+
 static bool onButtonClick_BtnAdSet(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnAdSet !!!\n");
 
-    StoragePreferences::getInt("gAdEnable", gAdEnable);
-    StoragePreferences::getInt("gDisplayAdAfterTime", gDisplayAdAfterTime);
-    StoragePreferences::getInt("gDisplayAdAfterTime", gSwitchAdTime);
-	if(gAdEnable == 1)
+    StoragePreferences::getBool("gAdSet.enable", gAdSet.enable);
+    StoragePreferences::getInt("gAdSet.displayTime", gAdSet.displayTime);
+    StoragePreferences::getInt("gAdSet.switchTime", gAdSet.switchTime);
+	if(gAdSet.enable == 1)
 	{
 		mBtnAdEnablePtr->setBackgroundPic("kai.png");
 	}
@@ -348,15 +349,15 @@ static bool onButtonClick_BtnAdSet(ZKButton *pButton) {
 
     char buf[10];
     memset(buf,0,10);
-    itoa(gDisplayAdAfterTime,buf);
-    LOGE("%D,%s",gDisplayAdAfterTime,buf);
+    itoa(gAdSet.displayTime,buf);
+    LOGE("%D,%s",gAdSet.displayTime,buf);
     mEditDisplayAdAfterTimePtr->setText(buf);
 
 
     memset(buf,0,10);
-    itoa(gSwitchAdTime,buf);
+    itoa(gAdSet.switchTime,buf);
     mEditSwitchAdTimePtr->setText(buf);
-    LOGE("%D,%s",gSwitchAdTime,buf);
+    LOGE("%D,%s",gAdSet.switchTime,buf);
 
 
 
@@ -397,17 +398,17 @@ static bool onButtonClick_BtnAdOK(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnAdOK !!!\n");
 	string str = mEditDisplayAdAfterTimePtr->getText();
 	int temp = atoi(str.c_str());
-	gDisplayAdAfterTime = temp;
+	gAdSet.displayTime = temp;
 
 	str = mEditSwitchAdTimePtr->getText();
 	temp = atoi(str.c_str());
-	gSwitchAdTime = temp;
+	gAdSet.switchTime = temp;
 
-    StoragePreferences::putInt("gDisplayAdAfterTime", gDisplayAdAfterTime);
-    StoragePreferences::putInt("gSwitchAdTime", gSwitchAdTime);
-    StoragePreferences::putInt("gAdEnable", gAdEnable);
+    StoragePreferences::putBool("gAdSet.displayTime", gAdSet.displayTime);
+    StoragePreferences::putInt("gAdSet.switchTime", gAdSet.switchTime);
+    StoragePreferences::putInt("gAdSet.enable", gAdSet.enable);
     char buf[20];
-    sprintf(buf,"%d,%d",gDisplayAdAfterTime,gSwitchAdTime);
+    sprintf(buf,"%d,%d",gAdSet.displayTime,gAdSet.switchTime);
     mTextAdSetNotePtr->setText(buf);
 
 
@@ -421,15 +422,15 @@ static bool onButtonClick_BtnAdCancel(ZKButton *pButton) {
 }
 static bool onButtonClick_BtnAdEnable(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnAdEnable !!!\n");
-	if(gAdEnable == 1)
+	if(gAdSet.enable == true)
 	{
 		mBtnAdEnablePtr->setBackgroundPic("guan.png");
-		gAdEnable = 0;
+		gAdSet.enable = false;
 	}
 	else
 	{
 		mBtnAdEnablePtr->setBackgroundPic("kai.png");
-		gAdEnable = 1;
+		gAdSet.enable = true;
 	}
     return false;
 }
@@ -437,3 +438,4 @@ static bool onButtonClick_BtnServerState(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnServerState !!!\n");
     return false;
 }
+

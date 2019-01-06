@@ -20,12 +20,24 @@ using namespace std;
 
 #define QR_DIR		"/mnt/extsd/qr/"
 #define AD_DIR		"/mnt/extsd/ad/"
+
+typedef std::vector<std::string> stringList;
+typedef std::vector< std::vector<std::string> > stringListList;
+
 typedef enum
 {
 	Lock,
 	UnLock
 }doorState_t;
 
+typedef struct
+{
+	bool enable;
+	int displayTime;
+	int switchTime;
+	stringList list;
+}AdSet_t;
+extern AdSet_t gAdSet;
 
 typedef enum
 {
@@ -36,15 +48,15 @@ typedef enum
 	CMDDoorPwd,
 	CMDDoorCtr,
 	CMDQR,
-	CMDAdvertisement,
+	CMDAdPic,//CMDAdvertisement,
+	CMDAdSet,
 	CMDSyncDateTime,
 	CMDPlan,
 	CMDBroadcast,
 	CMDSuperPic,
 }JsonCmd_t;
 
-typedef std::vector<std::string> stringList;
-typedef std::vector< std::vector<std::string> > stringListList;
+
 
 typedef void (*myNotify_t)(JsonCmd_t,string &);
 
@@ -59,12 +71,6 @@ extern unsigned long long gLastHelloTime;
 extern bool gDoorPwdState ;
 
 extern long long gKeyboardLastActionTime;
-
-extern int gAdEnable;//需要存储
-extern int gDisplayAdAfterTime;//需要存储
-extern int gSwitchAdTime;//需要存储
-
-extern stringList gAdPicList;
 
 extern doorState_t gDoorState;
 

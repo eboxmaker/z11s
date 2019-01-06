@@ -67,10 +67,10 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd,string &msg)
 		mBtnQRPtr->setText("");
 		mBtnQRPtr->setBackgroundPic(msg.c_str());
 		 break;
-	case CMDAdvertisement:
+	case CMDAdPic:
 		mBtnPicPtr->setText("");
 		mBtnPicPtr->setBackgroundPic(msg.c_str());
-		get_all_ad_full_name(gAdPicList);
+		get_all_ad_full_name(gAdSet.list);
 		 break;
 	}
 }
@@ -90,7 +90,7 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
  */
 static void onUI_init(){
 	networkTestCallback = onNetWrokDataUpdate;
-	get_all_ad_full_name(gAdPicList);
+	get_all_ad_full_name(gAdSet.list);
 }
 
 /**
@@ -161,11 +161,11 @@ static bool onUI_Timer(int id){
 			mTVConnectStatePtr->setText("已连接");
 		}
 
-		if(pic_counter < gAdPicList.size() )
+		if(pic_counter < gAdSet.list.size() )
 		{
 
 			mBtnPicPtr->setText("");
-			mBtnPicPtr->setBackgroundPic(gAdPicList[pic_counter].c_str());
+			mBtnPicPtr->setBackgroundPic(gAdSet.list[pic_counter].c_str());
 			pic_counter++;
 		}
 		else

@@ -41,10 +41,10 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd,string &msg)
 
 	switch(cmd)
 	{
-	case CMDAdvertisement:
+	case CMDAdPic:
 		mBtnPicPtr->setText("");
 		mBtnPicPtr->setBackgroundPic(msg.c_str());
-		get_all_ad_full_name(gAdPicList);
+		get_all_ad_full_name(gAdSet.list);
 		 break;
 	}
 }
@@ -64,16 +64,16 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
  */
 static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
-	get_all_ad_full_name(gAdPicList);
-	if(gAdPicList.size() > 0)
+	get_all_ad_full_name(gAdSet.list);
+	if(gAdSet.list.size() > 0)
 	{
 		mBtnPicPtr->setText("");
-		mBtnPicPtr->setBackgroundPic(gAdPicList[0].c_str());
+		mBtnPicPtr->setBackgroundPic(gAdSet.list[0].c_str());
 	}
 	AdvertisementCallback = onNetWrokDataUpdate;
-	REGISTER_ACTIVITY_TIMER_TAB[0] = {0,gSwitchAdTime*1000};
-    gDisplayAdAfterTime = StoragePreferences::getInt("gDisplayAdAfterTime", 10);
-    gSwitchAdTime = StoragePreferences::getInt("gSwitchAdTime", 4);
+	REGISTER_ACTIVITY_TIMER_TAB[0] = {0,gAdSet.switchTime*1000};
+    gAdSet.displayTime = StoragePreferences::getInt("gAdSet.displayTime", 10);
+    gAdSet.switchTime = StoragePreferences::getInt("gAdSet.switchTime", 4);
 }
 
 /**
@@ -89,8 +89,7 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
-    gDisplayAdAfterTime = StoragePreferences::getInt("gDisplayAdAfterTime", 10);
-    gSwitchAdTime = StoragePreferences::getInt("gSwitchAdTime", 4);
+
 }
 
 /*
@@ -128,7 +127,7 @@ static int pic_counter = 0;
 static bool onUI_Timer(int id){
 	switch (id) {
 	case 0:
-		if(pic_counter < gAdPicList.size() )
+		if(pic_counter < gAdSet.list.size() )
 		{
 
 
@@ -139,7 +138,7 @@ static bool onUI_Timer(int id){
 			pic_counter = 0;
 		}
 		mBtnPicPtr->setText("");
-		mBtnPicPtr->setBackgroundPic(gAdPicList[pic_counter].c_str());
+		mBtnPicPtr->setBackgroundPic(gAdSet.list[pic_counter].c_str());
 		break;
 
 		default:

@@ -24,22 +24,23 @@ static void *MainLoop(void *lParam);
 static void LoadParament()
 {
     gServerIP = StoragePreferences::getString("gServerIP", "192.168.1.1");
-    LOGE("gServerIP %s\n", gServerIP.c_str());
     gServerPort = StoragePreferences::getInt("gServerPort", 6000);
-    LOGE("gServerPort %d\n", gServerPort);
     gAdminPwd = StoragePreferences::getString("gAdminPwd", "123456");
+
+    LOGE("gServerIP %s\n", gServerIP.c_str());
+    LOGE("gServerPort %d\n", gServerPort);
     LOGE("gServerPort %s\n", gAdminPwd.c_str());
 
 //    StoragePreferences::remove("gDisplayAdAfterTime");
 //    StoragePreferences::remove("gSwitchAdTime");
 //    StoragePreferences::remove("gAdEnable");
-    gDisplayAdAfterTime = StoragePreferences::getInt("gDisplayAdAfterTime", 20);
-    gSwitchAdTime = StoragePreferences::getInt("gSwitchAdTime", 5);
-    gAdEnable = StoragePreferences::getInt("gAdEnable", 1);
+    gAdSet.displayTime = StoragePreferences::getInt("gAdSet.displayTime", 20);
+    gAdSet.switchTime = StoragePreferences::getInt("gAdSet.switchTime", 5);
+    gAdSet.enable = StoragePreferences::getBool("gAdSet.enable", true);
 
-    LOGE("gDisplayAdAfterTime %D\n", gDisplayAdAfterTime);
-    LOGE("gSwitchAdTime %D\n",gSwitchAdTime);
-    LOGE("gAdEnable %D\n",gAdEnable);
+    LOGE("gDisplayAdAfterTime %D\n", gAdSet.displayTime);
+    LOGE("gSwitchAdTime %D\n",gAdSet.switchTime);
+    LOGE("gAdEnable %D\n",gAdSet.enable);
     make_dir(QR_DIR);
     make_dir(AD_DIR);
 //	stringList list = get_all_ad_full_name();
@@ -129,7 +130,7 @@ static void *MainLoop(void *lParam)
 			}
 		}
 
-		if(gAdEnable)
+		if(gAdSet.enable)
 		{
 			const char *ptr;
 			ptr = EASYUICONTEXT->currentAppName();
@@ -137,7 +138,7 @@ static void *MainLoop(void *lParam)
 			timeNow = time(NULL);
 			if(cAppName == "keyboardActivity")
 			{
-				if(timeNow - gKeyboardLastActionTime > gDisplayAdAfterTime)
+				if(timeNow - gKeyboardLastActionTime > gAdSet.displayTime)
 				{
 					EASYUICONTEXT->openActivity("AdvertisementActivity");
 					LOGE("切换成功");

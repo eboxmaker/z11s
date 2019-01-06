@@ -261,6 +261,40 @@ string MakeCMDBroadcastAck(string &str)
 	  string temp =  fw.write(root);
 	  return temp;
 }
+
+string MakeAdSet(bool enable, int displayTime,int switchTime)
+{
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDBroadcast);
+	  root["enable"] = Json::Value(enable);
+	  root["displayTime"] = Json::Value(displayTime);
+	  root["switchTime"] = Json::Value(switchTime);
+	  root["status"] = Json::Value("0");
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return temp;
+
+}
+string ParseAdSet(string &str)
+{
+	  Json::Reader reader;
+
+	  Json::Value root;
+	  int value;
+	  string msg;
+	  std::string val_str;
+	  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+		  value = (int)root["status"].asInt();
+		  msg = root["data"].asString();
+	  }
+
+	  return msg;
+}
+
+
+
+
 std::string get_id(const char *str)
 {
 	  Json::Reader reader;
@@ -277,6 +311,8 @@ std::string get_id(const char *str)
 
 	  return upload_id;
 }
+
+
 
 int ParseJsonFromString()
 

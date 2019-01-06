@@ -195,18 +195,18 @@ namespace socket
 
         private void btnLoadFile_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.PackageFileToJsonString("1.jpg", (int)JsonManager.CMDType.Advertisement);
+            string str = JsonManager.PackageFileToJsonString("1.jpg", (int)JsonManager.CMDType.AdPic);
            RichSend.Text = str;
         }
 
         private void btnLoadFile2_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.PackageFileToJsonString("2.jpg", (int)JsonManager.CMDType.Advertisement);
+            string str = JsonManager.PackageFileToJsonString("2.jpg", (int)JsonManager.CMDType.AdPic);
             RichSend.Text = str;
         }
         private void btnLoadFile3_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.PackageFileToJsonString("3.jpg", (int)JsonManager.CMDType.Advertisement);
+            string str = JsonManager.PackageFileToJsonString("3.jpg", (int)JsonManager.CMDType.AdPic);
             RichSend.Text = str;
         }
         private void btnLoadQR_Click(object sender, EventArgs e)

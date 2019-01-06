@@ -24,10 +24,9 @@ unsigned long long gLastHelloTime = 0;
 bool gServerLiveState = false;
 
 long long gKeyboardLastActionTime = 0;
-int gDisplayAdAfterTime = 20;
-int gSwitchAdTime = 5;
-int gAdEnable = 1;
-stringList gAdPicList;
+
+AdSet_t gAdSet;
+
 
 //void MySocketListener::notify(int what, int status, const char *msg){
 //	string msg_string = msg;
@@ -102,7 +101,7 @@ void exeCMD(string &JsonString)
 			if(keyboardCallback != NULL)
 				keyboardCallback(cmd,msg);
 			break;
-		case CMDAdvertisement:
+		case CMDAdPic:
 			LOGE("接受到图片!\n");
 			SaveFile(JsonString.c_str(),AD_DIR);
 			msg = AD_DIR;
