@@ -137,6 +137,10 @@ namespace socket
                         resault = JsonManager.MakeCMDSyncDateTime(1);
                         server.SendAll(resault);
                         break;
+                    case (int)JsonManager.CMDType.Plan:
+                        resault = JsonManager.MakePlan();
+                        server.SendAll(resault);
+                        break;
                 }
                     
             }
@@ -225,13 +229,24 @@ namespace socket
         {
             string str = JsonManager.MakeCMDDoor1(1);
             server.SendAll(str);
-            server.SendAll(str);
 
         }
 
         private void btnCloseLock_Click(object sender, EventArgs e)
         {
             string str = JsonManager.MakeCMDDoor1(0);
+            server.SendAll(str);
+        }
+
+        private void btnBroadcast_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeBroadcast("通知：今天是考试所有课程已经停止，详细内容请查阅课程安排");
+            server.SendAll(str);
+        }
+
+        private void btnCloseBroadcast_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeBroadcast("");
             server.SendAll(str);
         }
 

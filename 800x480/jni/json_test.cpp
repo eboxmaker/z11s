@@ -8,6 +8,8 @@
 #include "json_test.h"
 #include "lib/itoa.h"
 #include "globalVar.h"
+#include   <iostream>
+
 string cutOneJsonString(RingBufInt8 *msg)
 {
 
@@ -40,7 +42,7 @@ string cutOneJsonString(RingBufInt8 *msg)
 					//LOGE("接受到结束符");
 					if(ParseJsonString(buf) == true)
 					{
-						LOGE("解析完成,%s,size:%dbytes",buf,counter);
+						LOGE("解析完成,size:%dbytes",counter);
 						buf[counter + 1] = '\0';
 						resault = buf;
 						return resault;
@@ -195,6 +197,69 @@ string ParseCMDSyncDateTime(string &str)
 	  }
 
 	  return dateTime;
+}
+string MakeCMDPlan()
+{
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDPlan);
+	  root["status"] = Json::Value("0");
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return temp;
+}
+
+stringListList ParseCMDPlan(string &str)
+{
+	stringListList list;
+	Json::Reader reader;
+	Json::Value root;
+	if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	{
+		Json::Value course = root["plan"];
+		int course_size =  root["plan"].size();
+		for(int i = 0; i < course_size; i++)
+		{
+			string x1 = course[i]["teacher"].asString();
+			string x2 = course[i]["class"].asString();
+			string x3 = course[i]["course"].asString();
+			cout <<list[i][0] << x1;
+			cout <<list[i][1] << x2;
+			cout <<list[i][2] << x3;
+			cout << endl;
+		}
+	}
+
+	  return list;
+}
+string ParseCMDBroadcast(string &str)
+{
+	  Json::Reader reader;
+
+	  Json::Value root;
+	  int value;
+	  string msg;
+	  std::string val_str;
+	  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+		  value = (int)root["status"].asInt();
+		  msg = root["data"].asString();
+	  }
+
+	  return msg;
+}
+string MakeCMDBroadcastAck(string &str)
+{
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDBroadcast);
+	  root["data"] = Json::Value(str);
+	  if(str != "")
+		  root["isDisplay"] = Json::Value(1);
+	  else
+		  root["isDisplay"] = Json::Value(0);
+	  root["status"] = Json::Value("1");
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return temp;
 }
 std::string get_id(const char *str)
 {

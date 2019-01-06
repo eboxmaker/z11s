@@ -25,6 +25,9 @@ namespace MyJson
 	        QR,
 	        Advertisement,
             SyncDateTime,
+            Plan,
+            Broadcast,
+            SuperPic,
     }//同
 
        // public JObject jo;
@@ -313,6 +316,48 @@ namespace MyJson
             obj.Add("cmd", (int)CMDType.SyncDateTime);
             obj.Add("dateTime", dateTime);
             obj.Add("status", status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            return jstring;
+        }
+        public static string MakePlan()
+        {
+            string dateTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+            JObject obj = new JObject();
+            var ja = new JArray();
+
+            obj.Add("cmd", (int)CMDType.Plan);
+
+            for (int i = 0; i < 4; i++)
+            {
+                JObject jo = new JObject();
+                jo.Add("timeStart", "8:00:00");
+                jo.Add("timeEnd", "10:30:00");
+                jo.Add("teacher", "张云峰");
+                jo.Add("class", "B08333");
+                jo.Add("course", "aaaaaaaaaaaaa");
+                ja.Add(jo);
+            } 
+            obj.Add("plan",ja);
+
+            string jstring = JsonConvert.SerializeObject(obj);
+
+            return jstring;
+        }
+        public static string ParsePlan(string js)
+        {
+            JObject jo = (JObject)JsonConvert.DeserializeObject(js);
+            string status = jo["status"].ToString();
+            return status;
+
+        }
+        public static string MakeBroadcast(string msg)
+        {
+            string dateTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.Broadcast);
+            obj.Add("data", msg);
+            obj.Add("isDisplay", 1);
+            obj.Add("status", 0);
             string jstring = JsonConvert.SerializeObject(obj);
             return jstring;
         }

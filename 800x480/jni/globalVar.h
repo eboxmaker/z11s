@@ -31,16 +31,20 @@ typedef enum
 {
 	CMDHeartbeat,
 	CMDSetHeartbeat,
-	CMDConfirm,
+	CMDConfirmDevID,
 	CMDAdminPwd,
 	CMDDoorPwd,
 	CMDDoorCtr,
 	CMDQR,
 	CMDAdvertisement,
 	CMDSyncDateTime,
+	CMDPlan,
+	CMDBroadcast,
+	CMDSuperPic,
 }JsonCmd_t;
 
 typedef std::vector<std::string> stringList;
+typedef std::vector< std::vector<std::string> > stringListList;
 
 typedef void (*myNotify_t)(JsonCmd_t,string &);
 

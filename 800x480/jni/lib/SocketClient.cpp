@@ -287,7 +287,7 @@ void SocketClient::timer_thread()
 		if(mClientSocket > 0)
 		{
 			write_(hearbeatMsg);
-			LOGE("timer thread running");
+			//LOGE("timer thread running");
 		}
 	}
 

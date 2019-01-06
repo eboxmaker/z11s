@@ -129,27 +129,31 @@ static void *MainLoop(void *lParam)
 			}
 		}
 
-		const char *ptr;
-		ptr = EASYUICONTEXT->currentAppName();
-		cAppName = ptr;
-		timeNow = time(NULL);
-		if(cAppName == "keyboardActivity")
+		if(gAdEnable)
 		{
-			if(timeNow - gKeyboardLastActionTime > gDisplayAdAfterTime)
+			const char *ptr;
+			ptr = EASYUICONTEXT->currentAppName();
+			cAppName = ptr;
+			timeNow = time(NULL);
+			if(cAppName == "keyboardActivity")
 			{
-				EASYUICONTEXT->openActivity("AdvertisementActivity");
-				LOGE("切换成功");
+				if(timeNow - gKeyboardLastActionTime > gDisplayAdAfterTime)
+				{
+					EASYUICONTEXT->openActivity("AdvertisementActivity");
+					LOGE("切换成功");
+				}
+				else
+				{
+					//LOGE("TIME:%D",timeNow - gKeyboardLastActionTime);
+				}
 			}
 			else
 			{
-				LOGE("TIME:%D",timeNow - gKeyboardLastActionTime);
+				//LOGE("xxxTIME:%D",timeNow - gKeyboardLastActionTime);
+
 			}
 		}
-		else
-		{
-			//LOGE("xxxTIME:%D",timeNow - gKeyboardLastActionTime);
 
-		}
 	}
 
 }

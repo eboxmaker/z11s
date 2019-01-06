@@ -51,8 +51,6 @@ static int pic_counter = 0;
 
 static void onNetWrokDataUpdate(JsonCmd_t cmd,string &msg)
 {
-	LOGE("%s",msg.c_str());
-
 	switch(cmd)
 	{
 	case CMDDoorCtr:

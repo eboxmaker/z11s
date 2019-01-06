@@ -29,6 +29,10 @@ string MakeCMDHeatbeat();
 string ParseCMDDoorPwdStatus(string &str);
 string MakeCMDSyncDateTime(string &str);
 string ParseCMDSyncDateTime(string &str);
+string MakeCMDPlan();
+stringListList ParseCMDPlan(string &str);
+string ParseCMDBroadcast(string &str);
+string MakeCMDBroadcastAck(string &str);
 
 
 

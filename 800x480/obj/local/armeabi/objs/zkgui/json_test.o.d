@@ -203,7 +203,8 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/json_test.o:
  C:/Users/shentq/Documents/z11s/800x480/jni/lib/SocketClient.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/lib/itoa.h
+ C:/Users/shentq/Documents/z11s/800x480/jni/lib/itoa.h \
+ D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream
 
 C:/Users/shentq/Documents/z11s/800x480/jni/json_test.h:
 
@@ -612,3 +613,5 @@ C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h:
 C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/lib/itoa.h:
+
+D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream:

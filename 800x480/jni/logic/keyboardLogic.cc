@@ -53,11 +53,13 @@ static LongClickListener longButtonClickListener;
 
 
 
+
 //网络数据回调接口
 static void onNetWrokDataUpdate(JsonCmd_t cmd,string &msg)
 {
-	LOGE("%s",msg.c_str());
-
+	//LOGE("%s",msg.c_str());
+	Json::Reader reader;
+	Json::Value root;
 	switch(cmd)
 	{
 	case CMDQR:
@@ -65,18 +67,91 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd,string &msg)
 		mBtnQRPtr->setBackgroundPic(msg.c_str());
 		break;
 	case CMDDoorPwd:
-		mWindNotePtr->showWnd();
+		mWindStatuNoticPtr->showWnd();
 		if(msg == "1")
 		{
-			mTVNotePtr->setText("提示：密码正确");
+			mTextStatuNoticePtr->setText("提示：密码正确");
 		}
 		else
 		{
-			mTVNotePtr->setText("提示：密码错误");
+			mTextStatuNoticePtr->setText("提示：密码错误");
 		}
 		break;
 	case CMDDoorCtr:
+		mWindStatuNoticPtr->hideWnd();
+		mWindStatuNoticPtr->showWnd();
+		if(msg == "1")
+		{
+			mTextStatuNoticePtr->setText("门正在打开");
+			sleep(2);
+			if(GpioHelper::input(GPIO_PIN_B_02) == 1)
+				mTextStatuNoticePtr->setText("门已经打开");
+			else
+				mTextStatuNoticePtr->setText("打开失败");
 
+		}
+		else
+		{
+			mTextStatuNoticePtr->setText("门正在关闭");
+			sleep(2);
+			if(GpioHelper::input(GPIO_PIN_B_02) == 0)
+				mTextStatuNoticePtr->setText("门已经关闭");
+			else
+				mTextStatuNoticePtr->setText("关闭失败");
+		}
+		break;
+
+	case CMDPlan:
+		if (reader.parse(msg, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+		{
+			Json::Value course = root["plan"];
+			int course_size =  root["plan"].size();
+			for(int i = 0; i < course_size; i++)
+			{
+				string x1 = course[i]["teacher"].asString();
+				string x2 = course[i]["class"].asString();
+				string x3 = course[i]["course"].asString();
+				switch(i)
+				{
+				case 0:
+					mTextTeacher1Ptr->setText(x1.c_str());
+					mTextClass1Ptr->setText(x2.c_str());
+					mTextCourse1Ptr->setText(x3.c_str());
+					break;
+				case 1:
+					mTextTeacher2Ptr->setText(x1.c_str());
+					mTextClass2Ptr->setText(x2.c_str());
+					mTextCourse2Ptr->setText(x3.c_str());
+					break;
+				case 2:
+					mTextTeacher3Ptr->setText(x1.c_str());
+					mTextClass3Ptr->setText(x2.c_str());
+					mTextCourse3Ptr->setText(x3.c_str());
+					break;
+				case 3:
+					mTextTeacher4Ptr->setText(x1.c_str());
+					mTextClass4Ptr->setText(x2.c_str());
+					mTextCourse4Ptr->setText(x3.c_str());
+					break;
+				}
+			}
+		}
+		mWindPlanPtr->showWnd();
+		LOGE("课程表显示");
+		break;
+	case CMDBroadcast:
+		if(msg != "")
+		{
+			mWindBroadcastPtr->showWnd();
+			mTextBroadcastPtr->setText(msg);
+		}
+		else
+		{
+			mWindBroadcastPtr->hideWnd();
+			mTextBroadcastPtr->setText(msg);
+		}
+		string str = MakeCMDBroadcastAck(msg);
+		gSocket->write_(str);
 		break;
 
 	}
@@ -116,7 +191,7 @@ static void onUI_init(){
     //注册按键长按监听
     mBtnBackPtr->setLongClickListener(&longButtonClickListener);
     keyboardCallback = onNetWrokDataUpdate;
-    mTVNotePtr->setText("提示：...");
+    mTextStatuNoticePtr->setText("提示：...");
     gKeyboardLastActionTime = time(NULL);
 }
 
@@ -134,8 +209,9 @@ static void onUI_intent(const Intent *intentPtr) {
  */
 static void onUI_show() {
 	EASYUICONTEXT->hideStatusBar();
-	mWindNotePtr->hideWnd();
+	mWindStatuNoticPtr->hideWnd();
 	mWinPwdAdminPtr->hideWnd();
+	mWindPlanPtr->hideWnd();
 	lastDoorState = gDoorState;
 	doorPwd.clear();
     gKeyboardLastActionTime = time(NULL);
@@ -309,15 +385,15 @@ static bool onButtonClick_Btn9(ZKButton *pButton) {
 static bool onButtonClick_BtnOK(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnOK !!!\n");
 	string  jstr = MakeCMDDoorPassword(doorPwd.c_str());
-	mWindNotePtr->showWnd();
+	mWindStatuNoticPtr->showWnd();
 	if(updateServerLiveState())
 	{
 		gSocket->write_(jstr.c_str());
-		mTVNotePtr->setText("提示：密码验证中");
+		mTextStatuNoticePtr->setText("提示：密码验证中");
 	}
 	else
 	{
-		mTVNotePtr->setText("提示：网络中断，请联系管理员");
+		mTextStatuNoticePtr->setText("提示：网络中断，请联系管理员");
 	}
 	doorPwd.clear();
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
@@ -342,14 +418,7 @@ static void onEditTextChanged_Edittext1(const std::string &text) {
 static void onEditTextChanged_EditTextKey(const std::string &text) {
     //LOGD(" onEditTextChanged_ EditTextKey %s !!!\n", text.c_str());
 }
-static bool onButtonClick_BtnBackMain(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnBackMain !!!\n");
 
-	//WindInAdminPwd->showWnd();
-	mWinPwdAdminPtr->showWnd();
-    gKeyboardLastActionTime = time(NULL);
-	return false;
-}
 
 
 static bool onButtonClick_BtnCancel(ZKButton *pButton) {
@@ -371,7 +440,8 @@ static bool onButtonClick_BtnConfirm(ZKButton *pButton) {
     }
 	else
 	{
-		mTVNotePtr->setText("提示：管理员密码错误");
+		mWindStatuNoticPtr->showWnd();
+		mTextStatuNoticePtr->setText("提示：管理员密码错误");
 		LOGE("管理员密码：%s",gAdminPwd.c_str());
 	}
     gKeyboardLastActionTime = time(NULL);
@@ -394,5 +464,39 @@ static void onEditTextChanged_EditTextAdminPassword(const std::string &text) {
 }
 static bool onButtonClick_BtnQR(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnQR !!!\n");
+    return false;
+}
+
+static bool onButtonClick_BtnBackMain(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnBackMain !!!\n");
+
+	//WindInAdminPwd->showWnd();
+	mWinPwdAdminPtr->showWnd();
+    gKeyboardLastActionTime = time(NULL);
+	return false;
+}
+static bool onButtonClick_BtnBackMain2(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnBackMain2 !!!\n");
+
+	//WindInAdminPwd->showWnd();
+	mWinPwdAdminPtr->showWnd();
+    gKeyboardLastActionTime = time(NULL);
+	return false;}
+
+static bool onButtonClick_BtnPlan(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnPlan !!!\n");
+	mWindStatuNoticPtr->showWnd();
+	mTextStatuNoticePtr->setText("提示：正在获取课程表");
+	string str = MakeCMDPlan();
+	gSocket->write_(str);
+    gKeyboardLastActionTime = time(NULL);
+
+    return false;
+}
+static bool onButtonClick_BtnExitPlan(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnExitPlan !!!\n");
+	mWindPlanPtr->hideWnd();
+    gKeyboardLastActionTime = time(NULL);
+
     return false;
 }

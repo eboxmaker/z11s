@@ -4,17 +4,47 @@
 #include "keyboardActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextBroadcastPtr;
+static ZKWindow* mWindBroadcastPtr;
+static ZKTextView* mTextStatuNoticePtr;
+static ZKWindow* mWindStatuNoticPtr;
+static ZKTextView* mTextCourse3Ptr;
+static ZKTextView* mTextCourse4Ptr;
+static ZKTextView* mTextCourse2Ptr;
+static ZKTextView* mTextCourse1Ptr;
+static ZKTextView* mTextClass3Ptr;
+static ZKTextView* mTextClass4Ptr;
+static ZKTextView* mTextClass2Ptr;
+static ZKTextView* mTextClass1Ptr;
+static ZKTextView* mTextTeacher4Ptr;
+static ZKTextView* mTextTeacher3Ptr;
+static ZKTextView* mTextTeacher2Ptr;
+static ZKTextView* mTextTeacher1Ptr;
+static ZKButton* mBtnExitPlanPtr;
+static ZKTextView* mTextview24Ptr;
+static ZKTextView* mTextview23Ptr;
+static ZKTextView* mTextview18Ptr;
+static ZKTextView* mTextview17Ptr;
+static ZKTextView* mTextview16Ptr;
+static ZKTextView* mTextview10Ptr;
+static ZKTextView* mTextview11Ptr;
+static ZKWindow* mWindPlanPtr;
+static ZKButton* mBtnPlanPtr;
+static ZKTextView* mTextview9Ptr;
+static ZKTextView* mTextview8Ptr;
+static ZKTextView* mTextview7Ptr;
+static ZKTextView* mTextview6Ptr;
+static ZKTextView* mTextview5Ptr;
+static ZKTextView* mTextview4Ptr;
+static ZKWindow* mWindStatePtr;
+static ZKButton* mBtnBackMain2Ptr;
+static ZKTextView* mTextview1Ptr;
 static ZKTextView* mTextWeekPtr;
-static ZKTextView* mTextNoticePtr;
-static ZKWindow* mWindow2Ptr;
 static ZKTextView* mTextTimePtr;
 static ZKTextView* mTextDatePtr;
-static ZKWindow* mWindNotePtr;
 static ZKButton* mBtnQRPtr;
-static ZKTextView* mTVNotePtr;
 static ZKTextView* mTvConnectStatePtr;
 static ZKTextView* mTextview3Ptr;
-static ZKWindow* mWindow1Ptr;
 static ZKEditText* mEditTextAdminPasswordPtr;
 static ZKEditText* mEditTextDoorPasswordPtr;
 static ZKButton* mBtnConfirmPtr;
@@ -34,7 +64,6 @@ static ZKButton* mBtn5Ptr;
 static ZKButton* mBtn3Ptr;
 static ZKButton* mBtn2Ptr;
 static ZKButton* mBtn1Ptr;
-static ZKTextView* mTextview1Ptr;
 static keyboardActivity* mActivityPtr;
 
 /*register activity*/
@@ -72,6 +101,9 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_KEYBOARD_BtnExitPlan, onButtonClick_BtnExitPlan,
+    ID_KEYBOARD_BtnPlan, onButtonClick_BtnPlan,
+    ID_KEYBOARD_BtnBackMain2, onButtonClick_BtnBackMain2,
     ID_KEYBOARD_BtnQR, onButtonClick_BtnQR,
     ID_KEYBOARD_BtnConfirm, onButtonClick_BtnConfirm,
     ID_KEYBOARD_BtnCancel, onButtonClick_BtnCancel,
@@ -170,17 +202,47 @@ const char* keyboardActivity::getAppName() const{
 //TAG:onCreate
 void keyboardActivity::onCreate() {
 	Activity::onCreate();
+    mTextBroadcastPtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextBroadcast);
+    mWindBroadcastPtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindBroadcast);
+    mTextStatuNoticePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextStatuNotice);
+    mWindStatuNoticPtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindStatuNotic);
+    mTextCourse3Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextCourse3);
+    mTextCourse4Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextCourse4);
+    mTextCourse2Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextCourse2);
+    mTextCourse1Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextCourse1);
+    mTextClass3Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextClass3);
+    mTextClass4Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextClass4);
+    mTextClass2Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextClass2);
+    mTextClass1Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextClass1);
+    mTextTeacher4Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextTeacher4);
+    mTextTeacher3Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextTeacher3);
+    mTextTeacher2Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextTeacher2);
+    mTextTeacher1Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextTeacher1);
+    mBtnExitPlanPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnExitPlan);
+    mTextview24Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview24);
+    mTextview23Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview23);
+    mTextview18Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview18);
+    mTextview17Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview17);
+    mTextview16Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview16);
+    mTextview10Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview10);
+    mTextview11Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview11);
+    mWindPlanPtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindPlan);
+    mBtnPlanPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnPlan);
+    mTextview9Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview9);
+    mTextview8Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview8);
+    mTextview7Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview7);
+    mTextview6Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview6);
+    mTextview5Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview5);
+    mTextview4Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview4);
+    mWindStatePtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindState);
+    mBtnBackMain2Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnBackMain2);
+    mTextview1Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview1);
     mTextWeekPtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextWeek);
-    mTextNoticePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextNotice);
-    mWindow2Ptr = (ZKWindow*)findControlByID(ID_KEYBOARD_Window2);
     mTextTimePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextTime);
     mTextDatePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextDate);
-    mWindNotePtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindNote);
     mBtnQRPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnQR);
-    mTVNotePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TVNote);
     mTvConnectStatePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TvConnectState);
     mTextview3Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview3);
-    mWindow1Ptr = (ZKWindow*)findControlByID(ID_KEYBOARD_Window1);
     mEditTextAdminPasswordPtr = (ZKEditText*)findControlByID(ID_KEYBOARD_EditTextAdminPassword);if(mEditTextAdminPasswordPtr!= NULL){mEditTextAdminPasswordPtr->setTextChangeListener(this);}
     mEditTextDoorPasswordPtr = (ZKEditText*)findControlByID(ID_KEYBOARD_EditTextDoorPassword);if(mEditTextDoorPasswordPtr!= NULL){mEditTextDoorPasswordPtr->setTextChangeListener(this);}
     mBtnConfirmPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnConfirm);
@@ -200,7 +262,6 @@ void keyboardActivity::onCreate() {
     mBtn3Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Btn3);
     mBtn2Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Btn2);
     mBtn1Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Btn1);
-    mTextview1Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview1);
 	mActivityPtr = this;
 	onUI_init();
     registerProtocolDataUpdateListener(onProtocolDataUpdate); 

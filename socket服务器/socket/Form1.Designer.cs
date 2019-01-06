@@ -47,6 +47,8 @@
             this.btnLoadQR2 = new System.Windows.Forms.Button();
             this.btnLoadFile2 = new System.Windows.Forms.Button();
             this.btnLoadFile3 = new System.Windows.Forms.Button();
+            this.btnBroadcast = new System.Windows.Forms.Button();
+            this.btnCloseBroadcast = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnStartServer
@@ -224,11 +226,33 @@
             this.btnLoadFile3.UseVisualStyleBackColor = true;
             this.btnLoadFile3.Click += new System.EventHandler(this.btnLoadFile3_Click);
             // 
+            // btnBroadcast
+            // 
+            this.btnBroadcast.Location = new System.Drawing.Point(94, 321);
+            this.btnBroadcast.Name = "btnBroadcast";
+            this.btnBroadcast.Size = new System.Drawing.Size(75, 23);
+            this.btnBroadcast.TabIndex = 19;
+            this.btnBroadcast.Text = "广播消息";
+            this.btnBroadcast.UseVisualStyleBackColor = true;
+            this.btnBroadcast.Click += new System.EventHandler(this.btnBroadcast_Click);
+            // 
+            // btnCloseBroadcast
+            // 
+            this.btnCloseBroadcast.Location = new System.Drawing.Point(94, 350);
+            this.btnCloseBroadcast.Name = "btnCloseBroadcast";
+            this.btnCloseBroadcast.Size = new System.Drawing.Size(75, 23);
+            this.btnCloseBroadcast.TabIndex = 20;
+            this.btnCloseBroadcast.Text = "关闭广播";
+            this.btnCloseBroadcast.UseVisualStyleBackColor = true;
+            this.btnCloseBroadcast.Click += new System.EventHandler(this.btnCloseBroadcast_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(683, 417);
+            this.Controls.Add(this.btnCloseBroadcast);
+            this.Controls.Add(this.btnBroadcast);
             this.Controls.Add(this.btnLoadFile3);
             this.Controls.Add(this.btnLoadFile2);
             this.Controls.Add(this.btnLoadQR2);
@@ -276,6 +300,8 @@
         private System.Windows.Forms.Button btnLoadQR2;
         private System.Windows.Forms.Button btnLoadFile2;
         private System.Windows.Forms.Button btnLoadFile3;
+        private System.Windows.Forms.Button btnBroadcast;
+        private System.Windows.Forms.Button btnCloseBroadcast;
     }
 }
 

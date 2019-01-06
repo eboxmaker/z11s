@@ -100,7 +100,7 @@ void exeCMD(string &JsonString)
 			msg += GetFileName(JsonString.c_str());
 			//LOGE("文件名:%s!\n",fileFullName.c_str());
 			if(keyboardCallback != NULL)
-				keyboardCallback(CMDQR,msg);
+				keyboardCallback(cmd,msg);
 			break;
 		case CMDAdvertisement:
 			LOGE("接受到图片!\n");
@@ -110,7 +110,7 @@ void exeCMD(string &JsonString)
 			//LOGE("文件名:%s!\n",fileFullName.c_str());
 			if(AdvertisementCallback != NULL)
 			{
-				AdvertisementCallback(CMDAdvertisement,msg);
+				AdvertisementCallback(cmd,msg);
 			}
 			break;
 		case CMDDoorCtr:
@@ -118,25 +118,38 @@ void exeCMD(string &JsonString)
 			if(msg == "0")
 			{
 				gDoorState = Lock;
-				GpioHelper::output(GPIO_PIN_B_02, 1);
+				GpioHelper::output(GPIO_PIN_B_02, 0);
 				LOGD("door1:Lock\n");
 			}
 			else
 			{
 				gDoorState = UnLock;
-				GpioHelper::output(GPIO_PIN_B_02, 0);
+				GpioHelper::output(GPIO_PIN_B_02, 1);
 				LOGD("door1:UnLock\n");
 			}
+			if(keyboardCallback != NULL)
+				keyboardCallback(cmd,msg);
 			break;
 		case CMDDoorPwd:
 			msg = ParseCMDDoorPwdStatus(JsonString);
 			if(keyboardCallback != NULL)
-				keyboardCallback(CMDDoorPwd,msg);
+				keyboardCallback(cmd,msg);
 			break;
 		case CMDSyncDateTime:
-			msg = ParseCMDSyncDateTime(JsonString);
+			JsonString = ParseCMDSyncDateTime(JsonString);
 			if(settingsCallback != NULL)
-				settingsCallback(CMDSyncDateTime,msg);
+				settingsCallback(cmd,msg);
+			break;
+
+		case CMDPlan:
+			msg = (JsonString);
+			if(keyboardCallback != NULL)
+				keyboardCallback(cmd,msg);
+			break;
+		case CMDBroadcast:
+			msg = ParseCMDBroadcast(JsonString);
+			if(keyboardCallback != NULL)
+				keyboardCallback(cmd,msg);
 			break;
 		default:
 			break;
