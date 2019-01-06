@@ -362,5 +362,18 @@ namespace MyJson
             string jstring = JsonConvert.SerializeObject(obj);
             return jstring;
         }
+
+        public static string MakeAdSet(int status)
+        {
+            string dateTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.AdSet);
+            obj.Add("enable", true);
+            obj.Add("displayTime", 100);
+            obj.Add("switchTime", 3);
+            obj.Add("status", status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            return jstring;
+        }
     }
 }

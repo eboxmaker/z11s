@@ -141,6 +141,10 @@ namespace socket
                         resault = JsonManager.MakePlan();
                         server.SendAll(resault);
                         break;
+                    case (int)JsonManager.CMDType.AdSet:
+                        resault = JsonManager.MakeAdSet(1);
+                        server.SendAll(resault);
+                        break;
                 }
                     
             }
@@ -247,6 +251,12 @@ namespace socket
         private void btnCloseBroadcast_Click(object sender, EventArgs e)
         {
             string str = JsonManager.MakeBroadcast("");
+            server.SendAll(str);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeAdSet(0);
             server.SendAll(str);
         }
 

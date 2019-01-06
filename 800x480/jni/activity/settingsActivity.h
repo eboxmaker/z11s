@@ -26,10 +26,11 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_SETTINGS_WindStatusNotice    110003
+#define ID_SETTINGS_TextStatusNotice    50017
 #define ID_SETTINGS_BtnServerState    20012
 #define ID_SETTINGS_Textview8    50016
 #define ID_SETTINGS_BtnAdEnable    20009
-#define ID_SETTINGS_TextAdSetNote    50015
 #define ID_SETTINGS_BtnAdCancel    20011
 #define ID_SETTINGS_BtnAdOK    20010
 #define ID_SETTINGS_Textview7    50014

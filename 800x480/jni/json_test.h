@@ -33,8 +33,8 @@ string MakeCMDPlan();
 stringListList ParseCMDPlan(string &str);
 string ParseCMDBroadcast(string &str);
 string MakeCMDBroadcastAck(string &str);
-string MakeAdSet(bool enable, int displayTime,int switchTime);
-string ParseAdSet(string &str);
+string MakeCMDAdSet(AdSet_t &set,int status);
+string ParseCMDAdSet(string &str,AdSet_t &set);
 
 
 

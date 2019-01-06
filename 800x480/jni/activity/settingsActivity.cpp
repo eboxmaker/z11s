@@ -4,10 +4,11 @@
 #include "settingsActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKWindow* mWindStatusNoticePtr;
+static ZKTextView* mTextStatusNoticePtr;
 static ZKButton* mBtnServerStatePtr;
 static ZKTextView* mTextview8Ptr;
 static ZKButton* mBtnAdEnablePtr;
-static ZKTextView* mTextAdSetNotePtr;
 static ZKButton* mBtnAdCancelPtr;
 static ZKButton* mBtnAdOKPtr;
 static ZKTextView* mTextview7Ptr;
@@ -177,10 +178,11 @@ const char* settingsActivity::getAppName() const{
 //TAG:onCreate
 void settingsActivity::onCreate() {
 	Activity::onCreate();
+    mWindStatusNoticePtr = (ZKWindow*)findControlByID(ID_SETTINGS_WindStatusNotice);
+    mTextStatusNoticePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextStatusNotice);
     mBtnServerStatePtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnServerState);
     mTextview8Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview8);
     mBtnAdEnablePtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnAdEnable);
-    mTextAdSetNotePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextAdSetNote);
     mBtnAdCancelPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnAdCancel);
     mBtnAdOKPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnAdOK);
     mTextview7Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview7);

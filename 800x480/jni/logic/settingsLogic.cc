@@ -80,6 +80,13 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd,string &msg)
 	case CMDSyncDateTime:
 		TimeHelper::setDateTime(msg.c_str());
 		break;
+	case CMDAdSet:
+		mWindStatusNoticePtr->hideWnd();
+		mWindStatusNoticePtr->showWnd();
+		if(msg == "ok ack")
+			mTextStatusNoticePtr->setText("响应同步设置");
+
+		break;
 
 	}
 
@@ -407,10 +414,11 @@ static bool onButtonClick_BtnAdOK(ZKButton *pButton) {
     StoragePreferences::putBool("gAdSet.displayTime", gAdSet.displayTime);
     StoragePreferences::putInt("gAdSet.switchTime", gAdSet.switchTime);
     StoragePreferences::putInt("gAdSet.enable", gAdSet.enable);
-    char buf[20];
-    sprintf(buf,"%d,%d",gAdSet.displayTime,gAdSet.switchTime);
-    mTextAdSetNotePtr->setText(buf);
 
+    str = MakeCMDAdSet(gAdSet,0);
+    gSocket->write_(str);
+    mWindStatusNoticePtr->showWnd();
+    mTextStatusNoticePtr->setText("设置成功");
 
     return false;
 }

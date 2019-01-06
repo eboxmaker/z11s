@@ -150,6 +150,12 @@ void exeCMD(string &JsonString)
 			if(keyboardCallback != NULL)
 				keyboardCallback(cmd,msg);
 			break;
+		case CMDAdSet:
+			msg = ParseCMDAdSet(JsonString,gAdSet);
+			LOGD("set:ok\n");
+			if(settingsCallback != NULL)
+				settingsCallback(cmd,msg);
+			break;
 		default:
 			break;
 		}

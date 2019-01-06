@@ -262,31 +262,41 @@ string MakeCMDBroadcastAck(string &str)
 	  return temp;
 }
 
-string MakeAdSet(bool enable, int displayTime,int switchTime)
+string MakeCMDAdSet(AdSet_t &set,int status)
 {
 	  Json::Value root;
-	  root["cmd"] = Json::Value(CMDBroadcast);
-	  root["enable"] = Json::Value(enable);
-	  root["displayTime"] = Json::Value(displayTime);
-	  root["switchTime"] = Json::Value(switchTime);
-	  root["status"] = Json::Value("0");
+	  root["cmd"] = Json::Value(CMDAdSet);
+	  root["enable"] = Json::Value(set.enable);
+	  root["displayTime"] = Json::Value(set.displayTime);
+	  root["switchTime"] = Json::Value(set.switchTime);
+	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
 	  return temp;
-
 }
-string ParseAdSet(string &str)
+string ParseCMDAdSet(string &str,AdSet_t &set)
 {
 	  Json::Reader reader;
 
 	  Json::Value root;
 	  int value;
-	  string msg;
+	  string msg = "err";
+	  AdSet_t temp;
 	  std::string val_str;
 	  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
 		  value = (int)root["status"].asInt();
-		  msg = root["data"].asString();
+		  if(value == 1)
+		  {
+			  msg = "ok";
+		  }
+		  else
+		  {
+			  set.displayTime = root["displayTime"].asInt();
+			  set.switchTime = root["switchTime"].asInt();
+			  set.enable = root["enable"].asBool();
+			  msg = "ok ack";
+		  }
 	  }
 
 	  return msg;

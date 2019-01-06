@@ -49,6 +49,7 @@
             this.btnLoadFile3 = new System.Windows.Forms.Button();
             this.btnBroadcast = new System.Windows.Forms.Button();
             this.btnCloseBroadcast = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnStartServer
@@ -246,11 +247,22 @@
             this.btnCloseBroadcast.UseVisualStyleBackColor = true;
             this.btnCloseBroadcast.Click += new System.EventHandler(this.btnCloseBroadcast_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(194, 384);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 21;
+            this.button1.Text = "广告设置";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(683, 417);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.btnCloseBroadcast);
             this.Controls.Add(this.btnBroadcast);
             this.Controls.Add(this.btnLoadFile3);
@@ -302,6 +314,7 @@
         private System.Windows.Forms.Button btnLoadFile3;
         private System.Windows.Forms.Button btnBroadcast;
         private System.Windows.Forms.Button btnCloseBroadcast;
+        private System.Windows.Forms.Button button1;
     }
 }
 
