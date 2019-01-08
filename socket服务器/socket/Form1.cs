@@ -110,7 +110,7 @@ namespace socket
                 {
                     case (int)JsonManager.CMDType.Heartbeat:
                         JsonManager.ParseCMDHeartbeat(js);
-                        string str = JsonManager.MakeCMDHeartbeat();
+                        string str = JsonManager.MakeCMDHeartbeat(JsonManager.StatusType.StatusOK);
                         server.SendAll(str);
                         break;
                     case (int)JsonManager.CMDType.DoorPwd: 
@@ -118,23 +118,25 @@ namespace socket
                         string resault;
                         if(pwd == "123456")
                         {
-                            resault = JsonManager.MakeCMDDoorPwdAck(1);
+                            resault = JsonManager.MakeCMDDoorPwd(pwd,JsonManager.StatusType.StatusOK);
                             server.SendAll(resault);
                             btnOpen.PerformClick();
                         }
                         else
                         {
-                            resault = JsonManager.MakeCMDDoorPwdAck(0);
+                            resault = JsonManager.MakeCMDDoorPwd(pwd, JsonManager.StatusType.StatusErr);
                             server.SendAll(resault);
                             btnCloseLock.PerformClick();
                         }
                         break;
                     case (int)JsonManager.CMDType.AdminPwd:
+                        resault = JsonManager.MakeAdminPwd(JsonManager.StatusType.StatusOK);
+                        server.SendAll(resault);
                         break;
                     case (int)JsonManager.CMDType.Confirm:
                         break;
                     case (int) JsonManager.CMDType.SyncDateTime:
-                        resault = JsonManager.MakeCMDSyncDateTime(1);
+                        resault = JsonManager.MakeCMDSyncDateTime(JsonManager.StatusType.StatusOK);
                         server.SendAll(resault);
                         break;
                     case (int)JsonManager.CMDType.Plan:
@@ -142,7 +144,7 @@ namespace socket
                         server.SendAll(resault);
                         break;
                     case (int)JsonManager.CMDType.AdSet:
-                        resault = JsonManager.MakeAdSet(1);
+                        resault = JsonManager.MakeAdSet(JsonManager.StatusType.StatusOK);
                         server.SendAll(resault);
                         break;
                 }
@@ -231,32 +233,32 @@ namespace socket
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.MakeCMDDoor1(1);
-            server.SendAll(str);
+            string str = JsonManager.MakeCMDDoor1("unlock",JsonManager.StatusType.StatusSet);
+            server.SendAll("123"+ str + "123");
 
         }
 
         private void btnCloseLock_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.MakeCMDDoor1(0);
+            string str = JsonManager.MakeCMDDoor1("lock", JsonManager.StatusType.StatusSet);
             server.SendAll(str);
         }
 
         private void btnBroadcast_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.MakeBroadcast("通知：今天是考试所有课程已经停止，详细内容请查阅课程安排");
+            string str = JsonManager.MakeBroadcast("通知：今天是考试所有课程已经停止，详细内容请查阅课程安排",JsonManager.StatusType.StatusSet);
             server.SendAll(str);
         }
 
         private void btnCloseBroadcast_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.MakeBroadcast("");
+            string str = JsonManager.MakeBroadcast("",JsonManager.StatusType.StatusSet);
             server.SendAll(str);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.MakeAdSet(0);
+            string str = JsonManager.MakeAdSet(JsonManager.StatusType.StatusSet);
             server.SendAll(str);
         }
 

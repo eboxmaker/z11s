@@ -13,7 +13,7 @@
 #include "json_test.h"
 #include "packageFile.h"
 #include "readdir.h"
-
+#include "netinet/tcp.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,16 +43,6 @@ static void LoadParament()
     LOGE("gAdEnable %D\n",gAdSet.enable);
     make_dir(QR_DIR);
     make_dir(AD_DIR);
-//	stringList list = get_all_ad_full_name();
-//	adTotal = 0;
-//	 for(stringList::iterator it = list.begin() ; it !=list.end(); it++)
-//	 {
-//		 list[0]
-//		picPath[pic_total] = *it;
-//		LOGE("文件全名:%s",picPath[pic_total].c_str());
-//		adTotal++;
-//	 }
-
 }
 void onEasyUIInit(EasyUIContext *pContext) {
 	// 初始化时打开串口
@@ -108,27 +98,57 @@ static void *MainLoop(void *lParam)
 
 
 	gSocket->setHeartbeat(5);
+	if(gSocket->connected() == false)
+	{
+		gSocket->disconnect();
+		ret = gSocket->connect(gServerIP.c_str(),gServerPort);
+		if(ret == true)
+		{
+			LOGE("连接服务器成功!\n");
+		}
+		else
+		{
+			gSocket->disconnect();
+			LOGE("连接服务器失败 !\n");
+
+		}
+	}
 
 	while(1)
 	{
 		Thread::sleep(1000);
-
-		if(updateServerLiveState() == false)
-		{
-			gSocket->disconnect();
-			ret = gSocket->connect(gServerIP.c_str(),gServerPort);
-			if(ret == true)
-			{
-				setServerLiveState(true);
-				LOGE("连接服务器成功!\n");
-			}
-			else
-			{
-				gSocket->disconnect();
-				LOGE("连接服务器失败 !\n");
-
-			}
-		}
+//
+//		if(check_nic("eth0") == -1)
+//		{
+//			LOGE("网线断开");
+//			gSocket->disconnect();
+//
+//		}
+//
+//		struct tcp_info info;
+//		int len = sizeof(info);
+//		getsockopt(gSocket->mClientSocket,IPPROTO_TCP,TCP_INFO,&info,(socklen_t*)&len);
+//		if(info.tcpi_state == TCP_ESTABLISHED && gSocket->mClientSocket > 0)
+//		{
+//			LOGE("已连接（%d)",gSocket->mClientSocket);
+//		}
+//		else
+//		{
+//			LOGE("未连接");
+//			gSocket->disconnect();
+//			ret = gSocket->connect(gServerIP.c_str(),gServerPort);
+//			if(ret == true)
+//			{
+//				setServerLiveState(true);
+//				LOGE("连接服务器成功!\n");
+//			}
+//			else
+//			{
+//				gSocket->disconnect();
+//				LOGE("连接服务器失败 !\n");
+//
+//			}
+//		}
 
 		if(gAdSet.enable)
 		{

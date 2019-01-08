@@ -31,9 +31,8 @@
 #include "check_nic.h"
 #include <time.h>
 #include <signal.h>
-
-#define BUFFER_SIZE 				409600
-#define FILENAME_MAX_SIZE 			512
+#include "system/Thread.h"
+#define BUFFER_SIZE 				4096
 char buffer[BUFFER_SIZE] = { 0 };
 
 static int rtcSetTime(const struct tm *tm_time) {
@@ -129,8 +128,18 @@ static void* socketThreadHeatbeat(void *lParam) {
 
 SocketClient::SocketClient() :
 	conncetState(false),
-	mClientSocket(-1){
+	mClientSocket(-1),
+	trigerTimeout(5),
+	trigerTime(-1),
+	maxCallbackNum(5){
+
 	rxbuf.begin(409600);
+	for(int i = 0; i < maxCallbackNum; i++ )
+	{
+		onConncet[i] = NULL;
+		onDisconncet[i] = NULL;
+	}
+
 }
 
 SocketClient::~SocketClient() {
@@ -192,6 +201,18 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 		return false;
 	}
 	LOGE("connect %s success!\n", ip);
+//	bool bSet=true;
+//	   setsockopt(mClientSocket,SOL_SOCKET,SO_KEEPALIVE,(const char*)&bSet,sizeof(bool));
+//
+//
+//
+//	   int                 keepIdle = 6;
+//	     int                 keepInterval = 5;
+//	     int                 keepCount = 3;
+//	     setsockopt(mClientSocket, SOL_TCP, TCP_KEEPIDLE, (void *)&keepIdle, sizeof(keepIdle));
+//	     setsockopt(mClientSocket, SOL_TCP,TCP_KEEPINTVL, (void *)&keepInterval, sizeof(keepInterval));
+//	     setsockopt(mClientSocket,SOL_TCP, TCP_KEEPCNT, (void *)&keepCount, sizeof(keepCount));
+
 
 
 	pthread_t threadID = 0;
@@ -208,17 +229,21 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 	else
 	{
 
-		LOGE("create socket thread ok, erro=%d\n",threadID);
+		LOGE("创建一个线程, erro=%d\n",threadID);
 	}
 
 	LOGE("create socket thread success!\n");
 
 	conncetState = true;
-
+	for(int i = 0; i < maxCallbackNum; i++ )
+	{
+		if(onConncet[i] != NULL)
+			onConncet[i]();
+	}
 	return true;
 }
-//bool SocketClient::connected()
-//{
+bool SocketClient::connected()
+{
 //	int optval, optlen = sizeof(int);
 //	getsockopt(mClientSocket, SOL_SOCKET, SO_ERROR,(char*) &optval, &optlen);
 //
@@ -231,35 +256,73 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 //		conncetState = false;
 //		break;
 //	}
-//	return conncetState;
-//}
+	return conncetState;
+}
 
 bool SocketClient::disconnect() {
 	LOGE("SocketClient disconnect\n");
 	conncetState = false;
-//	if (mClientSocket > 0) {
+	if (mClientSocket > 0) {
 //		write_("");
+		close(mClientSocket);
+		mClientSocket = -1;
+		for(int i = 0; i < maxCallbackNum; i++ )
+		{
+			if(onDisconncet[i] != NULL)
+				onDisconncet[i]();
+		}
 //		LOGE("SocketClient close socket...\n");
-//	}
+	}
 	// 关闭socket
-	close(mClientSocket);
-	mClientSocket = -1;
 	return true;
+}
+
+void SocketClient::attachOnConncet(NetNotify_t callback,int num)
+{
+	if(num>=0 && num < maxCallbackNum)
+		onConncet[num] = callback;
+}
+void SocketClient::attachOnDisonncet(NetNotify_t callback,int num)
+{
+	if(num>=0 && num < maxCallbackNum)
+		onDisconncet[num] = callback;
+}
+void SocketClient::deattachOnConncet(int num)
+{
+	if(num>=0 && num < maxCallbackNum)
+		onConncet[num] = NULL;
+}
+void SocketClient::deattachOnDisonncet(int num)
+{
+	if(num>=0 && num < maxCallbackNum)
+		onDisconncet[num] = NULL;
 }
 void SocketClient::write_(string &msg)
 {
-	write(mClientSocket,msg.c_str(), msg.length());
+	if(connected())
+		write(mClientSocket,msg.c_str(), msg.length());
 	return ;
 }
 void SocketClient::write_(char *msg)
 {
-	write(mClientSocket,msg, strlen(msg));
+	if(connected())
+		write(mClientSocket,msg, strlen(msg));
 	return ;
 }
 void SocketClient::write_(char *msg,size_t length)
 {
-	write(mClientSocket,msg, length);
+	if(connected())
+		write(mClientSocket,msg, length);
 	return ;
+}
+
+void SocketClient::updateTriger()
+{
+	trigerTime = time(NULL);
+}
+void SocketClient::disableTriger()
+{
+	trigerTime = -1;
 }
 //char SocketClient::read_()
 //{
@@ -280,14 +343,73 @@ size_t SocketClient::available()
 
 void SocketClient::timer_thread()
 {
+	bool ret;
+	int counter = 0;
+
 	while(1)
 	{
+//		if(check_nic("eth0") == -1)
+//		{
+//			LOGE("网线断开");
+//			disconnect();
+//			conncetState = false;
+//
+//		}
+//
+//		{
+//
+//			struct tcp_info info;
+//			int len = sizeof(info);
+//			getsockopt(mClientSocket,IPPROTO_TCP,TCP_INFO,&info,(socklen_t*)&len);
+//			if(info.tcpi_state == TCP_ESTABLISHED && gSocket->mClientSocket > 0)
+//			{
+//				//LOGE("已连接（%d)",gSocket->mClientSocket);
+//				conncetState = true;
+//			}
+//			else
+//			{
+//				LOGE("未连接");
+//				disconnect();
+//				ret = connect(gServerIP.c_str(),gServerPort);
+//				if(ret == true)
+//				{
+//					LOGE("连接服务器成功!\n");
+//					conncetState = true;
+//				}
+//				else
+//				{
+//					disconnect();
+//					LOGE("连接服务器失败 !\n");
+//					conncetState = false;
+//
+//				}
+//			}
+//		}
 
-		sleep(heartbeatTime);
-		if(mClientSocket > 0)
+
+		if(	trigerTime != -1)
 		{
-			write_(hearbeatMsg);
-			//LOGE("timer thread running");
+			if(time(NULL) - trigerTime > trigerTimeout)
+			{
+				LOGE("已经触发");
+				exeCMD("trigerTimeout");
+				trigerTime = -1;
+			}
+		}
+
+		Thread::sleep(1000);
+
+		if(heartbeatTime < 3)
+			heartbeatTime = 3;
+		if(counter++ > heartbeatTime)
+		{
+			if(mClientSocket > 0)
+			{
+				write_(hearbeatMsg);
+				//LOGE("timer thread running");
+			}
+
+			counter = 0;
 		}
 	}
 
@@ -295,7 +417,8 @@ void SocketClient::timer_thread()
 bool SocketClient::setHeartbeat(int timeout)
 {
 	heartbeatTime = timeout;
-	string str = MakeCMDHeatbeat();
+	string str;
+	str = jm.makeHeartbeat(StatusSet);
 	memset(hearbeatMsg,0,sizeof(hearbeatMsg));
 	memcpy(hearbeatMsg,str.c_str(),str.length());
 
@@ -321,40 +444,103 @@ void SocketClient::threadLoop() {
 	int length = 0;
 	int len;
 	bool flag = false;
-
-	struct timeval timeout = { 1,0  };     // 1s
+	char msg_buf[409600];
+	int msg_counter = 0;
+	int state = 0;
+	struct timeval timeout = { 2,0  };     // 1s
 
 	setsockopt(mClientSocket, SOL_SOCKET, SO_RCVTIMEO,
 			(const char*)&timeout, sizeof(timeout));
-	while (1)
+    int keepAlive = 1; // 开启keepalive属性
+    int keepIdle = 3; // 如该连接在5秒内没有任何数据往来,则进行探测
+    int keepInterval = 3; // 探测时发包的时间间隔为3 秒
+    int keepCount = 3; // 探测尝试的次数.如果第1次探测包就收到响应了,则后2次的不再发.
+
+    setsockopt(mClientSocket, SOL_SOCKET, SO_KEEPALIVE, (void *)&keepAlive, sizeof(keepAlive));
+    setsockopt(mClientSocket, SOL_TCP, TCP_KEEPIDLE, (void*)&keepIdle, sizeof(keepIdle));
+    setsockopt(mClientSocket, SOL_TCP, TCP_KEEPINTVL, (void *)&keepInterval, sizeof(keepInterval));
+    setsockopt(mClientSocket, SOL_TCP, TCP_KEEPCNT, (void *)&keepCount, sizeof(keepCount));
+
+     long  lastLiveTime = time(NULL);
+     long  nowTime = time(NULL);
+     int errCounter = 0;
+    while (1)
 	{
-		length = recv(mClientSocket, buffer, BUFFER_SIZE,0);
+    	lastLiveTime = time(&lastLiveTime);
+		LOGE("last：%d",lastLiveTime);
+		length = recv(mClientSocket, &msg_buf[msg_counter], 1,0);
+		nowTime = time(&nowTime);
+		LOGE("now：%d",nowTime);
+		LOGE("now - last ：%d",(nowTime - lastLiveTime));
+		LOGE("接收线程运行状态：%d-(%s)",errno,strerror(errno));
+		if(errno == 110)
+		{
+			LOGE("断网线,服务器开启防火墙：%d-(%s)",errno,strerror(errno));
+			//断网线,服务器开启防火墙
+			disconnect();
+		}
+		if((errno == 11) && (length < 0))
+		{
+			if( (nowTime - lastLiveTime) == 0)
+			{
+				errCounter++;
+				LOGE("counter ：%d",(errCounter));
+				if(errCounter > 10)
+					disconnect();
+			}
+		}
 		if(length > 0)
 		{
-			for(int i = 0; i < length; i++)
+			switch(state)
 			{
-				rxbuf.write(buffer[i]);
-				if(buffer[i] == '}')
-					flag = true;
+				case 0:
+					if(msg_buf[msg_counter] == '{')
+					{
+						state = 1;
+						msg_counter++;
+					}
+					break;
+				case 1:
+					if(msg_buf[msg_counter] == '}')
+					{
+						msg_buf[msg_counter + 1] = '\0';
+						if(ParseJsonString(msg_buf) == true)
+						{
+							LOGE("解析完成,size:%dbytes",msg_counter);
+							exeCMD(msg_buf);
+							msg_counter = 0;
+							memset(msg_buf,0,msg_counter);
+							state = 0;
+
+						}
+						else
+						{
+							LOGE("解析失败,继续尝试。。。size:%dbytes",msg_counter);
+							msg_counter++;
+						}
+					}
+					else
+					{
+						msg_counter++;
+					}
+					break;
 			}
 		}
 		else
 		{
+			msg_counter = 0;
+			memset(msg_buf,0,msg_counter);
+			state = 0;
 
-				string x = cutOneJsonString(&rxbuf);
-				if(x != "")
-				{
-					exeCMD(x);
-				}
-				flag = false;
-				//LOGE("缓冲区可用数据:%d",rxbuf.available());
-
-			//LOGE("剩余:%d;len = %d",rxbuf.available(),length);
 		}
-		if(mClientSocket < 0)
-			break;
 
+		if(mClientSocket < 0)
+		{
+			//pthread_detach(pthread_self());
+			break;
+		}
+//
 	}
 
-	LOGE("socket thread end.\n");
+	LOGE("关闭线程.\n");
 }

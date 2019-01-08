@@ -21,13 +21,12 @@ string gAdminPwd = "123456";
 string gDoorPassword = "123456";
 
 unsigned long long gLastHelloTime = 0;
-bool gServerLiveState = false;
 
 long long gKeyboardLastActionTime = 0;
 
 AdSet_t gAdSet;
-
-
+PersonList_t gUserAdmin;
+Plan gPlan;
 //void MySocketListener::notify(int what, int status, const char *msg){
 //	string msg_string = msg;
 ////	if(status == SocketClient::E_SOCKET_STATUS_RECV_OK){
@@ -73,127 +72,147 @@ myNotify_t AdvertisementCallback;
 myNotify_t networkTestCallback;
 myNotify_t settingsCallback;
 
-
-void exeCMD(string &JsonString)
+void exeCMD(char *ptr)
+{
+	string js;
+	js = ptr;
+	exeCMD(js);
+}
+void exeCMD(string &js)
 {
 	std::string msg;
+	string ack ;
 
 	int counter =0;
 	bool ret;
+	int status = -1;
+	msg = "";
+	if(js == "trigerTimeout")
+	{
 
-	ret = ParseJsonString(JsonString.c_str());
+		if(networkTestCallback != NULL)
+			networkTestCallback(255,StatusErr,js);
+		if(keyboardCallback != NULL)
+			keyboardCallback(255,StatusErr,js);
+		if(settingsCallback != NULL)
+			settingsCallback(255,StatusErr,js);
+		if(AdvertisementCallback != NULL)
+			AdvertisementCallback(255,StatusErr,js);
+		return;
+	}
+	ret = ParseJsonString(js.c_str());
 	if(ret == true)
 	{
-		JsonCmd_t cmd = getJsonCMD(JsonString);
-		LOGE("CMD :%d",cmd);
+		JsonCmd_t cmd = getJsonCMD(js);
 		switch(cmd)
 		{
 		case CMDHeartbeat:
+			status = jm.parseHeartbeat(js,msg);
 			gLastHelloTime = time(NULL);
-			LOGE("服务器响应");
+			break;
+		case CMDSetHeartbeat:
+
+			break;
+		case CMDAdminPwd:
+			status = jm.parseAdminPwd(js,gAdminPwd);
+			if(status == StatusSet)
+			{
+				ack = jm.makeAdminPwd(gAdminPwd,StatusOK);
+				gSocket->write_(ack);
+			}
+			LOGE("status:%d",status);
 			break;
 		case CMDQR:
-			LOGE("接受到二维码!\n");
-			SaveFile(JsonString.c_str(),QR_DIR);
+			LOGE("接收到二维码!\n");
+			ret = SaveFile(js.c_str(),QR_DIR);
 			msg = QR_DIR;
-			msg += GetFileName(JsonString.c_str());
-			//LOGE("文件名:%s!\n",fileFullName.c_str());
-			if(keyboardCallback != NULL)
-				keyboardCallback(cmd,msg);
+			msg += GetFileName(js.c_str());
+			if(ret == true)
+				status = 0;
 			break;
 		case CMDAdPic:
-			LOGE("接受到图片!\n");
-			SaveFile(JsonString.c_str(),AD_DIR);
+			LOGE("接收到图片!\n");
+			ret = SaveFile(js.c_str(),AD_DIR);
 			msg = AD_DIR;
-			msg += GetFileName(JsonString.c_str());
-			//LOGE("文件名:%s!\n",fileFullName.c_str());
-			if(AdvertisementCallback != NULL)
-			{
-				AdvertisementCallback(cmd,msg);
-			}
+			msg += GetFileName(js.c_str());
+			if(ret == true)
+				status = 0;
 			break;
 		case CMDDoorCtr:
-			msg = ParseCMDDoor1(JsonString);
-			if(msg == "0")
+			status = jm.parseDoorCtr(js,gDoorState);
+			if(gDoorState == UnLock)
 			{
-				gDoorState = Lock;
-				GpioHelper::output(GPIO_PIN_B_02, 0);
-				LOGD("door1:Lock\n");
+				msg = "unlock";
+				GpioHelper::output(GPIO_PIN_B_02, UnLock);
 			}
 			else
 			{
-				gDoorState = UnLock;
-				GpioHelper::output(GPIO_PIN_B_02, 1);
-				LOGD("door1:UnLock\n");
+				msg = "lock";
+				GpioHelper::output(GPIO_PIN_B_02, Lock);
 			}
-			if(keyboardCallback != NULL)
-				keyboardCallback(cmd,msg);
 			break;
 		case CMDDoorPwd:
-			msg = ParseCMDDoorPwdStatus(JsonString);
-			if(keyboardCallback != NULL)
-				keyboardCallback(cmd,msg);
+			status = jm.parseDoorPwd(js, msg);
+			if(status == StatusSet)
+			{
+				//设置RTC，
+				//回复
+			}
 			break;
 		case CMDSyncDateTime:
-			JsonString = ParseCMDSyncDateTime(JsonString);
-			if(settingsCallback != NULL)
-				settingsCallback(cmd,msg);
-			break;
+			status = jm.parseSyncDateTime(js, msg);
+			if(status == StatusSet)
+			{
+				//设置RTC，
+			}
+			else if(status == StatusRead)
+			{
 
+			}
+			//回复
+
+			break;
 		case CMDPlan:
-			msg = (JsonString);
-			if(keyboardCallback != NULL)
-				keyboardCallback(cmd,msg);
+			status = jm.parsePlan(js, gPlan);
+			if(status == StatusRead)
+			{
+
+			}
 			break;
 		case CMDBroadcast:
-			msg = ParseCMDBroadcast(JsonString);
-			if(keyboardCallback != NULL)
-				keyboardCallback(cmd,msg);
+			status = jm.parseBroadcast(js, msg);
+			if(status == StatusSet)
+			{
+				//设置RTC，
+			}
+			else if(status == StatusRead)
+			{
+
+			}
+			ack = jm.makeBroadcast(msg, StatusOK);
+			gSocket->write_(ack);
 			break;
 		case CMDAdSet:
-			msg = ParseCMDAdSet(JsonString,gAdSet);
-			LOGD("set:ok\n");
-			if(settingsCallback != NULL)
-				settingsCallback(cmd,msg);
+			status = jm.parseAdSet(js,gAdSet);
+			if(status == StatusSet)
+			{
+				ack = jm.makeAdSet(gAdSet, StatusOK);
+				gSocket->write_(ack);
+			}
+
 			break;
 		default:
 			break;
 		}
 		if(networkTestCallback != NULL)
-			networkTestCallback(cmd,msg);
+			networkTestCallback(cmd,status,msg);
+		if(keyboardCallback != NULL)
+			keyboardCallback(cmd,status,msg);
+		if(settingsCallback != NULL)
+			settingsCallback(cmd,status,msg);
+		if(AdvertisementCallback != NULL)
+			AdvertisementCallback(cmd,status,msg);
 
 	}
 }
 
-bool updateServerLiveState()
-{
-	if(gServerLiveState == true)
-	{
-		if(time(NULL) - gLastHelloTime > 10)
-		{
-			gServerLiveState = false;
-			LOGE("服务器离线");
-		}
-		else
-		{
-			gServerLiveState = true;
-		}
-	}
-	else
-	{
-
-	}
-
-	return gServerLiveState;
-}
-bool setServerLiveState(bool state)
-{
-	gLastHelloTime = time(NULL);
-	gServerLiveState = state;
-	return gServerLiveState;
-
-}
-bool getServerLiveState()
-{
-	return gServerLiveState;
-}

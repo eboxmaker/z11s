@@ -35,7 +35,7 @@
 *
 * 在Eclipse编辑器中  使用 “alt + /”  快捷键可以打开智能提示
 */
-static void onNetWrokDataUpdate(JsonCmd_t cmd,string &msg)
+static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 {
 	LOGE("%s",msg.c_str());
 
@@ -127,18 +127,14 @@ static int pic_counter = 0;
 static bool onUI_Timer(int id){
 	switch (id) {
 	case 0:
-		if(pic_counter < gAdSet.list.size() )
-		{
-
-
-			pic_counter++;
-		}
-		else
+		if(pic_counter >= gAdSet.list.size() )
 		{
 			pic_counter = 0;
 		}
 		mBtnPicPtr->setText("");
 		mBtnPicPtr->setBackgroundPic(gAdSet.list[pic_counter].c_str());
+		pic_counter++;
+
 		break;
 
 		default:

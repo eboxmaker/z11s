@@ -4,10 +4,12 @@
 #include "keyboardActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKButton* mBtnQRCodePtr;
+static ZKTextView* mTextStatusNotice2Ptr;
+static ZKTextView* mTextStatusNoticePtr;
+static ZKWindow* mWindStatusNoticePtr;
 static ZKTextView* mTextBroadcastPtr;
 static ZKWindow* mWindBroadcastPtr;
-static ZKTextView* mTextStatuNoticePtr;
-static ZKWindow* mWindStatuNoticPtr;
 static ZKTextView* mTextCourse3Ptr;
 static ZKTextView* mTextCourse4Ptr;
 static ZKTextView* mTextCourse2Ptr;
@@ -42,7 +44,6 @@ static ZKTextView* mTextview1Ptr;
 static ZKTextView* mTextWeekPtr;
 static ZKTextView* mTextTimePtr;
 static ZKTextView* mTextDatePtr;
-static ZKButton* mBtnQRPtr;
 static ZKTextView* mTvConnectStatePtr;
 static ZKTextView* mTextview3Ptr;
 static ZKEditText* mEditTextAdminPasswordPtr;
@@ -101,10 +102,10 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_KEYBOARD_BtnQRCode, onButtonClick_BtnQRCode,
     ID_KEYBOARD_BtnExitPlan, onButtonClick_BtnExitPlan,
     ID_KEYBOARD_BtnPlan, onButtonClick_BtnPlan,
     ID_KEYBOARD_BtnBackMain2, onButtonClick_BtnBackMain2,
-    ID_KEYBOARD_BtnQR, onButtonClick_BtnQR,
     ID_KEYBOARD_BtnConfirm, onButtonClick_BtnConfirm,
     ID_KEYBOARD_BtnCancel, onButtonClick_BtnCancel,
     ID_KEYBOARD_BtnBackMain, onButtonClick_BtnBackMain,
@@ -202,10 +203,12 @@ const char* keyboardActivity::getAppName() const{
 //TAG:onCreate
 void keyboardActivity::onCreate() {
 	Activity::onCreate();
+    mBtnQRCodePtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnQRCode);
+    mTextStatusNotice2Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextStatusNotice2);
+    mTextStatusNoticePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextStatusNotice);
+    mWindStatusNoticePtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindStatusNotice);
     mTextBroadcastPtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextBroadcast);
     mWindBroadcastPtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindBroadcast);
-    mTextStatuNoticePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextStatuNotice);
-    mWindStatuNoticPtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindStatuNotic);
     mTextCourse3Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextCourse3);
     mTextCourse4Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextCourse4);
     mTextCourse2Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextCourse2);
@@ -240,7 +243,6 @@ void keyboardActivity::onCreate() {
     mTextWeekPtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextWeek);
     mTextTimePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextTime);
     mTextDatePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextDate);
-    mBtnQRPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnQR);
     mTvConnectStatePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TvConnectState);
     mTextview3Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview3);
     mEditTextAdminPasswordPtr = (ZKEditText*)findControlByID(ID_KEYBOARD_EditTextAdminPassword);if(mEditTextAdminPasswordPtr!= NULL){mEditTextAdminPasswordPtr->setTextChangeListener(this);}

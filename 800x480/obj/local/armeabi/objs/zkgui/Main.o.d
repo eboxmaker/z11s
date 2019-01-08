@@ -193,6 +193,8 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/Main.o: \
  C:/Users/shentq/Documents/z11s/800x480/jni/lib/SocketClient.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/system/mutex.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/tcp.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/tcp.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/check_nic.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/udp.h \
@@ -612,6 +614,10 @@ C:/Users/shentq/Documents/z11s/800x480/jni/lib/SocketClient.h:
 C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/system/mutex.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/tcp.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/tcp.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h:
 

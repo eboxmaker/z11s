@@ -10,59 +10,12 @@
 #include "globalVar.h"
 #include   <iostream>
 
-string cutOneJsonString(RingBufInt8 *msg)
-{
+static char buf[409600];
+static int counter = 0;
 
-	char buf[msg->available() +100];
-	string resault = "";
-	bool start_flag = false;
 
-	int counter = 0;
-	int state = 0;
-	while(1)
-	{
-		if(msg->available())
-		{
-			if(state == 0)
-			{
-				buf[counter] = msg->read();
-				if(buf[counter] == '{')
-				{
-					state = 1;
-					counter++;
-					start_flag = true;
-					LOGE("解析开始...");
-				}
-			}
-			else
-			{
-				buf[counter] = msg->read();
-				if(buf[counter] =='}')
-				{
-					//LOGE("接受到结束符");
-					if(ParseJsonString(buf) == true)
-					{
-						LOGE("解析完成,size:%dbytes",counter);
-						buf[counter + 1] = '\0';
-						resault = buf;
-						return resault;
-					}
-					else
-					{
-						LOGE("解析失败,继续尝试。。。");
-					}
-				}
-				counter++;
-			}
-		}
-		else
-		{
-			//LOGE("解析失败。。。");
-			return resault;
-		}
 
-	}
-}
+
 bool ParseJsonString(char *str)
 {
 	  Json::Reader reader;
@@ -90,179 +43,188 @@ JsonCmd_t getJsonCMD(string &str)
 
 	  return cmd;
 }
-string ParseCMDDoor1(string &str)
-{
-	  Json::Reader reader;
-
-	  Json::Value root;
-	  int value;
-	  std::string val_str;
-	  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
-	  {
-
-		  value = (int)root["value"].asInt();
-
-		  char temp[10];
-		  itoa(value,temp);
-		  val_str = temp;
-	  }
-
-	  return val_str;
-}
-string MakeCMDHeatbeat()
+string JsonCmdManager::makeHeartbeat(JsonStatus_t status)
 {
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDHeartbeat);
 	  root["value"] = Json::Value("hello");
+	  root["status"] = Json::Value((int)status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
 	  return temp;
 }
-string MakeCMDDoor1Ack(int state)
-{
-
-}
-string ParseCMDDoor2(char *str)
+JsonStatus_t JsonCmdManager::parseHeartbeat(string &js, string &msg)
 {
 	  Json::Reader reader;
-
 	  Json::Value root;
-	  int value;
-	  std::string val_str;
-	  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+
+	  JsonStatus_t status;
+
+	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
 
-		  value = (int)root["value"].asInt();
-
-		  char temp[10];
-		  itoa(value,temp);
-		  val_str = temp;
+		  msg = root["value"].asString();
+		  status = (JsonStatus_t)root["status"].asInt();
 	  }
 
-	  return val_str;
+	  return status;
 }
-string MakeCMDDoorPassword(char *str)
+
+
+
+
+string JsonCmdManager::makeDoorCtr(doorState_t &door,JsonStatus_t status)
+{
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDDoorCtr);
+	  if(status == Lock)
+		  root["door"] = Json::Value("lock");
+	  else
+		  root["door"] = Json::Value("unlock");
+	  root["status"] = Json::Value(status);
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return temp;
+}
+JsonStatus_t JsonCmdManager::parseDoorCtr(string &js,doorState_t &door)
+{
+	  Json::Reader reader;
+	  Json::Value root;
+
+	  JsonStatus_t status;
+	  string str;
+	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+
+		  status = (int)root["status"].asInt();
+		  str = root["door"].asString();
+
+		  if(str == "unlock")
+		  {
+			  door = UnLock;
+		  }
+		  else if(str == "lock")
+		  {
+			  door = Lock;
+		  }
+		  else
+		  {
+			  door = Lock;
+		  }
+	  }
+
+	  return status;
+}
+string  JsonCmdManager::makeDoorPwd(string &pwd,JsonStatus_t status)
 {
 
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDDoorPwd);
-	  root["doorPwd"] = Json::Value(str);
-	  root["status"] = Json::Value("0");
+	  root["pwd"] = Json::Value(pwd);
+	  root["status"] = Json::Value((int)status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
 	  return temp;
 }
-string ParseCMDDoorPwdStatus(string &str)
+JsonStatus_t  JsonCmdManager::parseDoorPwd(string &js,string &msg)
 {
 	  Json::Reader reader;
 
 	  Json::Value root;
-	  int value;
-	  std::string val_str;
-	  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  JsonStatus_t status;
+	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
 
-		  value = (int)root["status"].asInt();
-
-		  char temp[10];
-		  itoa(value,temp);
-		  val_str = temp;
+		  status = root["status"].asInt();
+		  msg =  root["pwd"].asString();
 	  }
 
-	  return val_str;
+	  return status;
 }
-
-string MakeCMDSyncDateTime(string &str)
+string JsonCmdManager::makeSyncDateTime(string &msg,JsonStatus_t status)
 {
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDSyncDateTime);
-	  root["dateTime"] = Json::Value(str);
-	  root["status"] = Json::Value("0");
+	  root["dateTime"] = Json::Value(msg);
+	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
 	  return temp;
 }
-string ParseCMDSyncDateTime(string &str)
+JsonStatus_t JsonCmdManager::parseSyncDateTime(string &js,string &msg)
 {
 	  Json::Reader reader;
 
 	  Json::Value root;
-	  int value;
-	  string dateTime;
-	  std::string val_str;
-	  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  JsonStatus_t status;
+	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  value = (int)root["status"].asInt();
-		  dateTime = root["dateTime"].asString();
+		  status = root["status"].asInt();
+		  msg = root["dateTime"].asString();
 	  }
 
-	  return dateTime;
+	  return status;
 }
-string MakeCMDPlan()
+
+string JsonCmdManager::makePlan(JsonStatus_t status)
 {
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDPlan);
-	  root["status"] = Json::Value("0");
+	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
 	  return temp;
 }
-
-stringListList ParseCMDPlan(string &str)
+JsonStatus_t JsonCmdManager::parsePlan(string &js, Plan &plan)
 {
-	stringListList list;
+	JsonStatus_t status;
 	Json::Reader reader;
 	Json::Value root;
-	if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	{
+		status = root["status"].asInt();
 		Json::Value course = root["plan"];
 		int course_size =  root["plan"].size();
 		for(int i = 0; i < course_size; i++)
 		{
-			string x1 = course[i]["teacher"].asString();
-			string x2 = course[i]["class"].asString();
-			string x3 = course[i]["course"].asString();
-			cout <<list[i][0] << x1;
-			cout <<list[i][1] << x2;
-			cout <<list[i][2] << x3;
-			cout << endl;
+			PlanRow_t row;
+			row.teacher = course[i]["teacher"].asString();
+			row.class_ = course[i]["class"].asString();
+			row.courser = course[i]["course"].asString();
+			gPlan.add(row);
 		}
 	}
 
-	  return list;
+	  return status;
 }
-string ParseCMDBroadcast(string &str)
-{
-	  Json::Reader reader;
 
-	  Json::Value root;
-	  int value;
-	  string msg;
-	  std::string val_str;
-	  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
-	  {
-		  value = (int)root["status"].asInt();
-		  msg = root["data"].asString();
-	  }
-
-	  return msg;
-}
-string MakeCMDBroadcastAck(string &str)
+string JsonCmdManager::makeBroadcast(string &msg,JsonStatus_t status)
 {
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDBroadcast);
-	  root["data"] = Json::Value(str);
-	  if(str != "")
-		  root["isDisplay"] = Json::Value(1);
-	  else
-		  root["isDisplay"] = Json::Value(0);
-	  root["status"] = Json::Value("1");
+	  root["data"] = Json::Value(msg);
+	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
 	  return temp;
 }
+JsonStatus_t JsonCmdManager::parseBroadcast(string &js,string &msg)
+{
+	  Json::Reader reader;
 
-string MakeCMDAdSet(AdSet_t &set,int status)
+	  Json::Value root;
+	  JsonStatus_t status;
+
+	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+		  status = root["status"].asInt();
+		  msg = root["data"].asString();
+	  }
+
+	  return status;
+}
+
+string JsonCmdManager::makeAdSet(AdSet_t &set,JsonStatus_t status)
 {
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDAdSet);
@@ -274,34 +236,57 @@ string MakeCMDAdSet(AdSet_t &set,int status)
 	  string temp =  fw.write(root);
 	  return temp;
 }
-string ParseCMDAdSet(string &str,AdSet_t &set)
+JsonStatus_t JsonCmdManager::parseAdSet(string &js,AdSet_t &set)
 {
 	  Json::Reader reader;
 
 	  Json::Value root;
-	  int value;
-	  string msg = "err";
+	  JsonStatus_t status;
 	  AdSet_t temp;
 	  std::string val_str;
-	  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  value = (int)root["status"].asInt();
-		  if(value == 1)
+		  status = root["status"].asInt();
+		  if(status == StatusOK)
 		  {
-			  msg = "ok";
 		  }
-		  else
+		  else if(status == StatusSet)
 		  {
 			  set.displayTime = root["displayTime"].asInt();
 			  set.switchTime = root["switchTime"].asInt();
 			  set.enable = root["enable"].asBool();
-			  msg = "ok ack";
 		  }
 	  }
 
-	  return msg;
+	  return status;
 }
+string JsonCmdManager::makeAdminPwd(string &pwd,JsonStatus_t status)
+{
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDAdminPwd);
+	  root["pwd"] = Json::Value(pwd);
+	  root["status"] = Json::Value(status);
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return temp;
+}
+JsonStatus_t JsonCmdManager::parseAdminPwd(string &js,string &adminPwd)
+{
+	  Json::Reader reader;
 
+	  Json::Value root;
+	  JsonStatus_t status;
+	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+		  status = root["status"].asInt();
+		  if(status == StatusSet)
+		  {
+			  adminPwd = root["pwd"].asString();
+		  }
+	  }
+
+	  return status;
+}
 
 
 
@@ -382,3 +367,6 @@ FILE *openfile(uint32_t *len)
 	printf("打开读取文件成功");
 	return fp;
 }
+
+
+JsonCmdManager jm;

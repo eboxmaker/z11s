@@ -202,6 +202,8 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/json_test.o:
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/arpa/inet.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/lib/SocketClient.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/tcp.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/tcp.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/lib/itoa.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream
@@ -609,6 +611,10 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 C:/Users/shentq/Documents/z11s/800x480/jni/lib/SocketClient.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/tcp.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/tcp.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h:
 

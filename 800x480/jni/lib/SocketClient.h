@@ -10,7 +10,9 @@
 
 #include "ringbuf.h"
 #include <fstream>
+#include "netinet/tcp.h"
 
+typedef void (*NetNotify_t)(void);
 
 class SocketClient {
 public:
@@ -19,7 +21,11 @@ public:
 
 	bool connect(char *ip, uint16_t port);
 	bool disconnect();
-//	bool connected();
+	bool connected();
+
+	void updateTriger();
+	void disableTriger();
+
 
 	void write_(std::string &msg);
 	void write_(char *msg);
@@ -34,8 +40,11 @@ public:
 
 	void timer_thread();
 
+	void attachOnConncet(NetNotify_t callback,int num);
+	void attachOnDisonncet(NetNotify_t callback,int num);
 
-
+	void deattachOnConncet(int num);
+	void deattachOnDisonncet(int num);
 
 	class ISocketListener {
 	public:
@@ -50,14 +59,18 @@ public:
 private:
 	RingBufInt8 rxbuf;
 	bool conncetState;
-
 	int mClientSocket;
+	long long trigerTime;
+	int trigerTimeout;
 	//ISocketListener *mSocketListener;
 	bool connectState;
 	int heartbeatTime;
 	char hearbeatMsg[100];
 	ISocketListener *mSocketListener;
+	int maxCallbackNum;
 
+	 NetNotify_t onConncet[5];
+	 NetNotify_t onDisconncet[5];
 };
 
 #endif /* _SOCKET_SOCKETCLIENT_H_ */

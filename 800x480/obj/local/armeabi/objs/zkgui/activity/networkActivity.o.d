@@ -281,6 +281,12 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/net
  C:/Users/shentq/Documents/z11s/800x480/jni/lib/SocketClient.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/system/mutex.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/tcp.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/tcp.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/byteorder.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/little_endian.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/swab.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/generic.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/json_test.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/globalVar.h \
@@ -291,10 +297,6 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/net
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/sockios.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/uio.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/in.h \
- D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/byteorder.h \
- D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/little_endian.h \
- D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/swab.h \
- D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/generic.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/in6.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/ipv6.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/in6.h \
@@ -871,6 +873,18 @@ C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/system/mutex.h:
 
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/tcp.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/tcp.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/byteorder.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/little_endian.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/swab.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/generic.h:
+
 C:/Users/shentq/Documents/z11s/800x480/jni/json_test.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/ringbuf.h:
@@ -890,14 +904,6 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/uio.h:
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/in.h:
-
-D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/byteorder.h:
-
-D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/little_endian.h:
-
-D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/swab.h:
-
-D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/generic.h:
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/in6.h:
 

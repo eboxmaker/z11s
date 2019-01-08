@@ -26,6 +26,7 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_SETTINGS_TextStatusNotice2    50008
 #define ID_SETTINGS_WindStatusNotice    110003
 #define ID_SETTINGS_TextStatusNotice    50017
 #define ID_SETTINGS_BtnServerState    20012
@@ -45,7 +46,6 @@
 #define ID_SETTINGS_TextTime    50010
 #define ID_SETTINGS_TextDate    50009
 #define ID_SETTINGS_TextWeek    50001
-#define ID_SETTINGS_TVStatus    50008
 #define ID_SETTINGS_Textview5    50007
 #define ID_SETTINGS_BtnModifyAdminPwd    20005
 #define ID_SETTINGS_WndModifyAdminPwd    110001

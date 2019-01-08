@@ -30,7 +30,13 @@ namespace MyJson
             Broadcast,
             SuperPic,
     }//同
-
+    public enum StatusType  //枚举类型，体会xml注释的样子
+    {
+        StatusSet = 0,
+        StatusRead,
+        StatusOK,
+        StatusErr
+    }//同
        // public JObject jo;
 
         public static JObject OpenFile(string path)
@@ -271,34 +277,36 @@ namespace MyJson
             string str = jo["value"].ToString();
             return str;
         }
-        public static string MakeCMDHeartbeat()
+        public static string MakeCMDHeartbeat(StatusType status)
         {
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.Heartbeat);
             obj.Add("value", "hello");
+            obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
             return jstring;
         }
-        public static string MakeCMDDoor1(int value)
+        public static string MakeCMDDoor1(string isLock,StatusType status)
         {
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.DoorCtr);
-            obj.Add("value", value);
+            obj.Add("door", isLock);
+            obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
             return jstring;
         }
         public static string ParseDoorPwd(string js)
         {
             JObject jo = (JObject)JsonConvert.DeserializeObject(js);
-            string pwd = jo["doorPwd"].ToString();
+            string pwd = jo["pwd"].ToString();
             return pwd;
         }
-        public static string MakeCMDDoorPwdAck(int status)
+        public static string MakeCMDDoorPwd(string pwd,StatusType status)
         {
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.DoorPwd);
-            obj.Add("doorPwd", "***");
-            obj.Add("status", status);
+            obj.Add("pwd", pwd);
+            obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
             return jstring;
         }
@@ -310,13 +318,13 @@ namespace MyJson
             string pwd = jo["status"].ToString();
             return pwd;
         }
-        public static string MakeCMDSyncDateTime(int status)
+        public static string MakeCMDSyncDateTime(StatusType status)
         {
-            string dateTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+            string dateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.SyncDateTime);
             obj.Add("dateTime", dateTime);
-            obj.Add("status", status);
+            obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
             return jstring;
         }
@@ -339,6 +347,7 @@ namespace MyJson
                 ja.Add(jo);
             } 
             obj.Add("plan",ja);
+            obj.Add("status", (int)StatusType.StatusOK);
 
             string jstring = JsonConvert.SerializeObject(obj);
 
@@ -351,27 +360,36 @@ namespace MyJson
             return status;
 
         }
-        public static string MakeBroadcast(string msg)
+        public static string MakeBroadcast(string msg,StatusType status)
         {
             string dateTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.Broadcast);
             obj.Add("data", msg);
-            obj.Add("isDisplay", 1);
-            obj.Add("status", 0);
+            obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
             return jstring;
         }
 
-        public static string MakeAdSet(int status)
+        public static string MakeAdSet(StatusType status)
         {
-            string dateTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.AdSet);
             obj.Add("enable", true);
             obj.Add("displayTime", 100);
             obj.Add("switchTime", 3);
-            obj.Add("status", status);
+            obj.Add("status",(int) status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            return jstring;
+        }
+
+        public static string MakeAdminPwd(StatusType status)
+        {
+            string dateTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.AdminPwd);
+            obj.Add("pwd", "123456");
+            obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
             return jstring;
         }

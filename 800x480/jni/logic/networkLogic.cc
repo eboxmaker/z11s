@@ -49,7 +49,7 @@
 
 static int pic_counter = 0;
 
-static void onNetWrokDataUpdate(JsonCmd_t cmd,string &msg)
+static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 {
 	switch(cmd)
 	{
@@ -107,7 +107,7 @@ static void onUI_intent(const Intent *intentPtr) {
  */
 static void onUI_show() {
     EASYUICONTEXT->showStatusBar();
-	if(getServerLiveState()){
+	if(gSocket->connected()){
 		mTVConnectStatePtr->setText("已连接");
 	}else{
 		mTVConnectStatePtr->setText("未连接");
@@ -152,7 +152,7 @@ static bool onUI_Timer(int id){
 	case 0:
 
 
-		if(!updateServerLiveState())
+		if(!gSocket->connected())
 		{
 			mTVConnectStatePtr->setText("未连接");
 		}

@@ -51,11 +51,15 @@ class LongClickListener : public ZKBase::ILongClickListener {
 
 static LongClickListener longButtonClickListener;
 
+static string QRCodeFullName = "/mnt/extsd/qr/qr1.jpg";
 
-
+static void onNetConncet()
+{
+	mBtnQRCodePtr->setBackgroundPic(QRCodeFullName.c_str());
+}
 
 //网络数据回调接口
-static void onNetWrokDataUpdate(JsonCmd_t cmd,string &msg)
+static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 {
 	//LOGE("%s",msg.c_str());
 	Json::Reader reader;
@@ -63,81 +67,80 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd,string &msg)
 	switch(cmd)
 	{
 	case CMDQR:
-		mBtnQRPtr->setText("");
-		mBtnQRPtr->setBackgroundPic(msg.c_str());
+		QRCodeFullName = msg;
+		mBtnQRCodePtr->setText("");
+		mBtnQRCodePtr->setBackgroundPic(msg.c_str());
 		break;
 	case CMDDoorPwd:
-		mWindStatuNoticPtr->showWnd();
-		if(msg == "1")
+		gSocket->disableTriger();
+		mWindStatusNoticePtr->showWnd();
+		if(status == StatusOK)
 		{
-			mTextStatuNoticePtr->setText("提示：密码正确");
+			mTextStatusNoticePtr->setText("密码正确");
 		}
 		else
 		{
-			mTextStatuNoticePtr->setText("提示：密码错误");
+			mTextStatusNoticePtr->setText("密码错误");
 		}
 		break;
 	case CMDDoorCtr:
-		mWindStatuNoticPtr->hideWnd();
-		mWindStatuNoticPtr->showWnd();
-		if(msg == "1")
+		mWindStatusNoticePtr->hideWnd();
+		mWindStatusNoticePtr->showWnd();
+		if(msg == "unlock")
 		{
-			mTextStatuNoticePtr->setText("门正在打开");
+			mTextStatusNoticePtr->setText("门正在打开");
 			sleep(2);
-			if(GpioHelper::input(GPIO_PIN_B_02) == 1)
-				mTextStatuNoticePtr->setText("门已经打开");
+			if(GpioHelper::input(GPIO_PIN_B_02) == UnLock)
+				mTextStatusNoticePtr->setText("门已经打开");
 			else
-				mTextStatuNoticePtr->setText("打开失败");
+				mTextStatusNoticePtr->setText("打开失败");
 
 		}
 		else
 		{
-			mTextStatuNoticePtr->setText("门正在关闭");
+			mTextStatusNoticePtr->setText("门正在关闭");
 			sleep(2);
-			if(GpioHelper::input(GPIO_PIN_B_02) == 0)
-				mTextStatuNoticePtr->setText("门已经关闭");
+			if(GpioHelper::input(GPIO_PIN_B_02) == Lock)
+				mTextStatusNoticePtr->setText("门已经关闭");
 			else
-				mTextStatuNoticePtr->setText("关闭失败");
+				mTextStatusNoticePtr->setText("关闭失败");
 		}
 		break;
 
 	case CMDPlan:
-		if (reader.parse(msg, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+		gSocket->disableTriger();
+		mWindStatusNoticePtr->hideWnd();
+
+		for(int i = 0; i < gPlan.size(); i++)
 		{
-			Json::Value course = root["plan"];
-			int course_size =  root["plan"].size();
-			for(int i = 0; i < course_size; i++)
+			switch(i)
 			{
-				string x1 = course[i]["teacher"].asString();
-				string x2 = course[i]["class"].asString();
-				string x3 = course[i]["course"].asString();
-				switch(i)
-				{
-				case 0:
-					mTextTeacher1Ptr->setText(x1.c_str());
-					mTextClass1Ptr->setText(x2.c_str());
-					mTextCourse1Ptr->setText(x3.c_str());
-					break;
-				case 1:
-					mTextTeacher2Ptr->setText(x1.c_str());
-					mTextClass2Ptr->setText(x2.c_str());
-					mTextCourse2Ptr->setText(x3.c_str());
-					break;
-				case 2:
-					mTextTeacher3Ptr->setText(x1.c_str());
-					mTextClass3Ptr->setText(x2.c_str());
-					mTextCourse3Ptr->setText(x3.c_str());
-					break;
-				case 3:
-					mTextTeacher4Ptr->setText(x1.c_str());
-					mTextClass4Ptr->setText(x2.c_str());
-					mTextCourse4Ptr->setText(x3.c_str());
-					break;
-				}
+			case 0:
+				mTextTeacher1Ptr->setText(gPlan.row[i].teacher);
+				mTextClass1Ptr->setText(gPlan.row[i].class_);
+				mTextCourse1Ptr->setText(gPlan.row[i].courser);
+				break;
+			case 1:
+				mTextTeacher2Ptr->setText(gPlan.row[i].teacher);
+				mTextClass2Ptr->setText(gPlan.row[i].class_);
+				mTextCourse2Ptr->setText(gPlan.row[i].courser);
+
+				break;
+			case 2:
+				mTextTeacher3Ptr->setText(gPlan.row[i].teacher);
+				mTextClass3Ptr->setText(gPlan.row[i].class_);
+				mTextCourse3Ptr->setText(gPlan.row[i].courser);
+
+				break;
+			case 3:
+				mTextTeacher4Ptr->setText(gPlan.row[i].teacher);
+				mTextClass4Ptr->setText(gPlan.row[i].class_);
+				mTextCourse4Ptr->setText(gPlan.row[i].courser);
+
+				break;
 			}
 		}
 		mWindPlanPtr->showWnd();
-		LOGE("课程表显示");
 		break;
 	case CMDBroadcast:
 		if(msg != "")
@@ -150,9 +153,14 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd,string &msg)
 			mWindBroadcastPtr->hideWnd();
 			mTextBroadcastPtr->setText(msg);
 		}
-		string str = MakeCMDBroadcastAck(msg);
-		gSocket->write_(str);
+
 		break;
+	case 255:
+		mWindStatusNoticePtr->showWnd();
+		mTextStatusNoticePtr->setText("服务器响应超时");
+		mTextStatusNotice2Ptr->setText("");
+		break;
+
 
 	}
 
@@ -179,7 +187,7 @@ static void updateUI_time() {
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	{0,  500}, //定时器id=0, 时间间隔6秒
+	{0,  1000}, //定时器id=0, 时间间隔6秒
 	{1,  1000},
 };
 
@@ -191,7 +199,7 @@ static void onUI_init(){
     //注册按键长按监听
     mBtnBackPtr->setLongClickListener(&longButtonClickListener);
     keyboardCallback = onNetWrokDataUpdate;
-    mTextStatuNoticePtr->setText("提示：...");
+    mTextStatusNoticePtr->setText("提示：...");
     gKeyboardLastActionTime = time(NULL);
 }
 
@@ -209,12 +217,14 @@ static void onUI_intent(const Intent *intentPtr) {
  */
 static void onUI_show() {
 	EASYUICONTEXT->hideStatusBar();
-	mWindStatuNoticPtr->hideWnd();
+	mWindStatusNoticePtr->hideWnd();
 	mWinPwdAdminPtr->hideWnd();
 	mWindPlanPtr->hideWnd();
 	lastDoorState = gDoorState;
 	doorPwd.clear();
     gKeyboardLastActionTime = time(NULL);
+    gSocket->attachOnConncet(onNetConncet, 1);
+
 
 }
 
@@ -233,6 +243,8 @@ static void onUI_quit() {
     //取消按键长按监听
 	mBtnBackPtr->setLongClickListener(NULL);
     keyboardCallback = NULL;
+    gSocket->deattachOnConncet(1);
+
 
 }
 
@@ -257,13 +269,16 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
 static bool onUI_Timer(int id){
 	switch (id) {
 	case 0:
-		if(getServerLiveState() == true)
+		if(gSocket->connected())
 		{
 			mTvConnectStatePtr->setText("已连接");
+			//mBtnQRCodePtr->setBackgroundPic(QRCodeFullName.c_str());
+
 		}
 		else
 		{
 			mTvConnectStatePtr->setText("未连接");
+			mBtnQRCodePtr->setBackgroundPic("");
 		}
 
 		break;
@@ -384,16 +399,18 @@ static bool onButtonClick_Btn9(ZKButton *pButton) {
 
 static bool onButtonClick_BtnOK(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnOK !!!\n");
-	string  jstr = MakeCMDDoorPassword(doorPwd.c_str());
-	mWindStatuNoticPtr->showWnd();
-	if(updateServerLiveState())
+	string  jstr = jm.makeDoorPwd(doorPwd, StatusSet);
+	mWindStatusNoticePtr->showWnd();
+	if(gSocket->connected())
 	{
 		gSocket->write_(jstr.c_str());
-		mTextStatuNoticePtr->setText("提示：密码验证中");
+		mTextStatusNoticePtr->setText("密码验证中");
+		gSocket->updateTriger();
 	}
 	else
 	{
-		mTextStatuNoticePtr->setText("提示：网络中断，请联系管理员");
+		mTextStatusNoticePtr->setText("网络中断");
+		mTextStatusNotice2Ptr->setText("请输入管理员密码");
 	}
 	doorPwd.clear();
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
@@ -440,8 +457,8 @@ static bool onButtonClick_BtnConfirm(ZKButton *pButton) {
     }
 	else
 	{
-		mWindStatuNoticPtr->showWnd();
-		mTextStatuNoticePtr->setText("提示：管理员密码错误");
+		mWindStatusNoticePtr->showWnd();
+		mTextStatusNoticePtr->setText("管理员密码错误");
 		LOGE("管理员密码：%s",gAdminPwd.c_str());
 	}
     gKeyboardLastActionTime = time(NULL);
@@ -485,11 +502,21 @@ static bool onButtonClick_BtnBackMain2(ZKButton *pButton) {
 
 static bool onButtonClick_BtnPlan(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnPlan !!!\n");
-	mWindStatuNoticPtr->showWnd();
-	mTextStatuNoticePtr->setText("提示：正在获取课程表");
-	string str = MakeCMDPlan();
-	gSocket->write_(str);
-    gKeyboardLastActionTime = time(NULL);
+	if(gSocket->connected())
+	{
+		mWindStatusNoticePtr->showWnd();
+		mTextStatusNoticePtr->setText("正在获取课程表");
+		string str = jm.makePlan(StatusRead);
+		gSocket->write_(str);
+	    gKeyboardLastActionTime = time(NULL);
+	    gSocket->updateTriger();
+	}
+	else
+	{
+		mWindStatusNoticePtr->showWnd();
+		mTextStatusNoticePtr->setText("网络中断");
+		mTextStatusNoticePtr->setText("无法获取课程表");
+	}
 
     return false;
 }
@@ -498,5 +525,9 @@ static bool onButtonClick_BtnExitPlan(ZKButton *pButton) {
 	mWindPlanPtr->hideWnd();
     gKeyboardLastActionTime = time(NULL);
 
+    return false;
+}
+static bool onButtonClick_BtnQRCode(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnQRCode !!!\n");
     return false;
 }

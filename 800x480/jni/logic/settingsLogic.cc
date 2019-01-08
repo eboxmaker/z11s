@@ -73,18 +73,54 @@ static void updateUI_time() {
 
 
 //网络数据回调接口
-static void onNetWrokDataUpdate(JsonCmd_t cmd,string &msg)
+static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 {
+	mTextStatusNotice2Ptr->setText("");
 	switch(cmd)
 	{
+	case CMDAdminPwd:
+		gSocket->disableTriger();
+		mWindStatusNoticePtr->showWnd();
+		if(status == StatusSet)
+			mTextStatusNoticePtr->setText("响应服务器设置");
+		else if(status == StatusOK)
+		{
+			mTextStatusNoticePtr->setText("服务器同步成功");
+		}
+		sleep(1);
+		mWindStatusNoticePtr->hideWnd();
+		break;
 	case CMDSyncDateTime:
+		gSocket->disableTriger();
+		mWindStatusNoticePtr->showWnd();
+		if(status == StatusSet)
+			mTextStatusNoticePtr->setText("响应服务器设置");
+		else if(status == StatusOK)
+		{
+			mTextStatusNoticePtr->setText("服务器同步成功");
+		}
 		TimeHelper::setDateTime(msg.c_str());
+		sleep(1);
+		mWindStatusNoticePtr->hideWnd();
 		break;
 	case CMDAdSet:
-		mWindStatusNoticePtr->hideWnd();
+		gSocket->disableTriger();
 		mWindStatusNoticePtr->showWnd();
-		if(msg == "ok ack")
-			mTextStatusNoticePtr->setText("响应同步设置");
+		if(status == StatusSet)
+			mTextStatusNoticePtr->setText("响应服务器设置");
+		else if(status == StatusOK)
+		{
+			mTextStatusNoticePtr->setText("服务器同步成功");
+		}
+		sleep(1);
+		mWindStatusNoticePtr->hideWnd();
+		break;
+	case 255:
+		mWindStatusNoticePtr->showWnd();
+		mTextStatusNoticePtr->setText("服务器超时!!!");
+		mTextStatusNotice2Ptr->setText("");
+		sleep(1);
+		mWindStatusNoticePtr->hideWnd();
 
 		break;
 
@@ -99,7 +135,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd,string &msg)
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 	{0,  1000}, //定时器id=0, 时间间隔6秒
-	//{1,  1000},
+	//{1,  3000},
 };
 
 /**
@@ -177,13 +213,12 @@ static bool onUI_Timer(int id){
 	switch (id) {
 	case 0:
 		updateUI_time();
-		if(getServerLiveState() == true)
+		if(gSocket->connected())
 			mBtnServerStatePtr->setBackgroundPic("kai.png");
 		else
 			mBtnServerStatePtr->setBackgroundPic("guan.png");
 
 		break;
-
 		default:
 			break;
 	}
@@ -255,15 +290,12 @@ static bool onButtonClick_BtnServer(ZKButton *pButton) {
 		bool ret = gSocket->connect(gServerIP.c_str(),gServerPort);
 		if(ret == true)
 		{
-			setServerLiveState(true);
 			LOGE("连接服务器成功!\n");
 		}
 		else
 		{
-			setServerLiveState(false);
 			gSocket->disconnect();
 			LOGE("连接服务器失败 !\n");
-
 		}
 
 	}
@@ -295,6 +327,7 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnOK !!!\n");
 	string temp = mEdittextOldAdminPwdPtr->getText();
 	gAdminPwd = StoragePreferences::getString("gAdminPwd", "123456");
+    mWindStatusNoticePtr->showWnd();
 	if(temp == gAdminPwd)
 	{
 		if(mEdittextNewAdminPwd1Ptr->getText() == mEdittextNewAdminPwd2Ptr->getText())
@@ -302,17 +335,30 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 			gAdminPwd = mEdittextNewAdminPwd1Ptr->getText();
 		    StoragePreferences::putString("gAdminPwd", gAdminPwd.c_str());
 		   // mWndModifyAdminPwdPtr->hideWnd();
-			mTVStatusPtr->setText("状态提示：修改成功");
+		    mTextStatusNoticePtr->setText("修改成功");
+
+		    if(gSocket->connected())
+		    {
+			    string str ;
+			    str = jm.makeAdminPwd(gAdminPwd,StatusSet);
+			    gSocket->write_(str);
+			    gSocket->updateTriger();
+		    }
+		    else
+		    {
+			    mTextStatusNotice2Ptr->setText("无法同步服务器设置");
+
+		    }
 
 		}
 		else
 		{
-			mTVStatusPtr->setText("状态提示：两次新密码不同");
+			mTextStatusNoticePtr->setText("两次新密码不同");
 		}
 	}
 	else
 	{
-		mTVStatusPtr->setText("状态提示：旧密码错误");
+		mTextStatusNoticePtr->setText("旧密码错误");
 	}
     return false;
 }
@@ -334,18 +380,33 @@ static bool onButtonClick_BtnSyncDateTime(ZKButton *pButton) {
 	struct tm *t = TimeHelper::getDateTime();
 	sprintf(temp, "%d-%02d-%02d %02d:%02d:%02d", 1900 + t->tm_year, t->tm_mon + 1, t->tm_mday,t->tm_hour,t->tm_min,t->tm_sec);
 	timeStr = temp;
-	string str = MakeCMDSyncDateTime(timeStr);
-	gSocket->write_(str);
+    if(gSocket->connected())
+    {
+    	string str = jm.makeSyncDateTime(timeStr, StatusSet);
+    	gSocket->write_(str);
+    	gSocket->updateTriger();
+        mWindStatusNoticePtr->showWnd();
+        mTextStatusNoticePtr->setText("等待服务器响应");
+        mTextStatusNotice2Ptr->setText("");
+    }
+    else
+    {
+        mWindStatusNoticePtr->showWnd();
+        mTextStatusNoticePtr->setText("网络中断");
+        mTextStatusNotice2Ptr->setText("无法同步服务器设置");
+        mTextStatusNotice2Ptr->setText("");
+    }
+
     return false;
 }
 
 static bool onButtonClick_BtnAdSet(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnAdSet !!!\n");
 
-    StoragePreferences::getBool("gAdSet.enable", gAdSet.enable);
-    StoragePreferences::getInt("gAdSet.displayTime", gAdSet.displayTime);
-    StoragePreferences::getInt("gAdSet.switchTime", gAdSet.switchTime);
-	if(gAdSet.enable == 1)
+	gAdSet.enable = StoragePreferences::getBool("gAdSet.enable", gAdSet.enable);
+	gAdSet.displayTime = StoragePreferences::getInt("gAdSet.displayTime", gAdSet.displayTime);
+	gAdSet.switchTime = StoragePreferences::getInt("gAdSet.switchTime", gAdSet.switchTime);
+	if(gAdSet.enable == true)
 	{
 		mBtnAdEnablePtr->setBackgroundPic("kai.png");
 	}
@@ -411,14 +472,26 @@ static bool onButtonClick_BtnAdOK(ZKButton *pButton) {
 	temp = atoi(str.c_str());
 	gAdSet.switchTime = temp;
 
-    StoragePreferences::putBool("gAdSet.displayTime", gAdSet.displayTime);
+    StoragePreferences::putBool("gAdSet.enable", gAdSet.enable);
+    StoragePreferences::putInt("gAdSet.displayTime", gAdSet.displayTime);
     StoragePreferences::putInt("gAdSet.switchTime", gAdSet.switchTime);
-    StoragePreferences::putInt("gAdSet.enable", gAdSet.enable);
 
-    str = MakeCMDAdSet(gAdSet,0);
-    gSocket->write_(str);
-    mWindStatusNoticePtr->showWnd();
-    mTextStatusNoticePtr->setText("设置成功");
+    if(gSocket->connected())
+    {
+        mWindStatusNoticePtr->showWnd();
+        mTextStatusNoticePtr->setText("设置成功");
+        mTextStatusNoticePtr->setText("正在同步服务器设置");
+        str = jm.makeAdSet(gAdSet,StatusSet);
+        gSocket->write_(str);
+        gSocket->updateTriger();
+    }
+    else
+    {
+        mWindStatusNoticePtr->showWnd();
+        mTextStatusNoticePtr->setText("设置成功");
+        mTextStatusNotice2Ptr->setText("无法同步设置服务器");
+
+    }
 
     return false;
 }

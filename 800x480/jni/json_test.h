@@ -17,25 +17,55 @@
 
 using namespace std;
 
-string cutOneJsonString(RingBufInt8 *msg);
 bool ParseJsonString(char *str);
 JsonCmd_t getJsonCMD(string &str);
-string ParseCMDDoor1(string &str);
-string ParseCMDDoor2(char *str);
-string MakeCMDDoorPassword(char *str);
+
+
+
+
+
+JsonStatus_t 	ParseCMDDoor2(string &js,doorState_t &door);
+
+
 FILE *openfile(uint32_t *len);
 string get_id(const char *str);
-string MakeCMDHeatbeat();
-string ParseCMDDoorPwdStatus(string &str);
-string MakeCMDSyncDateTime(string &str);
-string ParseCMDSyncDateTime(string &str);
-string MakeCMDPlan();
-stringListList ParseCMDPlan(string &str);
-string ParseCMDBroadcast(string &str);
-string MakeCMDBroadcastAck(string &str);
-string MakeCMDAdSet(AdSet_t &set,int status);
-string ParseCMDAdSet(string &str,AdSet_t &set);
 
 
 
+
+
+
+
+
+class JsonCmdManager
+{
+public:
+	string makeHeartbeat(JsonStatus_t status);
+	JsonStatus_t parseHeartbeat(string &js, string &msg);
+
+	string 			makeDoorCtr(doorState_t &door,JsonStatus_t status);
+	JsonStatus_t 	parseDoorCtr(string &js,doorState_t &door);
+
+	string makeDoorPwd(string &pwd,JsonStatus_t status);
+	JsonStatus_t parseDoorPwd(string &js,string &msg);
+
+	string makeSyncDateTime(string &msg,JsonStatus_t status);
+	JsonStatus_t parseSyncDateTime(string &js,string &msg);
+
+	string makePlan(JsonStatus_t status);
+	JsonStatus_t parsePlan(string &js, Plan &plan);
+
+
+	string makeBroadcast(string &msg,JsonStatus_t status);
+	JsonStatus_t parseBroadcast(string &js,string &msg);
+
+	string makeAdSet(AdSet_t &set,JsonStatus_t status);
+	JsonStatus_t parseAdSet(string &js,AdSet_t &set);
+
+
+	string makeAdminPwd(string &pwd,JsonStatus_t status);
+	JsonStatus_t parseAdminPwd(string &js,string &adminPwd);
+};
+
+extern JsonCmdManager jm;
 #endif /* JNI_JSON_TEST_H_ */

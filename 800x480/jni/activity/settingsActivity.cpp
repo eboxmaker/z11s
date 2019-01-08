@@ -4,6 +4,7 @@
 #include "settingsActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextStatusNotice2Ptr;
 static ZKWindow* mWindStatusNoticePtr;
 static ZKTextView* mTextStatusNoticePtr;
 static ZKButton* mBtnServerStatePtr;
@@ -23,7 +24,6 @@ static ZKButton* mBtnSyncDateTimePtr;
 static ZKTextView* mTextTimePtr;
 static ZKTextView* mTextDatePtr;
 static ZKTextView* mTextWeekPtr;
-static ZKTextView* mTVStatusPtr;
 static ZKTextView* mTextview5Ptr;
 static ZKButton* mBtnModifyAdminPwdPtr;
 static ZKWindow* mWndModifyAdminPwdPtr;
@@ -178,6 +178,7 @@ const char* settingsActivity::getAppName() const{
 //TAG:onCreate
 void settingsActivity::onCreate() {
 	Activity::onCreate();
+    mTextStatusNotice2Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextStatusNotice2);
     mWindStatusNoticePtr = (ZKWindow*)findControlByID(ID_SETTINGS_WindStatusNotice);
     mTextStatusNoticePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextStatusNotice);
     mBtnServerStatePtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnServerState);
@@ -197,7 +198,6 @@ void settingsActivity::onCreate() {
     mTextTimePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextTime);
     mTextDatePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextDate);
     mTextWeekPtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextWeek);
-    mTVStatusPtr = (ZKTextView*)findControlByID(ID_SETTINGS_TVStatus);
     mTextview5Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview5);
     mBtnModifyAdminPwdPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnModifyAdminPwd);
     mWndModifyAdminPwdPtr = (ZKWindow*)findControlByID(ID_SETTINGS_WndModifyAdminPwd);

@@ -55,10 +55,60 @@ typedef enum
 	CMDBroadcast,
 	CMDSuperPic,
 }JsonCmd_t;
+typedef enum
+{
+	StatusSet = 0,
+	StatusRead ,
+	StatusOK,
+	StatusErr
+}JsonStatus_t;
+
+typedef struct
+{
+	string teacher;
+	int	   level;
+	string pwd;
+}Person_t;
+
+typedef struct
+{
+	string teacher;
+	string class_;
+	string courser;
+}PlanRow_t;
 
 
 
-typedef void (*myNotify_t)(JsonCmd_t,string &);
+class Plan
+{
+public:
+	Plan() :
+		_maxSize(100),
+		_size(0){
+	}
+	int size()	{return _size;}
+	int maxSize(){return _maxSize;}
+	bool add(PlanRow_t &_row)
+	{
+		if(_size < _maxSize)
+		{
+			row[_size].teacher = _row.teacher;
+			row[_size].class_ = _row.class_;
+			row[_size].courser = _row.courser;
+			_size++;
+		}
+	}
+
+	PlanRow_t row[100];
+
+private:
+	int _maxSize;
+	int _size;
+};
+
+typedef std::vector< Person_t> PersonList_t;
+
+typedef void (*myNotify_t)(JsonCmd_t,JsonStatus_t, string &);
 
 extern string gServerIP ;
 extern int gServerPort ;
@@ -73,7 +123,8 @@ extern bool gDoorPwdState ;
 extern long long gKeyboardLastActionTime;
 
 extern doorState_t gDoorState;
-
+extern PersonList_t gUserAdmin;
+extern Plan gPlan;
 
 
 //class MySocketListener : public SocketClient::ISocketListener
@@ -89,9 +140,8 @@ extern myNotify_t AdvertisementCallback;
 extern myNotify_t networkTestCallback;
 extern myNotify_t settingsCallback;
 
+void exeCMD(char *ptr);
 void exeCMD(string &JsonString);
-bool updateServerLiveState();
-bool setServerLiveState(bool state);
-bool getServerLiveState();
+
 
 #endif /* JNI_LIB_GLOBALVAR_H_ */
