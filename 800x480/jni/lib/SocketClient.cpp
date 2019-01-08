@@ -240,6 +240,8 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 		if(onConncet[i] != NULL)
 			onConncet[i]();
 	}
+	updateHearbeat();
+
 	return true;
 }
 bool SocketClient::connected()
@@ -256,6 +258,16 @@ bool SocketClient::connected()
 //		conncetState = false;
 //		break;
 //	}
+	LOGE("上次通讯时间：%D",time(NULL) - lastHeartbeatTime);
+
+	if(conncetState == true)
+	{
+		if(time(NULL) - lastHeartbeatTime > 10)
+			conncetState = false;
+		else
+			conncetState = true;
+	}
+
 	return conncetState;
 }
 
@@ -275,6 +287,19 @@ bool SocketClient::disconnect() {
 	}
 	// 关闭socket
 	return true;
+}
+void SocketClient::sendHearbeat()
+{
+	if(mClientSocket > 0)
+	{
+		write_(hearbeatMsg);
+	}
+
+}
+
+void SocketClient::updateHearbeat()
+{
+	lastHeartbeatTime = time(NULL);
 }
 
 void SocketClient::attachOnConncet(NetNotify_t callback,int num)
@@ -357,7 +382,7 @@ void SocketClient::timer_thread()
 //		}
 //
 //		{
-//
+
 //			struct tcp_info info;
 //			int len = sizeof(info);
 //			getsockopt(mClientSocket,IPPROTO_TCP,TCP_INFO,&info,(socklen_t*)&len);
@@ -387,6 +412,25 @@ void SocketClient::timer_thread()
 //		}
 
 
+		if(!connected())
+		{
+			LOGE("未连接");
+			disconnect();
+			ret = connect(gServerIP.c_str(),gServerPort);
+			if(ret == true)
+			{
+				LOGE("连接服务器成功!\n");
+				conncetState = true;
+			}
+			else
+			{
+				disconnect();
+				LOGE("连接服务器失败 !\n");
+				conncetState = false;
+
+			}
+		}
+
 		if(	trigerTime != -1)
 		{
 			if(time(NULL) - trigerTime > trigerTimeout)
@@ -399,24 +443,19 @@ void SocketClient::timer_thread()
 
 		Thread::sleep(1000);
 
-		if(heartbeatTime < 3)
-			heartbeatTime = 3;
-		if(counter++ > heartbeatTime)
+		if(heartbeatInterval < 3)
+			heartbeatInterval = 3;
+		if(counter++ > heartbeatInterval)
 		{
-			if(mClientSocket > 0)
-			{
-				write_(hearbeatMsg);
-				//LOGE("timer thread running");
-			}
-
+			sendHearbeat();
 			counter = 0;
 		}
 	}
 
 }
-bool SocketClient::setHeartbeat(int timeout)
+bool SocketClient::setHeartbeat(int Interval)
 {
-	heartbeatTime = timeout;
+	heartbeatInterval = Interval;
 	string str;
 	str = jm.makeHeartbeat(StatusSet);
 	memset(hearbeatMsg,0,sizeof(hearbeatMsg));
@@ -447,7 +486,7 @@ void SocketClient::threadLoop() {
 	char msg_buf[409600];
 	int msg_counter = 0;
 	int state = 0;
-	struct timeval timeout = { 2,0  };     // 1s
+	struct timeval timeout = { 1,0  };     // 1s
 
 	setsockopt(mClientSocket, SOL_SOCKET, SO_RCVTIMEO,
 			(const char*)&timeout, sizeof(timeout));
@@ -461,36 +500,24 @@ void SocketClient::threadLoop() {
     setsockopt(mClientSocket, SOL_TCP, TCP_KEEPINTVL, (void *)&keepInterval, sizeof(keepInterval));
     setsockopt(mClientSocket, SOL_TCP, TCP_KEEPCNT, (void *)&keepCount, sizeof(keepCount));
 
-     long  lastLiveTime = time(NULL);
-     long  nowTime = time(NULL);
-     int errCounter = 0;
     while (1)
 	{
-    	lastLiveTime = time(&lastLiveTime);
-		LOGE("last：%d",lastLiveTime);
 		length = recv(mClientSocket, &msg_buf[msg_counter], 1,0);
-		nowTime = time(&nowTime);
-		LOGE("now：%d",nowTime);
-		LOGE("now - last ：%d",(nowTime - lastLiveTime));
-		LOGE("接收线程运行状态：%d-(%s)",errno,strerror(errno));
 		if(errno == 110)
 		{
 			LOGE("断网线,服务器开启防火墙：%d-(%s)",errno,strerror(errno));
 			//断网线,服务器开启防火墙
 			disconnect();
 		}
-		if((errno == 11) && (length < 0))
+		if(length == 0)
 		{
-			if( (nowTime - lastLiveTime) == 0)
-			{
-				errCounter++;
-				LOGE("counter ：%d",(errCounter));
-				if(errCounter > 10)
-					disconnect();
-			}
+			//服务器主动断开
+			disconnect();
 		}
 		if(length > 0)
 		{
+			gSocket->updateHearbeat();
+
 			switch(state)
 			{
 				case 0:
