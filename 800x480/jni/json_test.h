@@ -28,7 +28,6 @@ JsonStatus_t 	ParseCMDDoor2(string &js,doorState_t &door);
 
 
 FILE *openfile(uint32_t *len);
-string get_id(const char *str);
 
 
 
@@ -39,6 +38,10 @@ string get_id(const char *str);
 
 class JsonCmdManager
 {
+
+public:
+	string getID();
+
 public:
 	string makeHeartbeat(JsonStatus_t status);
 	JsonStatus_t parseHeartbeat(string &js, string &msg);
@@ -65,6 +68,20 @@ public:
 
 	string makeAdminPwd(string &pwd,JsonStatus_t status);
 	JsonStatus_t parseAdminPwd(string &js,string &adminPwd);
+
+	string makeConfirm(string &id,string &name,JsonStatus_t status);
+	JsonStatus_t parseConfirm(string &js);
+
+	string makeQRCodeAck(JsonStatus_t status);
+	string makePicAck(JsonStatus_t status);
+	JsonStatus_t parseFile(string str, char* directory, string &fullName);
+
+	string makeDevName(string &name,JsonStatus_t status);
+	JsonStatus_t parseDevName(string &js,string &name);
+
+	string makeDevID(string &id,JsonStatus_t status);
+	JsonStatus_t parseDevID(string &js);
+
 };
 
 extern JsonCmdManager jm;

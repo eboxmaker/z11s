@@ -206,7 +206,9 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/json_test.o:
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/tcp.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/lib/itoa.h \
- D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream
+ D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream \
+ C:/Users/shentq/Documents/z11s/800x480/jni/base64.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/security/SecurityManager.h
 
 C:/Users/shentq/Documents/z11s/800x480/jni/json_test.h:
 
@@ -621,3 +623,7 @@ C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h:
 C:/Users/shentq/Documents/z11s/800x480/jni/lib/itoa.h:
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/base64.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/include/security/SecurityManager.h:

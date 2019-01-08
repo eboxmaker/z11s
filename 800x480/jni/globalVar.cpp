@@ -8,6 +8,9 @@
 #include "globalVar.h"
 #include "json_test.h"
 #include "packageFile.h"
+#include "storage/StoragePreferences.h"
+#include "utils/TimeHelper.h"
+
 Mutex mutex;
 
 doorState_t gDoorState = Lock;
@@ -20,13 +23,17 @@ SocketClient* gSocket= new SocketClient();
 string gAdminPwd = "123456";
 string gDoorPassword = "123456";
 
-unsigned long long gLastHelloTime = 0;
+long gLastHelloTime = 0;
 
-long long gKeyboardLastActionTime = 0;
+long gKeyboardLastActionTime = 0;
+string gDevID;
+string gDevName;
+
 
 AdSet_t gAdSet;
 PersonList_t gUserAdmin;
 Plan gPlan;
+
 //void MySocketListener::notify(int what, int status, const char *msg){
 //	string msg_string = msg;
 ////	if(status == SocketClient::E_SOCKET_STATUS_RECV_OK){
@@ -104,6 +111,7 @@ void exeCMD(string &js)
 	if(ret == true)
 	{
 		JsonCmd_t cmd = getJsonCMD(js);
+		LOGE("cmd:%d",cmd);
 		switch(cmd)
 		{
 		case CMDHeartbeat:
@@ -113,30 +121,58 @@ void exeCMD(string &js)
 		case CMDSetHeartbeat:
 
 			break;
+		case CMDConfirm:
+			status = jm.parseConfirm(js);
+			if(status == StatusSet || status == StatusRead)
+			{
+				LOGE("回复:%s:%s",gDevID.c_str(),gDevName.c_str());
+				ack = jm.makeConfirm(gDevID,gDevName, StatusOK);
+				gSocket->write_(ack);
+			}
+			break;
+
+		case CMDDevID:
+			status = jm.parseDevID(js);
+			if(status == StatusSet || status == StatusRead)
+			{
+				LOGE("回复:%s",gDevID.c_str());
+				ack = jm.makeDevID(gDevID, StatusOK);
+				gSocket->write_(ack);
+			}
+			break;
 		case CMDAdminPwd:
 			status = jm.parseAdminPwd(js,gAdminPwd);
 			if(status == StatusSet)
 			{
+			    StoragePreferences::putString("gAdminPwd", gAdminPwd.c_str());
 				ack = jm.makeAdminPwd(gAdminPwd,StatusOK);
 				gSocket->write_(ack);
 			}
-			LOGE("status:%d",status);
+			else if(status == StatusRead)
+			{
+				ack = jm.makeAdminPwd(gAdminPwd,StatusOK);
+				gSocket->write_(ack);
+			}
 			break;
 		case CMDQR:
 			LOGE("接收到二维码!\n");
-			ret = SaveFile(js.c_str(),QR_DIR);
-			msg = QR_DIR;
-			msg += GetFileName(js.c_str());
-			if(ret == true)
-				status = 0;
+			status = jm.parseFile(js,QR_DIR,msg);
+			if(status == StatusSet)
+			{
+				ack = jm.makeQRCodeAck(StatusOK);
+				gSocket->write_(ack);
+			}
 			break;
 		case CMDAdPic:
 			LOGE("接收到图片!\n");
-			ret = SaveFile(js.c_str(),AD_DIR);
-			msg = AD_DIR;
-			msg += GetFileName(js.c_str());
-			if(ret == true)
-				status = 0;
+			status = jm.parseFile(js.c_str(),AD_DIR,msg);
+			if(status == StatusSet)
+			{
+				ack = jm.makePicAck(StatusOK);
+				gSocket->write_(ack);
+			}
+			break;
+		case CMDDelAdPic:
 			break;
 		case CMDDoorCtr:
 			status = jm.parseDoorCtr(js,gDoorState);
@@ -163,7 +199,9 @@ void exeCMD(string &js)
 			status = jm.parseSyncDateTime(js, msg);
 			if(status == StatusSet)
 			{
-				//设置RTC，
+				TimeHelper::setDateTime(msg.c_str());
+				ack = jm.makeSyncDateTime(msg, StatusOK);
+				gSocket->write_(ack);
 			}
 			else if(status == StatusRead)
 			{
@@ -196,11 +234,32 @@ void exeCMD(string &js)
 			status = jm.parseAdSet(js,gAdSet);
 			if(status == StatusSet)
 			{
+			    StoragePreferences::putBool("gAdSet.enable", gAdSet.enable);
+			    StoragePreferences::putInt("gAdSet.displayTime", gAdSet.displayTime);
+			    StoragePreferences::putInt("gAdSet.switchTime", gAdSet.switchTime);
+
 				ack = jm.makeAdSet(gAdSet, StatusOK);
 				gSocket->write_(ack);
 			}
-
+			LOGE("status：%d",status);
 			break;
+		case CMDDevName:
+			status = jm.parseDevName(js,gDevName);
+			if(status == StatusSet)
+			{
+			    StoragePreferences::putString("gDevName", gDevName);
+
+				ack = jm.makeDevName(gDevName, StatusOK);
+				gSocket->write_(ack);
+			}
+			else if(status == StatusRead)
+			{
+				ack = jm.makeDevName(gDevName, StatusOK);
+				gSocket->write_(ack);
+			}
+			LOGE("status：%d",status);
+			break;
+
 		default:
 			break;
 		}

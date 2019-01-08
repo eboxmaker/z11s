@@ -41,6 +41,11 @@ static void LoadParament()
     LOGE("gDisplayAdAfterTime %D\n", gAdSet.displayTime);
     LOGE("gSwitchAdTime %D\n",gAdSet.switchTime);
     LOGE("gAdEnable %D\n",gAdSet.enable);
+    gDevID = jm.getID();
+    gDevName = StoragePreferences::getString("gDevName","none");
+
+    LOGE("ID: %s,name:%s\n",gDevID.c_str(),gDevName.c_str());
+
     make_dir(QR_DIR);
     make_dir(AD_DIR);
 }
@@ -150,7 +155,7 @@ static void *MainLoop(void *lParam)
 //			}
 //		}
 
-		if(gAdSet.enable)
+		if(gAdSet.enable && (gAdSet.list.size() > 0))
 		{
 			const char *ptr;
 			ptr = EASYUICONTEXT->currentAppName();

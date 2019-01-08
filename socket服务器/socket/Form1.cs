@@ -103,17 +103,18 @@ namespace socket
             }
             else
             {
-                string js = Encoding.Default.GetString(datagram);
+                string js = Encoding.UTF8.GetString(datagram);
                 RichRecv.Text += sender.Client.RemoteEndPoint.ToString() + js;
-                int cmd = JsonManager.GetJsonCMD(js);
+                JsonManager.CMDType cmd = JsonManager.GetJsonCMD(js);
+                JsonManager.StatusType status = JsonManager.GetJsonStatus(js);
                 switch (cmd)
                 {
-                    case (int)JsonManager.CMDType.Heartbeat:
+                    case JsonManager.CMDType.Heartbeat:
                         JsonManager.ParseCMDHeartbeat(js);
                         string str = JsonManager.MakeCMDHeartbeat(JsonManager.StatusType.StatusOK);
                         server.SendAll(str);
                         break;
-                    case (int)JsonManager.CMDType.DoorPwd: 
+                    case JsonManager.CMDType.DoorPwd: 
                         string pwd = JsonManager.ParseDoorPwd(js);
                         string resault;
                         if(pwd == "123456")
@@ -129,23 +130,61 @@ namespace socket
                             btnCloseLock.PerformClick();
                         }
                         break;
-                    case (int)JsonManager.CMDType.AdminPwd:
-                        resault = JsonManager.MakeAdminPwd(JsonManager.StatusType.StatusOK);
-                        server.SendAll(resault);
+                    case JsonManager.CMDType.AdminPwd:
+                        if (status == JsonManager.StatusType.StatusSet)
+                        {
+                            resault = JsonManager.MakeAdminPwd("set ok",JsonManager.StatusType.StatusOK);
+                            server.SendAll(resault);
+                        }
+
                         break;
-                    case (int)JsonManager.CMDType.Confirm:
+                    case JsonManager.CMDType.Confirm:
+                        if (status == JsonManager.StatusType.StatusSet)
+                        {
+                            resault = JsonManager.MakeConfirm(JsonManager.StatusType.StatusOK);
+                            server.SendAll(resault);
+                        }
+
                         break;
-                    case (int) JsonManager.CMDType.SyncDateTime:
-                        resault = JsonManager.MakeCMDSyncDateTime(JsonManager.StatusType.StatusOK);
-                        server.SendAll(resault);
+                    case JsonManager.CMDType.SyncDateTime:
+                        if (status == JsonManager.StatusType.StatusSet)
+                        {
+                            resault = JsonManager.MakeCMDSyncDateTime(JsonManager.StatusType.StatusOK);
+                            server.SendAll(resault);
+                        }
+
                         break;
-                    case (int)JsonManager.CMDType.Plan:
+                    case JsonManager.CMDType.Plan:
                         resault = JsonManager.MakePlan();
                         server.SendAll(resault);
                         break;
-                    case (int)JsonManager.CMDType.AdSet:
-                        resault = JsonManager.MakeAdSet(JsonManager.StatusType.StatusOK);
-                        server.SendAll(resault);
+                    case JsonManager.CMDType.AdSet:
+                        if(status == JsonManager.StatusType.StatusSet)
+                        {
+                            bool enable = cbAdEnable.Checked;
+                            int time = Convert.ToInt16(tbAdTime.Text);
+                            int interval = Convert.ToInt16(tbAdInterval.Text);
+
+                            resault = JsonManager.MakeAdSet(enable, time, interval, JsonManager.StatusType.StatusOK);
+                            server.SendAll(resault);
+                        }
+                        break;
+                    case JsonManager.CMDType.DevName:
+                        string name = JsonManager.ParseDevName(js);
+                        if (status == JsonManager.StatusType.StatusSet)
+                        {
+                            resault = JsonManager.MakeDevName(name, JsonManager.StatusType.StatusOK);
+                            server.SendAll(resault);
+                        }
+
+                        break;
+                    case JsonManager.CMDType.DevID:
+                        if (status == JsonManager.StatusType.StatusSet)
+                        {
+                            resault = JsonManager.MakeDevID(JsonManager.StatusType.StatusOK);
+                            server.SendAll(resault);
+                        }
+
                         break;
                 }
                     
@@ -234,7 +273,7 @@ namespace socket
         private void btnOpen_Click(object sender, EventArgs e)
         {
             string str = JsonManager.MakeCMDDoor1("unlock",JsonManager.StatusType.StatusSet);
-            server.SendAll("123"+ str + "123");
+            server.SendAll( str );
 
         }
 
@@ -246,7 +285,7 @@ namespace socket
 
         private void btnBroadcast_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.MakeBroadcast("通知：今天是考试所有课程已经停止，详细内容请查阅课程安排",JsonManager.StatusType.StatusSet);
+            string str = JsonManager.MakeBroadcast(tbBroadcast.Text, JsonManager.StatusType.StatusSet);
             server.SendAll(str);
         }
 
@@ -258,9 +297,59 @@ namespace socket
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.MakeAdSet(JsonManager.StatusType.StatusSet);
+            bool enable = cbAdEnable.Checked;
+            int time = Convert.ToInt16(tbAdTime.Text);
+            int interval = Convert.ToInt16(tbAdInterval.Text);
+
+            string str = JsonManager.MakeAdSet(enable,time,interval,JsonManager.StatusType.StatusSet);
             server.SendAll(str);
         }
+
+        private void btnSyncTime_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeCMDSyncDateTime(JsonManager.StatusType.StatusSet);
+            server.SendAll(str);
+
+        }
+
+        private void btnModifyAdminPwd_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeAdminPwd(tbAdminPwd.Text,JsonManager.StatusType.StatusSet);
+            server.SendAll(str);
+
+        }
+
+        private void btnReadAdminPwd_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeAdminPwd("read",JsonManager.StatusType.StatusRead);
+            server.SendAll(str);
+        }
+
+        private void btnGetID_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeDevID(JsonManager.StatusType.StatusRead);
+            server.SendAll(str);
+        }
+
+        private void btnGetDevName_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeDevName("",JsonManager.StatusType.StatusRead);
+            server.SendAll(str);
+        }
+
+        private void btnSetDevName_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeDevName(tbDevName.Text, JsonManager.StatusType.StatusSet);
+            server.SendAll(str);
+        }
+
+        private void btnConfirm_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeConfirm( JsonManager.StatusType.StatusSet);
+            server.SendAll(str);
+        }
+
+
 
 
 

@@ -45,11 +45,11 @@ public:
 
 	void timer_thread();
 
-	void attachOnConncet(NetNotify_t callback,int num);
-	void attachOnDisonncet(NetNotify_t callback,int num);
+	void attachOnConnect(NetNotify_t callback,int num);
+	void attachOnDisconnect(NetNotify_t callback,int num);
 
-	void deattachOnConncet(int num);
-	void deattachOnDisonncet(int num);
+	void deattachOnConnect(int num);
+	void deattachOnDisconnect(int num);
 
 	class ISocketListener {
 	public:

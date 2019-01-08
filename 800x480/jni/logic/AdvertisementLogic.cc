@@ -127,13 +127,22 @@ static int pic_counter = 0;
 static bool onUI_Timer(int id){
 	switch (id) {
 	case 0:
-		if(pic_counter >= gAdSet.list.size() )
+		if(gAdSet.list.size() > 0 )
 		{
-			pic_counter = 0;
+			if(pic_counter >= gAdSet.list.size() )
+			{
+				pic_counter = 0;
+			}
+			mBtnPicPtr->setText("");
+			mBtnPicPtr->setBackgroundPic(gAdSet.list[pic_counter].c_str());
+			pic_counter++;
 		}
-		mBtnPicPtr->setText("");
-		mBtnPicPtr->setBackgroundPic(gAdSet.list[pic_counter].c_str());
-		pic_counter++;
+		if(gAdSet.enable == false)
+		{
+			EASYUICONTEXT->openActivity("keyboardActivity");
+		}
+
+
 
 		break;
 

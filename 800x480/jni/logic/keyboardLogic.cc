@@ -53,17 +53,25 @@ static LongClickListener longButtonClickListener;
 
 static string QRCodeFullName = "/mnt/extsd/qr/qr1.jpg";
 
-static void onNetConncet()
+static void onNetConnect()
 {
 	mBtnQRCodePtr->setBackgroundPic(QRCodeFullName.c_str());
+	mTvConnectStatePtr->setText("已连接");
+
 }
+void static onNetDisconnect()
+{
+	mTvConnectStatePtr->setText("未连接");
+	mBtnQRCodePtr->setBackgroundPic("");
+}
+
+
 
 //网络数据回调接口
 static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 {
 	//LOGE("%s",msg.c_str());
-	Json::Reader reader;
-	Json::Value root;
+
 	switch(cmd)
 	{
 	case CMDQR:
@@ -201,6 +209,7 @@ static void onUI_init(){
     keyboardCallback = onNetWrokDataUpdate;
     mTextStatusNoticePtr->setText("提示：...");
     gKeyboardLastActionTime = time(NULL);
+
 }
 
 /**
@@ -223,9 +232,26 @@ static void onUI_show() {
 	lastDoorState = gDoorState;
 	doorPwd.clear();
     gKeyboardLastActionTime = time(NULL);
-    gSocket->attachOnConncet(onNetConncet, 1);
+    gSocket->attachOnConnect(onNetConnect, 1);
+    gSocket->attachOnDisconnect(onNetDisconnect, 1);
 
+    if(gSocket->connected())
+    {
+    	mBtnQRCodePtr->setBackgroundPic(QRCodeFullName.c_str());
+    	mTvConnectStatePtr->setText("已连接");
+    }
+    else
+    {
+    	mBtnQRCodePtr->setBackgroundPic("");
+    	mTvConnectStatePtr->setText("未连接");
+    }
 
+    string title;
+    title += "门禁系统";
+    title += "(";
+    title += gDevName;
+    title += ")";
+    mTextTitlePtr->setText(title.c_str());
 }
 
 /*
@@ -243,7 +269,8 @@ static void onUI_quit() {
     //取消按键长按监听
 	mBtnBackPtr->setLongClickListener(NULL);
     keyboardCallback = NULL;
-    gSocket->deattachOnConncet(1);
+    gSocket->deattachOnConnect(1);
+    gSocket->deattachOnDisconnect(1);
 
 
 }
@@ -268,20 +295,6 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  */
 static bool onUI_Timer(int id){
 	switch (id) {
-	case 0:
-		if(gSocket->connected())
-		{
-			mTvConnectStatePtr->setText("已连接");
-			//mBtnQRCodePtr->setBackgroundPic(QRCodeFullName.c_str());
-
-		}
-		else
-		{
-			mTvConnectStatePtr->setText("未连接");
-			mBtnQRCodePtr->setBackgroundPic("");
-		}
-
-		break;
 	case 1:
 		updateUI_time();
 		break;

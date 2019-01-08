@@ -4,11 +4,13 @@
 #include "settingsActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKButton* mBtnDevNameSetPtr;
+static ZKEditText* mEditDevNamePtr;
+static ZKTextView* mTextview9Ptr;
 static ZKTextView* mTextStatusNotice2Ptr;
 static ZKWindow* mWindStatusNoticePtr;
 static ZKTextView* mTextStatusNoticePtr;
 static ZKButton* mBtnServerStatePtr;
-static ZKTextView* mTextview8Ptr;
 static ZKButton* mBtnAdEnablePtr;
 static ZKButton* mBtnAdCancelPtr;
 static ZKButton* mBtnAdOKPtr;
@@ -37,7 +39,6 @@ static ZKTextView* mTextview2Ptr;
 static ZKEditText* mEdittextOldAdminPwdPtr;
 static ZKEditText* mEditTextServerPortPtr;
 static ZKEditText* mEditTextServerIPPtr;
-static ZKTextView* mTvServerPortPtr;
 static ZKTextView* mTvServerIPPtr;
 static ZKButton* mBtnServerPtr;
 static ZKButton* mBtnNetWorkPtr;
@@ -79,6 +80,7 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_SETTINGS_BtnDevNameSet, onButtonClick_BtnDevNameSet,
     ID_SETTINGS_BtnServerState, onButtonClick_BtnServerState,
     ID_SETTINGS_BtnAdEnable, onButtonClick_BtnAdEnable,
     ID_SETTINGS_BtnAdCancel, onButtonClick_BtnAdCancel,
@@ -136,6 +138,7 @@ typedef struct {
 }S_EditTextInputCallback;
 /*TAG:EditTextInputCallback*/
 static S_EditTextInputCallback SEditTextInputCallbackTab[] = {
+    ID_SETTINGS_EditDevName, onEditTextChanged_EditDevName,
     ID_SETTINGS_EditSwitchAdTime, onEditTextChanged_EditSwitchAdTime,
     ID_SETTINGS_EditDisplayAdAfterTime, onEditTextChanged_EditDisplayAdAfterTime,
     ID_SETTINGS_EdittextNewAdminPwd2, onEditTextChanged_EdittextNewAdminPwd2,
@@ -178,11 +181,13 @@ const char* settingsActivity::getAppName() const{
 //TAG:onCreate
 void settingsActivity::onCreate() {
 	Activity::onCreate();
+    mBtnDevNameSetPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnDevNameSet);
+    mEditDevNamePtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditDevName);if(mEditDevNamePtr!= NULL){mEditDevNamePtr->setTextChangeListener(this);}
+    mTextview9Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview9);
     mTextStatusNotice2Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_TextStatusNotice2);
     mWindStatusNoticePtr = (ZKWindow*)findControlByID(ID_SETTINGS_WindStatusNotice);
     mTextStatusNoticePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextStatusNotice);
     mBtnServerStatePtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnServerState);
-    mTextview8Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview8);
     mBtnAdEnablePtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnAdEnable);
     mBtnAdCancelPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnAdCancel);
     mBtnAdOKPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnAdOK);
@@ -211,7 +216,6 @@ void settingsActivity::onCreate() {
     mEdittextOldAdminPwdPtr = (ZKEditText*)findControlByID(ID_SETTINGS_EdittextOldAdminPwd);if(mEdittextOldAdminPwdPtr!= NULL){mEdittextOldAdminPwdPtr->setTextChangeListener(this);}
     mEditTextServerPortPtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditTextServerPort);if(mEditTextServerPortPtr!= NULL){mEditTextServerPortPtr->setTextChangeListener(this);}
     mEditTextServerIPPtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditTextServerIP);if(mEditTextServerIPPtr!= NULL){mEditTextServerIPPtr->setTextChangeListener(this);}
-    mTvServerPortPtr = (ZKTextView*)findControlByID(ID_SETTINGS_TvServerPort);
     mTvServerIPPtr = (ZKTextView*)findControlByID(ID_SETTINGS_TvServerIP);
     mBtnServerPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnServer);
     mBtnNetWorkPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnNetWork);

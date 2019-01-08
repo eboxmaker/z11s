@@ -24,11 +24,15 @@ namespace MyJson
 	        DoorCtr,
 	        QR,
             AdPic,
+            DelAdPic,
             AdSet,
             SyncDateTime,
             Plan,
             Broadcast,
             SuperPic,
+            DevName,
+            DevID,
+            CMDErr,
     }//同
     public enum StatusType  //枚举类型，体会xml注释的样子
     {
@@ -231,7 +235,9 @@ namespace MyJson
             string data = FileToBase64(FilePath);
             obj.Add("cmd", FileType);
             obj.Add("name", name);
+            obj.Add("dataLength", data.Length);
             obj.Add("data", data);
+            obj.Add("status", (int)StatusType.StatusSet);
             string jstring = JsonConvert.SerializeObject(obj);
             return jstring;
         }
@@ -251,14 +257,36 @@ namespace MyJson
             fs.Close();
             return true;
         }
-        public static int GetJsonCMD(string jstr)
+        public static string UnicodeToString(string srcText)
+        {
+            string dst = "";
+            string src = srcText;
+            int len = srcText.Length / 6;
+            for (int i = 0; i <= len - 1; i++)
+            {
+                string str = "";
+                str = src.Substring(0, 6).Substring(2);
+                src = src.Substring(6);
+                byte[] bytes = new byte[2];
+                bytes[1] = byte.Parse(int.Parse(str.Substring(0, 2), System.Globalization.NumberStyles.HexNumber).ToString());
+                bytes[0] = byte.Parse(int.Parse(str.Substring(2, 2), System.Globalization.NumberStyles.HexNumber).ToString());
+                dst += Encoding.Unicode.GetString(bytes);
+            }
+            return dst;
+        }
+
+
+        public static CMDType GetJsonCMD(string jstr)
         {
             JObject obj = new JObject();
-            int cmd = -1;
+            CMDType cmd = CMDType.CMDErr;
+
+           
+
             try
             {
                 obj = (JObject)JsonConvert.DeserializeObject(jstr);
-                cmd = Convert.ToInt16( obj["cmd"].ToString());
+                cmd = (CMDType)Convert.ToInt16(obj["cmd"].ToString());
    
             }
             catch
@@ -266,10 +294,23 @@ namespace MyJson
 
             }
             return cmd;  
-
-
         }
+        public static StatusType GetJsonStatus(string jstr)
+        {
+            JObject obj = new JObject();
+            StatusType status = StatusType.StatusErr;
+            try
+            {
+                obj = (JObject)JsonConvert.DeserializeObject(jstr);
+                status = (StatusType)Convert.ToInt16(obj["status"].ToString());
 
+            }
+            catch
+            {
+
+            }
+            return status;
+        }
         public static string ParseCMDHeartbeat(string js)
         {
 
@@ -371,24 +412,61 @@ namespace MyJson
             return jstring;
         }
 
-        public static string MakeAdSet(StatusType status)
+        public static string MakeAdSet(bool enable,int time,int interval,StatusType status)
         {
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.AdSet);
-            obj.Add("enable", true);
-            obj.Add("displayTime", 100);
-            obj.Add("switchTime", 3);
+            obj.Add("enable", enable);
+            obj.Add("displayTime", time);
+            obj.Add("switchTime", interval);
             obj.Add("status",(int) status);
             string jstring = JsonConvert.SerializeObject(obj);
             return jstring;
         }
 
-        public static string MakeAdminPwd(StatusType status)
+        public static string MakeAdminPwd(string pwd,StatusType status)
         {
-            string dateTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.AdminPwd);
-            obj.Add("pwd", "123456");
+            obj.Add("pwd", pwd);
+            obj.Add("status", (int)status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            return jstring;
+        }
+
+        public static string MakeConfirm(StatusType status)
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.Confirm);
+            obj.Add("id", "");
+            obj.Add("name", "");
+            obj.Add("status", (int)status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            return jstring;
+        }
+
+        public static string MakeDevName(string name,StatusType status)
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.DevName);
+            obj.Add("name", name);
+            obj.Add("status", (int)status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            return jstring;
+        }
+
+        public static string ParseDevName(string js)
+        {
+            JObject jo = (JObject)JsonConvert.DeserializeObject(js);
+            string name = jo["name"].ToString();
+            return name;
+        }
+
+        public static string MakeDevID(StatusType status)
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.DevID);
+            obj.Add("id", "");
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
             return jstring;

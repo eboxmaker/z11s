@@ -43,17 +43,20 @@ typedef enum
 {
 	CMDHeartbeat,
 	CMDSetHeartbeat,
-	CMDConfirmDevID,
+	CMDConfirm,
 	CMDAdminPwd,
 	CMDDoorPwd,
 	CMDDoorCtr,
 	CMDQR,
 	CMDAdPic,//CMDAdvertisement,
+	CMDDelAdPic,//CMDAdvertisement,
 	CMDAdSet,
 	CMDSyncDateTime,
 	CMDPlan,
 	CMDBroadcast,
 	CMDSuperPic,
+	CMDDevName,
+	CMDDevID,
 }JsonCmd_t;
 typedef enum
 {
@@ -63,12 +66,20 @@ typedef enum
 	StatusErr
 }JsonStatus_t;
 
+typedef union
+{
+	unsigned long long value;
+	unsigned char bytes[8];
+}XdataULong_t;
+
 typedef struct
 {
 	string teacher;
 	int	   level;
 	string pwd;
 }Person_t;
+
+
 
 typedef struct
 {
@@ -117,10 +128,12 @@ extern SocketClient* gSocket;
 
 extern string gAdminPwd;//需要存储
 extern string gDoorPassword;
-extern unsigned long long gLastHelloTime;
+extern long gLastHelloTime;
 extern bool gDoorPwdState ;
 
-extern long long gKeyboardLastActionTime;
+extern  long gKeyboardLastActionTime;
+extern string gDevID;
+extern string gDevName;
 
 extern doorState_t gDoorState;
 extern PersonList_t gUserAdmin;

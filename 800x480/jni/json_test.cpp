@@ -9,6 +9,9 @@
 #include "lib/itoa.h"
 #include "globalVar.h"
 #include   <iostream>
+#include "base64.h"
+
+#include "security/SecurityManager.h"
 
 static char buf[409600];
 static int counter = 0;
@@ -288,23 +291,169 @@ JsonStatus_t JsonCmdManager::parseAdminPwd(string &js,string &adminPwd)
 	  return status;
 }
 
+string JsonCmdManager::makeConfirm(string &id,string &name,JsonStatus_t status)
+{
 
+	//UTF8String u8 = L"UNICODE字符串";
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDConfirm);
+	  root["id"] = Json::Value(id);
+	  root["name"] = Json::Value(name);
+	  root["status"] = Json::Value(status);
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return temp;
 
-std::string get_id(const char *str)
+}
+JsonStatus_t JsonCmdManager::parseConfirm(string &js)
 {
 	  Json::Reader reader;
 
 	  Json::Value root;
-	  std::string upload_id;
-
-	  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  JsonStatus_t status;
+	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-
-	     upload_id = root["uploadid"].asString();  // 访问节点，upload_id = "UP000000"
-
+		  status = root["status"].asInt();
 	  }
 
-	  return upload_id;
+	  return status;
+}
+string JsonCmdManager::makeDevID(string &id,JsonStatus_t status)
+{
+
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDDevID);
+	  root["id"] = Json::Value(id);
+	  root["status"] = Json::Value(status);
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return temp;
+
+}
+JsonStatus_t JsonCmdManager::parseDevID(string &js)
+{
+	  Json::Reader reader;
+
+	  Json::Value root;
+	  JsonStatus_t status;
+	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+		  status = root["status"].asInt();
+	  }
+
+	  return status;
+}
+string JsonCmdManager::makeDevName(string &name,JsonStatus_t status)
+{
+
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDDevName);
+	  root["name"] = Json::Value(name);
+	  root["status"] = Json::Value(status);
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return temp;
+}
+JsonStatus_t JsonCmdManager::parseDevName(string &js,string &name)
+{
+	  Json::Reader reader;
+
+	  Json::Value root;
+	  JsonStatus_t status;
+	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+		  status = root["status"].asInt();
+		  if(status == StatusSet)
+		  {
+			  name = root["name"].asString();
+		  }
+	  }
+
+	  return status;
+}
+string JsonCmdManager::makeQRCodeAck(JsonStatus_t status)
+{
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDQR);
+	  root["status"] = Json::Value(status);
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return temp;
+}
+string JsonCmdManager::makePicAck(JsonStatus_t status)
+{
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDAdPic);
+	  root["status"] = Json::Value(status);
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return temp;
+}
+JsonStatus_t JsonCmdManager::parseFile(string str, char* directory, string &fullName)
+{
+	Json::Reader reader;
+	Json::Value root;
+	string fileName;
+	string data;
+	string dataout;
+	unsigned long length;
+	JsonStatus_t status;
+	if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	{
+
+		fileName = root["name"].asString();  // 访问节点，upload_id = "UP000000"
+		data = root["data"].asString();    // 访问节点，code = 100
+		length = root["dataLength"].asLargestUInt();
+		//LOGE("len err:%ul ? %ul",length,data.length());
+
+		if(length != data.length())
+		{
+			return StatusErr;
+		}
+		fullName = directory ;
+		fullName +=  fileName;
+		LOGE("%s",fullName.c_str());
+	}
+
+	Base64::Decode(data, &dataout);
+	FILE *fp = fopen(fullName.c_str(), "w");
+	if (fp != NULL)
+	{
+		int writeLength = fwrite(dataout.c_str(), sizeof(char), dataout.size(), fp);
+	}
+	else
+	{
+		return StatusErr;
+	}
+	if (fclose(fp) != 0) {
+		return StatusErr;
+	}
+	return StatusSet;
+}
+
+
+
+
+
+
+
+
+
+
+
+string JsonCmdManager::getID()
+{
+	XdataULong_t id;
+	char buf1[32];
+	char buf2[32];
+
+	bool ret = SECURITYMANAGER->getDevID(id.bytes);
+
+	ultoa(id.value,buf1,10);
+	ultoa(id.value>>32,buf2,10);
+	string str = buf2;
+	str += buf1;
+	return str;
 }
 
 

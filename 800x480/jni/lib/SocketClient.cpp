@@ -258,7 +258,7 @@ bool SocketClient::connected()
 //		conncetState = false;
 //		break;
 //	}
-	LOGE("上次通讯时间：%D",time(NULL) - lastHeartbeatTime);
+	//LOGE("上次通讯时间：%D",time(NULL) - lastHeartbeatTime);
 
 	if(conncetState == true)
 	{
@@ -302,22 +302,22 @@ void SocketClient::updateHearbeat()
 	lastHeartbeatTime = time(NULL);
 }
 
-void SocketClient::attachOnConncet(NetNotify_t callback,int num)
+void SocketClient::attachOnConnect(NetNotify_t callback,int num)
 {
 	if(num>=0 && num < maxCallbackNum)
 		onConncet[num] = callback;
 }
-void SocketClient::attachOnDisonncet(NetNotify_t callback,int num)
+void SocketClient::attachOnDisconnect(NetNotify_t callback,int num)
 {
 	if(num>=0 && num < maxCallbackNum)
 		onDisconncet[num] = callback;
 }
-void SocketClient::deattachOnConncet(int num)
+void SocketClient::deattachOnConnect(int num)
 {
 	if(num>=0 && num < maxCallbackNum)
 		onConncet[num] = NULL;
 }
-void SocketClient::deattachOnDisonncet(int num)
+void SocketClient::deattachOnDisconnect(int num)
 {
 	if(num>=0 && num < maxCallbackNum)
 		onDisconncet[num] = NULL;
@@ -420,6 +420,9 @@ void SocketClient::timer_thread()
 			if(ret == true)
 			{
 				LOGE("连接服务器成功!\n");
+				string idstr = jm.getID();
+				string jsid = jm.makeConfirm(idstr, gDevName,StatusSet);
+				write_(jsid);
 				conncetState = true;
 			}
 			else
@@ -433,7 +436,7 @@ void SocketClient::timer_thread()
 
 		if(	trigerTime != -1)
 		{
-			if(time(NULL) - trigerTime > trigerTimeout)
+			if(time(NULL) - trigerTime >= trigerTimeout)
 			{
 				LOGE("已经触发");
 				exeCMD("trigerTimeout");
@@ -441,15 +444,16 @@ void SocketClient::timer_thread()
 			}
 		}
 
-		Thread::sleep(1000);
 
 		if(heartbeatInterval < 3)
 			heartbeatInterval = 3;
-		if(counter++ > heartbeatInterval)
+		if(++counter >= heartbeatInterval)
 		{
 			sendHearbeat();
 			counter = 0;
 		}
+		Thread::sleep(1000);
+
 	}
 
 }

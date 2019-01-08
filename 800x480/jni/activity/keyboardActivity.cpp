@@ -4,6 +4,7 @@
 #include "keyboardActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextTitlePtr;
 static ZKButton* mBtnQRCodePtr;
 static ZKTextView* mTextStatusNotice2Ptr;
 static ZKTextView* mTextStatusNoticePtr;
@@ -40,7 +41,6 @@ static ZKTextView* mTextview5Ptr;
 static ZKTextView* mTextview4Ptr;
 static ZKWindow* mWindStatePtr;
 static ZKButton* mBtnBackMain2Ptr;
-static ZKTextView* mTextview1Ptr;
 static ZKTextView* mTextWeekPtr;
 static ZKTextView* mTextTimePtr;
 static ZKTextView* mTextDatePtr;
@@ -203,6 +203,7 @@ const char* keyboardActivity::getAppName() const{
 //TAG:onCreate
 void keyboardActivity::onCreate() {
 	Activity::onCreate();
+    mTextTitlePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextTitle);
     mBtnQRCodePtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnQRCode);
     mTextStatusNotice2Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextStatusNotice2);
     mTextStatusNoticePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextStatusNotice);
@@ -239,7 +240,6 @@ void keyboardActivity::onCreate() {
     mTextview4Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview4);
     mWindStatePtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindState);
     mBtnBackMain2Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnBackMain2);
-    mTextview1Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview1);
     mTextWeekPtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextWeek);
     mTextTimePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextTime);
     mTextDatePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextDate);

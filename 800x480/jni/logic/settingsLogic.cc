@@ -35,7 +35,32 @@
 * 在Eclipse编辑器中  使用 “alt + /”  快捷键可以打开智能提示
 */
 
+static void updateAdSetWind()
+{
+	gAdSet.enable = StoragePreferences::getBool("gAdSet.enable", gAdSet.enable);
+	gAdSet.displayTime = StoragePreferences::getInt("gAdSet.displayTime", gAdSet.displayTime);
+	gAdSet.switchTime = StoragePreferences::getInt("gAdSet.switchTime", gAdSet.switchTime);
+	if(gAdSet.enable == true)
+	{
+		mBtnAdEnablePtr->setBackgroundPic("kai.png");
+	}
+	else
+	{
+		mBtnAdEnablePtr->setBackgroundPic("guan.png");
+	}
 
+	char buf[10];
+	memset(buf,0,10);
+	itoa(gAdSet.displayTime,buf);
+	LOGE("%D,%s",gAdSet.displayTime,buf);
+	mEditDisplayAdAfterTimePtr->setText(buf);
+
+
+	memset(buf,0,10);
+	itoa(gAdSet.switchTime,buf);
+	mEditSwitchAdTimePtr->setText(buf);
+	LOGE("%D,%s",gAdSet.switchTime,buf);
+}
 static void updateUI_time() {
 	char timeStr[20];
 	struct tm *t = TimeHelper::getDateTime();
@@ -79,37 +104,18 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 	switch(cmd)
 	{
 	case CMDAdminPwd:
-		gSocket->disableTriger();
-		mWindStatusNoticePtr->showWnd();
-		if(status == StatusSet)
-			mTextStatusNoticePtr->setText("响应服务器设置");
-		else if(status == StatusOK)
-		{
-			mTextStatusNoticePtr->setText("服务器同步成功");
-		}
-		sleep(1);
-		mWindStatusNoticePtr->hideWnd();
-		break;
 	case CMDSyncDateTime:
-		gSocket->disableTriger();
-		mWindStatusNoticePtr->showWnd();
-		if(status == StatusSet)
-			mTextStatusNoticePtr->setText("响应服务器设置");
-		else if(status == StatusOK)
-		{
-			mTextStatusNoticePtr->setText("服务器同步成功");
-		}
-		TimeHelper::setDateTime(msg.c_str());
-		sleep(1);
-		mWindStatusNoticePtr->hideWnd();
-		break;
 	case CMDAdSet:
-		gSocket->disableTriger();
+	case CMDDevName:
 		mWindStatusNoticePtr->showWnd();
 		if(status == StatusSet)
+		{
 			mTextStatusNoticePtr->setText("响应服务器设置");
+			updateAdSetWind();
+		}
 		else if(status == StatusOK)
 		{
+			gSocket->disableTriger();
 			mTextStatusNoticePtr->setText("服务器同步成功");
 		}
 		sleep(1);
@@ -173,6 +179,12 @@ static void onUI_show() {
     mWndAdSetPtr->hideWnd();
 
 
+	if(gSocket->connected())
+		mBtnServerStatePtr->setBackgroundPic("kai.png");
+	else
+		mBtnServerStatePtr->setBackgroundPic("guan.png");
+
+	mEditDevNamePtr->setText(gDevName);
 
 }
 
@@ -258,12 +270,15 @@ static bool onButtonClick_BtnNetWork(ZKButton *pButton) {
 static bool onButtonClick_BtnServer(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnServer !!!\n");
 	string tempServerIP ;
-	int tempServerPort ;
+	int tempServerPort = 0;
 
 	tempServerIP = mEditTextServerIPPtr->getText();
 	tempServerPort = atoi(mEditTextServerPortPtr->getText().c_str());
-	if((tempServerIP == gServerIP ) && (tempServerPort = gServerPort))
+	if((tempServerIP == gServerIP ) && (tempServerPort == gServerPort))
 	{
+		LOGE("%s:%d",gServerIP.c_str(),tempServerPort);
+	    mTextStatusNoticePtr->setText("无更改");
+	    mWindStatusNoticePtr->showWnd();
 		return true;
 	}
 	// 设置一个socket地址结构serverAddr,代表服务器的internet地址, 端口
@@ -274,6 +289,8 @@ static bool onButtonClick_BtnServer(ZKButton *pButton) {
 
 	if (inet_aton(tempServerIP.c_str(), &gServerAddr.sin_addr) == 0) {     // 服务器的IP地址来自程序的参数
 		LOGD("Server IP Address Error!\n");
+	    mTextStatusNoticePtr->setText("服务器IP设置错误");
+	    mWindStatusNoticePtr->showWnd();
 		return false;
 	}
 	else
@@ -291,15 +308,18 @@ static bool onButtonClick_BtnServer(ZKButton *pButton) {
 		if(ret == true)
 		{
 			LOGE("连接服务器成功!\n");
+		    mTextStatusNoticePtr->setText("连接服务器成功!");
+
 		}
 		else
 		{
 			gSocket->disconnect();
 			LOGE("连接服务器失败 !\n");
+		    mTextStatusNoticePtr->setText("连接服务器失败!");
 		}
-
 	}
 
+    mWindStatusNoticePtr->showWnd();
 	LOGE("%s:%d",gServerIP.c_str(),gServerPort);
     return true;
 }
@@ -339,6 +359,7 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 
 		    if(gSocket->connected())
 		    {
+				mTextStatusNoticePtr->setText("等待同步设置服务器");
 			    string str ;
 			    str = jm.makeAdminPwd(gAdminPwd,StatusSet);
 			    gSocket->write_(str);
@@ -346,7 +367,7 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 		    }
 		    else
 		    {
-			    mTextStatusNotice2Ptr->setText("无法同步服务器设置");
+			    mTextStatusNotice2Ptr->setText("无法同步设置服务器");
 
 		    }
 
@@ -400,32 +421,12 @@ static bool onButtonClick_BtnSyncDateTime(ZKButton *pButton) {
     return false;
 }
 
+
 static bool onButtonClick_BtnAdSet(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnAdSet !!!\n");
 
-	gAdSet.enable = StoragePreferences::getBool("gAdSet.enable", gAdSet.enable);
-	gAdSet.displayTime = StoragePreferences::getInt("gAdSet.displayTime", gAdSet.displayTime);
-	gAdSet.switchTime = StoragePreferences::getInt("gAdSet.switchTime", gAdSet.switchTime);
-	if(gAdSet.enable == true)
-	{
-		mBtnAdEnablePtr->setBackgroundPic("kai.png");
-	}
-	else
-	{
-		mBtnAdEnablePtr->setBackgroundPic("guan.png");
-	}
 
-    char buf[10];
-    memset(buf,0,10);
-    itoa(gAdSet.displayTime,buf);
-    LOGE("%D,%s",gAdSet.displayTime,buf);
-    mEditDisplayAdAfterTimePtr->setText(buf);
-
-
-    memset(buf,0,10);
-    itoa(gAdSet.switchTime,buf);
-    mEditSwitchAdTimePtr->setText(buf);
-    LOGE("%D,%s",gAdSet.switchTime,buf);
+	updateAdSetWind();
 
 
 
@@ -515,8 +516,38 @@ static bool onButtonClick_BtnAdEnable(ZKButton *pButton) {
 	}
     return false;
 }
+
+
+static bool onButtonClick_BtnDevNameSet(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnNameSet !!!\n");
+	string temp;
+	gDevName = mEditDevNamePtr->getText();
+    StoragePreferences::putString("gDevName", gDevName);
+    if(gSocket->connected())
+    {
+        mWindStatusNoticePtr->showWnd();
+        mTextStatusNoticePtr->setText("设置成功");
+        mTextStatusNoticePtr->setText("正在同步服务器设置");
+
+    	gSocket->updateTriger();
+    	string msg;
+    	msg = jm.makeDevName(gDevName, StatusSet);
+    	gSocket->write_(msg);
+    }
+    else
+    {
+        mWindStatusNoticePtr->showWnd();
+        mTextStatusNoticePtr->setText("设置成功");
+        mTextStatusNotice2Ptr->setText("无法同步设置服务器");
+    }
+    return false;
+}
+
 static bool onButtonClick_BtnServerState(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnServerState !!!\n");
     return false;
 }
 
+static void onEditTextChanged_EditDevName(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EditDevName %s !!!\n", text.c_str());
+}

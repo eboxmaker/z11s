@@ -49,7 +49,22 @@
             this.btnLoadFile3 = new System.Windows.Forms.Button();
             this.btnBroadcast = new System.Windows.Forms.Button();
             this.btnCloseBroadcast = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnAdSet = new System.Windows.Forms.Button();
+            this.cbAdEnable = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.tbAdTime = new System.Windows.Forms.TextBox();
+            this.tbAdInterval = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.btnModifyAdminPwd = new System.Windows.Forms.Button();
+            this.tbAdminPwd = new System.Windows.Forms.TextBox();
+            this.btnSyncTime = new System.Windows.Forms.Button();
+            this.tbBroadcast = new System.Windows.Forms.TextBox();
+            this.btnReadAdminPwd = new System.Windows.Forms.Button();
+            this.btnGetID = new System.Windows.Forms.Button();
+            this.btnGetDevName = new System.Windows.Forms.Button();
+            this.tbDevName = new System.Windows.Forms.TextBox();
+            this.btnSetDevName = new System.Windows.Forms.Button();
+            this.btnConfirm = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnStartServer
@@ -114,7 +129,7 @@
             // 
             // btnSendMSG
             // 
-            this.btnSendMSG.Location = new System.Drawing.Point(605, 382);
+            this.btnSendMSG.Location = new System.Drawing.Point(605, 408);
             this.btnSendMSG.Name = "btnSendMSG";
             this.btnSendMSG.Size = new System.Drawing.Size(75, 23);
             this.btnSendMSG.TabIndex = 7;
@@ -124,7 +139,7 @@
             // 
             // RichSend
             // 
-            this.RichSend.Location = new System.Drawing.Point(194, 209);
+            this.RichSend.Location = new System.Drawing.Point(194, 235);
             this.RichSend.Name = "RichSend";
             this.RichSend.Size = new System.Drawing.Size(477, 167);
             this.RichSend.TabIndex = 8;
@@ -142,7 +157,7 @@
             // 
             // btnLoadFile
             // 
-            this.btnLoadFile.Location = new System.Drawing.Point(13, 263);
+            this.btnLoadFile.Location = new System.Drawing.Point(12, 281);
             this.btnLoadFile.Name = "btnLoadFile";
             this.btnLoadFile.Size = new System.Drawing.Size(75, 23);
             this.btnLoadFile.TabIndex = 10;
@@ -152,7 +167,7 @@
             // 
             // btnSaveFile
             // 
-            this.btnSaveFile.Location = new System.Drawing.Point(13, 353);
+            this.btnSaveFile.Location = new System.Drawing.Point(12, 371);
             this.btnSaveFile.Name = "btnSaveFile";
             this.btnSaveFile.Size = new System.Drawing.Size(75, 23);
             this.btnSaveFile.TabIndex = 11;
@@ -162,7 +177,7 @@
             // 
             // btnOpen
             // 
-            this.btnOpen.Location = new System.Drawing.Point(13, 382);
+            this.btnOpen.Location = new System.Drawing.Point(677, 12);
             this.btnOpen.Name = "btnOpen";
             this.btnOpen.Size = new System.Drawing.Size(75, 23);
             this.btnOpen.TabIndex = 12;
@@ -172,7 +187,7 @@
             // 
             // btnCloseLock
             // 
-            this.btnCloseLock.Location = new System.Drawing.Point(94, 382);
+            this.btnCloseLock.Location = new System.Drawing.Point(787, 12);
             this.btnCloseLock.Name = "btnCloseLock";
             this.btnCloseLock.Size = new System.Drawing.Size(75, 23);
             this.btnCloseLock.TabIndex = 13;
@@ -182,14 +197,14 @@
             // 
             // tbSendDataLength
             // 
-            this.tbSendDataLength.Location = new System.Drawing.Point(499, 384);
+            this.tbSendDataLength.Location = new System.Drawing.Point(499, 410);
             this.tbSendDataLength.Name = "tbSendDataLength";
             this.tbSendDataLength.Size = new System.Drawing.Size(100, 21);
             this.tbSendDataLength.TabIndex = 14;
             // 
             // btnLoadQR1
             // 
-            this.btnLoadQR1.Location = new System.Drawing.Point(94, 263);
+            this.btnLoadQR1.Location = new System.Drawing.Point(93, 281);
             this.btnLoadQR1.Name = "btnLoadQR1";
             this.btnLoadQR1.Size = new System.Drawing.Size(94, 23);
             this.btnLoadQR1.TabIndex = 15;
@@ -199,7 +214,7 @@
             // 
             // btnLoadQR2
             // 
-            this.btnLoadQR2.Location = new System.Drawing.Point(94, 292);
+            this.btnLoadQR2.Location = new System.Drawing.Point(93, 310);
             this.btnLoadQR2.Name = "btnLoadQR2";
             this.btnLoadQR2.Size = new System.Drawing.Size(94, 23);
             this.btnLoadQR2.TabIndex = 16;
@@ -209,7 +224,7 @@
             // 
             // btnLoadFile2
             // 
-            this.btnLoadFile2.Location = new System.Drawing.Point(12, 292);
+            this.btnLoadFile2.Location = new System.Drawing.Point(11, 310);
             this.btnLoadFile2.Name = "btnLoadFile2";
             this.btnLoadFile2.Size = new System.Drawing.Size(75, 23);
             this.btnLoadFile2.TabIndex = 17;
@@ -219,7 +234,7 @@
             // 
             // btnLoadFile3
             // 
-            this.btnLoadFile3.Location = new System.Drawing.Point(13, 321);
+            this.btnLoadFile3.Location = new System.Drawing.Point(12, 339);
             this.btnLoadFile3.Name = "btnLoadFile3";
             this.btnLoadFile3.Size = new System.Drawing.Size(75, 23);
             this.btnLoadFile3.TabIndex = 18;
@@ -229,9 +244,9 @@
             // 
             // btnBroadcast
             // 
-            this.btnBroadcast.Location = new System.Drawing.Point(94, 321);
+            this.btnBroadcast.Location = new System.Drawing.Point(681, 379);
             this.btnBroadcast.Name = "btnBroadcast";
-            this.btnBroadcast.Size = new System.Drawing.Size(75, 23);
+            this.btnBroadcast.Size = new System.Drawing.Size(89, 23);
             this.btnBroadcast.TabIndex = 19;
             this.btnBroadcast.Text = "广播消息";
             this.btnBroadcast.UseVisualStyleBackColor = true;
@@ -239,7 +254,7 @@
             // 
             // btnCloseBroadcast
             // 
-            this.btnCloseBroadcast.Location = new System.Drawing.Point(94, 350);
+            this.btnCloseBroadcast.Location = new System.Drawing.Point(791, 379);
             this.btnCloseBroadcast.Name = "btnCloseBroadcast";
             this.btnCloseBroadcast.Size = new System.Drawing.Size(75, 23);
             this.btnCloseBroadcast.TabIndex = 20;
@@ -247,22 +262,175 @@
             this.btnCloseBroadcast.UseVisualStyleBackColor = true;
             this.btnCloseBroadcast.Click += new System.EventHandler(this.btnCloseBroadcast_Click);
             // 
-            // button1
+            // btnAdSet
             // 
-            this.button1.Location = new System.Drawing.Point(194, 384);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 21;
-            this.button1.Text = "广告设置";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnAdSet.Location = new System.Drawing.Point(681, 197);
+            this.btnAdSet.Name = "btnAdSet";
+            this.btnAdSet.Size = new System.Drawing.Size(75, 23);
+            this.btnAdSet.TabIndex = 21;
+            this.btnAdSet.Text = "广告设置";
+            this.btnAdSet.UseVisualStyleBackColor = true;
+            this.btnAdSet.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // cbAdEnable
+            // 
+            this.cbAdEnable.AutoSize = true;
+            this.cbAdEnable.Location = new System.Drawing.Point(773, 201);
+            this.cbAdEnable.Name = "cbAdEnable";
+            this.cbAdEnable.Size = new System.Drawing.Size(78, 16);
+            this.cbAdEnable.TabIndex = 22;
+            this.cbAdEnable.Text = "checkBox1";
+            this.cbAdEnable.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(681, 235);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(89, 12);
+            this.label1.TabIndex = 23;
+            this.label1.Text = "进入广告时间：";
+            // 
+            // tbAdTime
+            // 
+            this.tbAdTime.Location = new System.Drawing.Point(768, 226);
+            this.tbAdTime.Name = "tbAdTime";
+            this.tbAdTime.Size = new System.Drawing.Size(100, 21);
+            this.tbAdTime.TabIndex = 24;
+            this.tbAdTime.Text = "10";
+            // 
+            // tbAdInterval
+            // 
+            this.tbAdInterval.Location = new System.Drawing.Point(768, 253);
+            this.tbAdInterval.Name = "tbAdInterval";
+            this.tbAdInterval.Size = new System.Drawing.Size(100, 21);
+            this.tbAdInterval.TabIndex = 26;
+            this.tbAdInterval.Text = "3";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(681, 262);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(89, 12);
+            this.label2.TabIndex = 25;
+            this.label2.Text = "广告轮播间隔：";
+            // 
+            // btnModifyAdminPwd
+            // 
+            this.btnModifyAdminPwd.Location = new System.Drawing.Point(683, 308);
+            this.btnModifyAdminPwd.Name = "btnModifyAdminPwd";
+            this.btnModifyAdminPwd.Size = new System.Drawing.Size(73, 23);
+            this.btnModifyAdminPwd.TabIndex = 27;
+            this.btnModifyAdminPwd.Text = "设管码";
+            this.btnModifyAdminPwd.UseVisualStyleBackColor = true;
+            this.btnModifyAdminPwd.Click += new System.EventHandler(this.btnModifyAdminPwd_Click);
+            // 
+            // tbAdminPwd
+            // 
+            this.tbAdminPwd.Location = new System.Drawing.Point(683, 336);
+            this.tbAdminPwd.Name = "tbAdminPwd";
+            this.tbAdminPwd.Size = new System.Drawing.Size(185, 21);
+            this.tbAdminPwd.TabIndex = 28;
+            this.tbAdminPwd.Text = "123456";
+            // 
+            // btnSyncTime
+            // 
+            this.btnSyncTime.Location = new System.Drawing.Point(679, 41);
+            this.btnSyncTime.Name = "btnSyncTime";
+            this.btnSyncTime.Size = new System.Drawing.Size(75, 23);
+            this.btnSyncTime.TabIndex = 29;
+            this.btnSyncTime.Text = "同步时间";
+            this.btnSyncTime.UseVisualStyleBackColor = true;
+            this.btnSyncTime.Click += new System.EventHandler(this.btnSyncTime_Click);
+            // 
+            // tbBroadcast
+            // 
+            this.tbBroadcast.Location = new System.Drawing.Point(681, 408);
+            this.tbBroadcast.Name = "tbBroadcast";
+            this.tbBroadcast.Size = new System.Drawing.Size(187, 21);
+            this.tbBroadcast.TabIndex = 30;
+            this.tbBroadcast.Text = "通知：今天是考试所有课程已经停止";
+            // 
+            // btnReadAdminPwd
+            // 
+            this.btnReadAdminPwd.Location = new System.Drawing.Point(791, 308);
+            this.btnReadAdminPwd.Name = "btnReadAdminPwd";
+            this.btnReadAdminPwd.Size = new System.Drawing.Size(73, 23);
+            this.btnReadAdminPwd.TabIndex = 31;
+            this.btnReadAdminPwd.Text = "读管码";
+            this.btnReadAdminPwd.UseVisualStyleBackColor = true;
+            this.btnReadAdminPwd.Click += new System.EventHandler(this.btnReadAdminPwd_Click);
+            // 
+            // btnGetID
+            // 
+            this.btnGetID.Location = new System.Drawing.Point(677, 96);
+            this.btnGetID.Name = "btnGetID";
+            this.btnGetID.Size = new System.Drawing.Size(75, 23);
+            this.btnGetID.TabIndex = 32;
+            this.btnGetID.Text = "查询ID";
+            this.btnGetID.UseVisualStyleBackColor = true;
+            this.btnGetID.Click += new System.EventHandler(this.btnGetID_Click);
+            // 
+            // btnGetDevName
+            // 
+            this.btnGetDevName.Location = new System.Drawing.Point(787, 125);
+            this.btnGetDevName.Name = "btnGetDevName";
+            this.btnGetDevName.Size = new System.Drawing.Size(75, 23);
+            this.btnGetDevName.TabIndex = 33;
+            this.btnGetDevName.Text = "查询名称";
+            this.btnGetDevName.UseVisualStyleBackColor = true;
+            this.btnGetDevName.Click += new System.EventHandler(this.btnGetDevName_Click);
+            // 
+            // tbDevName
+            // 
+            this.tbDevName.Location = new System.Drawing.Point(681, 154);
+            this.tbDevName.Name = "tbDevName";
+            this.tbDevName.Size = new System.Drawing.Size(181, 21);
+            this.tbDevName.TabIndex = 34;
+            this.tbDevName.Text = "软件一";
+            // 
+            // btnSetDevName
+            // 
+            this.btnSetDevName.Location = new System.Drawing.Point(677, 125);
+            this.btnSetDevName.Name = "btnSetDevName";
+            this.btnSetDevName.Size = new System.Drawing.Size(75, 23);
+            this.btnSetDevName.TabIndex = 35;
+            this.btnSetDevName.Text = "设置名称";
+            this.btnSetDevName.UseVisualStyleBackColor = true;
+            this.btnSetDevName.Click += new System.EventHandler(this.btnSetDevName_Click);
+            // 
+            // btnConfirm
+            // 
+            this.btnConfirm.Location = new System.Drawing.Point(787, 96);
+            this.btnConfirm.Name = "btnConfirm";
+            this.btnConfirm.Size = new System.Drawing.Size(75, 23);
+            this.btnConfirm.TabIndex = 36;
+            this.btnConfirm.Text = "请求认证";
+            this.btnConfirm.UseVisualStyleBackColor = true;
+            this.btnConfirm.Click += new System.EventHandler(this.btnConfirm_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(683, 417);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(876, 436);
+            this.Controls.Add(this.btnConfirm);
+            this.Controls.Add(this.btnSetDevName);
+            this.Controls.Add(this.tbDevName);
+            this.Controls.Add(this.btnGetDevName);
+            this.Controls.Add(this.btnGetID);
+            this.Controls.Add(this.btnReadAdminPwd);
+            this.Controls.Add(this.tbBroadcast);
+            this.Controls.Add(this.btnSyncTime);
+            this.Controls.Add(this.tbAdminPwd);
+            this.Controls.Add(this.btnModifyAdminPwd);
+            this.Controls.Add(this.tbAdInterval);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.tbAdTime);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.cbAdEnable);
+            this.Controls.Add(this.btnAdSet);
             this.Controls.Add(this.btnCloseBroadcast);
             this.Controls.Add(this.btnBroadcast);
             this.Controls.Add(this.btnLoadFile3);
@@ -314,7 +482,22 @@
         private System.Windows.Forms.Button btnLoadFile3;
         private System.Windows.Forms.Button btnBroadcast;
         private System.Windows.Forms.Button btnCloseBroadcast;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnAdSet;
+        private System.Windows.Forms.CheckBox cbAdEnable;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox tbAdTime;
+        private System.Windows.Forms.TextBox tbAdInterval;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btnModifyAdminPwd;
+        private System.Windows.Forms.TextBox tbAdminPwd;
+        private System.Windows.Forms.Button btnSyncTime;
+        private System.Windows.Forms.TextBox tbBroadcast;
+        private System.Windows.Forms.Button btnReadAdminPwd;
+        private System.Windows.Forms.Button btnGetID;
+        private System.Windows.Forms.Button btnGetDevName;
+        private System.Windows.Forms.TextBox tbDevName;
+        private System.Windows.Forms.Button btnSetDevName;
+        private System.Windows.Forms.Button btnConfirm;
     }
 }
 
