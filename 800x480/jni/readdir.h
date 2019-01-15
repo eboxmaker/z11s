@@ -19,7 +19,8 @@
 
 void read_dir();
 void make_dir(char *path);
-void get_all_ad_full_name(stringList &list);
+void updateAdFileList(stringList &list);
+int rm(std::string &file_name);
 
 
 #endif /* JNI_READDIR_H_ */

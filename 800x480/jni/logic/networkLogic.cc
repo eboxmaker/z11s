@@ -54,23 +54,15 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 	switch(cmd)
 	{
 	case CMDDoorCtr:
-		if(msg == "1")
-		{
-			mEditTextMSGPtr->setText("UnLock");
-		}
-		else
-		{
-			mEditTextMSGPtr->setText("Lock");
-		}
+		mEditTextMSGPtr->setText(msg);
 		break;
-	case CMDQR:
+	case CMDQRCode:
 		mBtnQRPtr->setText("");
 		mBtnQRPtr->setBackgroundPic(msg.c_str());
 		 break;
 	case CMDAdPic:
 		mBtnPicPtr->setText("");
 		mBtnPicPtr->setBackgroundPic(msg.c_str());
-		get_all_ad_full_name(gAdSet.list);
 		 break;
 	}
 }
@@ -90,7 +82,7 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
  */
 static void onUI_init(){
 	networkTestCallback = onNetWrokDataUpdate;
-	get_all_ad_full_name(gAdSet.list);
+	updateAdFileList(gAdSet.list);
 }
 
 /**
@@ -119,6 +111,7 @@ static void onUI_show() {
  */
 static void onUI_hide() {
 	EASYUICONTEXT->hideStatusBar();
+	LOGE("隐藏");
 
 }
 
@@ -160,7 +153,7 @@ static bool onUI_Timer(int id){
 		{
 			mTVConnectStatePtr->setText("已连接");
 		}
-
+		updateAdFileList(gAdSet.list);
 		if(pic_counter < gAdSet.list.size() )
 		{
 

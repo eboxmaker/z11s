@@ -29,7 +29,7 @@ protected:
 	virtual bool readyToRun();
 	virtual bool threadLoop();
 
-private:
+public:
 	UartContext();
 
 private:
@@ -42,5 +42,6 @@ private:
 };
 
 #define UARTCONTEXT		UartContext::getInstance()
-
+extern UartContext uart0;
+extern UartContext uart1;
 #endif /* _UART_UARTCONTEXT_H_ */

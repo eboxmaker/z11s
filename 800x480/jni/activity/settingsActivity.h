@@ -26,6 +26,15 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_SETTINGS_SoundSeekbar    91002
+#define ID_SETTINGS_SoundButton    20016
+#define ID_SETTINGS_BtnSoundLight    20015
+#define ID_SETTINGS_TextMemUsage    50018
+#define ID_SETTINGS_SeekbarMemUsage    90000
+#define ID_SETTINGS_Textview10    50016
+#define ID_SETTINGS_EditHeartbeat    51009
+#define ID_SETTINGS_BtnSetHeartbeat    20014
+#define ID_SETTINGS_Textview8    50003
 #define ID_SETTINGS_BtnDevNameSet    20013
 #define ID_SETTINGS_EditDevName    51008
 #define ID_SETTINGS_Textview9    50015

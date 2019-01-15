@@ -15,6 +15,8 @@
 #include "readdir.h"
 #include "netinet/tcp.h"
 
+#include "uart/ProtocolSender.h"
+#include "termio.h"
 #ifdef __cplusplus
 extern "C" {
 #endif  /* __cplusplus */
@@ -37,21 +39,32 @@ static void LoadParament()
     gAdSet.displayTime = StoragePreferences::getInt("gAdSet.displayTime", 20);
     gAdSet.switchTime = StoragePreferences::getInt("gAdSet.switchTime", 5);
     gAdSet.enable = StoragePreferences::getBool("gAdSet.enable", true);
-
     LOGE("gDisplayAdAfterTime %D\n", gAdSet.displayTime);
     LOGE("gSwitchAdTime %D\n",gAdSet.switchTime);
     LOGE("gAdEnable %D\n",gAdSet.enable);
+
+
+
     gDevID = jm.getID();
     gDevName = StoragePreferences::getString("gDevName","none");
 
     LOGE("ID: %s,name:%s\n",gDevID.c_str(),gDevName.c_str());
 
+    gHeartbeatInterval = StoragePreferences::getInt("gHeartbeatInterval", 5);
+
     make_dir(QR_DIR);
     make_dir(AD_DIR);
+
+
+//    dbs.recodeResult("张云飞", "1", "2", "3");
+//    dbs.recodeResult("张云峰",  "2", "20", "30");
+//    dbs.recodeResult("申同强",  "3", "30", "40");
+
 }
 void onEasyUIInit(EasyUIContext *pContext) {
 	// 初始化时打开串口
 	UARTCONTEXT->openUart(CONFIGMANAGER->getUartName().c_str(), CONFIGMANAGER->getUartBaudRate());
+	uart1.openUart("/dev/ttyS1",B115200);
 }
 
 void onEasyUIDeinit(EasyUIContext *pContext) {
@@ -80,7 +93,7 @@ const char* onStartupApp(EasyUIContext *pContext) {
 	}
 
 
-	return "keyboardActivity";
+	return "mainActivity";
 }
 
 static void *MainLoop(void *lParam)
@@ -101,8 +114,8 @@ static void *MainLoop(void *lParam)
 //	msg.remote.sin_addr.s_addr=inet_addr("192.168.1.101");//服务器IP地址
 //	msg.remote.sin_port=htons(8000); //服务器端口号
 
+	gSocket->creatGuard(5);
 
-	gSocket->setHeartbeat(5);
 	if(gSocket->connected() == false)
 	{
 		gSocket->disconnect();
@@ -121,7 +134,25 @@ static void *MainLoop(void *lParam)
 
 	while(1)
 	{
+		  unsigned char buf[2] = {0x31,0x32};
+
+		  UARTCONTEXT->send(buf, 2);
+
+		  unsigned char buf2[2] = {0x33,0x34};
+//
+		  uart1.send(buf2, 2);
+
 		Thread::sleep(1000);
+	    Person_t stq;
+//	    stq.name = "";
+//	    stq.id = "";
+//	    stq.level = 0;
+//	    stq.fingers.push_back("1231312321");
+//	    stq.fingers.push_back("asfsadfsadfsadf");
+//	    stq.fingers.push_back("打发时间了");
+//	    string x;
+//	    x = jm.makePerson(stq, StatusRead);
+//	    LOGE("%s",x.c_str());
 //
 //		if(check_nic("eth0") == -1)
 //		{
@@ -154,7 +185,13 @@ static void *MainLoop(void *lParam)
 //
 //			}
 //		}
+	     sysinfo(&gSystemInfo);
+	     float totalmem = gSystemInfo.totalram/1024.0/1024.0;
+	     float freemem = gSystemInfo.freeram/1024.0/1024.0;
 
+	     gMemUsage = (1 - (freemem/totalmem))*100;
+//
+//	     LOGE("mem:%0.1f%可用",gMemUsage);
 		if(gAdSet.enable && (gAdSet.list.size() > 0))
 		{
 			const char *ptr;

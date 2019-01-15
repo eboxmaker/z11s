@@ -46,14 +46,30 @@ public:
 	string makeHeartbeat(JsonStatus_t status);
 	JsonStatus_t parseHeartbeat(string &js, string &msg);
 
-	string 			makeDoorCtr(doorState_t &door,JsonStatus_t status);
-	JsonStatus_t 	parseDoorCtr(string &js,doorState_t &door);
+	string makeSetHeartbeat(int interval,JsonStatus_t status);
+	JsonStatus_t parseSetHeartbeat(string &js,int &interval);
 
-	string makeDoorPwd(string &pwd,JsonStatus_t status);
-	JsonStatus_t parseDoorPwd(string &js,string &msg);
+	string makeDevName(string &name,JsonStatus_t status);
+	JsonStatus_t parseDevName(string &js,string &name);
+
+	string makeDevID(string &id,JsonStatus_t status);
+	JsonStatus_t parseDevID(string &js);
+
+	string makeConfirm(string &id,string &name,JsonStatus_t status);
+	JsonStatus_t parseConfirm(string &js);
 
 	string makeSyncDateTime(string &msg,JsonStatus_t status);
 	JsonStatus_t parseSyncDateTime(string &js,string &msg);
+
+	string makeAdminPwd(string &pwd,JsonStatus_t status);
+	JsonStatus_t parseAdminPwd(string &js,string &adminPwd);
+
+	string makeDoorPwd(string &pwd,JsonStatus_t status);
+	JsonStatus_t parseDoorPwd(string &js,string &pwd);
+
+	string 			makeDoorCtr(doorState_t &door,JsonStatus_t status);
+	JsonStatus_t 	parseDoorCtr(string &js,doorState_t &door);
+
 
 	string makePlan(JsonStatus_t status);
 	JsonStatus_t parsePlan(string &js, Plan &plan);
@@ -66,21 +82,21 @@ public:
 	JsonStatus_t parseAdSet(string &js,AdSet_t &set);
 
 
-	string makeAdminPwd(string &pwd,JsonStatus_t status);
-	JsonStatus_t parseAdminPwd(string &js,string &adminPwd);
 
-	string makeConfirm(string &id,string &name,JsonStatus_t status);
-	JsonStatus_t parseConfirm(string &js);
 
-	string makeQRCodeAck(JsonStatus_t status);
-	string makePicAck(JsonStatus_t status);
+
+
+	string makeQRCodeAck(string &fullname,JsonStatus_t status);
+	string makePicAck(string &fullname,JsonStatus_t status);
 	JsonStatus_t parseFile(string str, char* directory, string &fullName);
 
-	string makeDevName(string &name,JsonStatus_t status);
-	JsonStatus_t parseDevName(string &js,string &name);
+	string makeDeleteFile(string &fullName,JsonStatus_t status);
+	JsonStatus_t parseDeleteFile(string js, char* directory, string &fullName);
 
-	string makeDevID(string &id,JsonStatus_t status);
-	JsonStatus_t parseDevID(string &js);
+
+
+	string makePerson(Person_t &person,JsonStatus_t status);
+	JsonStatus_t parsePerson(string &js,Person_t &person);
 
 };
 

@@ -44,7 +44,6 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 	case CMDAdPic:
 		mBtnPicPtr->setText("");
 		mBtnPicPtr->setBackgroundPic(msg.c_str());
-		get_all_ad_full_name(gAdSet.list);
 		 break;
 	}
 }
@@ -64,7 +63,7 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
  */
 static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
-	get_all_ad_full_name(gAdSet.list);
+	updateAdFileList(gAdSet.list);
 	if(gAdSet.list.size() > 0)
 	{
 		mBtnPicPtr->setText("");
@@ -96,6 +95,7 @@ static void onUI_show() {
  * 当界面隐藏时触发
  */
 static void onUI_hide() {
+	LOGE("隐藏");
 
 }
 

@@ -303,6 +303,10 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/net
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/arpa/inet.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/lib/SocketClient.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/sysinfo.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/kernel.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/database.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/sqlite3.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/base64.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/globalVar.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/os/SystemProperties.h \
@@ -916,6 +920,14 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 C:/Users/shentq/Documents/z11s/800x480/jni/lib/SocketClient.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/sysinfo.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/kernel.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/database.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/sqlite3.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/base64.h:
 

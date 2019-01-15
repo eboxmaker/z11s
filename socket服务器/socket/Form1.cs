@@ -103,6 +103,7 @@ namespace socket
             }
             else
             {
+                string resault;
                 string js = Encoding.UTF8.GetString(datagram);
                 RichRecv.Text += sender.Client.RemoteEndPoint.ToString() + js;
                 JsonManager.CMDType cmd = JsonManager.GetJsonCMD(js);
@@ -111,24 +112,34 @@ namespace socket
                 {
                     case JsonManager.CMDType.Heartbeat:
                         JsonManager.ParseCMDHeartbeat(js);
-                        string str = JsonManager.MakeCMDHeartbeat(JsonManager.StatusType.StatusOK);
-                        server.SendAll(str);
+                         resault = JsonManager.MakeCMDHeartbeat(JsonManager.StatusType.StatusOK);
+                         server.SendAll(resault);
+                        break;
+                    case JsonManager.CMDType.SetHeartbeat:
+                        if(status == JsonManager.StatusType.StatusSet)
+                        {
+                            resault = JsonManager.MakeSetHeartbeat(0, JsonManager.StatusType.StatusOK);
+                            server.SendAll(resault);
+                        }
                         break;
                     case JsonManager.CMDType.DoorPwd: 
                         string pwd = JsonManager.ParseDoorPwd(js);
-                        string resault;
-                        if(pwd == "123456")
+                        if(status == JsonManager.StatusType.StatusSet)
                         {
-                            resault = JsonManager.MakeCMDDoorPwd(pwd,JsonManager.StatusType.StatusOK);
-                            server.SendAll(resault);
-                            btnOpen.PerformClick();
+                            if (pwd == "123456")
+                            {
+                                resault = JsonManager.MakeCMDDoorPwd(pwd, JsonManager.StatusType.StatusOK);
+                                server.SendAll(resault);
+                                btnOpen.PerformClick();
+                            }
+                            else
+                            {
+                                resault = JsonManager.MakeCMDDoorPwd(pwd, JsonManager.StatusType.StatusErr);
+                                server.SendAll(resault);
+                                btnCloseLock.PerformClick();
+                            }
                         }
-                        else
-                        {
-                            resault = JsonManager.MakeCMDDoorPwd(pwd, JsonManager.StatusType.StatusErr);
-                            server.SendAll(resault);
-                            btnCloseLock.PerformClick();
-                        }
+
                         break;
                     case JsonManager.CMDType.AdminPwd:
                         if (status == JsonManager.StatusType.StatusSet)
@@ -182,6 +193,16 @@ namespace socket
                         if (status == JsonManager.StatusType.StatusSet)
                         {
                             resault = JsonManager.MakeDevID(JsonManager.StatusType.StatusOK);
+                            server.SendAll(resault);
+                        }
+
+                        break;
+
+                    case JsonManager.CMDType.Person:
+                        string[] fingers = {"1111111111","wwwwwwwwwww","124e2qerfwf"};
+                        if (status == JsonManager.StatusType.StatusRead)
+                        {
+                            resault = JsonManager.MakePerson("123", "张云峰", 0, fingers, JsonManager.StatusType.StatusOK);
                             server.SendAll(resault);
                         }
 
@@ -256,12 +277,12 @@ namespace socket
         }
         private void btnLoadQR_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.PackageFileToJsonString("qr1.jpg", (int)JsonManager.CMDType.QR);
+            string str = JsonManager.PackageFileToJsonString("qr.jpg", (int)JsonManager.CMDType.QRCode);
             RichSend.Text = str;
         }
         private void btnLoadQR2_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.PackageFileToJsonString("qr2.jpg", (int)JsonManager.CMDType.QR);
+            string str = JsonManager.PackageFileToJsonString("qr.jpg", (int)JsonManager.CMDType.QRCode);
             RichSend.Text = str;
         }
 
@@ -282,6 +303,11 @@ namespace socket
             string str = JsonManager.MakeCMDDoor1("lock", JsonManager.StatusType.StatusSet);
             server.SendAll(str);
         }
+        private void btnReadDoorState_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeCMDDoor1("lock", JsonManager.StatusType.StatusRead);
+            server.SendAll(str);
+        }
 
         private void btnBroadcast_Click(object sender, EventArgs e)
         {
@@ -294,7 +320,11 @@ namespace socket
             string str = JsonManager.MakeBroadcast("",JsonManager.StatusType.StatusSet);
             server.SendAll(str);
         }
-
+        private void btnReadBroadcast_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeBroadcast("", JsonManager.StatusType.StatusRead);
+            server.SendAll(str);
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             bool enable = cbAdEnable.Checked;
@@ -348,6 +378,50 @@ namespace socket
             string str = JsonManager.MakeConfirm( JsonManager.StatusType.StatusSet);
             server.SendAll(str);
         }
+
+        private void btnDeletAdPic_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeDeleteAdPic(tbAdName.Text,JsonManager.StatusType.StatusSet);
+            server.SendAll(str);
+        }
+        private void btnDelQRCode_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeDeleteQRCode(tbQRCodeName.Text, JsonManager.StatusType.StatusSet);
+            server.SendAll(str);
+        }
+
+        private void btnSetHeartbeatInterval_Click(object sender, EventArgs e)
+        {
+            int interval = Convert.ToInt16(tbHeartInterval.Text);
+            string str = JsonManager.MakeSetHeartbeat(interval,JsonManager.StatusType.StatusSet);
+            server.SendAll(str);
+        }
+        private void btnReadHearInterval_Click(object sender, EventArgs e)
+        {
+            int interval = Convert.ToInt16(tbHeartInterval.Text);
+            string str = JsonManager.MakeSetHeartbeat(interval, JsonManager.StatusType.StatusRead);
+            server.SendAll(str);
+        }
+
+        private void btnSetDoorPwd_Click(object sender, EventArgs e)
+        {
+            //int interval = Convert.ToInt16(tbHeartInterval.Text);
+            string str = JsonManager.MakeDoorPwd(tbDoorPwd.Text, JsonManager.StatusType.StatusSet);
+            server.SendAll(str);
+        }
+
+        private void btnReadDoorPwd_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeDoorPwd(tbDoorPwd.Text, JsonManager.StatusType.StatusRead);
+            server.SendAll(str);
+        }
+
+
+ 
+
+ 
+
+
 
 
 

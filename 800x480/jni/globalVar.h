@@ -16,13 +16,19 @@
 #include "include/utils/GpioHelper.h"
 #include "utils/Log.h"
 #include <vector>
+
+#include <sys/sysinfo.h>
+
+#include "sqlite/database.h"
+
 using namespace std;
 
 #define QR_DIR		"/mnt/extsd/qr/"
 #define AD_DIR		"/mnt/extsd/ad/"
+#define SU_DIR		"/mnt/extsd/super/"
+
 
 typedef std::vector<std::string> stringList;
-typedef std::vector< std::vector<std::string> > stringListList;
 
 typedef enum
 {
@@ -43,20 +49,29 @@ typedef enum
 {
 	CMDHeartbeat,
 	CMDSetHeartbeat,
+	CMDDevName,
+	CMDDevID,
 	CMDConfirm,
+	CMDSyncDateTime,
 	CMDAdminPwd,
 	CMDDoorPwd,
 	CMDDoorCtr,
-	CMDQR,
+	CMDPlan,
+	CMDBroadcast,
+
+	CMDQRCode,
+	CMDDelQRCode,
+
 	CMDAdPic,//CMDAdvertisement,
 	CMDDelAdPic,//CMDAdvertisement,
 	CMDAdSet,
-	CMDSyncDateTime,
-	CMDPlan,
-	CMDBroadcast,
+
 	CMDSuperPic,
-	CMDDevName,
-	CMDDevID,
+
+	CMDPerson,
+
+    CMDErr,
+
 }JsonCmd_t;
 typedef enum
 {
@@ -74,10 +89,13 @@ typedef union
 
 typedef struct
 {
-	string teacher;
+	string name;
+	string id;
 	int	   level;
-	string pwd;
+	stringList fingers;
+
 }Person_t;
+extern Person_t gPerson;
 
 
 
@@ -109,6 +127,10 @@ public:
 			_size++;
 		}
 	}
+	void clear()
+	{
+		_size = 0;
+	}
 
 	PlanRow_t row[100];
 
@@ -134,12 +156,18 @@ extern bool gDoorPwdState ;
 extern  long gKeyboardLastActionTime;
 extern string gDevID;
 extern string gDevName;
+extern int gHeartbeatInterval;
 
 extern doorState_t gDoorState;
+extern string gDoorPwd;
+
 extern PersonList_t gUserAdmin;
 extern Plan gPlan;
+extern string gBroadcastMsg;
 
+extern struct sysinfo gSystemInfo;
 
+extern float gMemUsage;
 //class MySocketListener : public SocketClient::ISocketListener
 //{
 //	public:
@@ -152,6 +180,7 @@ extern myNotify_t keyboardCallback;
 extern myNotify_t AdvertisementCallback;
 extern myNotify_t networkTestCallback;
 extern myNotify_t settingsCallback;
+extern myNotify_t PersonCallback;
 
 void exeCMD(char *ptr);
 void exeCMD(string &JsonString);

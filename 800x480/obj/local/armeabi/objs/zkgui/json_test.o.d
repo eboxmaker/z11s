@@ -205,10 +205,22 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/json_test.o:
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/tcp.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/tcp.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/sysinfo.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/kernel.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/database.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/sqlite3.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/lib/itoa.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream \
  C:/Users/shentq/Documents/z11s/800x480/jni/base64.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/include/security/SecurityManager.h
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/security/SecurityManager.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/readdir.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/dirent.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/unistd.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/select.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/sysconf.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/capability.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/pathconf.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/globalvar.h
 
 C:/Users/shentq/Documents/z11s/800x480/jni/json_test.h:
 
@@ -620,6 +632,14 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h:
 
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/sysinfo.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/kernel.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/database.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/sqlite3.h:
+
 C:/Users/shentq/Documents/z11s/800x480/jni/lib/itoa.h:
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream:
@@ -627,3 +647,19 @@ D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream
 C:/Users/shentq/Documents/z11s/800x480/jni/base64.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/security/SecurityManager.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/readdir.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/dirent.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/unistd.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/select.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/sysconf.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/capability.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/pathconf.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/globalvar.h:

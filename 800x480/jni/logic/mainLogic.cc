@@ -30,6 +30,7 @@
 * 在Eclipse编辑器中  使用 “alt + /”  快捷键可以打开智能提示
 */
 
+static bool isFirstShow = true;
 
 /**
  * 注册定时器
@@ -63,6 +64,11 @@ static void onUI_intent(const Intent *intentPtr) {
  */
 static void onUI_show() {
 	EASYUICONTEXT->hideStatusBar();
+	if(isFirstShow)
+	{
+		EASYUICONTEXT->openActivity("keyboardActivity");
+		isFirstShow =false;
+	}
 
 }
 
@@ -107,7 +113,7 @@ static bool onUI_Timer(int id){
 }
 const char* IconTab[]={
 
-		"testTextActivity",
+		"personActivity",
 		"settingsActivity",
 		"networkActivity",
 		"keyboardActivity",

@@ -196,6 +196,10 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/Main.o: \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/tcp.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/tcp.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/sysinfo.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/kernel.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/database.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/sqlite3.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/check_nic.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/udp.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/socket.h \
@@ -227,7 +231,19 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/Main.o: \
  C:/Users/shentq/Documents/z11s/800x480/jni/packageFile.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/readdir.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/dirent.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/globalvar.h
+ C:/Users/shentq/Documents/z11s/800x480/jni/globalvar.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolSender.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/termio.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/termios.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/ioctl.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/ioctl.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/ioctl.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm-generic/ioctl.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/ioctls.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/termbits.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/ioctl_compat.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/termios.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/termios.h
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/entry/EasyUIContext.h:
 
@@ -621,6 +637,14 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h:
 
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/sysinfo.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/kernel.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/database.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/sqlite3.h:
+
 C:/Users/shentq/Documents/z11s/800x480/jni/check_nic.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/udp.h:
@@ -684,3 +708,27 @@ C:/Users/shentq/Documents/z11s/800x480/jni/readdir.h:
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/dirent.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/globalvar.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolSender.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/termio.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/termios.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/ioctl.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/ioctl.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/ioctl.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm-generic/ioctl.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/ioctls.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/termbits.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/ioctl_compat.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/termios.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/termios.h:

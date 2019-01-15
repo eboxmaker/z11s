@@ -18,20 +18,27 @@ namespace MyJson
     {
         	Heartbeat,
 	        SetHeartbeat,
-	        Confirm,
-	        AdminPwd,
+            DevName,
+            DevID,
+            Confirm,
+            SyncDateTime,
+            AdminPwd,
 	        DoorPwd,
 	        DoorCtr,
-	        QR,
+            Plan,
+            Broadcast, 
+        
+            QRCode,
+            DelQRCode,
+
             AdPic,
             DelAdPic,
             AdSet,
-            SyncDateTime,
-            Plan,
-            Broadcast,
+
             SuperPic,
-            DevName,
-            DevID,
+
+            Person,
+
             CMDErr,
     }//同
     public enum StatusType  //枚举类型，体会xml注释的样子
@@ -318,6 +325,21 @@ namespace MyJson
             string str = jo["value"].ToString();
             return str;
         }
+        public static string MakeSetHeartbeat(int interval,StatusType status)
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.SetHeartbeat);
+            obj.Add("interval", interval);
+            obj.Add("status", (int)status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            return jstring;
+        }
+        public static string ParseSetHeartbeat(string js)
+        {
+            JObject jo = (JObject)JsonConvert.DeserializeObject(js);
+            string pwd = jo["interval"].ToString();
+            return pwd;
+        }
         public static string MakeCMDHeartbeat(StatusType status)
         {
             JObject obj = new JObject();
@@ -332,6 +354,15 @@ namespace MyJson
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.DoorCtr);
             obj.Add("door", isLock);
+            obj.Add("status", (int)status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            return jstring;
+        }
+        public static string MakeDoorPwd(string pwd,StatusType status)
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.DoorPwd);
+            obj.Add("pwd", pwd);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
             return jstring;
@@ -377,7 +408,7 @@ namespace MyJson
 
             obj.Add("cmd", (int)CMDType.Plan);
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 2; i++)
             {
                 JObject jo = new JObject();
                 jo.Add("timeStart", "8:00:00");
@@ -469,6 +500,49 @@ namespace MyJson
             obj.Add("id", "");
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
+            return jstring;
+        }
+
+        public static string MakeDeleteAdPic(string fileName,StatusType status)
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.DelAdPic);
+            obj.Add("name", fileName);
+            obj.Add("status", (int)status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            return jstring;
+        }
+        public static string MakeDeleteQRCode(string fileName, StatusType status)
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.DelQRCode);
+            obj.Add("name", fileName);
+            obj.Add("status", (int)status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            return jstring;
+        }
+
+
+        public static string MakePerson(string id,string name,int level, string[] fingers, StatusType status)
+        {
+            JObject obj = new JObject();
+            var ja = new JArray();
+            
+            obj.Add("cmd", (int)CMDType.Person);
+            obj.Add("id",id);
+            obj.Add("name", name);
+            obj.Add("level", level);
+
+            for (int i = 0; i < fingers.Length; i++)
+            {
+                JObject jo = new JObject();
+                jo.Add("finger",fingers[i]);
+                ja.Add(jo);
+            }
+            obj.Add("status", (int)status);
+
+            string jstring = JsonConvert.SerializeObject(obj);
+
             return jstring;
         }
     }

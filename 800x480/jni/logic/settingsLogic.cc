@@ -103,6 +103,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 	mTextStatusNotice2Ptr->setText("");
 	switch(cmd)
 	{
+	case CMDSetHeartbeat:
 	case CMDAdminPwd:
 	case CMDSyncDateTime:
 	case CMDAdSet:
@@ -186,6 +187,15 @@ static void onUI_show() {
 
 	mEditDevNamePtr->setText(gDevName);
 
+	itoa(gHeartbeatInterval,temp);
+
+	mEditHeartbeatPtr->setText(temp);
+
+	mSeekbarMemUsagePtr->setProgress(gMemUsage);
+	sprintf(temp,"%0.1f%%",gMemUsage);
+	mTextMemUsagePtr->setText(temp);
+	updateUI_time();
+
 }
 
 /*
@@ -193,6 +203,7 @@ static void onUI_show() {
  */
 static void onUI_hide() {
 	EASYUICONTEXT->hideStatusBar();
+	LOGE("隐藏");
 
 }
 
@@ -229,7 +240,10 @@ static bool onUI_Timer(int id){
 			mBtnServerStatePtr->setBackgroundPic("kai.png");
 		else
 			mBtnServerStatePtr->setBackgroundPic("guan.png");
-
+		mSeekbarMemUsagePtr->setProgress(gMemUsage);
+		char temp[10];
+		sprintf(temp,"%0.1f%%",gMemUsage);
+		mTextMemUsagePtr->setText(temp);
 		break;
 		default:
 			break;
@@ -526,8 +540,8 @@ static bool onButtonClick_BtnDevNameSet(ZKButton *pButton) {
     if(gSocket->connected())
     {
         mWindStatusNoticePtr->showWnd();
-        mTextStatusNoticePtr->setText("设置成功");
-        mTextStatusNoticePtr->setText("正在同步服务器设置");
+        mTextStatusNoticePtr->setText("本地设置成功");
+        mTextStatusNotice2Ptr->setText("正在同步服务器设置");
 
     	gSocket->updateTriger();
     	string msg;
@@ -537,7 +551,7 @@ static bool onButtonClick_BtnDevNameSet(ZKButton *pButton) {
     else
     {
         mWindStatusNoticePtr->showWnd();
-        mTextStatusNoticePtr->setText("设置成功");
+        mTextStatusNoticePtr->setText("本地设置成功");
         mTextStatusNotice2Ptr->setText("无法同步设置服务器");
     }
     return false;
@@ -550,4 +564,57 @@ static bool onButtonClick_BtnServerState(ZKButton *pButton) {
 
 static void onEditTextChanged_EditDevName(const std::string &text) {
     //LOGD(" onEditTextChanged_ EditDevName %s !!!\n", text.c_str());
+}
+
+
+static void onEditTextChanged_Edittext1(const std::string &text) {
+    //LOGD(" onEditTextChanged_ Edittext1 %s !!!\n", text.c_str());
+}
+static bool onButtonClick_BtnSetHeartbeat(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnSetHeartbeat !!!\n");
+    //LOGD(" ButtonClick BtnNameSet !!!\n");
+	int temp;
+	temp = atoi(mEditHeartbeatPtr->getText().c_str());
+	LOGE("TEMP:%d",temp);
+	if(temp>0 && temp < 100)
+	{
+		gHeartbeatInterval = temp;
+	    StoragePreferences::putInt("gHeartbeatInterval", gHeartbeatInterval);
+	}
+    if(gSocket->connected())
+    {
+        mWindStatusNoticePtr->showWnd();
+        mTextStatusNoticePtr->setText("设置成功");
+        mTextStatusNoticePtr->setText("正在同步服务器设置");
+
+    	gSocket->updateTriger();
+    	string msg;
+    	msg = jm.makeSetHeartbeat(gHeartbeatInterval, StatusSet);
+    	gSocket->write_(msg);
+    }
+    else
+    {
+        mWindStatusNoticePtr->showWnd();
+        mTextStatusNoticePtr->setText("设置成功");
+        mTextStatusNotice2Ptr->setText("无法同步设置服务器");
+    }
+    return false;
+}
+static void onEditTextChanged_EditHeartbeat(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EditHeartbeat %s !!!\n", text.c_str());
+}
+static void onProgressChanged_SeekbarMemUsage(ZKSeekBar *pSeekBar, int progress) {
+    //LOGD(" ProgressChanged SeekbarMemUsage %d !!!\n", progress);
+}
+static bool onButtonClick_BtnSoundLight(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnSoundLight !!!\n");
+    return false;
+}
+static bool onButtonClick_SoundButton(ZKButton *pButton) {
+    //LOGD(" ButtonClick SoundButton !!!\n");
+    return false;
+}
+
+static void onProgressChanged_SoundSeekbar(ZKSeekBar *pSeekBar, int progress) {
+    //LOGD(" ProgressChanged SoundSeekbar %d !!!\n", progress);
 }

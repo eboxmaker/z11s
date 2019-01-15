@@ -297,6 +297,10 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/set
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/tcp.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/tcp.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/sysinfo.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/kernel.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/database.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/sqlite3.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/globalVar.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/storage/StoragePreferences.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/TimeHelper.h \
@@ -895,6 +899,14 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/tcp.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/GpioHelper.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/sysinfo.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/kernel.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/database.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/sqlite3.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/globalVar.h:
 

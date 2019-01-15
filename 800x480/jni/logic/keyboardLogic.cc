@@ -53,6 +53,29 @@ static LongClickListener longButtonClickListener;
 
 static string QRCodeFullName = "/mnt/extsd/qr/qr1.jpg";
 
+
+static void clearPlanText()
+{
+
+	mTextTeacher1Ptr->setText("");
+	mTextClass1Ptr->setText("");
+	mTextCourse1Ptr->setText("");
+
+	mTextTeacher2Ptr->setText("");
+	mTextClass2Ptr->setText("");
+	mTextCourse2Ptr->setText("");
+
+
+	mTextTeacher3Ptr->setText("");
+	mTextClass3Ptr->setText("");
+	mTextCourse3Ptr->setText("");
+
+
+	mTextTeacher4Ptr->setText("");
+	mTextClass4Ptr->setText("");
+	mTextCourse4Ptr->setText("");
+
+}
 static void onNetConnect()
 {
 	mBtnQRCodePtr->setBackgroundPic(QRCodeFullName.c_str());
@@ -74,93 +97,118 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 
 	switch(cmd)
 	{
-	case CMDQR:
+
+	case CMDDelQRCode:
+
+	//	break;
+	case CMDQRCode:
 		QRCodeFullName = msg;
 		mBtnQRCodePtr->setText("");
 		mBtnQRCodePtr->setBackgroundPic(msg.c_str());
 		break;
+	case CMDAdminPwd:
+		if(status == StatusSet)
+		{
+			mWindStatusNoticePtr->showWnd();
+			mTextStatusNoticePtr->setText("管理员密码已经更新");
+		}
+		break;
 	case CMDDoorPwd:
-		gSocket->disableTriger();
-		mWindStatusNoticePtr->showWnd();
+
 		if(status == StatusOK)
 		{
+			gSocket->disableTriger();
+			mWindStatusNoticePtr->showWnd();
 			mTextStatusNoticePtr->setText("密码正确");
 		}
-		else
+		else if(status == StatusErr)
 		{
+			gSocket->disableTriger();
+			mWindStatusNoticePtr->showWnd();
 			mTextStatusNoticePtr->setText("密码错误");
+		}
+		else if(status == StatusSet)
+		{
+			mWindStatusNoticePtr->showWnd();
+			mTextStatusNoticePtr->setText("门密码已经更新");
 		}
 		break;
 	case CMDDoorCtr:
-		mWindStatusNoticePtr->hideWnd();
-		mWindStatusNoticePtr->showWnd();
-		if(msg == "unlock")
+		if(status == StatusSet)
 		{
-			mTextStatusNoticePtr->setText("门正在打开");
+			mWindStatusNoticePtr->showWnd();
+			if(msg == "unlock")
+			{
+				mTextStatusNoticePtr->setText("门正在打开");
+			}
+			else
+			{
+				mTextStatusNoticePtr->setText("门正在关闭");
+			}
 			sleep(2);
 			if(GpioHelper::input(GPIO_PIN_B_02) == UnLock)
-				mTextStatusNoticePtr->setText("门已经打开");
+			{
+				mTextStatusNoticePtr->setText("门状态：开");
+				mTextDoorStatePtr->setText("开");
+			}
 			else
-				mTextStatusNoticePtr->setText("打开失败");
+			{
+				mTextStatusNoticePtr->setText("门状态：关");
+				mTextDoorStatePtr->setText("关");
+			}
+		}
 
-		}
-		else
-		{
-			mTextStatusNoticePtr->setText("门正在关闭");
-			sleep(2);
-			if(GpioHelper::input(GPIO_PIN_B_02) == Lock)
-				mTextStatusNoticePtr->setText("门已经关闭");
-			else
-				mTextStatusNoticePtr->setText("关闭失败");
-		}
 		break;
 
 	case CMDPlan:
-		gSocket->disableTriger();
-		mWindStatusNoticePtr->hideWnd();
-
-		for(int i = 0; i < gPlan.size(); i++)
+		if(status == StatusOK)
 		{
-			switch(i)
+			clearPlanText();
+			gSocket->disableTriger();
+			mWindStatusNoticePtr->hideWnd();
+			LOGE("gplan size :%d",gPlan.size());
+			for(int i = 0; i < gPlan.size(); i++)
 			{
-			case 0:
-				mTextTeacher1Ptr->setText(gPlan.row[i].teacher);
-				mTextClass1Ptr->setText(gPlan.row[i].class_);
-				mTextCourse1Ptr->setText(gPlan.row[i].courser);
-				break;
-			case 1:
-				mTextTeacher2Ptr->setText(gPlan.row[i].teacher);
-				mTextClass2Ptr->setText(gPlan.row[i].class_);
-				mTextCourse2Ptr->setText(gPlan.row[i].courser);
+				switch(i)
+				{
+				case 0:
+					mTextTeacher1Ptr->setText(gPlan.row[i].teacher);
+					mTextClass1Ptr->setText(gPlan.row[i].class_);
+					mTextCourse1Ptr->setText(gPlan.row[i].courser);
+					break;
+				case 1:
+					mTextTeacher2Ptr->setText(gPlan.row[i].teacher);
+					mTextClass2Ptr->setText(gPlan.row[i].class_);
+					mTextCourse2Ptr->setText(gPlan.row[i].courser);
 
-				break;
-			case 2:
-				mTextTeacher3Ptr->setText(gPlan.row[i].teacher);
-				mTextClass3Ptr->setText(gPlan.row[i].class_);
-				mTextCourse3Ptr->setText(gPlan.row[i].courser);
+					break;
+				case 2:
+					mTextTeacher3Ptr->setText(gPlan.row[i].teacher);
+					mTextClass3Ptr->setText(gPlan.row[i].class_);
+					mTextCourse3Ptr->setText(gPlan.row[i].courser);
 
-				break;
-			case 3:
-				mTextTeacher4Ptr->setText(gPlan.row[i].teacher);
-				mTextClass4Ptr->setText(gPlan.row[i].class_);
-				mTextCourse4Ptr->setText(gPlan.row[i].courser);
+					break;
+				case 3:
+					mTextTeacher4Ptr->setText(gPlan.row[i].teacher);
+					mTextClass4Ptr->setText(gPlan.row[i].class_);
+					mTextCourse4Ptr->setText(gPlan.row[i].courser);
 
-				break;
+					break;
+				}
 			}
+			mWindPlanPtr->showWnd();
 		}
-		mWindPlanPtr->showWnd();
 		break;
 	case CMDBroadcast:
-		if(msg != "")
+		if(gBroadcastMsg != "")
 		{
 			mWindBroadcastPtr->showWnd();
-			mTextBroadcastPtr->setText(msg);
 		}
 		else
 		{
 			mWindBroadcastPtr->hideWnd();
-			mTextBroadcastPtr->setText(msg);
 		}
+		mTextBroadcastPtr->setText(gBroadcastMsg);
 
 		break;
 	case 255:
@@ -252,6 +300,19 @@ static void onUI_show() {
     title += gDevName;
     title += ")";
     mTextTitlePtr->setText(title.c_str());
+
+	if(gBroadcastMsg != "")
+	{
+		mWindBroadcastPtr->showWnd();
+	}
+	else
+	{
+		mWindBroadcastPtr->hideWnd();
+	}
+	mTextBroadcastPtr->setText(gBroadcastMsg);
+
+	updateUI_time();
+
 }
 
 /*
@@ -259,6 +320,7 @@ static void onUI_show() {
  */
 static void onUI_hide() {
 	EASYUICONTEXT->hideStatusBar();
+	LOGE("隐藏");
 
 }
 
@@ -269,6 +331,7 @@ static void onUI_quit() {
     //取消按键长按监听
 	mBtnBackPtr->setLongClickListener(NULL);
     keyboardCallback = NULL;
+	LOGE("注销keyboard");
     gSocket->deattachOnConnect(1);
     gSocket->deattachOnDisconnect(1);
 
@@ -466,6 +529,7 @@ static bool onButtonClick_BtnConfirm(ZKButton *pButton) {
 	string temp = mEditTextAdminPasswordPtr->getText();
 	if(temp == gAdminPwd)
     {
+		//EASYUICONTEXT->goBack();
 		EASYUICONTEXT->openActivity("mainActivity");
     }
 	else

@@ -1,0 +1,4 @@
+Record=SheetSymbol|SourceDocument=main.SchDoc|Designator=U_MCU|SchDesignator=U_MCU|FileName=MCU.SchDoc|SymbolType=Normal|RawFileName=MCU.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol
+Record=SheetSymbol|SourceDocument=main.SchDoc|Designator=U_SDCARD|SchDesignator=U_SDCARD|FileName=SDCARD.SchDoc|SymbolType=Normal|RawFileName=SDCARD.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol
+Record=SheetSymbol|SourceDocument=main.SchDoc|Designator=U_W5500|SchDesignator=U_W5500|FileName=W5500.SchDoc|SymbolType=Normal|RawFileName=W5500.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol
+Record=TopLevelDocument|FileName=main.SchDoc

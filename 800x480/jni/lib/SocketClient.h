@@ -35,15 +35,14 @@ public:
 	char read_();
 	size_t available();
 
-	bool setHeartbeat(int Interval);
-	void updateHearbeat();
-	void sendHearbeat();
+
+	void hearbeatUpdate();
+	void hearbeatSend();
 
 
-
+	bool creatGuard(int interval);
 	void threadLoop();
-
-	void timer_thread();
+	void threadGuard();
 
 	void attachOnConnect(NetNotify_t callback,int num);
 	void attachOnDisconnect(NetNotify_t callback,int num);
@@ -60,6 +59,7 @@ public:
 	void setSocketListener(ISocketListener *pListener) {
 		mSocketListener = pListener;
 	}
+	int interval;
 
 private:
 	RingBufInt8 rxbuf;
@@ -70,7 +70,6 @@ private:
 	int trigerTimeout;
 
 	long lastHeartbeatTime;
-	int heartbeatInterval;
 	char hearbeatMsg[100];
 
 

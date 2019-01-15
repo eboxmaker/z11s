@@ -35,94 +35,13 @@
 #define BUFFER_SIZE 				4096
 char buffer[BUFFER_SIZE] = { 0 };
 
-static int rtcSetTime(const struct tm *tm_time) {
-    int rtc_handle = -1;
-	int ret = 0;
-	struct rtc_time rtc_tm;
-	if (tm_time == NULL) {
-	    return  -1;
-	}
-
-    rtc_handle = open("/dev/rtc0", O_RDWR);
-	if (rtc_handle < 0) {
-		printf("open /dev/rtc0 fail\n");
-		return  -1;
-	}
-
-	memset(&rtc_tm, 0, sizeof(rtc_tm));
-	rtc_tm.tm_sec   = tm_time->tm_sec;
-	rtc_tm.tm_min   = tm_time->tm_min;
-	rtc_tm.tm_hour  = tm_time->tm_hour;
-	rtc_tm.tm_mday  = tm_time->tm_mday;
-	rtc_tm.tm_mon   = tm_time->tm_mon;
-	rtc_tm.tm_year  = tm_time->tm_year;
-	rtc_tm.tm_wday  = tm_time->tm_wday;
-	rtc_tm.tm_yday  = tm_time->tm_yday;
-	rtc_tm.tm_isdst = tm_time->tm_isdst;
-	ret = ioctl(rtc_handle, RTC_SET_TIME, &rtc_tm);
-    if (ret < 0) {
-        printf("rtcSetTime fail\n");
-        close(rtc_handle);
-        return -1;
-    }
-
-	printf("rtc_set_time ok\n");
-	close(rtc_handle);
-
-	return 0;
-}
-
-static int setDateTime(struct tm* ptm) {
-	time_t timep;
-	struct timeval tv;
-	ptm->tm_wday = 0;
-	ptm->tm_yday = 0;
-	ptm->tm_isdst = 0;
-	timep = mktime(ptm);
-	tv.tv_sec = timep;
-	tv.tv_usec = 0;
-
-	if (settimeofday(&tv, NULL) < 0) {
-		printf("Set system date and time error, errno(%d)", errno);
-		return -1;
-	}
-
-	time_t t = time(NULL);
-	struct tm *local = localtime(&t);
-
-	rtcSetTime(local);
-
-	return 0;
-}
-
-static int setDateTime(const char *pDate) {
-	LOGE("setDateTime pDate: %s\n", pDate);
-
-	struct tm _tm;
-	struct timeval tv;
-	time_t timep;
-
-	sscanf(pDate, "%d-%d-%d %d:%d:%d",
-			&_tm.tm_year, &_tm.tm_mon,
-			&_tm.tm_mday, &_tm.tm_hour, &_tm.tm_min, &_tm.tm_sec);
-
-	_tm.tm_mon -= 1;
-	_tm.tm_year -= 1900;
-
-	timep = mktime(&_tm);
-	tv.tv_sec = timep;
-	tv.tv_usec = 0;
-
-	return setDateTime(&_tm);
-}
-
 static void* socketThreadRx(void *lParam) {
 	((SocketClient *) lParam)->threadLoop();
 	return NULL;
 }
 
 static void* socketThreadHeatbeat(void *lParam) {
-	((SocketClient *) lParam)->timer_thread();
+	((SocketClient *) lParam)->threadGuard();
 	return NULL;
 }
 
@@ -240,7 +159,7 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 		if(onConncet[i] != NULL)
 			onConncet[i]();
 	}
-	updateHearbeat();
+	hearbeatUpdate();
 
 	return true;
 }
@@ -288,7 +207,7 @@ bool SocketClient::disconnect() {
 	// 关闭socket
 	return true;
 }
-void SocketClient::sendHearbeat()
+void SocketClient::hearbeatSend()
 {
 	if(mClientSocket > 0)
 	{
@@ -296,8 +215,31 @@ void SocketClient::sendHearbeat()
 	}
 
 }
+bool SocketClient::creatGuard(int interval)
+{
+	this->interval = interval;
+	string str;
+	str = jm.makeHeartbeat(StatusSet);
+	memset(hearbeatMsg,0,sizeof(hearbeatMsg));
+	memcpy(hearbeatMsg,str.c_str(),str.length());
 
-void SocketClient::updateHearbeat()
+	pthread_t threadID = 0;
+	pthread_attr_t attr; 		// 线程属性
+	pthread_attr_init(&attr);  	// 初始化线程属性
+	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);      // 设置线程属性
+	int ret = pthread_create(&threadID, &attr, socketThreadHeatbeat, this);
+	pthread_attr_destroy(&attr);
+	if (ret || !threadID) {
+		LOGE("create socket thread error, erro=%s\n", strerror(errno));
+		return false;
+	}
+	else
+	{
+		LOGE("create timer thread ok, erro=%d\n",threadID);
+	}
+}
+
+void SocketClient::hearbeatUpdate()
 {
 	lastHeartbeatTime = time(NULL);
 }
@@ -366,7 +308,7 @@ size_t SocketClient::available()
 	return rxbuf.available();
 }
 
-void SocketClient::timer_thread()
+void SocketClient::threadGuard()
 {
 	bool ret;
 	int counter = 0;
@@ -445,11 +387,11 @@ void SocketClient::timer_thread()
 		}
 
 
-		if(heartbeatInterval < 3)
-			heartbeatInterval = 3;
-		if(++counter >= heartbeatInterval)
+		if(interval < 3)
+			interval = 3;
+		if(++counter >= interval)
 		{
-			sendHearbeat();
+			hearbeatSend();
 			counter = 0;
 		}
 		Thread::sleep(1000);
@@ -457,29 +399,8 @@ void SocketClient::timer_thread()
 	}
 
 }
-bool SocketClient::setHeartbeat(int Interval)
-{
-	heartbeatInterval = Interval;
-	string str;
-	str = jm.makeHeartbeat(StatusSet);
-	memset(hearbeatMsg,0,sizeof(hearbeatMsg));
-	memcpy(hearbeatMsg,str.c_str(),str.length());
 
-	pthread_t threadID = 0;
-	pthread_attr_t attr; 		// 线程属性
-	pthread_attr_init(&attr);  	// 初始化线程属性
-	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);      // 设置线程属性
-	int ret = pthread_create(&threadID, &attr, socketThreadHeatbeat, this);
-	pthread_attr_destroy(&attr);
-	if (ret || !threadID) {
-		LOGE("create socket thread error, erro=%s\n", strerror(errno));
-		return false;
-	}
-	else
-	{
-		LOGE("create timer thread ok, erro=%d\n",threadID);
-	}
-}
+
 void SocketClient::threadLoop() {
 
 	int counter =0;
@@ -520,7 +441,7 @@ void SocketClient::threadLoop() {
 		}
 		if(length > 0)
 		{
-			gSocket->updateHearbeat();
+			gSocket->hearbeatUpdate();
 
 			switch(state)
 			{

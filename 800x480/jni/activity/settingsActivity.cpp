@@ -4,6 +4,15 @@
 #include "settingsActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKSeekBar* mSoundSeekbarPtr;
+static ZKButton* mSoundButtonPtr;
+static ZKButton* mBtnSoundLightPtr;
+static ZKTextView* mTextMemUsagePtr;
+static ZKSeekBar* mSeekbarMemUsagePtr;
+static ZKTextView* mTextview10Ptr;
+static ZKEditText* mEditHeartbeatPtr;
+static ZKButton* mBtnSetHeartbeatPtr;
+static ZKTextView* mTextview8Ptr;
 static ZKButton* mBtnDevNameSetPtr;
 static ZKEditText* mEditDevNamePtr;
 static ZKTextView* mTextview9Ptr;
@@ -80,6 +89,9 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_SETTINGS_SoundButton, onButtonClick_SoundButton,
+    ID_SETTINGS_BtnSoundLight, onButtonClick_BtnSoundLight,
+    ID_SETTINGS_BtnSetHeartbeat, onButtonClick_BtnSetHeartbeat,
     ID_SETTINGS_BtnDevNameSet, onButtonClick_BtnDevNameSet,
     ID_SETTINGS_BtnServerState, onButtonClick_BtnServerState,
     ID_SETTINGS_BtnAdEnable, onButtonClick_BtnAdEnable,
@@ -104,6 +116,8 @@ typedef struct {
 }S_ZKSeekBarCallback;
 /*TAG:SeekBarCallbackTab*/
 static S_ZKSeekBarCallback SZKSeekBarCallbackTab[] = {
+    ID_SETTINGS_SoundSeekbar, onProgressChanged_SoundSeekbar,
+    ID_SETTINGS_SeekbarMemUsage, onProgressChanged_SeekbarMemUsage,
 };
 
 
@@ -138,6 +152,7 @@ typedef struct {
 }S_EditTextInputCallback;
 /*TAG:EditTextInputCallback*/
 static S_EditTextInputCallback SEditTextInputCallbackTab[] = {
+    ID_SETTINGS_EditHeartbeat, onEditTextChanged_EditHeartbeat,
     ID_SETTINGS_EditDevName, onEditTextChanged_EditDevName,
     ID_SETTINGS_EditSwitchAdTime, onEditTextChanged_EditSwitchAdTime,
     ID_SETTINGS_EditDisplayAdAfterTime, onEditTextChanged_EditDisplayAdAfterTime,
@@ -181,6 +196,15 @@ const char* settingsActivity::getAppName() const{
 //TAG:onCreate
 void settingsActivity::onCreate() {
 	Activity::onCreate();
+    mSoundSeekbarPtr = (ZKSeekBar*)findControlByID(ID_SETTINGS_SoundSeekbar);if(mSoundSeekbarPtr!= NULL){mSoundSeekbarPtr->setSeekBarChangeListener(this);}
+    mSoundButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_SoundButton);
+    mBtnSoundLightPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnSoundLight);
+    mTextMemUsagePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextMemUsage);
+    mSeekbarMemUsagePtr = (ZKSeekBar*)findControlByID(ID_SETTINGS_SeekbarMemUsage);if(mSeekbarMemUsagePtr!= NULL){mSeekbarMemUsagePtr->setSeekBarChangeListener(this);}
+    mTextview10Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview10);
+    mEditHeartbeatPtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditHeartbeat);if(mEditHeartbeatPtr!= NULL){mEditHeartbeatPtr->setTextChangeListener(this);}
+    mBtnSetHeartbeatPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnSetHeartbeat);
+    mTextview8Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview8);
     mBtnDevNameSetPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnDevNameSet);
     mEditDevNamePtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditDevName);if(mEditDevNamePtr!= NULL){mEditDevNamePtr->setTextChangeListener(this);}
     mTextview9Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview9);

@@ -81,7 +81,6 @@ bool UartContext::send(const BYTE *pData, UINT len) {
 	if (!mIsOpen) {
 		return false;
 	}
-
 	if (write(mUartID, pData, len) != (int) len) {	// fail
 		LOGD("send Fail\n");
 		return false;
@@ -135,3 +134,7 @@ bool UartContext::threadLoop() {
 
 	return false;
 }
+
+UartContext uart0;
+UartContext uart1;
+

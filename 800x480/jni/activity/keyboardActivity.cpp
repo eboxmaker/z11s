@@ -4,6 +4,8 @@
 #include "keyboardActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextview12Ptr;
+static ZKTextView* mTextDoorStatePtr;
 static ZKTextView* mTextTitlePtr;
 static ZKButton* mBtnQRCodePtr;
 static ZKTextView* mTextStatusNotice2Ptr;
@@ -203,6 +205,8 @@ const char* keyboardActivity::getAppName() const{
 //TAG:onCreate
 void keyboardActivity::onCreate() {
 	Activity::onCreate();
+    mTextview12Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview12);
+    mTextDoorStatePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextDoorState);
     mTextTitlePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextTitle);
     mBtnQRCodePtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnQRCode);
     mTextStatusNotice2Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextStatusNotice2);

@@ -10,12 +10,12 @@
 #include "packageFile.h"
 #include "storage/StoragePreferences.h"
 #include "utils/TimeHelper.h"
+#include "readdir.h"
 
-Mutex mutex;
-
+Database dbs("/mnt/extsd/test.db");
 doorState_t gDoorState = Lock;
-bool gDoorPwdState = false;
-
+string gDoorPwd;
+Person_t gPerson;
 string gServerIP ;
 int gServerPort ;
 struct sockaddr_in gServerAddr;
@@ -23,61 +23,25 @@ SocketClient* gSocket= new SocketClient();
 string gAdminPwd = "123456";
 string gDoorPassword = "123456";
 
-long gLastHelloTime = 0;
 
 long gKeyboardLastActionTime = 0;
 string gDevID;
 string gDevName;
-
+int gHeartbeatInterval;
 
 AdSet_t gAdSet;
 PersonList_t gUserAdmin;
 Plan gPlan;
+string gBroadcastMsg;
 
-//void MySocketListener::notify(int what, int status, const char *msg){
-//	string msg_string = msg;
-////	if(status == SocketClient::E_SOCKET_STATUS_RECV_OK){
-////		LOGE("FILE RECV OK!");
-////		LOGE("what:%d---msg:%s",what,msg);
-////	}
-////	else
-////	{
-////		return ;
-////	}
-//
-//	switch(what)
-//	{
-//	case 0:
-//		//mButton1Ptr->setText("");
-//		//bHavePic = true;
-//		//mButton1Ptr->setBackgroundPic(msg);
-//		break;
-//	case 1:
-//		if(msg_string == "0")
-//		{
-//			gDoorState = Lock;
-//			GpioHelper::output(GPIO_PIN_B_02, 1);
-//			LOGD("g Lock:1\n");
-//		}
-//		else
-//		{
-//			gDoorState = UnLock;
-//			GpioHelper::output(GPIO_PIN_B_02, 0);
-//			LOGD("g Lock:0\n");
-//		}
-//	case 2:
-//		LOGD("g close\n");
-//		//mBtnConnectServerPtr->setText("连接服务器");
-////			mEditTextMSGPtr->setText(msg);
-//		break;
-//
-//	}
-//}
-//
+struct sysinfo gSystemInfo;
+float gMemUsage;
+
 myNotify_t keyboardCallback;
 myNotify_t AdvertisementCallback;
 myNotify_t networkTestCallback;
 myNotify_t settingsCallback;
+myNotify_t PersonCallback;
 
 void exeCMD(char *ptr)
 {
@@ -105,21 +69,39 @@ void exeCMD(string &js)
 			settingsCallback(255,StatusErr,js);
 		if(AdvertisementCallback != NULL)
 			AdvertisementCallback(255,StatusErr,js);
+		if(PersonCallback != NULL)
+			PersonCallback(255,StatusErr,js);
 		return;
 	}
 	ret = ParseJsonString(js.c_str());
 	if(ret == true)
 	{
 		JsonCmd_t cmd = getJsonCMD(js);
-		LOGE("cmd:%d",cmd);
 		switch(cmd)
 		{
 		case CMDHeartbeat:
 			status = jm.parseHeartbeat(js,msg);
-			gLastHelloTime = time(NULL);
+			if(status == StatusSet || status == StatusRead)
+			{
+				ack = jm.makeHeartbeat(StatusOK);
+				gSocket->write_(ack);
+			}
+
 			break;
 		case CMDSetHeartbeat:
+			int tempInterval;
+			status = jm.parseSetHeartbeat(js,tempInterval);
+			if(status == StatusSet)
+			{
+				if(tempInterval > 10)tempInterval= 10;
+				if(tempInterval < 3)tempInterval = 3;
+				gHeartbeatInterval = tempInterval;
+				gSocket->interval = gHeartbeatInterval;
+				StoragePreferences::putInt("gHeartbeatInterval", gHeartbeatInterval);
 
+			}
+			ack = jm.makeSetHeartbeat(gHeartbeatInterval, StatusOK);
+			gSocket->write_(ack);
 			break;
 		case CMDConfirm:
 			status = jm.parseConfirm(js);
@@ -154,46 +136,104 @@ void exeCMD(string &js)
 				gSocket->write_(ack);
 			}
 			break;
-		case CMDQR:
-			LOGE("接收到二维码!\n");
+		case CMDQRCode:
 			status = jm.parseFile(js,QR_DIR,msg);
-			if(status == StatusSet)
+			if(status == StatusSet || status == StatusRead)
 			{
-				ack = jm.makeQRCodeAck(StatusOK);
+				ack = jm.makeQRCodeAck(msg,StatusOK);
+				gSocket->write_(ack);
+			}
+			else if(status == StatusErr)
+			{
+				ack = jm.makeQRCodeAck(msg,StatusErr);
+				gSocket->write_(ack);
+			}
+			LOGE("接收到二维码!%d:%s\n",status,msg.c_str());
+			break;
+		case CMDDelQRCode:
+			status = jm.parseDeleteFile(js,QR_DIR,msg);
+			if(status == StatusSet || status == StatusRead)
+			{
+				ack = jm.makeDeleteFile(msg,StatusOK);
+				gSocket->write_(ack);
+			}
+			else if(status == StatusErr)
+			{
+				ack = jm.makeQRCodeAck(msg,StatusErr);
 				gSocket->write_(ack);
 			}
 			break;
 		case CMDAdPic:
-			LOGE("接收到图片!\n");
-			status = jm.parseFile(js.c_str(),AD_DIR,msg);
-			if(status == StatusSet)
+			status = jm.parseFile(js,AD_DIR,msg);
+			if(status == StatusSet || status == StatusRead)
 			{
-				ack = jm.makePicAck(StatusOK);
+				ack = jm.makePicAck(msg,StatusOK);
 				gSocket->write_(ack);
 			}
+			else if(status == StatusErr)
+			{
+				ack = jm.makeQRCodeAck(msg,StatusErr);
+				gSocket->write_(ack);
+			}
+			updateAdFileList(gAdSet.list);
+			LOGE("接收到图片!%d:%s\n",status,msg.c_str());
 			break;
 		case CMDDelAdPic:
+			status = jm.parseDeleteFile(js,AD_DIR,msg);
+			if(status == StatusSet || status == StatusRead)
+			{
+				ack = jm.makeDeleteFile(msg,StatusOK);
+				gSocket->write_(ack);
+			}
+			else if(status == StatusErr)
+			{
+				ack = jm.makeQRCodeAck(msg,StatusErr);
+				gSocket->write_(ack);
+			}
+			updateAdFileList(gAdSet.list);
+			break;
+		case CMDSuperPic:
+//			status = jm.parseFile(js,AD_DIR,msg);
+//			if(status == StatusSet || status == StatusRead)
+//			{
+//				ack = jm.makePicAck(msg,StatusOK);
+//				gSocket->write_(ack);
+//			}
+//			updateAdFileList(gAdSet.list);
+//			LOGE("接收到图片!%d:%s\n",status,msg.c_str());
 			break;
 		case CMDDoorCtr:
-			status = jm.parseDoorCtr(js,gDoorState);
-			if(gDoorState == UnLock)
+			doorState_t tempDoorState;
+			status = jm.parseDoorCtr(js,tempDoorState);
+			if(status == StatusSet )
 			{
-				msg = "unlock";
-				GpioHelper::output(GPIO_PIN_B_02, UnLock);
-			}
-			else
+				gDoorState = tempDoorState;
+				if(gDoorState == UnLock)
+				{
+					msg = "unlock";
+					GpioHelper::output(GPIO_PIN_B_02, UnLock);
+				}
+				else
+				{
+					msg = "lock";
+					GpioHelper::output(GPIO_PIN_B_02, Lock);
+				}
+			}else if(status == StatusRead)
 			{
-				msg = "lock";
-				GpioHelper::output(GPIO_PIN_B_02, Lock);
+				tempDoorState = GpioHelper::input(GPIO_PIN_B_02);
 			}
+			//应该触发一个定时器，两秒之后返回该值
+			ack = jm.makeDoorCtr(tempDoorState, StatusOK);
+			gSocket->write_(ack);
 			break;
 		case CMDDoorPwd:
 			status = jm.parseDoorPwd(js, msg);
 			if(status == StatusSet)
 			{
-				//设置RTC，
-				//回复
+				gDoorPwd = msg;
 			}
+			ack = jm.makeDoorPwd(gDoorPwd, StatusOK);
+			gSocket->write_(ack);
 			break;
 		case CMDSyncDateTime:
 			status = jm.parseSyncDateTime(js, msg);
@@ -221,13 +261,13 @@ void exeCMD(string &js)
 			status = jm.parseBroadcast(js, msg);
 			if(status == StatusSet)
 			{
-				//设置RTC，
+				gBroadcastMsg = msg;
 			}
 			else if(status == StatusRead)
 			{
 
 			}
-			ack = jm.makeBroadcast(msg, StatusOK);
+			ack = jm.makeBroadcast(gBroadcastMsg, StatusOK);
 			gSocket->write_(ack);
 			break;
 		case CMDAdSet:
@@ -241,7 +281,6 @@ void exeCMD(string &js)
 				ack = jm.makeAdSet(gAdSet, StatusOK);
 				gSocket->write_(ack);
 			}
-			LOGE("status：%d",status);
 			break;
 		case CMDDevName:
 			status = jm.parseDevName(js,gDevName);
@@ -259,7 +298,10 @@ void exeCMD(string &js)
 			}
 			LOGE("status：%d",status);
 			break;
+		case CMDPerson:
+			status = jm.parsePerson(js, gPerson);
 
+			break;
 		default:
 			break;
 		}
@@ -271,6 +313,8 @@ void exeCMD(string &js)
 			settingsCallback(cmd,status,msg);
 		if(AdvertisementCallback != NULL)
 			AdvertisementCallback(cmd,status,msg);
+		if(PersonCallback != NULL)
+			PersonCallback(cmd,status,msg);
 
 	}
 }
