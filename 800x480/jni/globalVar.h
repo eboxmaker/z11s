@@ -21,6 +21,9 @@
 
 #include "sqlite/database.h"
 
+#include "uart/Uart.h"
+
+#include "finger.h"
 using namespace std;
 
 #define QR_DIR		"/mnt/extsd/qr/"

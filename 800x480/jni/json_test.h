@@ -78,10 +78,6 @@ public:
 	string makeBroadcast(string &msg,JsonStatus_t status);
 	JsonStatus_t parseBroadcast(string &js,string &msg);
 
-	string makeAdSet(AdSet_t &set,JsonStatus_t status);
-	JsonStatus_t parseAdSet(string &js,AdSet_t &set);
-
-
 
 
 
@@ -93,7 +89,8 @@ public:
 	string makeDeleteFile(string &fullName,JsonStatus_t status);
 	JsonStatus_t parseDeleteFile(string js, char* directory, string &fullName);
 
-
+	string makeAdSet(AdSet_t &set,JsonStatus_t status);
+	JsonStatus_t parseAdSet(string &js,AdSet_t &set);
 
 	string makePerson(Person_t &person,JsonStatus_t status);
 	JsonStatus_t parsePerson(string &js,Person_t &person);

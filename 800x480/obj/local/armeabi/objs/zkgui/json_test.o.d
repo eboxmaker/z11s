@@ -209,6 +209,12 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/json_test.o:
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/kernel.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/database.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/sqlite3.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/uart/Uart.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Thread.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Mutex.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Condition.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/uart/CommDef.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/finger.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/lib/itoa.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream \
  C:/Users/shentq/Documents/z11s/800x480/jni/base64.h \
@@ -639,6 +645,18 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/database.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/sqlite3.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/uart/Uart.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Thread.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Mutex.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Condition.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/uart/CommDef.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/finger.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/lib/itoa.h:
 

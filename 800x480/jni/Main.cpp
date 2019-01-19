@@ -16,7 +16,11 @@
 #include "netinet/tcp.h"
 
 #include "uart/ProtocolSender.h"
+#include "uart/Uart.h"
 #include "termio.h"
+
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif  /* __cplusplus */
@@ -63,8 +67,8 @@ static void LoadParament()
 }
 void onEasyUIInit(EasyUIContext *pContext) {
 	// 初始化时打开串口
-	UARTCONTEXT->openUart(CONFIGMANAGER->getUartName().c_str(), CONFIGMANAGER->getUartBaudRate());
-	uart1.openUart("/dev/ttyS1",B115200);
+	UARTCONTEXT->openUart(CONFIGMANAGER->getUartName().c_str(), B19200);
+	uart2.openUart("/dev/ttyS0",B19200);
 }
 
 void onEasyUIDeinit(EasyUIContext *pContext) {
@@ -138,10 +142,11 @@ static void *MainLoop(void *lParam)
 
 		  UARTCONTEXT->send(buf, 2);
 
-		  unsigned char buf2[2] = {0x33,0x34};
-//
-		  uart1.send(buf2, 2);
+		  unsigned char buf2[20] = {0xF5,0x09,0x00, 0x00 ,0xFF ,0x00 ,0xF6 ,0xF5 };
 
+		  //sprintf(buf2,"uart2 test\r\n");
+		 // uart2.send(buf2, 8);
+		  finger.getFeatures();
 		Thread::sleep(1000);
 	    Person_t stq;
 //	    stq.name = "";

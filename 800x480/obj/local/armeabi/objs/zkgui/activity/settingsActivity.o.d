@@ -301,6 +301,8 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/set
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/kernel.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/database.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/sqlite3.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/uart/Uart.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/finger.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/globalVar.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/storage/StoragePreferences.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/TimeHelper.h \
@@ -907,6 +909,10 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/database.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/sqlite/sqlite3.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/uart/Uart.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/finger.h:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/globalVar.h:
 
