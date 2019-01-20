@@ -4,6 +4,13 @@
 #include "personActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKButton* mBtnGetIDFeaturePtr;
+static ZKButton* mBtnReadCurrentFeaturePtr;
+static ZKButton* mBtnUpdateServerPtr;
+static ZKButton* mBtnSetTimeoutPtr;
+static ZKButton* mBtnReadTimeoutPtr;
+static ZKTextView* mTextFingerStatePtr;
+static ZKButton* mBtnClearFingerPtr;
 static ZKTextView* mTextPersonIDPtr;
 static ZKTextView* mTextPersonLevelPtr;
 static ZKTextView* mTextPersonNamePtr;
@@ -57,6 +64,12 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_PERSON_BtnGetIDFeature, onButtonClick_BtnGetIDFeature,
+    ID_PERSON_BtnReadCurrentFeature, onButtonClick_BtnReadCurrentFeature,
+    ID_PERSON_BtnUpdateServer, onButtonClick_BtnUpdateServer,
+    ID_PERSON_BtnSetTimeout, onButtonClick_BtnSetTimeout,
+    ID_PERSON_BtnReadTimeout, onButtonClick_BtnReadTimeout,
+    ID_PERSON_BtnClearFinger, onButtonClick_BtnClearFinger,
     ID_PERSON_BtnFingerPic, onButtonClick_BtnFingerPic,
     ID_PERSON_Button2, onButtonClick_Button2,
     ID_PERSON_Button1, onButtonClick_Button1,
@@ -142,6 +155,13 @@ const char* personActivity::getAppName() const{
 //TAG:onCreate
 void personActivity::onCreate() {
 	Activity::onCreate();
+    mBtnGetIDFeaturePtr = (ZKButton*)findControlByID(ID_PERSON_BtnGetIDFeature);
+    mBtnReadCurrentFeaturePtr = (ZKButton*)findControlByID(ID_PERSON_BtnReadCurrentFeature);
+    mBtnUpdateServerPtr = (ZKButton*)findControlByID(ID_PERSON_BtnUpdateServer);
+    mBtnSetTimeoutPtr = (ZKButton*)findControlByID(ID_PERSON_BtnSetTimeout);
+    mBtnReadTimeoutPtr = (ZKButton*)findControlByID(ID_PERSON_BtnReadTimeout);
+    mTextFingerStatePtr = (ZKTextView*)findControlByID(ID_PERSON_TextFingerState);
+    mBtnClearFingerPtr = (ZKButton*)findControlByID(ID_PERSON_BtnClearFinger);
     mTextPersonIDPtr = (ZKTextView*)findControlByID(ID_PERSON_TextPersonID);
     mTextPersonLevelPtr = (ZKTextView*)findControlByID(ID_PERSON_TextPersonLevel);
     mTextPersonNamePtr = (ZKTextView*)findControlByID(ID_PERSON_TextPersonName);

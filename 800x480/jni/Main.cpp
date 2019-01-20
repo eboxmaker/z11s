@@ -119,7 +119,6 @@ static void *MainLoop(void *lParam)
 //	msg.remote.sin_port=htons(8000); //服务器端口号
 
 	gSocket->creatGuard(5);
-
 	if(gSocket->connected() == false)
 	{
 		gSocket->disconnect();
@@ -138,15 +137,9 @@ static void *MainLoop(void *lParam)
 
 	while(1)
 	{
-		  unsigned char buf[2] = {0x31,0x32};
 
-		  UARTCONTEXT->send(buf, 2);
 
-		  unsigned char buf2[20] = {0xF5,0x09,0x00, 0x00 ,0xFF ,0x00 ,0xF6 ,0xF5 };
 
-		  //sprintf(buf2,"uart2 test\r\n");
-		 // uart2.send(buf2, 8);
-		  finger.getFeatures();
 		Thread::sleep(1000);
 	    Person_t stq;
 //	    stq.name = "";

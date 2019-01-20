@@ -2,6 +2,7 @@
 #include "uart/ProtocolSender.h"
 #include "globalvar.h"
 #include "json_test.h"
+#include "base64.h"
 /*
 *此文件由GUI工具生成
 *文件功能：用于处理用户的逻辑相应代码
@@ -31,7 +32,132 @@
 *
 * 在Eclipse编辑器中  使用 “alt + /”  快捷键可以打开智能提示
 */
+/*指纹模块ID规划
+ * 0-9：录入当前职员指纹空间
+ * 10-19：当前有权限开门老师的指纹
+ * 20-39：管理员指纹空间
+ * */
 
+static int fingerInputState = 0;
+static int fingerNum = 0;
+void onFingerOver(unsigned char cmd,unsigned char *data, unsigned int len)
+{
+	char out[1024];
+	string outstring;
+	string err ;
+	int id;
+	switch(cmd)
+	{
+	case CMD_GET_CURRENT_FEATURE:
+		if(Base64::Encode(data, len, out, 1024) == true)
+		{
+			outstring = out;
+			gPerson.fingers.push_back(outstring);
+			for(int i = 0 ; i < gPerson.fingers.size();i++)
+				LOGE("len:%d,%s",gPerson.fingers[i].length(),gPerson.fingers[i].c_str());
+
+		}
+
+		LOGE("获取指纹特征：%d",len);
+
+		break;
+
+	case CMD_GET_ID_FEATURE://包含前三个字节为用户号和权限
+		id = data[0]<<8 + data[1];
+
+		if(Base64::Encode(&data[3], len - 3, out, 1024) == true)
+		{
+			outstring = out;
+			gPerson.fingers.push_back(outstring);
+			for(int i = 0 ; i < gPerson.fingers.size();i++)
+				LOGE("len:%d,%s",gPerson.fingers[i].length(),gPerson.fingers[i].c_str());
+
+		}
+		break;
+
+	case CMD_SET_ID_FEATURE:
+		break;
+
+
+	case CMD_TIMEOUT:
+		err += finger.errToString(finger.ack);
+		if(finger.ack == ACK_SUCCESS)
+		{
+			fingerInputState = 0;
+			mTextFingerStatePtr->setText("读取/设置成功");
+		}
+		else
+		{
+			mTextFingerStatePtr->setText(err);
+		}
+		break;
+	case CMD_CLEAR:
+		err += finger.errToString(finger.ack);
+		if(finger.ack == ACK_SUCCESS)
+		{
+			fingerInputState = 0;
+			mTextFingerStatePtr->setText("清空指纹成功");
+		}
+		else if(finger.ack == ACK_USER_EXIST)
+		{
+			mTextFingerStatePtr->setText(err);
+		}
+		break;
+	case CMD_ENROLL1:
+		err += finger.errToString(finger.ack);
+		if(finger.ack == ACK_SUCCESS)
+		{
+			fingerInputState++;
+			LOGE("第1步完成");
+			mTextFingerStatePtr->setText("第1次录入成功，请放手指");
+		}
+		else
+		{
+			fingerInputState = 0;
+			mTextFingerStatePtr->setText(err);
+			LOGE("第1步失败:%d",finger.ack);
+		}
+		break;
+
+
+
+	case CMD_ENROLL2:
+		err += finger.errToString(finger.ack);
+		if(finger.ack == ACK_SUCCESS)
+		{
+			fingerInputState++;
+			LOGE("第2步完成");
+			mTextFingerStatePtr->setText("第2次录入成功，请放手指");
+		}
+		else
+		{
+			fingerInputState = 0;
+			mTextFingerStatePtr->setText(err);
+			LOGE("第2步失败:%d",finger.ack);
+		}
+		break;
+
+
+	case CMD_ENROLL3:
+		err += finger.errToString(finger.ack);
+		if(finger.ack == ACK_SUCCESS)
+		{
+			fingerNum++;//录入一个指纹成功
+			fingerInputState = 0;
+			LOGE("第3步完成");
+			mTextFingerStatePtr->setText("第3次录入成功，请放手指");
+		}
+		else
+		{
+			mTextFingerStatePtr->setText(err);
+			LOGE("第3步失败:%d",finger.ack);
+		}
+		break;
+	}
+
+
+
+}
 static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 {
 	//LOGE("%s",msg.c_str());
@@ -91,6 +217,8 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
 	PersonCallback = onNetWrokDataUpdate;
+	fingerCallback =onFingerOver;
+
 }
 
 /**
@@ -124,6 +252,7 @@ static void onUI_hide() {
  */
 static void onUI_quit() {
 	PersonCallback = NULL;
+	fingerCallback =NULL;
 
 }
 
@@ -193,10 +322,11 @@ static bool onButtonClick_BtnQuaryPerson(ZKButton *pButton) {
 
     	gSocket->updateTriger();
 
-        Person_t stq;
-        stq.id = temp;
+
+    	static Person_t person;
+    	person.id = temp;
         string x;
-        x = jm.makePerson(stq, StatusRead);
+        x = jm.makePerson(person, StatusRead);
         gSocket->write_(x);
     }
     else
@@ -204,7 +334,15 @@ static bool onButtonClick_BtnQuaryPerson(ZKButton *pButton) {
         mTextStatusNotice2Ptr->setText("无法连接服务器");
     }
 
-
+    finger.clear();
+    fingerNum = 0;
+	gPerson.fingers.clear();
+	gPerson.id = "";
+	gPerson.name = "";
+	gPerson.level = 0;
+	mTextPersonNamePtr->setText(gPerson.name);
+	mTextPersonIDPtr->setText(gPerson.id);
+	mTextPersonLevelPtr->setText("");
 
 
     return false;
@@ -227,10 +365,120 @@ static bool onButtonClick_Button1(ZKButton *pButton) {
 
 static bool onButtonClick_Button2(ZKButton *pButton) {
     //LOGD(" ButtonClick Button2 !!!\n");
+	bool ret = false;
+	string err;
+	string temp = mEditPersonIDPtr->getText();
+	int u_id = atoi(temp.c_str());
+	mTextFingerStatePtr->setText("请放手指");
+	switch(fingerInputState)
+	{
+		case 0:
+			finger.ack = -1;
+			while(ret ==false)
+			{
+				ret = finger.Enroll_Step1(u_id);
+				LOGE("正在 第%d步",fingerInputState);
+				Thread::sleep(100);
+			}
+			break;
+		case 1:
+//		case 2:
+//		case 3:
+//		case 4:
+			finger.ack = -1;
+			while(ret ==false)
+			{
+				ret = finger.Enroll_Step2(u_id);
+				LOGE("正在 第%d步",fingerInputState);
+				Thread::sleep(100);
+			}
+			ret = false;
+			break;
+		default:
+			finger.ack = -1;
+			while(ret ==false)
+			{
+				ret = finger.Enroll_Step3(u_id);
+				LOGE("正在 第%d步",fingerInputState);
+				Thread::sleep(100);
+			}
+			ret = false;
+
+			break;
+	}
+
+
     return false;
 }
 
 static bool onButtonClick_BtnFingerPic(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnFingerPic !!!\n");
+    return false;
+}
+static bool onButtonClick_BtnClearFinger(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnClearFinger !!!\n");
+	bool ret = false;
+	finger.ack = -1;
+	while(ret ==false)
+	{
+		ret = finger.clear();
+	//	Thread::sleep(1000);
+	}
+
+	while(finger.ack == -1)
+	{
+		LOGE("ACK:%d",finger.ack);
+		Thread::sleep(1000);
+	}
+	if(finger.ack == ACK_SUCCESS)
+	{
+		LOGE("清空成功");
+	}
+	else
+	{
+		LOGE("清空失败:%d",finger.ack);
+		return false;
+	}
+    return false;
+}
+static bool onButtonClick_BtnReadTimeout(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnReadTimeout !!!\n");
+	finger.readTimeout();
+    return false;
+}
+static bool onButtonClick_BtnSetTimeout(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnSetTimeout !!!\n");
+	finger.setTimeout(0);
+    return false;
+}
+static bool onButtonClick_BtnUpdateServer(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnUpdateServer !!!\n");
+
+    if(gSocket->connected())
+    {
+//    	string str = jm.makeSyncDateTime(timeStr, StatusSet);
+//    	gSocket->write_(str);
+//    	gSocket->updateTriger();
+//        mWindStatusNoticePtr->showWnd();
+//        mTextStatusNoticePtr->setText("等待服务器响应");
+//        mTextStatusNotice2Ptr->setText("");
+    }
+    else
+    {
+//        mWindStatusNoticePtr->showWnd();
+//        mTextStatusNoticePtr->setText("网络中断");
+//        mTextStatusNotice2Ptr->setText("无法同步服务器设置");
+//        mTextStatusNotice2Ptr->setText("");
+    }
+    return false;
+}
+static bool onButtonClick_BtnReadCurrentFeature(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnReadCurrentFeature !!!\n");
+	finger.getFeatures();
+    return false;
+}
+static bool onButtonClick_BtnGetIDFeature(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnGetIDFeature !!!\n");
+	finger.getFeatures(1);
     return false;
 }

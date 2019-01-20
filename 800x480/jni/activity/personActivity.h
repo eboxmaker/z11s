@@ -26,6 +26,13 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_PERSON_BtnGetIDFeature    20010
+#define ID_PERSON_BtnReadCurrentFeature    20009
+#define ID_PERSON_BtnUpdateServer    20008
+#define ID_PERSON_BtnSetTimeout    20007
+#define ID_PERSON_BtnReadTimeout    20006
+#define ID_PERSON_TextFingerState    50010
+#define ID_PERSON_BtnClearFinger    20005
 #define ID_PERSON_TextPersonID    50005
 #define ID_PERSON_TextPersonLevel    50007
 #define ID_PERSON_TextPersonName    50003
