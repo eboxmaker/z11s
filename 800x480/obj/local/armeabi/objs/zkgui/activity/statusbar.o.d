@@ -273,7 +273,8 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activity/sta
  C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Condition.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/include/window/ZKSlideWindow.h \
  C:/Users/shentq/Documents/z11s/800x480/jni/logic/statusbar.cc \
- C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolSender.h
+ C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolSender.h \
+ C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/TimeHelper.h
 
 C:/Users/shentq/Documents/z11s/800x480/jni/activity/statusbar.h:
 
@@ -822,3 +823,5 @@ C:/Users/shentq/Documents/z11s/800x480/jni/include/window/ZKSlideWindow.h:
 C:/Users/shentq/Documents/z11s/800x480/jni/logic/statusbar.cc:
 
 C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolSender.h:
+
+C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/TimeHelper.h:

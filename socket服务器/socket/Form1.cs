@@ -202,7 +202,7 @@ namespace socket
                         string[] fingers = {"1111111111","wwwwwwwwwww","124e2qerfwf"};
                         if (status == JsonManager.StatusType.StatusRead)
                         {
-                            resault = JsonManager.MakePerson("123", "张云峰", 0, fingers, JsonManager.StatusType.StatusOK);
+                            resault = JsonManager.MakePerson("201800123", "张云峰", 0, fingers, JsonManager.StatusType.StatusOK);
                             server.SendAll(resault);
                         }
 

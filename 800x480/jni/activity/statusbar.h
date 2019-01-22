@@ -21,6 +21,8 @@
 #include "control/ZKVideoView.h"
 #include "window/ZKSlideWindow.h"
 /*TAG:Macro宏ID*/
+#define ID_STATUSBAR_TextWeek    50001
+#define ID_STATUSBAR_TextDate    50009
 #define ID_STATUSBAR_Digitalclock1    93001
 #define ID_STATUSBAR_sys_back   100
 /*TAG:Macro宏ID END*/

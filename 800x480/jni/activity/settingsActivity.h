@@ -54,9 +54,6 @@
 #define ID_SETTINGS_WndAdSet    110002
 #define ID_SETTINGS_BtnAdSet    20008
 #define ID_SETTINGS_BtnSyncDateTime    20002
-#define ID_SETTINGS_TextTime    50010
-#define ID_SETTINGS_TextDate    50009
-#define ID_SETTINGS_TextWeek    50001
 #define ID_SETTINGS_Textview5    50007
 #define ID_SETTINGS_BtnModifyAdminPwd    20005
 #define ID_SETTINGS_WndModifyAdminPwd    110001

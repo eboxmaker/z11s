@@ -289,6 +289,10 @@ bool Finger::sendPackage(unsigned char wLen,unsigned char *ptr)
   tbuf[wLen + 2] = DATA_END;
   len = wLen + 3;
 
+  //如果3s内模块没有响应，则重置模块为空闲状态
+  if(time(NULL) - lastCmdTime >= 1)
+	  exeState = exeFree;
+
   if(exeState == exeFree)
   {
 	  uart2.send(tbuf,len);
@@ -298,6 +302,8 @@ bool Finger::sendPackage(unsigned char wLen,unsigned char *ptr)
 	  }
 	  exeState = exeSended;
 	  lastCmdTime = time(NULL);
+		state = HEAD;
+		counter = 0;
 	  return true;
   }
   else
@@ -348,7 +354,7 @@ string Finger::errToString(int err)
 void Finger::rx_event(char ch)
 {
 	char err = -1;
-	LOGE("rx event %D:%d(%d):%x\r\n",counter,state,cmdState,ch);
+	//LOGE("rx event %D:%d(%d):%x\r\n",counter,state,cmdState,ch);
 	exeState = exeRecving;
 	switch(state)
 	{
@@ -423,19 +429,24 @@ void Finger::rx_event(char ch)
 			}
 			else
 			{
+				state = HEAD;
+				counter = 0;
+				exeState = exeFree;
 				LOGE("ERR\r\n");
+				break;
 			}
 			if(cmdState == 0)
 			{
+				exeState = exeFree;
 				switch(cmd)
 				{
 				case CMD_GET_CURRENT_FEATURE:
 					if(fingerCallback != NULL)
-						fingerCallback(cmd,&rbuf[4],counter - 6);
+						fingerCallback(cmd,cmdState,&rbuf[4],counter - 6);
 					break;
 				case CMD_GET_ID_FEATURE:
 					if(fingerCallback != NULL)
-						fingerCallback(cmd,&rbuf[1],counter - 3);
+						fingerCallback(cmd,cmdState,&rbuf[1],counter - 3);
 					break;
 				case CMD_CLEAR:
 				case CMD_TIMEOUT:
@@ -444,12 +455,29 @@ void Finger::rx_event(char ch)
 				case CMD_ENROLL3:
 					ack = rbuf[4];
 					if(fingerCallback != NULL)
-						fingerCallback(cmd,&rbuf[2],counter - 4);
+						fingerCallback(cmd,cmdState,&rbuf[2],counter - 4);
 					break;
 
 				}
-				exeState = exeFree;
+			}
+			if(cmdState == 1)//含有数据包的命令会有数据头帧
+			{
+				switch(cmd)
+				{
+				case CMD_GET_CURRENT_FEATURE:
+				case CMD_GET_ID_FEATURE:
 
+					if(fingerCallback != NULL)
+						fingerCallback(cmd,cmdState,&rbuf[2],counter - 4);
+					if(rbuf[4] != ACK_SUCCESS)//后面没有数据包
+					{
+						cmdState = 0;
+
+					}
+					break;
+				default:
+					break;
+				}
 			}
 
 			counter = 0;

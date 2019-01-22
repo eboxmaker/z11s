@@ -1,5 +1,7 @@
 #pragma once
 #include "uart/ProtocolSender.h"
+#include "utils/TimeHelper.h"
+
 /*
 *此文件由GUI工具生成
 *文件功能：用于处理用户的逻辑相应代码
@@ -28,14 +30,24 @@
 *mDashbroadView1->setTargetAngle(120) 在控件mDashbroadView1上指针显示角度调整到120度
 
 */
+static void updateUI_time() {
+	char timeStr[20];
+	struct tm *t = TimeHelper::getDateTime();
 
+	sprintf(timeStr, "%d年%02d月%02d日", 1900 + t->tm_year, t->tm_mon + 1, t->tm_mday);
+	mTextDatePtr->setText(timeStr); // 注意修改控件名称
+
+	static const char *day[] = { "日", "一", "二", "三", "四", "五", "六" };
+	sprintf(timeStr, "星期%s", day[t->tm_wday]);
+	mTextWeekPtr->setText(timeStr); // 注意修改控件名称
+}
 /**
  * 注册定时器
  * 填充数组用于注册定时器
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	//{0,  6000}, //定时器id=0, 时间间隔6秒
+	{0,  1000}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
 };
 
@@ -72,6 +84,9 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  */
 static bool onUI_Timer(int id){
 	switch (id) {
+	case 0:
+		updateUI_time();
+		break;
 
 		default:
 			break;

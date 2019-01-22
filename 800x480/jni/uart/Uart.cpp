@@ -112,7 +112,7 @@ bool MyUart::threadLoop() {
 				finger.rx_event(mDataBufPtr[i]);
 
 		} else {
-			Thread::sleep(50);
+			Thread::sleep(10);
 		}
 
 		return true;

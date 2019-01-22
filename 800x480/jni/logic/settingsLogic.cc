@@ -61,20 +61,7 @@ static void updateAdSetWind()
 	mEditSwitchAdTimePtr->setText(buf);
 	LOGE("%D,%s",gAdSet.switchTime,buf);
 }
-static void updateUI_time() {
-	char timeStr[20];
-	struct tm *t = TimeHelper::getDateTime();
 
-	sprintf(timeStr, "%02d:%02d:%02d", t->tm_hour,t->tm_min,t->tm_sec);
-	mTextTimePtr->setText(timeStr); // 注意修改控件名称
-
-	sprintf(timeStr, "%d年%02d月%02d日", 1900 + t->tm_year, t->tm_mon + 1, t->tm_mday);
-	mTextDatePtr->setText(timeStr); // 注意修改控件名称
-
-	static const char *day[] = { "日", "一", "二", "三", "四", "五", "六" };
-	sprintf(timeStr, "星期%s", day[t->tm_wday]);
-	mTextWeekPtr->setText(timeStr); // 注意修改控件名称
-}
 
 //static void updateDateEditText() {
 //	struct tm *t = TimeHelper::getDateTime();
@@ -194,8 +181,6 @@ static void onUI_show() {
 	mSeekbarMemUsagePtr->setProgress(gMemUsage);
 	sprintf(temp,"%0.1f%%",gMemUsage);
 	mTextMemUsagePtr->setText(temp);
-	updateUI_time();
-
 }
 
 /*
@@ -235,7 +220,6 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
 static bool onUI_Timer(int id){
 	switch (id) {
 	case 0:
-		updateUI_time();
 		if(gSocket->connected())
 			mBtnServerStatePtr->setBackgroundPic("kai.png");
 		else

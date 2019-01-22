@@ -39,48 +39,77 @@
  * */
 
 static int fingerInputState = 0;
-static int fingerNum = 0;
-void onFingerOver(unsigned char cmd,unsigned char *data, unsigned int len)
+static int fingerNum = 1;
+static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, unsigned int len)
 {
+	char temp_buf[1024];
 	char out[1024];
 	string outstring;
-	string err ;
+	string para_err ;
+	int para_len;
 	int id;
+
+	for(int i = 0; i < len ; i++)
+		LOGE("RX %D:%X",i,data[i]);
 	switch(cmd)
 	{
 	case CMD_GET_CURRENT_FEATURE:
-		if(Base64::Encode(data, len, out, 1024) == true)
+		if(cmdState == 1)
 		{
-			outstring = out;
-			gPerson.fingers.push_back(outstring);
-			for(int i = 0 ; i < gPerson.fingers.size();i++)
-				LOGE("len:%d,%s",gPerson.fingers[i].length(),gPerson.fingers[i].c_str());
+			para_len = ((data[0])<<8) + data[1];
+			para_err = finger.errToString(data[2]);
+			LOGE("获取ID指纹执行状态%s,len:%d",para_err.c_str(),para_len);
+			mTextFingerStatePtr->setText(para_err.c_str());
+		}
+		else if(cmdState == 0)
+		{
+			if(Base64::Encode(data, len, out, 1024) == true)
+			{
+				outstring = out;
+	//			gPerson.fingers.push_back(outstring);
+	//			for(int i = 0 ; i < gPerson.fingers.size();i++)
+	//				LOGE("len:%d,%s",gPerson.fingers[i].length(),gPerson.fingers[i].c_str());
+				mTextFingerStatePtr->setText("获取当前指纹成功");
+			}
+			LOGE("获取指纹特征：%d",len);
 
 		}
 
-		LOGE("获取指纹特征：%d",len);
 
 		break;
 
 	case CMD_GET_ID_FEATURE://包含前三个字节为用户号和权限
-		id = data[0]<<8 + data[1];
-
-		if(Base64::Encode(&data[3], len - 3, out, 1024) == true)
+		if(cmdState == 1)
 		{
-			outstring = out;
-			gPerson.fingers.push_back(outstring);
-			for(int i = 0 ; i < gPerson.fingers.size();i++)
-				LOGE("len:%d,%s",gPerson.fingers[i].length(),gPerson.fingers[i].c_str());
+			para_len = ((data[0])<<8) + data[1];
+			para_err = finger.errToString(data[2]);
+			LOGE("获取ID指纹执行状态%s,len:%d",para_err.c_str(),para_len);
+			mTextFingerStatePtr->setText(para_err.c_str());
+		}
+		else if(cmdState == 0)
+		{
+			id = ((data[0])<<8) + data[1];
+			if(Base64::Encode(&data[3], len - 3, out, 1024) == true)
+			{
+				outstring = out;
+				gPerson.fingers.push_back(outstring);
+				for(int i = 0 ; i < gPerson.fingers.size();i++)
+					LOGE("len:%d,%s",gPerson.fingers[i].length(),gPerson.fingers[i].c_str());
+
+			}
+			sprintf(temp_buf,"获取%d号指纹成功",id);
+			mTextFingerStatePtr->setText(temp_buf);
 
 		}
 		break;
 
 	case CMD_SET_ID_FEATURE:
+
 		break;
 
 
 	case CMD_TIMEOUT:
-		err += finger.errToString(finger.ack);
+		para_err += finger.errToString(finger.ack);
 		if(finger.ack == ACK_SUCCESS)
 		{
 			fingerInputState = 0;
@@ -88,11 +117,11 @@ void onFingerOver(unsigned char cmd,unsigned char *data, unsigned int len)
 		}
 		else
 		{
-			mTextFingerStatePtr->setText(err);
+			mTextFingerStatePtr->setText(para_err);
 		}
 		break;
 	case CMD_CLEAR:
-		err += finger.errToString(finger.ack);
+		para_err += finger.errToString(finger.ack);
 		if(finger.ack == ACK_SUCCESS)
 		{
 			fingerInputState = 0;
@@ -100,21 +129,21 @@ void onFingerOver(unsigned char cmd,unsigned char *data, unsigned int len)
 		}
 		else if(finger.ack == ACK_USER_EXIST)
 		{
-			mTextFingerStatePtr->setText(err);
+			mTextFingerStatePtr->setText(para_err);
 		}
 		break;
 	case CMD_ENROLL1:
-		err += finger.errToString(finger.ack);
+		para_err += finger.errToString(finger.ack);
 		if(finger.ack == ACK_SUCCESS)
 		{
 			fingerInputState++;
 			LOGE("第1步完成");
-			mTextFingerStatePtr->setText("第1次录入成功，请放手指");
+			mTextFingerStatePtr->setText("第1次录入成功");
 		}
 		else
 		{
 			fingerInputState = 0;
-			mTextFingerStatePtr->setText(err);
+			mTextFingerStatePtr->setText(para_err);
 			LOGE("第1步失败:%d",finger.ack);
 		}
 		break;
@@ -122,34 +151,39 @@ void onFingerOver(unsigned char cmd,unsigned char *data, unsigned int len)
 
 
 	case CMD_ENROLL2:
-		err += finger.errToString(finger.ack);
+		para_err += finger.errToString(finger.ack);
 		if(finger.ack == ACK_SUCCESS)
 		{
 			fingerInputState++;
 			LOGE("第2步完成");
-			mTextFingerStatePtr->setText("第2次录入成功，请放手指");
+			mTextFingerStatePtr->setText("第2次录入成功");
 		}
 		else
 		{
 			fingerInputState = 0;
-			mTextFingerStatePtr->setText(err);
+			mTextFingerStatePtr->setText(para_err);
 			LOGE("第2步失败:%d",finger.ack);
 		}
 		break;
 
 
 	case CMD_ENROLL3:
-		err += finger.errToString(finger.ack);
+		para_err += finger.errToString(finger.ack);
 		if(finger.ack == ACK_SUCCESS)
 		{
-			fingerNum++;//录入一个指纹成功
 			fingerInputState = 0;
 			LOGE("第3步完成");
-			mTextFingerStatePtr->setText("第3次录入成功，请放手指");
+			mTextFingerStatePtr->setText("指纹录入完成");
+//			mWindStatusNoticePtr->showWnd();
+//	        mTextStatusNoticePtr->setText("继续录入");
+			finger.getFeatures(fingerNum);
+
+			fingerNum++;//录入一个指纹成功
+
 		}
 		else
 		{
-			mTextFingerStatePtr->setText(err);
+			mTextFingerStatePtr->setText(para_err);
 			LOGE("第3步失败:%d",finger.ack);
 		}
 		break;
@@ -218,7 +252,8 @@ static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
 	PersonCallback = onNetWrokDataUpdate;
 	fingerCallback =onFingerOver;
-
+    finger.clear();
+    gPerson.id = "";
 }
 
 /**
@@ -335,7 +370,7 @@ static bool onButtonClick_BtnQuaryPerson(ZKButton *pButton) {
     }
 
     finger.clear();
-    fingerNum = 0;
+    fingerNum = 1;
 	gPerson.fingers.clear();
 	gPerson.id = "";
 	gPerson.name = "";
@@ -365,11 +400,18 @@ static bool onButtonClick_Button1(ZKButton *pButton) {
 
 static bool onButtonClick_Button2(ZKButton *pButton) {
     //LOGD(" ButtonClick Button2 !!!\n");
+	if(gPerson.id == "")
+	{
+		mWindStatusNoticePtr->showWnd();
+		mTextStatusNoticePtr->setText("请先获取ID对应的人员");
+		mTextStatusNotice2Ptr->setText("");
+		return false;
+	}
 	bool ret = false;
 	string err;
 	string temp = mEditPersonIDPtr->getText();
-	int u_id = atoi(temp.c_str());
-	mTextFingerStatePtr->setText("请放手指");
+	int u_id = fingerNum;
+	mTextFingerStatePtr->setText("请放手指。。。");
 	switch(fingerInputState)
 	{
 		case 0:
@@ -456,25 +498,26 @@ static bool onButtonClick_BtnUpdateServer(ZKButton *pButton) {
 
     if(gSocket->connected())
     {
-//    	string str = jm.makeSyncDateTime(timeStr, StatusSet);
-//    	gSocket->write_(str);
-//    	gSocket->updateTriger();
-//        mWindStatusNoticePtr->showWnd();
-//        mTextStatusNoticePtr->setText("等待服务器响应");
-//        mTextStatusNotice2Ptr->setText("");
+    	string str = jm.makePerson(gPerson, StatusSet);
+    	gSocket->write_(str);
+    	gSocket->updateTriger();
+        mWindStatusNoticePtr->showWnd();
+        mTextStatusNoticePtr->setText("等待服务器响应");
+        mTextStatusNotice2Ptr->setText("");
     }
     else
     {
-//        mWindStatusNoticePtr->showWnd();
-//        mTextStatusNoticePtr->setText("网络中断");
-//        mTextStatusNotice2Ptr->setText("无法同步服务器设置");
-//        mTextStatusNotice2Ptr->setText("");
+        mWindStatusNoticePtr->showWnd();
+        mTextStatusNoticePtr->setText("网络中断");
+        mTextStatusNotice2Ptr->setText("无法同步服务器设置");
+        mTextStatusNotice2Ptr->setText("");
     }
     return false;
 }
 static bool onButtonClick_BtnReadCurrentFeature(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnReadCurrentFeature !!!\n");
 	finger.getFeatures();
+	mTextFingerStatePtr->setText("请放手指。。。");
     return false;
 }
 static bool onButtonClick_BtnGetIDFeature(ZKButton *pButton) {

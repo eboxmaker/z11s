@@ -2,6 +2,8 @@
 #include "entry/EasyUIContext.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextWeekPtr;
+static ZKTextView* mTextDatePtr;
 static ZKDigitalClock* mDigitalclock1Ptr;
 static ZKButton* msys_backPtr;
 static statusbar* mstatusbarPtr;
@@ -119,6 +121,8 @@ const char* statusbar::getAppName() const{
 //TAG:onCreate
 void statusbar::onCreate() {
 	BaseApp::onCreate();
+    mTextWeekPtr = (ZKTextView*)findControlByID(ID_STATUSBAR_TextWeek);
+    mTextDatePtr = (ZKTextView*)findControlByID(ID_STATUSBAR_TextDate);
     mDigitalclock1Ptr = (ZKDigitalClock*)findControlByID(ID_STATUSBAR_Digitalclock1);
     msys_backPtr = (ZKButton*)findControlByID(ID_STATUSBAR_sys_back);
 	mstatusbarPtr = this;

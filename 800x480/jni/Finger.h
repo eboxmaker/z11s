@@ -58,7 +58,7 @@ typedef enum
 	exeRecving,
 }exeState_t;
 
-typedef void (*FingerNotify_t)(unsigned char ,unsigned char *, unsigned int );
+typedef void (*FingerNotify_t)(unsigned char ,int ,unsigned char *, unsigned int );
 
 extern FingerNotify_t fingerCallback;
 
@@ -95,7 +95,7 @@ private:
 	FingerState_t state;
 	unsigned char cmd;
 	unsigned char check;
-	unsigned char cmdState;
+	int cmdState;
 	unsigned int counter;
 	exeState_t exeState;
 	long lastCmdTime;

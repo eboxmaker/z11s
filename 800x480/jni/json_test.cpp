@@ -517,23 +517,24 @@ string JsonCmdManager::makePerson(Person_t &person,JsonStatus_t status)
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDPerson);
 	  root["id"] = Json::Value(person.id);
-	  if(status == StatusSet)
-	  {
-		  root["name"] = Json::Value(person.name);
-		  root["level"] = Json::Value(person.level);
 
-		  if(person.fingers.size() > 0)
+	  root["name"] = Json::Value(person.name);
+	  if(person.level < -1 || person.level > 10)
+		  person.level = -1;
+	  root["level"] = Json::Value(person.level);
+
+	  if(person.fingers.size() > 0)
+	  {
+		  Json::Value fingers;
+		  Json::Value finger;
+		  for(int i = 0; i < person.fingers.size(); i++)
 		  {
-			  Json::Value fingers;
-			  Json::Value finger;
-			  for(int i = 0; i < person.fingers.size(); i++)
-			  {
-				  finger["finger"] = person.fingers[i];
-				  fingers.append(finger);
-			  }
-			  root["fingers"] = Json::Value(fingers);
+			  finger["finger"] = person.fingers[i];
+			  fingers.append(finger);
 		  }
+		  root["fingers"] = Json::Value(fingers);
 	  }
+
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);

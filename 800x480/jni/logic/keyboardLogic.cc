@@ -3,7 +3,7 @@
 #include "globalVar.h"
 #include "json_test.h"
 #include "utils/TimeHelper.h"
-
+#include "base64.h"
 /*
 *此文件由GUI工具生成
 *文件功能：用于处理用户的逻辑相应代码
@@ -88,16 +88,100 @@ void static onNetDisconnect()
 	mBtnQRCodePtr->setBackgroundPic("");
 }
 
+static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, unsigned int len)
+{
+	char out[1024];
+	string outstring;
+	string err ;
+	int id;
+	switch(cmd)
+	{
+	case CMD_GET_CURRENT_FEATURE:
+		if(cmdState == 1)
+		{
+			int value = ((data[0])<<8) + data[1];
 
+			LOGE("获取指纹执行状态%d",value);
+		}
+		else if(cmdState == 0)
+		{
+			LOGE("获取指数据包%d",len);
+			if(Base64::Encode(data, len, out, 1024) == true)
+			{
+				Person_t person;
+				outstring = out;
+				person.fingers.push_back(outstring);
+		    	person.id = "";
+		    	mWindStatusNoticePtr->showWnd();
+		    	if(gSocket->connected())
+		    	{
+			        string x;
+			        x = jm.makePerson(person, StatusRead);
+			        gSocket->write_(x);
+		    		mTextStatusNoticePtr->setText("指纹验证中");
+		    		gSocket->updateTriger();
+		    	}
+		    	else
+		    	{
+		    		mTextStatusNoticePtr->setText("网络中断");
+		    		mTextStatusNotice2Ptr->setText("请输入管理员密码");
+		    	}
+
+//
+			}
+
+
+		}
+
+		break;
+	default :
+		break;
+	}
+
+
+
+}
 
 //网络数据回调接口
 static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 {
 	//LOGE("%s",msg.c_str());
+	string temp ;
 
 	switch(cmd)
 	{
+	case CMDPerson:
+		if(status == StatusOK)
+		{
+			gSocket->disableTriger();
+			mWindStatusNoticePtr->showWnd();
+			mTextStatusNoticePtr->setText("查询成功");
+			temp += gPerson.name;
+			temp += "/";
+			temp += gPerson.id;
+			temp += "/";
+			switch(gPerson.level)
+			{
+			case 0:
+				temp += "管理员";
+				break;
+			case 1:
+				temp += "教师";
+				break;
+			case 2:
+				temp += "学生";
+				break;
+			}
+			mTextStatusNotice2Ptr->setText(temp.c_str());
 
+			sleep(3);
+			mWindStatusNoticePtr->hideWnd();
+		}
+		for(int i = 0 ; i < gPerson.fingers.size();i++)
+			LOGE("len:%d,%s",gPerson.fingers[i].length(),gPerson.fingers[i].c_str());
+
+		finger.getFeatures();
+		break;
 	case CMDDelQRCode:
 
 	//	break;
@@ -253,11 +337,12 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
     //注册按键长按监听
-    mBtnBackPtr->setLongClickListener(&longButtonClickListener);
+	fingerCallback =onFingerOver;
     keyboardCallback = onNetWrokDataUpdate;
     mTextStatusNoticePtr->setText("提示：...");
     gKeyboardLastActionTime = time(NULL);
-
+    mBtnBackPtr->setLongClickListener(&longButtonClickListener);
+    finger.getFeatures();
 }
 
 /**
@@ -329,9 +414,9 @@ static void onUI_hide() {
  */
 static void onUI_quit() {
     //取消按键长按监听
-	mBtnBackPtr->setLongClickListener(NULL);
+	fingerCallback =NULL;
     keyboardCallback = NULL;
-	LOGE("注销keyboard");
+	mBtnBackPtr->setLongClickListener(NULL);
     gSocket->deattachOnConnect(1);
     gSocket->deattachOnDisconnect(1);
 

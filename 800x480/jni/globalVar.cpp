@@ -300,7 +300,15 @@ void exeCMD(string &js)
 			break;
 		case CMDPerson:
 			status = jm.parsePerson(js, gPerson);
-
+			if(status == StatusOK)
+			{
+				msg = "read or set ok";
+			}
+			else if(status == StatusSet || status == StatusRead)
+			{
+				ack = jm.makePerson(gPerson, StatusOK);
+				gSocket->write_(ack);
+			}
 			break;
 		default:
 			break;
