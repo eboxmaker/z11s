@@ -212,6 +212,14 @@ void SocketClient::hearbeatSend()
 	if(mClientSocket > 0)
 	{
 		write_(hearbeatMsg);
+		string str;
+		str = packager.pack(hearbeatMsg);
+		write_(str);
+		string str2;
+		packager.unPack(str, str2);
+		write_(str2);
+
+
 	}
 
 }

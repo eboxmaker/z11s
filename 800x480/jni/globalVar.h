@@ -24,6 +24,9 @@
 #include "uart/Uart.h"
 
 #include "finger.h"
+
+#include "aesencoder.h"
+
 using namespace std;
 
 #define QR_DIR		"/mnt/extsd/qr/"
