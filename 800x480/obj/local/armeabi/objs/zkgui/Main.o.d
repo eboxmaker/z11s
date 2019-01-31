@@ -195,6 +195,7 @@ C:/Users/Administrator/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/Main.
  C:/Users/Administrator/Documents/z11s/800x480/jni/include/system/mutex.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/netinet/tcp.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/tcp.h \
+ D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream \
  C:/Users/Administrator/Documents/z11s/800x480/jni/include/utils/GpioHelper.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/sysinfo.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/kernel.h \
@@ -202,7 +203,11 @@ C:/Users/Administrator/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/Main.
  C:/Users/Administrator/Documents/z11s/800x480/jni/sqlite/sqlite3.h \
  C:/Users/Administrator/Documents/z11s/800x480/jni/uart/Uart.h \
  C:/Users/Administrator/Documents/z11s/800x480/jni/finger.h \
- C:/Users/Administrator/Documents/z11s/800x480/jni/aesencoder.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/check_nic.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/udp.h \
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/socket.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/include/storage/StoragePreferences.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/json_test.h \
  C:/Users/Administrator/Documents/z11s/800x480/jni/include/json/json.h \
  C:/Users/Administrator/Documents/z11s/800x480/jni/include/json/autolink.h \
  C:/Users/Administrator/Documents/z11s/800x480/jni/include/json/config.h \
@@ -227,15 +232,7 @@ C:/Users/Administrator/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/Main.
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/ostream \
  C:/Users/Administrator/Documents/z11s/800x480/jni/ringbuf.h \
  C:/Users/Administrator/Documents/z11s/800x480/jni/aes/myaes256.h \
- C:/Users/Administrator/Documents/z11s/800x480/jni/aes/aes256.hpp \
- D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream \
- C:/Users/Administrator/Documents/z11s/800x480/jni/md5/md5.h \
- D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/cstring \
- C:/Users/Administrator/Documents/z11s/800x480/jni/check_nic.h \
- C:/Users/Administrator/Documents/z11s/800x480/jni/udp.h \
- D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/socket.h \
- C:/Users/Administrator/Documents/z11s/800x480/jni/include/storage/StoragePreferences.h \
- C:/Users/Administrator/Documents/z11s/800x480/jni/json_test.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/aes/aes.h \
  C:/Users/Administrator/Documents/z11s/800x480/jni/packageFile.h \
  C:/Users/Administrator/Documents/z11s/800x480/jni/readdir.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/dirent.h \
@@ -251,8 +248,7 @@ C:/Users/Administrator/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/Main.
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/termbits.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/ioctl_compat.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/termios.h \
- D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/termios.h \
- C:/Users/Administrator/Documents/z11s/800x480/jni/aes/aes256.hpp
+ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/termios.h
 
 C:/Users/Administrator/Documents/z11s/800x480/jni/include/entry/EasyUIContext.h:
 
@@ -644,6 +640,8 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/tcp.h:
 
+D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream:
+
 C:/Users/Administrator/Documents/z11s/800x480/jni/include/utils/GpioHelper.h:
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/sysinfo.h:
@@ -658,7 +656,15 @@ C:/Users/Administrator/Documents/z11s/800x480/jni/uart/Uart.h:
 
 C:/Users/Administrator/Documents/z11s/800x480/jni/finger.h:
 
-C:/Users/Administrator/Documents/z11s/800x480/jni/aesencoder.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/check_nic.h:
+
+C:/Users/Administrator/Documents/z11s/800x480/jni/udp.h:
+
+D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/socket.h:
+
+C:/Users/Administrator/Documents/z11s/800x480/jni/include/storage/StoragePreferences.h:
+
+C:/Users/Administrator/Documents/z11s/800x480/jni/json_test.h:
 
 C:/Users/Administrator/Documents/z11s/800x480/jni/include/json/json.h:
 
@@ -708,23 +714,7 @@ C:/Users/Administrator/Documents/z11s/800x480/jni/ringbuf.h:
 
 C:/Users/Administrator/Documents/z11s/800x480/jni/aes/myaes256.h:
 
-C:/Users/Administrator/Documents/z11s/800x480/jni/aes/aes256.hpp:
-
-D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream:
-
-C:/Users/Administrator/Documents/z11s/800x480/jni/md5/md5.h:
-
-D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/cstring:
-
-C:/Users/Administrator/Documents/z11s/800x480/jni/check_nic.h:
-
-C:/Users/Administrator/Documents/z11s/800x480/jni/udp.h:
-
-D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/socket.h:
-
-C:/Users/Administrator/Documents/z11s/800x480/jni/include/storage/StoragePreferences.h:
-
-C:/Users/Administrator/Documents/z11s/800x480/jni/json_test.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/aes/aes.h:
 
 C:/Users/Administrator/Documents/z11s/800x480/jni/packageFile.h:
 
@@ -757,5 +747,3 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/termios.h:
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/termios.h:
-
-C:/Users/Administrator/Documents/z11s/800x480/jni/aes/aes256.hpp:

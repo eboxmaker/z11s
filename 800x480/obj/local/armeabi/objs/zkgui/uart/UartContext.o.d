@@ -1,5 +1,5 @@
-C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/uart/UartContext.o: \
- C:/Users/shentq/Documents/z11s/800x480/jni/uart/UartContext.cpp \
+C:/Users/Administrator/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/uart/UartContext.o: \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/uart/UartContext.cpp \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stdio.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_cprolog.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/config/features.h \
@@ -75,7 +75,7 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/uart/UartCon
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/ioctl_compat.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/termios.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/termios.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/uart/UartContext.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/uart/UartContext.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/vector \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_prolog.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/debug/_debug.h \
@@ -115,16 +115,16 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/uart/UartCon
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_range_errors.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_bvector.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_relops_cont.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Thread.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Mutex.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/include/system/Thread.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/include/system/Mutex.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/pthread.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/../include/pthread.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/time.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/../include/time.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sched.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Condition.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/uart/CommDef.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/Log.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/include/system/Condition.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/uart/CommDef.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/include/utils/Log.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/android/log.h
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stdio.h:
@@ -277,7 +277,7 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/asm/termios.h:
 
-C:/Users/shentq/Documents/z11s/800x480/jni/uart/UartContext.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/uart/UartContext.h:
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/vector:
 
@@ -357,9 +357,9 @@ D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_bve
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_relops_cont.h:
 
-C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Thread.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/include/system/Thread.h:
 
-C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Mutex.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/include/system/Mutex.h:
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/pthread.h:
 
@@ -371,10 +371,10 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sched.h:
 
-C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Condition.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/include/system/Condition.h:
 
-C:/Users/shentq/Documents/z11s/800x480/jni/uart/CommDef.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/uart/CommDef.h:
 
-C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/Log.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/include/utils/Log.h:
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/android/log.h:

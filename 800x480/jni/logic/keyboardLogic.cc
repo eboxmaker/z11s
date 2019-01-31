@@ -560,11 +560,11 @@ static bool onButtonClick_Btn9(ZKButton *pButton) {
 
 static bool onButtonClick_BtnOK(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnOK !!!\n");
-	string  jstr = jm.makeDoorPwd(doorPwd, StatusSet);
+	string  str = jm.makeDoorPwd(doorPwd, StatusSet);
 	mWindStatusNoticePtr->showWnd();
 	if(gSocket->connected())
 	{
-		gSocket->write_(jstr.c_str());
+		gSocket->write_(str);
 		mTextStatusNoticePtr->setText("密码验证中");
 		gSocket->updateTriger();
 	}

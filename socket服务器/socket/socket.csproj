@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AES.cs" />
     <Compile Include="AsyncTcpServer.cs" />
     <Compile Include="common.cs" />
     <Compile Include="Form1.cs">
@@ -58,6 +59,8 @@
     </Compile>
     <Compile Include="getLocalIPList.cs" />
     <Compile Include="JsonManager.cs" />
+    <Compile Include="MD5.cs" />
+    <Compile Include="Md5Hash.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

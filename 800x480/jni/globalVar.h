@@ -25,7 +25,6 @@
 
 #include "finger.h"
 
-#include "aesencoder.h"
 
 using namespace std;
 

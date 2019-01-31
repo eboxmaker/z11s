@@ -49,7 +49,7 @@ void exeCMD(char *ptr)
 	js = ptr;
 	exeCMD(js);
 }
-void exeCMD(string &js)
+void exeCMD(string &package)
 {
 	std::string msg;
 	string ack ;
@@ -58,24 +58,26 @@ void exeCMD(string &js)
 	bool ret;
 	int status = -1;
 	msg = "";
-	if(js == "trigerTimeout")
+	string js;
+	if(msg == "trigerTimeout")
 	{
 
 		if(networkTestCallback != NULL)
-			networkTestCallback(255,StatusErr,js);
+			networkTestCallback(255,StatusErr,msg);
 		if(keyboardCallback != NULL)
-			keyboardCallback(255,StatusErr,js);
+			keyboardCallback(255,StatusErr,msg);
 		if(settingsCallback != NULL)
-			settingsCallback(255,StatusErr,js);
+			settingsCallback(255,StatusErr,msg);
 		if(AdvertisementCallback != NULL)
-			AdvertisementCallback(255,StatusErr,js);
+			AdvertisementCallback(255,StatusErr,msg);
 		if(PersonCallback != NULL)
-			PersonCallback(255,StatusErr,js);
+			PersonCallback(255,StatusErr,msg);
 		return;
 	}
-	ret = ParseJsonString(js.c_str());
+	ret = jm.unPack(package, js);;
 	if(ret == true)
 	{
+
 		JsonCmd_t cmd = getJsonCMD(js);
 		switch(cmd)
 		{

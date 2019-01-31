@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using AES;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
@@ -8,12 +9,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Weiz.TaskManager.Common;
 
 namespace MyJson
 {
 
     class JsonManager
     {
+
+        static string key = "12345678900000001234567890000000";
+
     public enum CMDType  //枚举类型，体会xml注释的样子
     {
         	Heartbeat,
@@ -282,7 +287,46 @@ namespace MyJson
             return dst;
         }
 
+        public static string Package(string jstr)
+        {
 
+            string enstr = AESEncrypt.Encrypt(jstr, key);
+
+            byte[] data = Encoding.UTF8.GetBytes(enstr);
+            string md5 = ComMD5.GetMd5Str(enstr);
+
+            JObject obj = new JObject();
+            obj.Add("sign", md5);
+            obj.Add("data", enstr);
+            string jstring = JsonConvert.SerializeObject(obj);
+            return jstring;
+        }
+        public static string unPackage(string jstr)
+        {
+            JObject obj = new JObject();
+            string md5;
+            string js = "";
+            string js1 = "";
+
+            try
+            {
+                obj = (JObject)JsonConvert.DeserializeObject(jstr);
+                md5 = obj["sign"].ToString();
+                string data = obj["data"].ToString();
+                string checkMD5 = ComMD5.GetMd5Str(data);
+                if (md5 == checkMD5)
+                {
+                    js = AESEncrypt.Decrypt(data, key);
+               }
+                //else
+                //    js = "";
+            }
+            catch
+            {
+
+            }
+            return js;  
+        }
         public static CMDType GetJsonCMD(string jstr)
         {
             JObject obj = new JObject();
@@ -332,7 +376,8 @@ namespace MyJson
             obj.Add("interval", interval);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
-            return jstring;
+            string str = Package(jstring);
+            return str;
         }
         public static string ParseSetHeartbeat(string js)
         {
@@ -347,7 +392,8 @@ namespace MyJson
             obj.Add("value", "hello");
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
-            return jstring;
+            string str = Package(jstring);
+            return str;
         }
         public static string MakeCMDDoor1(string isLock,StatusType status)
         {
@@ -356,7 +402,8 @@ namespace MyJson
             obj.Add("door", isLock);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
-            return jstring;
+            string str = Package(jstring);
+            return str;
         }
         public static string MakeDoorPwd(string pwd,StatusType status)
         {
@@ -365,7 +412,8 @@ namespace MyJson
             obj.Add("pwd", pwd);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
-            return jstring;
+            string str = Package(jstring);
+            return str;
         }
         public static string ParseDoorPwd(string js)
         {
@@ -380,7 +428,8 @@ namespace MyJson
             obj.Add("pwd", pwd);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
-            return jstring;
+            string str = Package(jstring);
+            return str;
         }
 
 
@@ -398,7 +447,8 @@ namespace MyJson
             obj.Add("dateTime", dateTime);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
-            return jstring;
+            string str = Package(jstring);
+            return str;
         }
         public static string MakePlan()
         {
@@ -423,7 +473,8 @@ namespace MyJson
 
             string jstring = JsonConvert.SerializeObject(obj);
 
-            return jstring;
+            string str = Package(jstring);
+            return str;
         }
         public static string ParsePlan(string js)
         {
@@ -440,7 +491,8 @@ namespace MyJson
             obj.Add("data", msg);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
-            return jstring;
+            string str = Package(jstring);
+            return str;
         }
 
         public static string MakeAdSet(bool enable,int time,int interval,StatusType status)
@@ -452,7 +504,8 @@ namespace MyJson
             obj.Add("switchTime", interval);
             obj.Add("status",(int) status);
             string jstring = JsonConvert.SerializeObject(obj);
-            return jstring;
+            string str = Package(jstring);
+            return str;
         }
 
         public static string MakeAdminPwd(string pwd,StatusType status)
@@ -462,7 +515,8 @@ namespace MyJson
             obj.Add("pwd", pwd);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
-            return jstring;
+            string str = Package(jstring);
+            return str;
         }
 
         public static string MakeConfirm(StatusType status)
@@ -473,7 +527,8 @@ namespace MyJson
             obj.Add("name", "");
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
-            return jstring;
+            string str = Package(jstring);
+            return str;
         }
 
         public static string MakeDevName(string name,StatusType status)
@@ -483,7 +538,8 @@ namespace MyJson
             obj.Add("name", name);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
-            return jstring;
+            string str = Package(jstring);
+            return str;
         }
 
         public static string ParseDevName(string js)
@@ -500,7 +556,8 @@ namespace MyJson
             obj.Add("id", "");
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
-            return jstring;
+            string str = Package(jstring);
+            return str;
         }
 
         public static string MakeDeleteAdPic(string fileName,StatusType status)
@@ -510,7 +567,8 @@ namespace MyJson
             obj.Add("name", fileName);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
-            return jstring;
+            string str = Package(jstring);
+            return str;
         }
         public static string MakeDeleteQRCode(string fileName, StatusType status)
         {
@@ -519,7 +577,8 @@ namespace MyJson
             obj.Add("name", fileName);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
-            return jstring;
+            string str = Package(jstring);
+            return str;
         }
 
 
@@ -543,7 +602,8 @@ namespace MyJson
 
             string jstring = JsonConvert.SerializeObject(obj);
 
-            return jstring;
+            string str = Package(jstring);
+            return str;
         }
     }
 }

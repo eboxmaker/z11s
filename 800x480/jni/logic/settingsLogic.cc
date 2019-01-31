@@ -360,7 +360,7 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 				mTextStatusNoticePtr->setText("等待同步设置服务器");
 			    string str ;
 			    str = jm.makeAdminPwd(gAdminPwd,StatusSet);
-			    gSocket->write_(str);
+				gSocket->write_(str);
 			    gSocket->updateTriger();
 		    }
 		    else
@@ -402,7 +402,7 @@ static bool onButtonClick_BtnSyncDateTime(ZKButton *pButton) {
     if(gSocket->connected())
     {
     	string str = jm.makeSyncDateTime(timeStr, StatusSet);
-    	gSocket->write_(str);
+		gSocket->write_(str);
     	gSocket->updateTriger();
         mWindStatusNoticePtr->showWnd();
         mTextStatusNoticePtr->setText("等待服务器响应");
@@ -480,8 +480,8 @@ static bool onButtonClick_BtnAdOK(ZKButton *pButton) {
         mWindStatusNoticePtr->showWnd();
         mTextStatusNoticePtr->setText("设置成功");
         mTextStatusNoticePtr->setText("正在同步服务器设置");
-        str = jm.makeAdSet(gAdSet,StatusSet);
-        gSocket->write_(str);
+        string str = jm.makeAdSet(gAdSet,StatusSet);
+		gSocket->write_(str);
         gSocket->updateTriger();
     }
     else
@@ -530,7 +530,7 @@ static bool onButtonClick_BtnDevNameSet(ZKButton *pButton) {
     	gSocket->updateTriger();
     	string msg;
     	msg = jm.makeDevName(gDevName, StatusSet);
-    	gSocket->write_(msg);
+		gSocket->write_(msg);
     }
     else
     {
@@ -574,7 +574,7 @@ static bool onButtonClick_BtnSetHeartbeat(ZKButton *pButton) {
     	gSocket->updateTriger();
     	string msg;
     	msg = jm.makeSetHeartbeat(gHeartbeatInterval, StatusSet);
-    	gSocket->write_(msg);
+		gSocket->write_(msg);
     }
     else
     {

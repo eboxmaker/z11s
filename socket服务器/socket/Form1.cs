@@ -13,6 +13,8 @@ using System.Threading;
 using MyJson;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using AES;
+
 
 namespace socket
 {
@@ -104,7 +106,10 @@ namespace socket
             else
             {
                 string resault;
-                string js = Encoding.UTF8.GetString(datagram);
+                string enjs = Encoding.UTF8.GetString(datagram);
+
+                string js = JsonManager.unPackage(enjs);
+
                 RichRecv.Text += sender.Client.RemoteEndPoint.ToString() + js;
                 JsonManager.CMDType cmd = JsonManager.GetJsonCMD(js);
                 JsonManager.StatusType status = JsonManager.GetJsonStatus(js);
@@ -119,6 +124,7 @@ namespace socket
                         if(status == JsonManager.StatusType.StatusSet)
                         {
                             resault = JsonManager.MakeSetHeartbeat(0, JsonManager.StatusType.StatusOK);
+
                             server.SendAll(resault);
                         }
                         break;
@@ -205,7 +211,11 @@ namespace socket
                             resault = JsonManager.MakePerson("201800123", "张云峰", 0, fingers, JsonManager.StatusType.StatusOK);
                             server.SendAll(resault);
                         }
-
+                        if (status == JsonManager.StatusType.StatusSet)
+                        {
+                            resault = JsonManager.MakePerson("201800123", "张云峰", 0, fingers, JsonManager.StatusType.StatusOK);
+                            server.SendAll(resault);
+                        }
                         break;
                 }
                     
@@ -219,7 +229,10 @@ namespace socket
 
         private void btnSendMSG_Click(object sender, EventArgs e)
         {
-            server.SendAll(RichSend.Text);
+            string str = JsonManager.Package(RichSend.Text);
+                
+                //AESEncrypt.Encrypt(, "12345678900000001234567890000000");
+            server.SendAll(str);
             tbSendDataLength.Text = RichSend.Text.Length.ToString();
         }
 
@@ -293,8 +306,8 @@ namespace socket
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.MakeCMDDoor1("unlock",JsonManager.StatusType.StatusSet);
-            server.SendAll( str );
+            string jstr = JsonManager.MakeCMDDoor1("unlock",JsonManager.StatusType.StatusSet);
+            server.SendAll(jstr);
 
         }
 
@@ -414,6 +427,33 @@ namespace socket
         {
             string str = JsonManager.MakeDoorPwd(tbDoorPwd.Text, JsonManager.StatusType.StatusRead);
             server.SendAll(str);
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            string dd = AESEncrypt.Encrypt("{\"cmd\":0,\"value\":\"hello\",\"status\":0}", "12345678900000001234567890000000");
+            tbAesTest.Text = dd;
+            tbENcoderLen.Text = dd.Length.ToString();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string dd = AESEncrypt.Decrypt(tbAesTest.Text, "12345678900000001234567890000000");
+            tbAesTest.Text = dd;
+        }
+
+        private void btnGetKeyHex_Click(object sender, EventArgs e)
+        {
+            byte[] keyBytes = Encoding.UTF8.GetBytes("12345678900000001234567890000000");
+
+            tbAesTest.Text = AESEncrypt.ByteArrayToHexString(keyBytes);
+        }
+
+        private void btnGetIVHex_Click(object sender, EventArgs e)
+        {
+            byte[] keyBytes = Encoding.UTF8.GetBytes("1234567890000000");
+
+            tbAesTest.Text = AESEncrypt.ByteArrayToHexString(keyBytes);
         }
 
 

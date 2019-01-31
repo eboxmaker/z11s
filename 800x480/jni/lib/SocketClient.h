@@ -11,6 +11,7 @@
 #include "ringbuf.h"
 #include <fstream>
 #include "netinet/tcp.h"
+#include <iostream>
 
 typedef void (*NetNotify_t)(void);
 
@@ -33,7 +34,6 @@ public:
 
 	void read_(char *msg,size_t length);
 	char read_();
-	size_t available();
 
 
 	void hearbeatUpdate();
@@ -62,7 +62,6 @@ public:
 	int interval;
 
 private:
-	RingBufInt8 rxbuf;
 	bool conncetState;
 	int mClientSocket;
 
@@ -70,7 +69,7 @@ private:
 	int trigerTimeout;
 
 	long lastHeartbeatTime;
-	char hearbeatMsg[100];
+	std::string hearbeatMsg;
 
 
 

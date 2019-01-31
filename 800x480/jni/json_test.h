@@ -14,9 +14,10 @@
 #include <stdlib.h>
 #include "ringbuf.h"
 #include "globalVar.h"
+#include "aes/myaes256.h"
 
 using namespace std;
-
+bool CheckJsonPackage(string& package,string& msg);
 bool ParseJsonString(char *str);
 JsonCmd_t getJsonCMD(string &str);
 
@@ -40,7 +41,15 @@ class JsonCmdManager
 {
 
 public:
+	JsonCmdManager();
+	~JsonCmdManager();
 	string getID();
+
+
+	string pack(string& data);
+	string pack(char* data);
+	bool unPack(string& package,string& msg);
+	bool unPack(char* package,string& msg);
 
 public:
 	string makeHeartbeat(JsonStatus_t status);
@@ -94,6 +103,9 @@ public:
 
 	string makePerson(Person_t &person,JsonStatus_t status);
 	JsonStatus_t parsePerson(string &js,Person_t &person);
+
+
+	AesEncryptor *aes;
 
 };
 

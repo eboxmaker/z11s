@@ -32,8 +32,7 @@
 #include <time.h>
 #include <signal.h>
 #include "system/Thread.h"
-#define BUFFER_SIZE 				4096
-char buffer[BUFFER_SIZE] = { 0 };
+
 
 static void* socketThreadRx(void *lParam) {
 	((SocketClient *) lParam)->threadLoop();
@@ -52,7 +51,6 @@ SocketClient::SocketClient() :
 	trigerTime(-1),
 	maxCallbackNum(5){
 
-	rxbuf.begin(409600);
 	for(int i = 0; i < maxCallbackNum; i++ )
 	{
 		onConncet[i] = NULL;
@@ -63,7 +61,6 @@ SocketClient::SocketClient() :
 
 SocketClient::~SocketClient() {
 	disconnect();
-	free(hearbeatMsg);
 }
 
 
@@ -212,24 +209,13 @@ void SocketClient::hearbeatSend()
 	if(mClientSocket > 0)
 	{
 		write_(hearbeatMsg);
-		string str;
-		str = packager.pack(hearbeatMsg);
-		write_(str);
-		string str2;
-		packager.unPack(str, str2);
-		write_(str2);
-
-
 	}
 
 }
 bool SocketClient::creatGuard(int interval)
 {
 	this->interval = interval;
-	string str;
-	str = jm.makeHeartbeat(StatusSet);
-	memset(hearbeatMsg,0,sizeof(hearbeatMsg));
-	memcpy(hearbeatMsg,str.c_str(),str.length());
+	hearbeatMsg = jm.makeHeartbeat(StatusSet);
 
 	pthread_t threadID = 0;
 	pthread_attr_t attr; 		// 线程属性
@@ -243,7 +229,7 @@ bool SocketClient::creatGuard(int interval)
 	}
 	else
 	{
-		LOGE("create timer thread ok, erro=%d\n",threadID);
+		LOGE("create timer thread ok, threadID=%d\n",threadID);
 	}
 }
 
@@ -311,10 +297,10 @@ void SocketClient::disableTriger()
 //		msg[i] = rxbuf.read();
 //	}
 //}
-size_t SocketClient::available()
-{
-	return rxbuf.available();
-}
+//size_t SocketClient::available()
+//{
+////	return rxbuf.available();
+//}
 
 void SocketClient::threadGuard()
 {
@@ -408,6 +394,7 @@ void SocketClient::threadGuard()
 
 }
 
+char msg_buf[819200];
 
 void SocketClient::threadLoop() {
 
@@ -416,7 +403,6 @@ void SocketClient::threadLoop() {
 	int length = 0;
 	int len;
 	bool flag = false;
-	char msg_buf[409600];
 	int msg_counter = 0;
 	int state = 0;
 	struct timeval timeout = { 1,0  };     // 1s

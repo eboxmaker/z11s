@@ -298,7 +298,7 @@ bool Finger::sendPackage(unsigned char wLen,unsigned char *ptr)
 	  uart2.send(tbuf,len);
 	  for(int i =0;i<len;i++)
 	  {
-		  LOGE("SEND:%X",tbuf[i]);
+		  LOGD("SEND:%X",tbuf[i]);
 	  }
 	  exeState = exeSended;
 	  lastCmdTime = time(NULL);

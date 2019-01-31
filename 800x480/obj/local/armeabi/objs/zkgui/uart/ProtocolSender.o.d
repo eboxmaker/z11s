@@ -1,8 +1,8 @@
-C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/uart/ProtocolSender.o: \
- C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolSender.cpp \
- C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolSender.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/uart/CommDef.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/uart/UartContext.h \
+C:/Users/Administrator/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/uart/ProtocolSender.o: \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/uart/ProtocolSender.cpp \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/uart/ProtocolSender.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/uart/CommDef.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/uart/UartContext.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/vector \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_prolog.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_cprolog.h \
@@ -86,8 +86,8 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/uart/Protoco
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_relops_cont.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_epilog.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_config_compat_post.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Thread.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Mutex.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/include/system/Thread.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/include/system/Mutex.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/pthread.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/../include/pthread.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/time.h \
@@ -104,13 +104,13 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/uart/Protoco
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/ucontext.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/user.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sched.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Condition.h
+ C:/Users/Administrator/Documents/z11s/800x480/jni/include/system/Condition.h
 
-C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolSender.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/uart/ProtocolSender.h:
 
-C:/Users/shentq/Documents/z11s/800x480/jni/uart/CommDef.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/uart/CommDef.h:
 
-C:/Users/shentq/Documents/z11s/800x480/jni/uart/UartContext.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/uart/UartContext.h:
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/vector:
 
@@ -278,9 +278,9 @@ D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_epi
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_config_compat_post.h:
 
-C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Thread.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/include/system/Thread.h:
 
-C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Mutex.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/include/system/Mutex.h:
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/pthread.h:
 
@@ -314,4 +314,4 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sched.h:
 
-C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Condition.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/include/system/Condition.h:

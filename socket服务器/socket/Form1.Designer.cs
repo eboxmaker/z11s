@@ -77,6 +77,12 @@
             this.btnReadBroadcast = new System.Windows.Forms.Button();
             this.tbQRCodeName = new System.Windows.Forms.TextBox();
             this.btnDelQRCode = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.tbAesTest = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.tbENcoderLen = new System.Windows.Forms.TextBox();
+            this.btnGetKeyHex = new System.Windows.Forms.Button();
+            this.btnGetIVHex = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnStartServer
@@ -534,11 +540,71 @@
             this.btnDelQRCode.UseVisualStyleBackColor = true;
             this.btnDelQRCode.Click += new System.EventHandler(this.btnDelQRCode_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(194, 177);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 49;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
+            // tbAesTest
+            // 
+            this.tbAesTest.Location = new System.Drawing.Point(194, 208);
+            this.tbAesTest.Name = "tbAesTest";
+            this.tbAesTest.Size = new System.Drawing.Size(793, 21);
+            this.tbAesTest.TabIndex = 50;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(275, 179);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 51;
+            this.button2.Text = "button2";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // tbENcoderLen
+            // 
+            this.tbENcoderLen.Location = new System.Drawing.Point(356, 181);
+            this.tbENcoderLen.Name = "tbENcoderLen";
+            this.tbENcoderLen.Size = new System.Drawing.Size(95, 21);
+            this.tbENcoderLen.TabIndex = 52;
+            // 
+            // btnGetKeyHex
+            // 
+            this.btnGetKeyHex.Location = new System.Drawing.Point(457, 179);
+            this.btnGetKeyHex.Name = "btnGetKeyHex";
+            this.btnGetKeyHex.Size = new System.Drawing.Size(75, 23);
+            this.btnGetKeyHex.TabIndex = 54;
+            this.btnGetKeyHex.Text = "btnGetKeyHex";
+            this.btnGetKeyHex.UseVisualStyleBackColor = true;
+            this.btnGetKeyHex.Click += new System.EventHandler(this.btnGetKeyHex_Click);
+            // 
+            // btnGetIVHex
+            // 
+            this.btnGetIVHex.Location = new System.Drawing.Point(538, 179);
+            this.btnGetIVHex.Name = "btnGetIVHex";
+            this.btnGetIVHex.Size = new System.Drawing.Size(75, 23);
+            this.btnGetIVHex.TabIndex = 53;
+            this.btnGetIVHex.Text = "button4";
+            this.btnGetIVHex.UseVisualStyleBackColor = true;
+            this.btnGetIVHex.Click += new System.EventHandler(this.btnGetIVHex_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(995, 436);
+            this.Controls.Add(this.btnGetKeyHex);
+            this.Controls.Add(this.btnGetIVHex);
+            this.Controls.Add(this.tbENcoderLen);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.tbAesTest);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.tbQRCodeName);
             this.Controls.Add(this.btnDelQRCode);
             this.Controls.Add(this.btnReadBroadcast);
@@ -646,6 +712,12 @@
         private System.Windows.Forms.Button btnReadBroadcast;
         private System.Windows.Forms.TextBox tbQRCodeName;
         private System.Windows.Forms.Button btnDelQRCode;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox tbAesTest;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox tbENcoderLen;
+        private System.Windows.Forms.Button btnGetKeyHex;
+        private System.Windows.Forms.Button btnGetIVHex;
     }
 }
 

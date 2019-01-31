@@ -50,7 +50,7 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 	int id;
 
 	for(int i = 0; i < len ; i++)
-		LOGE("RX %D:%X",i,data[i]);
+		LOGD("RX %D:%X",i,data[i]);
 	switch(cmd)
 	{
 	case CMD_GET_CURRENT_FEATURE:
@@ -204,7 +204,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		{
 			gSocket->disableTriger();
 			mWindStatusNoticePtr->showWnd();
-			mTextStatusNoticePtr->setText("查询成功");
+			mTextStatusNoticePtr->setText("同步成功");
 			mTextPersonNamePtr->setText(gPerson.name);
 			mTextPersonIDPtr->setText(gPerson.id);
 			switch(gPerson.level)
@@ -366,6 +366,7 @@ static bool onButtonClick_BtnQuaryPerson(ZKButton *pButton) {
     }
     else
     {
+        mTextStatusNoticePtr->setText("");
         mTextStatusNotice2Ptr->setText("无法连接服务器");
     }
 
@@ -502,7 +503,7 @@ static bool onButtonClick_BtnUpdateServer(ZKButton *pButton) {
     	gSocket->write_(str);
     	gSocket->updateTriger();
         mWindStatusNoticePtr->showWnd();
-        mTextStatusNoticePtr->setText("等待服务器响应");
+        mTextStatusNoticePtr->setText("正在更新服务器");
         mTextStatusNotice2Ptr->setText("");
     }
     else

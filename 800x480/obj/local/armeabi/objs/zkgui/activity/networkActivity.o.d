@@ -287,6 +287,7 @@ C:/Users/Administrator/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activ
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/little_endian.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/swab.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/generic.h \
+ D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream \
  C:/Users/Administrator/Documents/z11s/800x480/jni/json_test.h \
  C:/Users/Administrator/Documents/z11s/800x480/jni/ringbuf.h \
  C:/Users/Administrator/Documents/z11s/800x480/jni/globalVar.h \
@@ -309,12 +310,8 @@ C:/Users/Administrator/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/activ
  C:/Users/Administrator/Documents/z11s/800x480/jni/sqlite/sqlite3.h \
  C:/Users/Administrator/Documents/z11s/800x480/jni/uart/Uart.h \
  C:/Users/Administrator/Documents/z11s/800x480/jni/finger.h \
- C:/Users/Administrator/Documents/z11s/800x480/jni/aesencoder.h \
  C:/Users/Administrator/Documents/z11s/800x480/jni/aes/myaes256.h \
- C:/Users/Administrator/Documents/z11s/800x480/jni/aes/aes256.hpp \
- D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream \
- C:/Users/Administrator/Documents/z11s/800x480/jni/md5/md5.h \
- D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/cstring \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/aes/aes.h \
  C:/Users/Administrator/Documents/z11s/800x480/jni/base64.h \
  C:/Users/Administrator/Documents/z11s/800x480/jni/globalVar.h \
  C:/Users/Administrator/Documents/z11s/800x480/jni/include/os/SystemProperties.h \
@@ -897,6 +894,8 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/linux/byteorder/generic.h:
 
+D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream:
+
 C:/Users/Administrator/Documents/z11s/800x480/jni/json_test.h:
 
 C:/Users/Administrator/Documents/z11s/800x480/jni/ringbuf.h:
@@ -941,17 +940,9 @@ C:/Users/Administrator/Documents/z11s/800x480/jni/uart/Uart.h:
 
 C:/Users/Administrator/Documents/z11s/800x480/jni/finger.h:
 
-C:/Users/Administrator/Documents/z11s/800x480/jni/aesencoder.h:
-
 C:/Users/Administrator/Documents/z11s/800x480/jni/aes/myaes256.h:
 
-C:/Users/Administrator/Documents/z11s/800x480/jni/aes/aes256.hpp:
-
-D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/iostream:
-
-C:/Users/Administrator/Documents/z11s/800x480/jni/md5/md5.h:
-
-D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/cstring:
+C:/Users/Administrator/Documents/z11s/800x480/jni/aes/aes.h:
 
 C:/Users/Administrator/Documents/z11s/800x480/jni/base64.h:
 

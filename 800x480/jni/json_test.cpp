@@ -14,12 +14,13 @@
 #include "security/SecurityManager.h"
 
 #include "readdir.h"
+#include "md5/md5.h"
 
+static string key =  "12345678900000001234567890000000";
+static string iv =  "1234567890000000";
 
 static char buf[409600];
 static int counter = 0;
-
-
 
 
 bool ParseJsonString(char *str)
@@ -49,6 +50,92 @@ JsonCmd_t getJsonCMD(string &str)
 
 	  return cmd;
 }
+
+
+JsonCmdManager::JsonCmdManager(){
+	aes = new AesEncryptor(key,iv);
+
+}
+JsonCmdManager::~JsonCmdManager()
+{
+
+}
+
+
+string JsonCmdManager::pack(string& data)
+{
+	string str;
+	str = aes->encrypt(data);
+
+	MD5 md5(str);
+	Json::Value root;
+	root["sign"] = Json::Value(md5.toStr());
+	root["data"] = Json::Value(str);
+	Json::FastWriter fw;
+	string temp =  fw.write(root);
+	LOGE("%s",temp.c_str());
+	return temp;
+
+}
+
+string JsonCmdManager::pack(char* data)
+{
+	string str;
+	string data_ = data;
+
+	str = aes->encrypt(data_);
+
+
+	MD5 md5(str);
+	Json::Value root;
+	root["sign"] = Json::Value(md5.toStr());
+	root["data"] = Json::Value(str);
+	Json::FastWriter fw;
+	string temp =  fw.write(root);
+	LOGE("%s",temp.c_str());
+	return temp;
+
+}
+bool JsonCmdManager::unPack(string& package,string& msg)
+{
+	  Json::Reader reader;
+
+	  Json::Value root;
+	  string data;
+	  string md5str;
+	  msg = "";
+	  if (reader.parse(package, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+		  md5str = root["sign"].asString();
+		  data = root["data"].asString();
+	  }
+	  else
+	  {
+		  LOGE("帧错误");
+		  return false;
+	  }
+
+	  MD5 md5(data);
+	  string checkMD5 = md5.toStr();
+	  if(checkMD5 == md5str)
+	  {
+		  msg = aes->decrypt(data);
+		  LOGE("md5正确");
+		  LOGE("解密：%s",msg.c_str());
+	  }
+	  else
+	  {
+		  LOGE("md5错误");
+		  return false;
+	  }
+	  return true;
+}
+
+bool JsonCmdManager::unPack(char* data,string& msg)
+{
+
+}
+
 string JsonCmdManager::makeHeartbeat(JsonStatus_t status)
 {
 	  Json::Value root;
@@ -57,7 +144,7 @@ string JsonCmdManager::makeHeartbeat(JsonStatus_t status)
 	  root["status"] = Json::Value((int)status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
-	  return temp;
+	  return pack(temp);
 }
 JsonStatus_t JsonCmdManager::parseHeartbeat(string &js, string &msg)
 {
@@ -84,7 +171,7 @@ string JsonCmdManager::makeSetHeartbeat(int interval,JsonStatus_t status)
 	  root["status"] = Json::Value((int)status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
-	  return temp;
+	  return pack(temp);
 }
 JsonStatus_t JsonCmdManager::parseSetHeartbeat(string &js, int &interval)
 {
@@ -113,7 +200,7 @@ string JsonCmdManager::makeDevID(string &id,JsonStatus_t status)
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
-	  return temp;
+	  return pack(temp);
 
 }
 JsonStatus_t JsonCmdManager::parseDevID(string &js)
@@ -138,7 +225,7 @@ string JsonCmdManager::makeDevName(string &name,JsonStatus_t status)
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
-	  return temp;
+	  return pack(temp);
 }
 JsonStatus_t JsonCmdManager::parseDevName(string &js,string &name)
 {
@@ -170,7 +257,7 @@ string JsonCmdManager::makeConfirm(string &id,string &name,JsonStatus_t status)
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
-	  return temp;
+	  return pack(temp);
 
 }
 JsonStatus_t JsonCmdManager::parseConfirm(string &js)
@@ -195,7 +282,7 @@ string JsonCmdManager::makeSyncDateTime(string &msg,JsonStatus_t status)
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
-	  return temp;
+	  return pack(temp);
 }
 JsonStatus_t JsonCmdManager::parseSyncDateTime(string &js,string &msg)
 {
@@ -221,7 +308,7 @@ string JsonCmdManager::makeAdminPwd(string &pwd,JsonStatus_t status)
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
-	  return temp;
+	  return pack(temp);
 }
 JsonStatus_t JsonCmdManager::parseAdminPwd(string &js,string &adminPwd)
 {
@@ -251,7 +338,7 @@ string  JsonCmdManager::makeDoorPwd(string &pwd,JsonStatus_t status)
 	  root["status"] = Json::Value((int)status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
-	  return temp;
+	  return pack(temp);
 }
 JsonStatus_t  JsonCmdManager::parseDoorPwd(string &js,string &pwd)
 {
@@ -281,7 +368,7 @@ string JsonCmdManager::makeDoorCtr(doorState_t &door,JsonStatus_t status)
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
-	  return temp;
+	  return pack(temp);
 }
 JsonStatus_t JsonCmdManager::parseDoorCtr(string &js,doorState_t &door)
 {
@@ -319,7 +406,7 @@ string JsonCmdManager::makePlan(JsonStatus_t status)
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
-	  return temp;
+	  return pack(temp);
 }
 JsonStatus_t JsonCmdManager::parsePlan(string &js, Plan &plan)
 {
@@ -357,7 +444,7 @@ string JsonCmdManager::makeBroadcast(string &msg,JsonStatus_t status)
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
-	  return temp;
+	  return pack(temp);
 }
 JsonStatus_t JsonCmdManager::parseBroadcast(string &js,string &msg)
 {
@@ -383,7 +470,7 @@ string JsonCmdManager::makeQRCodeAck(string &fullname,JsonStatus_t status)
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
-	  return temp;
+	  return pack(temp);
 }
 string JsonCmdManager::makePicAck(string &fullname,JsonStatus_t status)
 {
@@ -393,7 +480,7 @@ string JsonCmdManager::makePicAck(string &fullname,JsonStatus_t status)
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
-	  return temp;
+	  return pack(temp);
 }
 JsonStatus_t JsonCmdManager::parseFile(string js, char* directory, string &fullName)
 {
@@ -449,7 +536,7 @@ string JsonCmdManager::makeDeleteFile(string &fullName,JsonStatus_t status)
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
-	  return temp;
+	  return pack(temp);
 }
 JsonStatus_t JsonCmdManager::parseDeleteFile(string js, char* directory, string &fullName)
 {
@@ -486,7 +573,7 @@ string JsonCmdManager::makeAdSet(AdSet_t &set,JsonStatus_t status)
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
-	  return temp;
+	  return pack(temp);
 }
 JsonStatus_t JsonCmdManager::parseAdSet(string &js,AdSet_t &set)
 {
@@ -541,7 +628,7 @@ string JsonCmdManager::makePerson(Person_t &person,JsonStatus_t status)
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
 
-	  return temp;
+	  return pack(temp);
 }
 JsonStatus_t JsonCmdManager::parsePerson(string &js,Person_t &person)
 {

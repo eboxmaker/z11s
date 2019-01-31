@@ -18,6 +18,10 @@ namespace Weiz.TaskManager.BLL
     public class Comm
     {
 
+		{
+			sign:"xxxxxxx"
+			data:"xxxxxxxxxxx"
+		}
 
         /// <summary>
         /// 验证远程调用
@@ -59,7 +63,7 @@ namespace Weiz.TaskManager.BLL
             t.sign = ComMD5.GetMd5Str(data);
             t.data = data;
 
-            return AESEncrypt.EncryptByAES(JsonConvert.SerializeObject(t), "12345678900000001234567890000000");
+            return AESEncrypt.EncryptByAES(JsonConvert. 	(t), "12345678900000001234567890000000");
         }
     }
 }

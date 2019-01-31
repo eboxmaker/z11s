@@ -1,5 +1,5 @@
-C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/uart/ProtocolParser.o: \
- C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolParser.cpp \
+C:/Users/Administrator/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/uart/ProtocolParser.o: \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/uart/ProtocolParser.cpp \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/vector \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_prolog.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_cprolog.h \
@@ -83,7 +83,7 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/uart/Protoco
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_relops_cont.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_epilog.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_config_compat_post.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Mutex.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/include/system/Mutex.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/pthread.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/../include/pthread.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/time.h \
@@ -100,9 +100,9 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/uart/Protoco
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/ucontext.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sys/user.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sched.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/uart/CommDef.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolParser.h \
- C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolData.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/uart/CommDef.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/uart/ProtocolParser.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/uart/ProtocolData.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/string \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_string.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_string_fwd.h \
@@ -153,7 +153,7 @@ C:/Users/shentq/Documents/z11s/800x480/obj/local/armeabi/objs/zkgui/uart/Protoco
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_num_get.h \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_num_get.c \
  D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_string_io.c \
- C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/Log.h \
+ C:/Users/Administrator/Documents/z11s/800x480/jni/include/utils/Log.h \
  D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/android/log.h
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/vector:
@@ -322,7 +322,7 @@ D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_epi
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_config_compat_post.h:
 
-C:/Users/shentq/Documents/z11s/800x480/jni/include/system/Mutex.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/include/system/Mutex.h:
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/pthread.h:
 
@@ -356,11 +356,11 @@ D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/sched.h:
 
-C:/Users/shentq/Documents/z11s/800x480/jni/uart/CommDef.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/uart/CommDef.h:
 
-C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolParser.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/uart/ProtocolParser.h:
 
-C:/Users/shentq/Documents/z11s/800x480/jni/uart/ProtocolData.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/uart/ProtocolData.h:
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/string:
 
@@ -462,6 +462,6 @@ D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_num
 
 D:\zkswe\flythings\bin\/../sdk/platforms/z11s/prebuilt/include//stlport/stl/_string_io.c:
 
-C:/Users/shentq/Documents/z11s/800x480/jni/include/utils/Log.h:
+C:/Users/Administrator/Documents/z11s/800x480/jni/include/utils/Log.h:
 
 D:/zkswe/flythings/sdk/platforms/z11s/toolchain/bin/platforms/android-9/arch-arm/usr/include/android/log.h:
