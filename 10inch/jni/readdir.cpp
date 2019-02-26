@@ -1,0 +1,162 @@
+/*
+ * readdir.cpp
+ *
+ *  Created on: 2018年12月27日
+ *      Author: shentq
+ */
+
+
+
+
+#include "readdir.h"
+#include "utils/log.h"
+#include <sys/stat.h>
+#include <string.h>
+//#include <sys/types.h>
+//#include <stdio.h>
+//#include <stdlib.h>
+
+using namespace std;
+void read_dir()
+{
+    DIR    *dir;
+    struct    dirent    *ptr;
+    dir = opendir("/mnt/extsd/"); ///open the dir
+
+    while((ptr = readdir(dir)) != NULL) ///read the list of this dir
+    {
+
+            LOGE("d_type:%d d_name: %s\n", ptr->d_type,ptr->d_name);
+    }
+    closedir(dir);
+    return 0;
+}
+
+
+void updateAdFileList(stringList &list)
+{
+
+    DIR    *dir;
+    struct    dirent    *ptr;
+    dir = opendir(AD_DIR); ///open the dir
+
+    list.clear();
+    while((ptr = readdir(dir)) != NULL) ///read the list of this dir
+    {
+        string fullNmae = AD_DIR;
+
+
+    	if(ptr->d_type == 8)
+    	{
+    		fullNmae += ptr->d_name;
+    		list.push_back(fullNmae.c_str());
+    	}
+
+    //	LOGE("d_type:%d d_name: %s\n", ptr->d_type,ptr->d_name);
+    }
+    closedir(dir);
+    return ;
+}
+void make_dir(char *path)
+{
+	if (access(path, F_OK) < 0)
+	{
+	   int isCreate = mkdir(path,S_IRUSR| S_IWUSR | S_IXUSR | S_IRWXG | S_IRWXO);
+	   if( !isCreate )
+	   LOGE("create path:%s\n",path);
+	   else
+		   LOGE("create path failed! error code : %s \n",isCreate,path);
+	}
+	else
+	{
+		LOGE("文件夹已存在");
+	}
+
+}
+
+//recursively delete all the file in the directory.
+int rm_dir(std::string dir_full_path)
+{
+    DIR* dirp = opendir(dir_full_path.c_str());
+    if(!dirp)
+    {
+        return -1;
+    }
+    struct dirent *dir;
+    struct stat st;
+    while((dir = readdir(dirp)) != NULL)
+    {
+        if(strcmp(dir->d_name,".") == 0
+                || strcmp(dir->d_name,"..") == 0)
+        {
+            continue;
+        }
+        std::string sub_path = dir_full_path + '/' + dir->d_name;
+        if(lstat(sub_path.c_str(),&st) == -1)
+        {
+            LOGE("rm_dir:lstat ",sub_path.c_str()," error");
+            continue;
+        }
+        if(S_ISDIR(st.st_mode))
+        {
+            if(rm_dir(sub_path) == -1) // 如果是目录文件，递归删除
+            {
+                closedir(dirp);
+                return -1;
+            }
+            rmdir(sub_path.c_str());
+        }
+        else if(S_ISREG(st.st_mode))
+        {
+            unlink(sub_path.c_str());     // 如果是普通文件，则unlink
+        }
+        else
+        {
+        	LOGE("rm_dir:st_mode ",sub_path.c_str()," error");
+            continue;
+        }
+    }
+    if(rmdir(dir_full_path.c_str()) == -1)//delete dir itself.
+    {
+        closedir(dirp);
+        return -1;
+    }
+    closedir(dirp);
+    return 0;
+}
+int rm(std::string &file_name)
+{
+    std::string file_path = file_name;
+    struct stat st;
+    if(lstat(file_path.c_str(),&st) == -1)
+    {
+        return -1;
+    }
+    if(S_ISREG(st.st_mode))
+    {
+        if(unlink(file_path.c_str()) == -1)
+        {
+            return -1;
+        }
+    }
+    else if(S_ISDIR(st.st_mode))
+    {
+        if(file_name == "." || file_name == "..")
+        {
+            return -1;
+        }
+        if(rm_dir(file_path) == -1)//delete all the files in dir.
+        {
+            return -1;
+        }
+    }
+    return 0;
+}
+
+#include <sys/sysinfo.h>
+
+void test()
+{
+     sysinfo(&gSystemInfo);
+
+}

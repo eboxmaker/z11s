@@ -465,13 +465,19 @@ static bool onButtonClick_BtnClearFinger(ZKButton *pButton) {
 	while(ret ==false)
 	{
 		ret = finger.clear();
-	//	Thread::sleep(1000);
+		Thread::sleep(100);
 	}
 
+	int times = 0;
 	while(finger.ack == -1)
 	{
 		LOGE("ACK:%d",finger.ack);
 		Thread::sleep(1000);
+		if(times++ > 3)
+		{
+			LOGE("请检查指纹模块连接");
+			break;
+		}
 	}
 	if(finger.ack == ACK_SUCCESS)
 	{
