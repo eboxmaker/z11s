@@ -590,10 +590,7 @@ static void onEditTextChanged_EditHeartbeat(const std::string &text) {
 static void onProgressChanged_SeekbarMemUsage(ZKSeekBar *pSeekBar, int progress) {
     //LOGD(" ProgressChanged SeekbarMemUsage %d !!!\n", progress);
 }
-static bool onButtonClick_BtnSoundLight(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnSoundLight !!!\n");
-    return false;
-}
+
 static bool onButtonClick_SoundButton(ZKButton *pButton) {
     //LOGD(" ButtonClick SoundButton !!!\n");
     return false;

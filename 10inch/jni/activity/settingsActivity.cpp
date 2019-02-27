@@ -6,7 +6,6 @@
 /*TAG:GlobalVariable全局变量*/
 static ZKSeekBar* mSoundSeekbarPtr;
 static ZKButton* mSoundButtonPtr;
-static ZKButton* mBtnSoundLightPtr;
 static ZKTextView* mTextMemUsagePtr;
 static ZKSeekBar* mSeekbarMemUsagePtr;
 static ZKTextView* mTextview10Ptr;
@@ -87,7 +86,6 @@ typedef struct {
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
     ID_SETTINGS_SoundButton, onButtonClick_SoundButton,
-    ID_SETTINGS_BtnSoundLight, onButtonClick_BtnSoundLight,
     ID_SETTINGS_BtnSetHeartbeat, onButtonClick_BtnSetHeartbeat,
     ID_SETTINGS_BtnDevNameSet, onButtonClick_BtnDevNameSet,
     ID_SETTINGS_BtnServerState, onButtonClick_BtnServerState,
@@ -195,7 +193,6 @@ void settingsActivity::onCreate() {
 	Activity::onCreate();
     mSoundSeekbarPtr = (ZKSeekBar*)findControlByID(ID_SETTINGS_SoundSeekbar);if(mSoundSeekbarPtr!= NULL){mSoundSeekbarPtr->setSeekBarChangeListener(this);}
     mSoundButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_SoundButton);
-    mBtnSoundLightPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnSoundLight);
     mTextMemUsagePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextMemUsage);
     mSeekbarMemUsagePtr = (ZKSeekBar*)findControlByID(ID_SETTINGS_SeekbarMemUsage);if(mSeekbarMemUsagePtr!= NULL){mSeekbarMemUsagePtr->setSeekBarChangeListener(this);}
     mTextview10Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview10);

@@ -380,10 +380,10 @@ static void onUI_show() {
     }
 
     string title;
-    title += "门禁系统";
-    title += "(";
+    title = mTextTitlePtr->getText();
+    //title += "门禁系统";
+    title += " | ";
     title += gDevName;
-    title += ")";
     mTextTitlePtr->setText(title.c_str());
 
 	if(gBroadcastMsg != "")
@@ -691,5 +691,30 @@ static bool onButtonClick_BtnExitPlan(ZKButton *pButton) {
 }
 static bool onButtonClick_BtnQRCode(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnQRCode !!!\n");
+    return false;
+}
+static bool onButtonClick_Button1(ZKButton *pButton) {
+    //LOGD(" ButtonClick Button1 !!!\n");
+    return false;
+}
+static bool onButtonClick_Button2(ZKButton *pButton) {
+    //LOGD(" ButtonClick Button2 !!!\n");
+    return false;
+}
+static bool onButtonClick_Button3(ZKButton *pButton) {
+    //LOGD(" ButtonClick Button3 !!!\n");
+    return false;
+}
+static bool onButtonClick_Button4(ZKButton *pButton) {
+    //LOGD(" ButtonClick Button4 !!!\n");
+    return false;
+}
+static bool onButtonClick_Button5(ZKButton *pButton) {
+    //LOGD(" ButtonClick Button5 !!!\n");
+    return false;
+}
+
+static bool onButtonClick_Button6(ZKButton *pButton) {
+    //LOGD(" ButtonClick Button6 !!!\n");
     return false;
 }

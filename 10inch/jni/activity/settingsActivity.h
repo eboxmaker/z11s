@@ -28,7 +28,6 @@
 /*TAG:Macro宏ID*/
 #define ID_SETTINGS_SoundSeekbar    91002
 #define ID_SETTINGS_SoundButton    20016
-#define ID_SETTINGS_BtnSoundLight    20015
 #define ID_SETTINGS_TextMemUsage    50018
 #define ID_SETTINGS_SeekbarMemUsage    90000
 #define ID_SETTINGS_Textview10    50016
