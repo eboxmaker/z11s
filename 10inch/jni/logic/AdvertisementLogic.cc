@@ -54,7 +54,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	{0,  3000}, //定时器id=0, 时间间隔6秒
+	{0,  1000}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
 };
 
@@ -66,7 +66,7 @@ static void onUI_init(){
 	if(gAdv.list.size() > 0)
 	{
 		mBtnPicPtr->setText("");
-		mBtnPicPtr->setBackgroundPic(gAdv.list[0].c_str());
+		mBtnPicPtr->setBackgroundPic(gAdv.list[0].fullName.c_str());
 	}
 	AdvertisementCallback = onNetWrokDataUpdate;
 //	REGISTER_ACTIVITY_TIMER_TAB[0] = {0,gAdSet.switchTime*1000};
@@ -94,7 +94,6 @@ static void onUI_show() {
  * 当界面隐藏时触发
  */
 static void onUI_hide() {
-	LOGE("隐藏");
 
 }
 
@@ -123,18 +122,24 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  *             停止运行当前定时器
  */
 static int pic_counter = 0;
+static int time_conter = 0;
 static bool onUI_Timer(int id){
 	switch (id) {
 	case 0:
 		if(gAdv.list.size() > 0 )
 		{
+
 			if(pic_counter >= gAdv.list.size() )
 			{
 				pic_counter = 0;
 			}
-			mBtnPicPtr->setText("");
-			mBtnPicPtr->setBackgroundPic(gAdv.list[pic_counter].c_str());
-			pic_counter++;
+			mBtnPicPtr->setBackgroundPic(gAdv.list[pic_counter].fullName.c_str());
+			time_conter++;
+			if(time_conter >= gAdv.list[pic_counter].displayTime)
+			{
+				time_conter = 0;
+				pic_counter++;
+			}
 		}
 		if(gAdv.enable == false)
 		{

@@ -247,6 +247,7 @@ namespace MyJson
             string data = FileToBase64(FilePath);
             obj.Add("cmd", FileType);
             obj.Add("name", name);
+            obj.Add("displayTime", 2);
             obj.Add("dataLength", data.Length);
             obj.Add("data", data);
             obj.Add("status", (int)StatusType.StatusSet);

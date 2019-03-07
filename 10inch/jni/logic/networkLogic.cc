@@ -157,7 +157,7 @@ static bool onUI_Timer(int id){
 		{
 
 			mBtnPicPtr->setText("");
-			mBtnPicPtr->setBackgroundPic(gAdv.list[pic_counter].c_str());
+			mBtnPicPtr->setBackgroundPic(gAdv.list[pic_counter].fullName.c_str());
 			pic_counter++;
 		}
 		else

@@ -56,8 +56,8 @@ std::vector<S_INFOS> Database::getRecodes() {
 	   ++nIndex;
 	   dbs.push_back(info);
    }
-   LOGD("read size %d",nRow);
-   LOGD("read size %d",dbs.size());
+   LOGD("read size nRow %d",nRow);
+   LOGD("read size dbs.size %d",dbs.size());
 
 	sqlite3_free_table(result);
 	return dbs;
@@ -99,7 +99,7 @@ void Database::remove(std::string name) {
 	}
 }
 void Database::clear() {
-	const char* cmd = "DELETE FROM recode";
+	const char* cmd = "DELETE  FROM recode";
 	char* errmsg;
 	int ret = sqlite3_exec(pDB,cmd,0,0, &errmsg);
 	if(ret != SQLITE_OK){

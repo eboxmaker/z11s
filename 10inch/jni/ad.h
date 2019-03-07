@@ -21,12 +21,11 @@ public:
 	bool add(string js);
 	void remove(string fileName);
 	void updateFileList();
-	void getRecorder();
+	void updateRecode();
 	bool checkFileAndDB();
 	bool enable;
 	int  idleTime;
-	stringList list;
-	std::vector<S_INFOS> dbs;
+	std::vector<S_INFOS> list;
 
 };
 extern Advertisement gAdv;

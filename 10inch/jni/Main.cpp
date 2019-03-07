@@ -64,19 +64,8 @@ static void LoadParament()
     make_dir(AD_DIR);
     std::vector<S_INFOS> temp;
 
-    dbAdv.clear();
-    dbAdv.recodeResult("张云峰", 1);
-    dbAdv.recodeResult("张云峰1", 2);
-    dbAdv.recodeResult("张云峰2", 3);
-    temp = dbAdv.getRecodes();
+    gAdv.updateRecode();
 
-    for(int i = 0; i < temp.size(); i++)
-    {
-    	LOGD("name = %s,value = %d",temp[i].fileName.c_str(),temp[i].displayTime);
-    }
-    dbAdv.remove("张云峰");
-//    dbs.recodeResult("张云峰",  "2", "20", "30");
-//    dbs.recodeResult("申同强",  "3", "30", "40");
 
 }
 void onEasyUIInit(EasyUIContext *pContext) {
@@ -203,7 +192,7 @@ static void *MainLoop(void *lParam)
 
 	     gMemUsage = (1 - (freemem/totalmem))*100;
 //
-	     LOGE("en:%d;size:%d",gAdv.enable,gAdv.list.size());
+	    // LOGE("en:%d;size:%d",gAdv.enable,gAdv.list.size());
 		if(gAdv.enable && (gAdv.list.size() > 0))
 		{
 			const char *ptr;
@@ -215,16 +204,16 @@ static void *MainLoop(void *lParam)
 				if(timeNow - gKeyboardLastActionTime > gAdv.idleTime)
 				{
 					EASYUICONTEXT->openActivity("AdvertisementActivity");
-					LOGE("切换成功");
+					//LOGE("切换成功");
 				}
 				else
 				{
-					LOGE("TIME:%D",timeNow - gKeyboardLastActionTime);
+					//LOGE("TIME:%D",timeNow - gKeyboardLastActionTime);
 				}
 			}
 			else
 			{
-				LOGE("xxxTIME:%D",timeNow - gKeyboardLastActionTime);
+				//LOGE("xxxTIME:%D",timeNow - gKeyboardLastActionTime);
 
 			}
 		}

@@ -14,6 +14,7 @@
 
 typedef struct{
 	std::string fileName;
+	std::string fullName;
 	int displayTime;
 }S_INFOS;
 
