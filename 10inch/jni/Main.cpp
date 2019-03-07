@@ -217,10 +217,9 @@ static void *MainLoop(void *lParam)
 
 			}
 		}
-		else
+		else if(cAppName == "AdvertisementActivity")
 		{
 			EASYUICONTEXT->openActivity("keyboardActivity");
-
 		}
 
 	}

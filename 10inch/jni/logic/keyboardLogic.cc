@@ -51,7 +51,7 @@ class LongClickListener : public ZKBase::ILongClickListener {
 
 static LongClickListener longButtonClickListener;
 
-static string QRCodeFullName = "/mnt/extsd/qr/qr1.jpg";
+static string QRCodeFullName = "/mnt/extsd/qr/qr.jpg";
 
 
 static void clearPlanText()
@@ -187,7 +187,6 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 	//	break;
 	case CMDQRCode:
 		QRCodeFullName = msg;
-		mBtnQRCodePtr->setText("");
 		mBtnQRCodePtr->setBackgroundPic(msg.c_str());
 		break;
 	case CMDAdminPwd:
@@ -284,14 +283,14 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		}
 		break;
 	case CMDBroadcast:
-		if(gBroadcastMsg != "")
-		{
-			mWindBroadcastPtr->showWnd();
-		}
-		else
-		{
-			mWindBroadcastPtr->hideWnd();
-		}
+//		if(gBroadcastMsg != "")
+//		{
+//			mWindBroadcastPtr->showWnd();
+//		}
+//		else
+//		{
+//			mWindBroadcastPtr->hideWnd();
+//		}
 		mTextBroadcastPtr->setText(gBroadcastMsg);
 
 		break;
@@ -340,6 +339,7 @@ static void onUI_init(){
 	fingerCallback =onFingerOver;
     keyboardCallback = onNetWrokDataUpdate;
     mTextStatusNoticePtr->setText("提示：...");
+	mBtnQRCodePtr->setBackgroundPic(QRCodeFullName.c_str());
     gKeyboardLastActionTime = time(NULL);
     mBtnBackPtr->setLongClickListener(&longButtonClickListener);
     finger.getFeatures();
@@ -386,14 +386,14 @@ static void onUI_show() {
     title += gDevName;
     mTextTitlePtr->setText(title.c_str());
 
-	if(gBroadcastMsg != "")
-	{
-		mWindBroadcastPtr->showWnd();
-	}
-	else
-	{
-		mWindBroadcastPtr->hideWnd();
-	}
+//	if(gBroadcastMsg != "")
+//	{
+//		mWindBroadcastPtr->showWnd();
+//	}
+//	else
+//	{
+//		mWindBroadcastPtr->hideWnd();
+//	}
 	mTextBroadcastPtr->setText(gBroadcastMsg);
 
 	updateUI_time();
