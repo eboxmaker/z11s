@@ -12,7 +12,7 @@
 #include "utils/TimeHelper.h"
 #include "readdir.h"
 
-Database dbs("/mnt/extsd/test.db");
+Database dbAdv("/mnt/extsd/test.db");
 doorState_t gDoorState = Lock;
 string gDoorPwd;
 Person_t gPerson;
@@ -29,7 +29,6 @@ string gDevID;
 string gDevName;
 int gHeartbeatInterval;
 
-AdSet_t gAdSet;
 PersonList_t gUserAdmin;
 Plan gPlan;
 string gBroadcastMsg;
@@ -51,7 +50,9 @@ void exeCMD(char *ptr)
 }
 void exeCMD(string &package)
 {
-	std::string msg;
+	string fileName = "";
+	string msg;
+	string dataout;
 	string ack ;
 
 	int counter =0;
@@ -139,23 +140,21 @@ void exeCMD(string &package)
 			}
 			break;
 		case CMDQRCode:
-			status = jm.parseFile(js,QR_DIR,msg);
+			status = jm.parseFile(js,QR_DIR,msg,dataout);
+			ack = jm.makeQRCodeAck(msg,StatusErr);
 			if(status == StatusSet || status == StatusRead)
 			{
-				ack = jm.makeQRCodeAck(msg,StatusOK);
-				gSocket->write_(ack);
+				if(creat_file(msg,dataout.c_str(),dataout.size()))
+					ack = jm.makeQRCodeAck(msg,StatusOK);
 			}
-			else if(status == StatusErr)
-			{
-				ack = jm.makeQRCodeAck(msg,StatusErr);
-				gSocket->write_(ack);
-			}
+			gSocket->write_(ack);
 			LOGE("接收到二维码!%d:%s\n",status,msg.c_str());
 			break;
 		case CMDDelQRCode:
-			status = jm.parseDeleteFile(js,QR_DIR,msg);
+			status = jm.parseDeleteFile(js,QR_DIR,fileName,msg);
 			if(status == StatusSet || status == StatusRead)
 			{
+				rm_file(msg);
 				ack = jm.makeDeleteFile(msg,StatusOK);
 				gSocket->write_(ack);
 			}
@@ -166,24 +165,24 @@ void exeCMD(string &package)
 			}
 			break;
 		case CMDAdPic:
-			status = jm.parseFile(js,AD_DIR,msg);
+			status = jm.parseFile(js,AD_DIR,msg,dataout);
+
+			ack = jm.makeQRCodeAck(msg,StatusErr);
 			if(status == StatusSet || status == StatusRead)
 			{
-				ack = jm.makePicAck(msg,StatusOK);
-				gSocket->write_(ack);
+				if(gAdv.add(js)  && creat_file(msg,dataout.c_str(),dataout.size()) )
+				{
+					ack = jm.makePicAck(msg,StatusOK);
+				}
 			}
-			else if(status == StatusErr)
-			{
-				ack = jm.makeQRCodeAck(msg,StatusErr);
-				gSocket->write_(ack);
-			}
-			updateAdFileList(gAdSet.list);
+			gSocket->write_(ack);
 			LOGE("接收到图片!%d:%s\n",status,msg.c_str());
 			break;
 		case CMDDelAdPic:
-			status = jm.parseDeleteFile(js,AD_DIR,msg);
+			status = jm.parseDeleteFile(js,AD_DIR,fileName,msg);
 			if(status == StatusSet || status == StatusRead)
 			{
+				gAdv.remove(fileName);
 				ack = jm.makeDeleteFile(msg,StatusOK);
 				gSocket->write_(ack);
 			}
@@ -192,8 +191,19 @@ void exeCMD(string &package)
 				ack = jm.makeQRCodeAck(msg,StatusErr);
 				gSocket->write_(ack);
 			}
-			updateAdFileList(gAdSet.list);
 			break;
+		case CMDAdSet:
+			status = jm.parseAdSet(js,gAdv);
+			if(status == StatusSet)
+			{
+			    StoragePreferences::putBool("gAdv.enable", gAdv.enable);
+			    StoragePreferences::putInt("gAdv.idleTime", gAdv.idleTime);
+
+				ack = jm.makeAdSet(gAdv, StatusOK);
+				gSocket->write_(ack);
+			}
+			break;
+
 		case CMDSuperPic:
 //			status = jm.parseFile(js,AD_DIR,msg);
 //			if(status == StatusSet || status == StatusRead)
@@ -276,18 +286,7 @@ void exeCMD(string &package)
 			ack = jm.makeBroadcast(gBroadcastMsg, StatusOK);
 			gSocket->write_(ack);
 			break;
-		case CMDAdSet:
-			status = jm.parseAdSet(js,gAdSet);
-			if(status == StatusSet)
-			{
-			    StoragePreferences::putBool("gAdSet.enable", gAdSet.enable);
-			    StoragePreferences::putInt("gAdSet.displayTime", gAdSet.displayTime);
-			    StoragePreferences::putInt("gAdSet.switchTime", gAdSet.switchTime);
 
-				ack = jm.makeAdSet(gAdSet, StatusOK);
-				gSocket->write_(ack);
-			}
-			break;
 		case CMDDevName:
 			status = jm.parseDevName(js,gDevName);
 			if(status == StatusSet)

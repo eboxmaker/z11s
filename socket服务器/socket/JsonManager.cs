@@ -495,13 +495,12 @@ namespace MyJson
             return str;
         }
 
-        public static string MakeAdSet(bool enable,int time,int interval,StatusType status)
+        public static string MakeAdSet(bool enable,int idleTime,StatusType status)
         {
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.AdSet);
             obj.Add("enable", enable);
-            obj.Add("displayTime", time);
-            obj.Add("switchTime", interval);
+            obj.Add("idleTime", idleTime);
             obj.Add("status",(int) status);
             string jstring = JsonConvert.SerializeObject(obj);
             string str = Package(jstring);

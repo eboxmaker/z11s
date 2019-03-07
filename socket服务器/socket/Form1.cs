@@ -180,9 +180,8 @@ namespace socket
                         {
                             bool enable = cbAdEnable.Checked;
                             int time = Convert.ToInt16(tbAdTime.Text);
-                            int interval = Convert.ToInt16(tbAdInterval.Text);
 
-                            resault = JsonManager.MakeAdSet(enable, time, interval, JsonManager.StatusType.StatusOK);
+                            resault = JsonManager.MakeAdSet(enable, time, JsonManager.StatusType.StatusOK);
                             server.SendAll(resault);
                         }
                         break;
@@ -342,9 +341,8 @@ namespace socket
         {
             bool enable = cbAdEnable.Checked;
             int time = Convert.ToInt16(tbAdTime.Text);
-            int interval = Convert.ToInt16(tbAdInterval.Text);
 
-            string str = JsonManager.MakeAdSet(enable,time,interval,JsonManager.StatusType.StatusSet);
+            string str = JsonManager.MakeAdSet(enable,time,JsonManager.StatusType.StatusSet);
             server.SendAll(str);
         }
 

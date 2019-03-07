@@ -82,7 +82,7 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
  */
 static void onUI_init(){
 	networkTestCallback = onNetWrokDataUpdate;
-	updateAdFileList(gAdSet.list);
+	//updateAdFileList();
 }
 
 /**
@@ -153,12 +153,11 @@ static bool onUI_Timer(int id){
 		{
 			mTVConnectStatePtr->setText("已连接");
 		}
-		updateAdFileList(gAdSet.list);
-		if(pic_counter < gAdSet.list.size() )
+		if(pic_counter < gAdv.list.size() )
 		{
 
 			mBtnPicPtr->setText("");
-			mBtnPicPtr->setBackgroundPic(gAdSet.list[pic_counter].c_str());
+			mBtnPicPtr->setBackgroundPic(gAdv.list[pic_counter].c_str());
 			pic_counter++;
 		}
 		else

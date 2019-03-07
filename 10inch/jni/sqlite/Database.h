@@ -13,10 +13,8 @@
 #include "sqlite3.h"
 
 typedef struct{
-	std::string name;
-	std::string num;
-	std::string age;
-	std::string score;
+	std::string fileName;
+	int displayTime;
 }S_INFOS;
 
 
@@ -24,9 +22,10 @@ class Database {
 public:
 	Database(std::string path);
 	virtual ~Database();
-	void recodeResult(std::string name,std::string num,std::string age,std::string score);
+	bool recodeResult(std::string fileName,int dispTime);
 	std::vector<S_INFOS> getRecodes();
 	void clear();
+	void remove(std::string fileName);
 	void saveas(std::string path);
 private:
 	sqlite3* pDB;

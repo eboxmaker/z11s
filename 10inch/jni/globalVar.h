@@ -7,15 +7,13 @@
 
 #ifndef JNI_LIB_GLOBALVAR_H_
 #define JNI_LIB_GLOBALVAR_H_
-#include <string.h>
-#include <fstream>
+#include "objectType.h"
 #include <netinet/in.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "lib/SocketClient.h"
 #include "include/utils/GpioHelper.h"
 #include "utils/Log.h"
-#include <vector>
 
 #include <sys/sysinfo.h>
 
@@ -24,7 +22,7 @@
 #include "uart/Uart.h"
 
 #include "finger.h"
-
+#include "ad.h"
 
 using namespace std;
 
@@ -33,7 +31,7 @@ using namespace std;
 #define SU_DIR		"/mnt/extsd/super/"
 
 
-typedef std::vector<std::string> stringList;
+extern Database dbAdv;
 
 typedef enum
 {
@@ -41,14 +39,7 @@ typedef enum
 	UnLock
 }doorState_t;
 
-typedef struct
-{
-	bool enable;
-	int displayTime;
-	int switchTime;
-	stringList list;
-}AdSet_t;
-extern AdSet_t gAdSet;
+
 
 typedef enum
 {

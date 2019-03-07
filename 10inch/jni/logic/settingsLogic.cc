@@ -37,10 +37,9 @@
 
 static void updateAdSetWind()
 {
-	gAdSet.enable = StoragePreferences::getBool("gAdSet.enable", gAdSet.enable);
-	gAdSet.displayTime = StoragePreferences::getInt("gAdSet.displayTime", gAdSet.displayTime);
-	gAdSet.switchTime = StoragePreferences::getInt("gAdSet.switchTime", gAdSet.switchTime);
-	if(gAdSet.enable == true)
+	gAdv.enable = StoragePreferences::getBool("gAdv.enable", gAdv.enable);
+	gAdv.idleTime = StoragePreferences::getInt("gAdv.idleTime", gAdv.idleTime);
+	if(gAdv.enable == true)
 	{
 		mBtnAdEnablePtr->setBackgroundPic("kai.png");
 	}
@@ -51,15 +50,9 @@ static void updateAdSetWind()
 
 	char buf[10];
 	memset(buf,0,10);
-	itoa(gAdSet.displayTime,buf);
-	LOGE("%D,%s",gAdSet.displayTime,buf);
+	itoa(gAdv.idleTime,buf);
 	mEditDisplayAdAfterTimePtr->setText(buf);
 
-
-	memset(buf,0,10);
-	itoa(gAdSet.switchTime,buf);
-	mEditSwitchAdTimePtr->setText(buf);
-	LOGE("%D,%s",gAdSet.switchTime,buf);
 }
 
 
@@ -447,40 +440,22 @@ static void onEditTextChanged_EditDisplayAdAfterTime(const std::string &text) {
 	}
 }
 
-static void onEditTextChanged_EditSwitchAdTime(const std::string &text) {
-    //LOGD(" onEditTextChanged_ EditSwitchAdTime %s !!!\n", text.c_str());
-	string str = mEditSwitchAdTimePtr->getText();
-	int temp = atoi(str.c_str());
-	if(temp > 100)
-		mEditSwitchAdTimePtr->setText("100");
-	else if(temp <= 3)
-		mEditSwitchAdTimePtr->setText("3");
-	else
-	{
-
-	}
-}
 
 static bool onButtonClick_BtnAdOK(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnAdOK !!!\n");
 	string str = mEditDisplayAdAfterTimePtr->getText();
 	int temp = atoi(str.c_str());
-	gAdSet.displayTime = temp;
+	gAdv.idleTime = temp;
 
-	str = mEditSwitchAdTimePtr->getText();
-	temp = atoi(str.c_str());
-	gAdSet.switchTime = temp;
-
-    StoragePreferences::putBool("gAdSet.enable", gAdSet.enable);
-    StoragePreferences::putInt("gAdSet.displayTime", gAdSet.displayTime);
-    StoragePreferences::putInt("gAdSet.switchTime", gAdSet.switchTime);
+    StoragePreferences::putBool("gAdv.enable", gAdv.enable);
+    StoragePreferences::putInt("gAdv.idleTime", gAdv.idleTime);
 
     if(gSocket->connected())
     {
         mWindStatusNoticePtr->showWnd();
         mTextStatusNoticePtr->setText("设置成功");
         mTextStatusNoticePtr->setText("正在同步服务器设置");
-        string str = jm.makeAdSet(gAdSet,StatusSet);
+        string str = jm.makeAdSet(gAdv,StatusSet);
 		gSocket->write_(str);
         gSocket->updateTriger();
     }
@@ -502,15 +477,15 @@ static bool onButtonClick_BtnAdCancel(ZKButton *pButton) {
 }
 static bool onButtonClick_BtnAdEnable(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnAdEnable !!!\n");
-	if(gAdSet.enable == true)
+	if(gAdv.enable == true)
 	{
 		mBtnAdEnablePtr->setBackgroundPic("guan.png");
-		gAdSet.enable = false;
+		gAdv.enable = false;
 	}
 	else
 	{
 		mBtnAdEnablePtr->setBackgroundPic("kai.png");
-		gAdSet.enable = true;
+		gAdv.enable = true;
 	}
     return false;
 }

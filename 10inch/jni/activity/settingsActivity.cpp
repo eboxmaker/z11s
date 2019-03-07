@@ -23,9 +23,7 @@ static ZKButton* mBtnAdEnablePtr;
 static ZKButton* mBtnAdCancelPtr;
 static ZKButton* mBtnAdOKPtr;
 static ZKTextView* mTextview7Ptr;
-static ZKEditText* mEditSwitchAdTimePtr;
 static ZKEditText* mEditDisplayAdAfterTimePtr;
-static ZKTextView* mTextview6Ptr;
 static ZKTextView* mTextview1Ptr;
 static ZKTextView* mTextAdEnavlePtr;
 static ZKWindow* mWndAdSetPtr;
@@ -149,7 +147,6 @@ typedef struct {
 static S_EditTextInputCallback SEditTextInputCallbackTab[] = {
     ID_SETTINGS_EditHeartbeat, onEditTextChanged_EditHeartbeat,
     ID_SETTINGS_EditDevName, onEditTextChanged_EditDevName,
-    ID_SETTINGS_EditSwitchAdTime, onEditTextChanged_EditSwitchAdTime,
     ID_SETTINGS_EditDisplayAdAfterTime, onEditTextChanged_EditDisplayAdAfterTime,
     ID_SETTINGS_EdittextNewAdminPwd2, onEditTextChanged_EdittextNewAdminPwd2,
     ID_SETTINGS_EdittextNewAdminPwd1, onEditTextChanged_EdittextNewAdminPwd1,
@@ -210,9 +207,7 @@ void settingsActivity::onCreate() {
     mBtnAdCancelPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnAdCancel);
     mBtnAdOKPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnAdOK);
     mTextview7Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview7);
-    mEditSwitchAdTimePtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditSwitchAdTime);if(mEditSwitchAdTimePtr!= NULL){mEditSwitchAdTimePtr->setTextChangeListener(this);}
     mEditDisplayAdAfterTimePtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditDisplayAdAfterTime);if(mEditDisplayAdAfterTimePtr!= NULL){mEditDisplayAdAfterTimePtr->setTextChangeListener(this);}
-    mTextview6Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview6);
     mTextview1Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview1);
     mTextAdEnavlePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextAdEnavle);
     mWndAdSetPtr = (ZKWindow*)findControlByID(ID_SETTINGS_WndAdSet);

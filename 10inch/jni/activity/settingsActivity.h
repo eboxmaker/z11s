@@ -45,9 +45,7 @@
 #define ID_SETTINGS_BtnAdCancel    20011
 #define ID_SETTINGS_BtnAdOK    20010
 #define ID_SETTINGS_Textview7    50014
-#define ID_SETTINGS_EditSwitchAdTime    51007
 #define ID_SETTINGS_EditDisplayAdAfterTime    51006
-#define ID_SETTINGS_Textview6    50013
 #define ID_SETTINGS_Textview1    50012
 #define ID_SETTINGS_TextAdEnavle    50011
 #define ID_SETTINGS_WndAdSet    110002

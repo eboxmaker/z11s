@@ -482,13 +482,12 @@ string JsonCmdManager::makePicAck(string &fullname,JsonStatus_t status)
 	  string temp =  fw.write(root);
 	  return pack(temp);
 }
-JsonStatus_t JsonCmdManager::parseFile(string js, char* directory, string &fullName)
+JsonStatus_t JsonCmdManager::parseFile(string js, char* directory, string &fullName,string &dataout)
 {
 	Json::Reader reader;
 	Json::Value root;
 	string fileName;
 	string data;
-	string dataout;
 	unsigned long length;
 	JsonStatus_t status;
 	if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
@@ -508,22 +507,7 @@ JsonStatus_t JsonCmdManager::parseFile(string js, char* directory, string &fullN
 		fullName = directory ;
 		fullName +=  fileName;
 	}
-
 	Base64::Decode(data, &dataout);
-	FILE *fp = fopen(fullName.c_str(), "w");
-	if (fp != NULL)
-	{
-		int writeLength = fwrite(dataout.c_str(), sizeof(char), dataout.size(), fp);
-	}
-	else
-	{
-		LOGE("打开文件错误");
-		return StatusErr;
-	}
-	if (fclose(fp) != 0) {
-		LOGE("关闭文件错误");
-		return StatusErr;
-	}
 	return StatusSet;
 }
 
@@ -538,11 +522,10 @@ string JsonCmdManager::makeDeleteFile(string &fullName,JsonStatus_t status)
 	  string temp =  fw.write(root);
 	  return pack(temp);
 }
-JsonStatus_t JsonCmdManager::parseDeleteFile(string js, char* directory, string &fullName)
+JsonStatus_t JsonCmdManager::parseDeleteFile(string js, char* directory, string &fileName, string &fullName)
 {
 	Json::Reader reader;
 	Json::Value root;
-	string fileName;
 	JsonStatus_t status;
 
 	if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
@@ -556,32 +539,29 @@ JsonStatus_t JsonCmdManager::parseDeleteFile(string js, char* directory, string 
 		LOGE("%s",fullName.c_str());
 	}
 
-	rm(fullName);
 
 	return status;
 }
 
 
 
-string JsonCmdManager::makeAdSet(AdSet_t &set,JsonStatus_t status)
+string JsonCmdManager::makeAdSet(Advertisement &set,JsonStatus_t status)
 {
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDAdSet);
 	  root["enable"] = Json::Value(set.enable);
-	  root["displayTime"] = Json::Value(set.displayTime);
-	  root["switchTime"] = Json::Value(set.switchTime);
+	  root["idleTime"] = Json::Value(set.idleTime);
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
 	  return pack(temp);
 }
-JsonStatus_t JsonCmdManager::parseAdSet(string &js,AdSet_t &set)
+JsonStatus_t JsonCmdManager::parseAdSet(string &js,Advertisement &set)
 {
 	  Json::Reader reader;
 
 	  Json::Value root;
 	  JsonStatus_t status;
-	  AdSet_t temp;
 	  std::string val_str;
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
@@ -591,8 +571,7 @@ JsonStatus_t JsonCmdManager::parseAdSet(string &js,AdSet_t &set)
 		  }
 		  else if(status == StatusSet)
 		  {
-			  set.displayTime = root["displayTime"].asInt();
-			  set.switchTime = root["switchTime"].asInt();
+			  set.idleTime = root["idleTime"].asInt();
 			  set.enable = root["enable"].asBool();
 		  }
 	  }

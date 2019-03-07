@@ -12,12 +12,12 @@
 
 
 
-void Database::recodeResult(std::string name,std::string num,std::string age,std::string score) {
+bool Database::recodeResult(std::string fileName,int displayTime) {
 	std::string sqltestr ="";
-	sqltestr += "insert into recode(name,num,age,score) values('"+name+"','"+
-			num+"','"+
-			age+"','"+
-			score+"');";
+	char temp[10];
+	sprintf(temp,"%d",displayTime);
+	sqltestr += "insert into recode(fileName,displayTime) values('"+fileName+"',"+
+			temp+");";
 
 	char* errmsg;
 
@@ -26,9 +26,10 @@ void Database::recodeResult(std::string name,std::string num,std::string age,std
 		int ret = sqlite3_exec(pDB,sqltestr.c_str(),0,0, &errmsg);
 		if(ret != SQLITE_OK){
 			LOGD("sqlite exec err:%s",errmsg);
+			return false;
 		}
 	}
-
+	return true;
 }
 
 std::vector<S_INFOS> Database::getRecodes() {
@@ -49,13 +50,9 @@ std::vector<S_INFOS> Database::getRecodes() {
    S_INFOS info;
    for(int i=0;i<nRow;i++)
    {
-	   info.name = result[nIndex];
+	   info.fileName = result[nIndex];
 	   ++nIndex;
-	   info.num = result[nIndex];
-	   ++nIndex;
-	   info.age = result[nIndex];
-	   ++nIndex;
-	   info.score = result[nIndex];
+	   info.displayTime = atoi(result[nIndex]);
 	   ++nIndex;
 	   dbs.push_back(info);
    }
@@ -74,7 +71,7 @@ Database::Database(std::string path) {
 		pDB = NULL;
 		return;
 	}
-	const char* cmd = "CREATE TABLE IF NOT EXISTS recode(name,num,age,score);";
+	const char* cmd = "CREATE TABLE IF NOT EXISTS recode(fileName,displayTime);";
 	char* errmsg;
 	sqlite3_exec(pDB,cmd,0,0, &errmsg);
 	if(ret != SQLITE_OK){
@@ -86,7 +83,21 @@ Database::~Database() {
 	// TODO 自动生成的析构函数存根
 	sqlite3_free(pDB);
 }
+void Database::remove(std::string name) {
+	std::string sqltestr ="";
+	sqltestr += "DELETE FROM recode WHERE fileName = '"+name+"';";
+	LOGD("sql语句：%s",sqltestr.c_str());
 
+	char* errmsg;
+	int ret = sqlite3_exec(pDB,sqltestr.c_str(),0,0, &errmsg);
+	if(ret != SQLITE_OK){
+		LOGD("sql语句失败:%s",errmsg);
+	}
+	else
+	{
+		LOGD("sql语句成功:%s",errmsg);
+	}
+}
 void Database::clear() {
 	const char* cmd = "DELETE FROM recode";
 	char* errmsg;

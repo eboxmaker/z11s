@@ -16,11 +16,23 @@
 #include <fstream>
 #include <vector>
 #include "globalvar.h"
-
 void read_dir();
 void make_dir(char *path);
-void updateAdFileList(stringList &list);
-int rm(std::string &file_name);
+int rm_file(std::string &file_name);
+bool is_access(string &path);
+bool creat_file(string &fullName,const char *data,size_t size);
+class FileOpt
+{
+	FileOpt();
+	virtual ~FileOpt();
 
+	bool is_access();
+	bool make_dir(string &path);
+	bool rm_dir(string &path);
+	stringList read_dir(string &path);
+
+	bool rm_file(string &file_full_name);
+
+};
 
 #endif /* JNI_READDIR_H_ */

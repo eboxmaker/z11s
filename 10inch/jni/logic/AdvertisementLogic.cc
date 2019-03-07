@@ -63,16 +63,15 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
  */
 static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
-	updateAdFileList(gAdSet.list);
-	if(gAdSet.list.size() > 0)
+	if(gAdv.list.size() > 0)
 	{
 		mBtnPicPtr->setText("");
-		mBtnPicPtr->setBackgroundPic(gAdSet.list[0].c_str());
+		mBtnPicPtr->setBackgroundPic(gAdv.list[0].c_str());
 	}
 	AdvertisementCallback = onNetWrokDataUpdate;
-	REGISTER_ACTIVITY_TIMER_TAB[0] = {0,gAdSet.switchTime*1000};
-    gAdSet.displayTime = StoragePreferences::getInt("gAdSet.displayTime", 10);
-    gAdSet.switchTime = StoragePreferences::getInt("gAdSet.switchTime", 4);
+//	REGISTER_ACTIVITY_TIMER_TAB[0] = {0,gAdSet.switchTime*1000};
+//    gAdSet.displayTime = StoragePreferences::getInt("gAdSet.displayTime", 10);
+//    gAdSet.switchTime = StoragePreferences::getInt("gAdSet.switchTime", 4);
 }
 
 /**
@@ -127,17 +126,17 @@ static int pic_counter = 0;
 static bool onUI_Timer(int id){
 	switch (id) {
 	case 0:
-		if(gAdSet.list.size() > 0 )
+		if(gAdv.list.size() > 0 )
 		{
-			if(pic_counter >= gAdSet.list.size() )
+			if(pic_counter >= gAdv.list.size() )
 			{
 				pic_counter = 0;
 			}
 			mBtnPicPtr->setText("");
-			mBtnPicPtr->setBackgroundPic(gAdSet.list[pic_counter].c_str());
+			mBtnPicPtr->setBackgroundPic(gAdv.list[pic_counter].c_str());
 			pic_counter++;
 		}
-		if(gAdSet.enable == false)
+		if(gAdv.enable == false)
 		{
 			EASYUICONTEXT->openActivity("keyboardActivity");
 		}

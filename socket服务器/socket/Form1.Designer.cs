@@ -53,8 +53,6 @@
             this.cbAdEnable = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tbAdTime = new System.Windows.Forms.TextBox();
-            this.tbAdInterval = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.btnModifyAdminPwd = new System.Windows.Forms.Button();
             this.tbAdminPwd = new System.Windows.Forms.TextBox();
             this.btnSyncTime = new System.Windows.Forms.Button();
@@ -316,23 +314,6 @@
             this.tbAdTime.Size = new System.Drawing.Size(100, 21);
             this.tbAdTime.TabIndex = 24;
             this.tbAdTime.Text = "10";
-            // 
-            // tbAdInterval
-            // 
-            this.tbAdInterval.Location = new System.Drawing.Point(770, 291);
-            this.tbAdInterval.Name = "tbAdInterval";
-            this.tbAdInterval.Size = new System.Drawing.Size(100, 21);
-            this.tbAdInterval.TabIndex = 26;
-            this.tbAdInterval.Text = "3";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(683, 300);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(89, 12);
-            this.label2.TabIndex = 25;
-            this.label2.Text = "广告轮播间隔：";
             // 
             // btnModifyAdminPwd
             // 
@@ -627,8 +608,6 @@
             this.Controls.Add(this.btnSyncTime);
             this.Controls.Add(this.tbAdminPwd);
             this.Controls.Add(this.btnModifyAdminPwd);
-            this.Controls.Add(this.tbAdInterval);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.tbAdTime);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cbAdEnable);
@@ -688,8 +667,6 @@
         private System.Windows.Forms.CheckBox cbAdEnable;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox tbAdTime;
-        private System.Windows.Forms.TextBox tbAdInterval;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnModifyAdminPwd;
         private System.Windows.Forms.TextBox tbAdminPwd;
         private System.Windows.Forms.Button btnSyncTime;

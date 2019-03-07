@@ -31,32 +31,19 @@ void read_dir()
     closedir(dir);
     return 0;
 }
-
-
-void updateAdFileList(stringList &list)
+bool is_access(string &path)
 {
-
-    DIR    *dir;
-    struct    dirent    *ptr;
-    dir = opendir(AD_DIR); ///open the dir
-
-    list.clear();
-    while((ptr = readdir(dir)) != NULL) ///read the list of this dir
-    {
-        string fullNmae = AD_DIR;
-
-
-    	if(ptr->d_type == 8)
-    	{
-    		fullNmae += ptr->d_name;
-    		list.push_back(fullNmae.c_str());
-    	}
-
-    //	LOGE("d_type:%d d_name: %s\n", ptr->d_type,ptr->d_name);
-    }
-    closedir(dir);
-    return ;
+	if (access(path.c_str(), F_OK) < 0)
+	{
+		LOGD("%s.文件不存在",path.c_str());
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }
+
 void make_dir(char *path)
 {
 	if (access(path, F_OK) < 0)
@@ -75,7 +62,7 @@ void make_dir(char *path)
 }
 
 //recursively delete all the file in the directory.
-int rm_dir(std::string dir_full_path)
+bool rm_dir(std::string dir_full_path)
 {
     DIR* dirp = opendir(dir_full_path.c_str());
     if(!dirp)
@@ -124,7 +111,8 @@ int rm_dir(std::string dir_full_path)
     closedir(dirp);
     return 0;
 }
-int rm(std::string &file_name)
+//删除文件，如果是目录则删除整个目录
+int rm_file(std::string &file_name)
 {
     std::string file_path = file_name;
     struct stat st;
@@ -151,6 +139,25 @@ int rm(std::string &file_name)
         }
     }
     return 0;
+}
+
+bool creat_file(string &fullName,const char *data,size_t size)
+{
+	FILE *fp = fopen(fullName.c_str(), "w");
+	if (fp != NULL)
+	{
+		int writeLength = fwrite(data, sizeof(char), size, fp);
+	}
+	else
+	{
+		LOGE("打开文件错误");
+		return false;
+	}
+	if (fclose(fp) != 0) {
+		LOGE("关闭文件错误");
+		return false;
+	}
+	return true;
 }
 
 #include <sys/sysinfo.h>
