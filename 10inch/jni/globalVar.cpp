@@ -232,7 +232,8 @@ void exeCMD(string &package)
 				}
 			}else if(status == StatusRead)
 			{
-				tempDoorState = GpioHelper::input(GPIO_PIN_B_02);
+				tempDoorState = GpioHelper::input(GPIO_PIN_B_03);
+				LOGD("door：%d",tempDoorState);
 			}
 			//应该触发一个定时器，两秒之后返回该值
 			ack = jm.makeDoorCtr(tempDoorState, StatusOK);

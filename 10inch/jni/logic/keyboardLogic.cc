@@ -229,7 +229,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 				mTextStatusNoticePtr->setText("门正在关闭");
 			}
 			sleep(2);
-			if(GpioHelper::input(GPIO_PIN_B_02) == UnLock)
+			if(GpioHelper::input(GPIO_PIN_B_03) == UnLock)
 			{
 				mTextStatusNoticePtr->setText("门状态：开");
 				mTextDoorStatePtr->setText("开");

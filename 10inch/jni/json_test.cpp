@@ -361,7 +361,7 @@ string JsonCmdManager::makeDoorCtr(doorState_t &door,JsonStatus_t status)
 {
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDDoorCtr);
-	  if(status == Lock)
+	  if(door == Lock)
 		  root["door"] = Json::Value("lock");
 	  else
 		  root["door"] = Json::Value("unlock");
