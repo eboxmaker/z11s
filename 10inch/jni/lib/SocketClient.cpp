@@ -393,8 +393,8 @@ void SocketClient::threadGuard()
 	}
 
 }
-
-char msg_buf[819200];
+#define MSG_BUF_SIZE 1000*1024
+char msg_buf[MSG_BUF_SIZE];
 
 void SocketClient::threadLoop() {
 
@@ -454,20 +454,24 @@ void SocketClient::threadLoop() {
 						{
 							//LOGE("解析完成,size:%dbytes",msg_counter);
 							exeCMD(msg_buf);
-							msg_counter = 0;
-							memset(msg_buf,0,msg_counter);
-							state = 0;
-
 						}
-						else
+						else//解析失败。顶层使用加密。数据中不会出现额外的{}；
 						{
-							LOGE("解析失败,继续尝试。。。size:%dbytes",msg_counter);
-							msg_counter++;
+//							msg_counter++;
 						}
+						msg_counter = 0;
+						memset(msg_buf,0,msg_counter);
+						state = 0;
 					}
 					else
 					{
 						msg_counter++;
+						if(msg_counter > MSG_BUF_SIZE*0.9)//防止缓冲区溢出
+						{
+							msg_counter = 0;
+							memset(msg_buf,0,msg_counter);
+							state = 0;
+						}
 					}
 					break;
 			}
