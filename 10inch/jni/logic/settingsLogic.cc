@@ -122,7 +122,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 	{0,  1000}, //定时器id=0, 时间间隔6秒
-	//{1,  3000},
+	//{1,  1000},
 };
 
 /**
@@ -147,13 +147,13 @@ static void onUI_intent(const Intent *intentPtr) {
  */
 static void onUI_show() {
     EASYUICONTEXT->showStatusBar();
-    gServerIP = StoragePreferences::getString("gServerIP", "192.168.1.1");
-    LOGD("gServerIP %s\n", gServerIP.c_str());
-    gServerPort = StoragePreferences::getInt("gServerPort", 6000);
-    LOGD("gServerPort %d\n", gServerPort);
+    dev.serverIP = StoragePreferences::getString("serverIP", "192.168.1.1");
+    dev.serverPort = StoragePreferences::getInt("serverPort", 6000);
+    LOGD("gServerIP %s\n", dev.serverIP.c_str());
+    LOGD("gServerPort %d\n", dev.serverPort);
     char temp[10];
-    sprintf(temp,"%d",gServerPort);
-    mEditTextServerIPPtr->setText(gServerIP.c_str());
+    sprintf(temp,"%d",dev.serverPort);
+    mEditTextServerIPPtr->setText(dev.serverIP.c_str());
     mEditTextServerPortPtr->setText(temp);
 
     mWndModifyAdminPwdPtr->hideWnd();
@@ -165,15 +165,15 @@ static void onUI_show() {
 	else
 		mBtnServerStatePtr->setBackgroundPic("guan.png");
 
-	mEditDevNamePtr->setText(gDevName);
+	mEditDevNamePtr->setText(dev.name);
 
-	itoa(gHeartbeatInterval,temp);
+	itoa(dev.heartbeatInterval,temp);
 
 	mEditHeartbeatPtr->setText(temp);
 
-	mSeekbarMemUsagePtr->setProgress(gMemUsage);
-	sprintf(temp,"%0.1f%%",gMemUsage);
-	mTextMemUsagePtr->setText(temp);
+//	mSeekbarMemUsagePtr->setProgress(gMemUsage);
+//	sprintf(temp,"%0.1f%%",gMemUsage);
+//	mTextMemUsagePtr->setText(temp);
 }
 
 /*
@@ -210,18 +210,24 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  *         false
  *             停止运行当前定时器
  */
+
+
 static bool onUI_Timer(int id){
+	float memUsage;
 	switch (id) {
 	case 0:
 		if(gSocket->connected())
 			mBtnServerStatePtr->setBackgroundPic("kai.png");
 		else
 			mBtnServerStatePtr->setBackgroundPic("guan.png");
-		mSeekbarMemUsagePtr->setProgress(gMemUsage);
-		char temp[10];
-		sprintf(temp,"%0.1f%%",gMemUsage);
-		mTextMemUsagePtr->setText(temp);
-		break;
+
+	     sysinfo(&dev.systemInfo);
+	     char temp[30];
+	     memUsage = (1 - ((float)dev.systemInfo.freeram/(float)dev.systemInfo.totalram))*100;
+	     sprintf(temp,"%0.1f%%(%dM/%dM)",memUsage,dev.systemInfo.freeram/1024/1024,dev.systemInfo.totalram/1024/1024);
+	     mSeekbarMemUsagePtr->setProgress(memUsage);
+	     mTextMemUsagePtr->setText(temp);
+	     break;
 		default:
 			break;
 	}
@@ -262,23 +268,24 @@ static bool onButtonClick_BtnServer(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnServer !!!\n");
 	string tempServerIP ;
 	int tempServerPort = 0;
+	struct sockaddr_in serverAddr;
 
 	tempServerIP = mEditTextServerIPPtr->getText();
 	tempServerPort = atoi(mEditTextServerPortPtr->getText().c_str());
-	if((tempServerIP == gServerIP ) && (tempServerPort == gServerPort))
+	if((tempServerIP == dev.serverIP ) && (tempServerPort == dev.serverPort))
 	{
-		LOGE("%s:%d",gServerIP.c_str(),tempServerPort);
+		LOGE("%s:%d",dev.serverIP.c_str(),tempServerPort);
 	    mTextStatusNoticePtr->setText("无更改");
 	    mWindStatusNoticePtr->showWnd();
 		return true;
 	}
 	// 设置一个socket地址结构serverAddr,代表服务器的internet地址, 端口
-	bzero(&gServerAddr, sizeof(gServerAddr));
-	gServerAddr.sin_family = AF_INET;
-	gServerAddr.sin_port=htons(tempServerPort); //服务器端口号
+	bzero(&serverAddr, sizeof(serverAddr));
+	serverAddr.sin_family = AF_INET;
+	serverAddr.sin_port=htons(tempServerPort); //服务器端口号
 
 
-	if (inet_aton(tempServerIP.c_str(), &gServerAddr.sin_addr) == 0) {     // 服务器的IP地址来自程序的参数
+	if (inet_aton(tempServerIP.c_str(), &serverAddr.sin_addr) == 0) {     // 服务器的IP地址来自程序的参数
 		LOGD("Server IP Address Error!\n");
 	    mTextStatusNoticePtr->setText("服务器IP设置错误");
 	    mWindStatusNoticePtr->showWnd();
@@ -287,15 +294,15 @@ static bool onButtonClick_BtnServer(ZKButton *pButton) {
 	else
 	{
 		LOGD("Server IP Address OK!\n");
-		gServerIP = tempServerIP;
-		gServerPort = tempServerPort;
+		dev.serverIP = tempServerIP;
+		dev.serverPort = tempServerPort;
 
-	    StoragePreferences::putString("gServerIP", gServerIP.c_str());
-	    StoragePreferences::putInt("gServerPort", gServerPort);
+	    StoragePreferences::putString("serverIP", dev.serverIP.c_str());
+	    StoragePreferences::putInt("serverPort", dev.serverPort);
 
 
 		gSocket->disconnect();
-		bool ret = gSocket->connect(gServerIP.c_str(),gServerPort);
+		bool ret = gSocket->connect(dev.serverIP.c_str(),dev.serverPort);
 		if(ret == true)
 		{
 			LOGE("连接服务器成功!\n");
@@ -311,9 +318,10 @@ static bool onButtonClick_BtnServer(ZKButton *pButton) {
 	}
 
     mWindStatusNoticePtr->showWnd();
-	LOGE("%s:%d",gServerIP.c_str(),gServerPort);
+//	LOGE("%s:%d",dev.serverIP.c_str(),dev.serverPort);
     return true;
 }
+
 static void onEditTextChanged_EditTextServerIP(const std::string &text) {
     //LOGD(" onEditTextChanged_ EditTextServerIP %s !!!\n", text.c_str());
 }
@@ -337,14 +345,14 @@ static void onEditTextChanged_EdittextNewAdminPwd2(const std::string &text) {
 static bool onButtonClick_BtnOK(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnOK !!!\n");
 	string temp = mEdittextOldAdminPwdPtr->getText();
-	gAdminPwd = StoragePreferences::getString("gAdminPwd", "123456");
+	dev.pwdLocal = StoragePreferences::getString("pwdLocal", "123456");
     mWindStatusNoticePtr->showWnd();
-	if(temp == gAdminPwd)
+	if(temp == dev.pwdLocal)
 	{
 		if(mEdittextNewAdminPwd1Ptr->getText() == mEdittextNewAdminPwd2Ptr->getText())
 		{
-			gAdminPwd = mEdittextNewAdminPwd1Ptr->getText();
-		    StoragePreferences::putString("gAdminPwd", gAdminPwd.c_str());
+			dev.pwdLocal = mEdittextNewAdminPwd1Ptr->getText();
+		    StoragePreferences::putString("gAdminPwd", dev.pwdLocal.c_str());
 		   // mWndModifyAdminPwdPtr->hideWnd();
 		    mTextStatusNoticePtr->setText("修改成功");
 
@@ -352,7 +360,7 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 		    {
 				mTextStatusNoticePtr->setText("等待同步设置服务器");
 			    string str ;
-			    str = jm.makeAdminPwd(gAdminPwd,StatusSet);
+			    str = jm.makeAdminPwd(dev.pwdLocal,StatusSet);
 				gSocket->write_(str);
 			    gSocket->updateTriger();
 		    }
@@ -494,8 +502,8 @@ static bool onButtonClick_BtnAdEnable(ZKButton *pButton) {
 static bool onButtonClick_BtnDevNameSet(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnNameSet !!!\n");
 	string temp;
-	gDevName = mEditDevNamePtr->getText();
-    StoragePreferences::putString("gDevName", gDevName);
+	dev.name = mEditDevNamePtr->getText();
+    StoragePreferences::putString("gDevName", dev.name);
     if(gSocket->connected())
     {
         mWindStatusNoticePtr->showWnd();
@@ -504,7 +512,7 @@ static bool onButtonClick_BtnDevNameSet(ZKButton *pButton) {
 
     	gSocket->updateTriger();
     	string msg;
-    	msg = jm.makeDevName(gDevName, StatusSet);
+    	msg = jm.makeDevName(dev.name, StatusSet);
 		gSocket->write_(msg);
     }
     else
@@ -537,8 +545,8 @@ static bool onButtonClick_BtnSetHeartbeat(ZKButton *pButton) {
 	LOGE("TEMP:%d",temp);
 	if(temp>0 && temp < 100)
 	{
-		gHeartbeatInterval = temp;
-	    StoragePreferences::putInt("gHeartbeatInterval", gHeartbeatInterval);
+		dev.heartbeatInterval = temp;
+	    StoragePreferences::putInt("dev.heartbeatInterval", dev.heartbeatInterval);
 	}
     if(gSocket->connected())
     {
@@ -548,7 +556,7 @@ static bool onButtonClick_BtnSetHeartbeat(ZKButton *pButton) {
 
     	gSocket->updateTriger();
     	string msg;
-    	msg = jm.makeSetHeartbeat(gHeartbeatInterval, StatusSet);
+    	msg = jm.makeSetHeartbeat(dev.heartbeatInterval, StatusSet);
 		gSocket->write_(msg);
     }
     else

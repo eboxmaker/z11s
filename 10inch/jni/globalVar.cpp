@@ -14,27 +14,21 @@
 
 Database dbAdv("/mnt/extsd/test.db");
 doorState_t gDoorState = Lock;
-string gDoorPwd;
-Person_t gPerson;
-string gServerIP ;
-int gServerPort ;
-struct sockaddr_in gServerAddr;
+
 SocketClient* gSocket= new SocketClient();
-string gAdminPwd = "123456";
-string gDoorPassword = "123456";
 
 
 long gKeyboardLastActionTime = 0;
-string gDevID;
-string gDevName;
-int gHeartbeatInterval;
 
+Person_t gPerson;
 PersonList_t gUserAdmin;
 Plan gPlan;
 string gBroadcastMsg;
 
-struct sysinfo gSystemInfo;
-float gMemUsage;
+
+
+
+Device_t dev;
 
 myNotify_t keyboardCallback;
 myNotify_t AdvertisementCallback;
@@ -98,12 +92,12 @@ void exeCMD(string &package)
 			{
 				if(tempInterval > 10)tempInterval= 10;
 				if(tempInterval < 3)tempInterval = 3;
-				gHeartbeatInterval = tempInterval;
-				gSocket->interval = gHeartbeatInterval;
-				StoragePreferences::putInt("gHeartbeatInterval", gHeartbeatInterval);
+				dev.heartbeatInterval = tempInterval;
+				gSocket->interval = dev.heartbeatInterval;
+				StoragePreferences::putInt("dev.heartbeatInterval", dev.heartbeatInterval);
 
 			}
-			ack = jm.makeSetHeartbeat(gHeartbeatInterval, StatusOK);
+			ack = jm.makeSetHeartbeat(dev.heartbeatInterval, StatusOK);
 			gSocket->write_(ack);
 			break;
 		case CMDConfirm:
@@ -111,7 +105,7 @@ void exeCMD(string &package)
 			if(status == StatusSet || status == StatusRead)
 			{
 				//LOGE("回复:%s:%s",gDevID.c_str(),gDevName.c_str());
-				ack = jm.makeConfirm(gDevID,gDevName, StatusOK);
+				ack = jm.makeConfirm(dev.id,dev.name, StatusOK);
 				gSocket->write_(ack);
 			}
 			break;
@@ -121,21 +115,21 @@ void exeCMD(string &package)
 			if(status == StatusSet || status == StatusRead)
 			{
 				//LOGE("回复:%s",gDevID.c_str());
-				ack = jm.makeDevID(gDevID, StatusOK);
+				ack = jm.makeDevID(dev.id, StatusOK);
 				gSocket->write_(ack);
 			}
 			break;
 		case CMDAdminPwd:
-			status = jm.parseAdminPwd(js,gAdminPwd);
+			status = jm.parseAdminPwd(js,dev.pwdLocal);
 			if(status == StatusSet)
 			{
-			    StoragePreferences::putString("gAdminPwd", gAdminPwd.c_str());
-				ack = jm.makeAdminPwd(gAdminPwd,StatusOK);
+			    StoragePreferences::putString("gAdminPwd", dev.pwdLocal.c_str());
+				ack = jm.makeAdminPwd(dev.pwdLocal,StatusOK);
 				gSocket->write_(ack);
 			}
 			else if(status == StatusRead)
 			{
-				ack = jm.makeAdminPwd(gAdminPwd,StatusOK);
+				ack = jm.makeAdminPwd(dev.pwdLocal,StatusOK);
 				gSocket->write_(ack);
 			}
 			break;
@@ -241,12 +235,13 @@ void exeCMD(string &package)
 			break;
 		case CMDDoorPwd:
 			status = jm.parseDoorPwd(js, msg);
-			if(status == StatusSet)
-			{
-				gDoorPwd = msg;
-			}
-			ack = jm.makeDoorPwd(gDoorPwd, StatusOK);
-			gSocket->write_(ack);
+			//下位机不存储开门密码
+//			if(status == StatusSet)
+//			{
+//				gDoorPwd = msg;
+//			}
+//			ack = jm.makeDoorPwd(gDoorPwd, StatusOK);
+//			gSocket->write_(ack);
 			break;
 		case CMDSyncDateTime:
 			status = jm.parseSyncDateTime(js, msg);
@@ -289,17 +284,17 @@ void exeCMD(string &package)
 			break;
 
 		case CMDDevName:
-			status = jm.parseDevName(js,gDevName);
+			status = jm.parseDevName(js,dev.name);
 			if(status == StatusSet)
 			{
-			    StoragePreferences::putString("gDevName", gDevName);
+			    StoragePreferences::putString("gDevName", dev.name);
 
-				ack = jm.makeDevName(gDevName, StatusOK);
+				ack = jm.makeDevName(dev.name, StatusOK);
 				gSocket->write_(ack);
 			}
 			else if(status == StatusRead)
 			{
-				ack = jm.makeDevName(gDevName, StatusOK);
+				ack = jm.makeDevName(dev.name, StatusOK);
 				gSocket->write_(ack);
 			}
 			LOGE("status：%d",status);

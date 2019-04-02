@@ -352,12 +352,12 @@ void SocketClient::threadGuard()
 		{
 			LOGE("未连接");
 			disconnect();
-			ret = connect(gServerIP.c_str(),gServerPort);
+			ret = connect(dev.serverIP.c_str(),dev.serverPort);
 			if(ret == true)
 			{
 				LOGE("连接服务器成功!\n");
 				string idstr = jm.getID();
-				string jsid = jm.makeConfirm(idstr, gDevName,StatusSet);
+				string jsid = jm.makeConfirm(idstr, dev.name,StatusSet);
 				write_(jsid);
 				conncetState = true;
 			}

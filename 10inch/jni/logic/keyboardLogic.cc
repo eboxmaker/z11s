@@ -197,7 +197,6 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		}
 		break;
 	case CMDDoorPwd:
-
 		if(status == StatusOK)
 		{
 			gSocket->disableTriger();
@@ -209,11 +208,6 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 			gSocket->disableTriger();
 			mWindStatusNoticePtr->showWnd();
 			mTextStatusNoticePtr->setText("密码错误");
-		}
-		else if(status == StatusSet)
-		{
-			mWindStatusNoticePtr->showWnd();
-			mTextStatusNoticePtr->setText("门密码已经更新");
 		}
 		break;
 	case CMDDoorCtr:
@@ -381,9 +375,9 @@ static void onUI_show() {
 
     string title;
     title = mTextTitlePtr->getText();
-    //title += "门禁系统";
     title += " | ";
-    title += gDevName;
+    title += dev.name;
+
     mTextTitlePtr->setText(title.c_str());
 
 //	if(gBroadcastMsg != "")
@@ -612,7 +606,7 @@ static void onEditTextChanged_EdittextPassword(const std::string &text) {
 static bool onButtonClick_BtnConfirm(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnConfirm !!!\n");
 	string temp = mEditTextAdminPasswordPtr->getText();
-	if(temp == gAdminPwd)
+	if(temp == dev.pwdLocal)
     {
 		//EASYUICONTEXT->goBack();
 		EASYUICONTEXT->openActivity("mainActivity");
@@ -621,7 +615,7 @@ static bool onButtonClick_BtnConfirm(ZKButton *pButton) {
 	{
 		mWindStatusNoticePtr->showWnd();
 		mTextStatusNoticePtr->setText("管理员密码错误");
-		LOGE("管理员密码：%s",gAdminPwd.c_str());
+		LOGE("管理员密码：%s",dev.pwdLocal.c_str());
 	}
     gKeyboardLastActionTime = time(NULL);
 	return false;

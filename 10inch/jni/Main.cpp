@@ -33,13 +33,15 @@ extern "C" {
 static void *MainLoop(void *lParam);
 static void LoadParament()
 {
-    gServerIP = StoragePreferences::getString("gServerIP", "192.168.1.1");
-    gServerPort = StoragePreferences::getInt("gServerPort", 6000);
-    gAdminPwd = StoragePreferences::getString("gAdminPwd", "123456");
-
-    LOGE("gServerIP %s\n", gServerIP.c_str());
-    LOGE("gServerPort %d\n", gServerPort);
-    LOGE("gServerPort %s\n", gAdminPwd.c_str());
+    dev.serverIP = StoragePreferences::getString("serverIP", "192.168.1.1");
+    dev.serverPort = StoragePreferences::getInt("serverPort", 6000);
+    dev.pwdLocal = StoragePreferences::getString("pwdLocal", "123456");
+    dev.id = jm.getID();
+    dev.name = StoragePreferences::getString("gDevName","none");
+    dev.heartbeatInterval = StoragePreferences::getInt("dev.heartbeatInterval", 5);
+//    LOGE("gServerIP %s\n", gServerIP.c_str());
+//    LOGE("gServerPort %d\n", gServerPort);
+//    LOGE("gServerPort %s\n", gAdminPwd.c_str());
 
 //    StoragePreferences::remove("gDisplayAdAfterTime");
 //    StoragePreferences::remove("gSwitchAdTime");
@@ -48,17 +50,7 @@ static void LoadParament()
     gAdv.idleTime = StoragePreferences::getInt("gAdv.idleTime", 20);
     gAdv.enable = StoragePreferences::getBool("gAdv.enable", true);
 
-    LOGE("gDisplayAdAfterTime %D\n", gAdv.idleTime);
-    LOGE("gAdEnable %D\n",gAdv.enable);
 
-
-
-    gDevID = jm.getID();
-    gDevName = StoragePreferences::getString("gDevName","none");
-
-    LOGE("ID: %s,name:%s\n",gDevID.c_str(),gDevName.c_str());
-
-    gHeartbeatInterval = StoragePreferences::getInt("gHeartbeatInterval", 5);
 
     make_dir(QR_DIR);
     make_dir(AD_DIR);
@@ -125,7 +117,7 @@ static void *MainLoop(void *lParam)
 	if(gSocket->connected() == false)
 	{
 		gSocket->disconnect();
-		ret = gSocket->connect(gServerIP.c_str(),gServerPort);
+		ret = gSocket->connect(dev.serverIP.c_str(),dev.serverPort);
 		if(ret == true)
 		{
 			LOGE("连接服务器成功!\n");
@@ -186,11 +178,6 @@ static void *MainLoop(void *lParam)
 //
 //			}
 //		}
-	     sysinfo(&gSystemInfo);
-	     float totalmem = gSystemInfo.totalram/1024.0/1024.0;
-	     float freemem = gSystemInfo.freeram/1024.0/1024.0;
-
-	     gMemUsage = (1 - (freemem/totalmem))*100;
 //
 	    // LOGE("en:%d;size:%d",gAdv.enable,gAdv.list.size());
 		if(gAdv.enable && (gAdv.list.size() > 0))

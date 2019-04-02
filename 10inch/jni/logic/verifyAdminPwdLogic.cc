@@ -136,14 +136,14 @@ static void onEditTextChanged_Edittext1(const std::string &text) {
 static bool onButtonClick_BtnConfirm(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnConfirm !!!\n");
 	string temp = mEditTextAdminPasswordPtr->getText();
-	if(temp == gAdminPwd)
+	if(temp == dev.pwdLocal)
     {
 		EASYUICONTEXT->openActivity("mainActivity");
     }
 	else
 	{
-		mTVNotePtr->setText("提示：管理员密码错误");
-		LOGE("管理员密码：%s",gAdminPwd.c_str());
+		mTVNotePtr->setText("提示：系统密码错误");
+		LOGE("系统密码：%s",dev.pwdLocal.c_str());
 	}
 	return false;
 }

@@ -159,11 +159,3 @@ bool creat_file(string &fullName,const char *data,size_t size)
 	}
 	return true;
 }
-
-#include <sys/sysinfo.h>
-
-void test()
-{
-     sysinfo(&gSystemInfo);
-
-}

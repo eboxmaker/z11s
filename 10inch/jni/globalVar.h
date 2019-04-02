@@ -39,7 +39,21 @@ typedef enum
 	UnLock
 }doorState_t;
 
+typedef struct {
+	string organization;
+	string name;
+	string id;
 
+	string pwdLocal;
+	string pwdDoor;
+
+	string serverIP;
+	int serverPort;
+
+	int	   heartbeatInterval;
+
+	struct sysinfo systemInfo;
+}Device_t;
 
 typedef enum
 {
@@ -91,7 +105,6 @@ typedef struct
 	stringList fingers;
 
 }Person_t;
-extern Person_t gPerson;
 
 
 
@@ -139,31 +152,22 @@ typedef std::vector< Person_t> PersonList_t;
 
 typedef void (*myNotify_t)(JsonCmd_t,JsonStatus_t, string &);
 
-extern string gServerIP ;
-extern int gServerPort ;
-extern struct sockaddr_in gServerAddr;
+
+
+extern Device_t dev;
+
 extern SocketClient* gSocket;
 
-extern string gAdminPwd;//需要存储
-extern string gDoorPassword;
 extern long gLastHelloTime;
-extern bool gDoorPwdState ;
-
 extern  long gKeyboardLastActionTime;
-extern string gDevID;
-extern string gDevName;
-extern int gHeartbeatInterval;
 
 extern doorState_t gDoorState;
-extern string gDoorPwd;
 
 extern PersonList_t gUserAdmin;
 extern Plan gPlan;
 extern string gBroadcastMsg;
+extern Person_t gPerson;
 
-extern struct sysinfo gSystemInfo;
-
-extern float gMemUsage;
 //class MySocketListener : public SocketClient::ISocketListener
 //{
 //	public:
