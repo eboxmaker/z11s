@@ -40,9 +40,7 @@ public:
 	void hearbeatSend();
 
 
-	bool creatGuard(int interval);
 	void threadLoop();
-	void threadGuard();
 
 	void attachOnConnect(NetNotify_t callback,int num);
 	void attachOnDisconnect(NetNotify_t callback,int num);
@@ -59,17 +57,16 @@ public:
 	void setSocketListener(ISocketListener *pListener) {
 		mSocketListener = pListener;
 	}
-	int interval;
+	long  trigerTime;
+	int trigerTimeout;
+	bool conncetState;
 
 private:
-	bool conncetState;
 	int mClientSocket;
 
-	long long trigerTime;
-	int trigerTimeout;
+
 
 	long lastHeartbeatTime;
-	std::string hearbeatMsg;
 
 
 

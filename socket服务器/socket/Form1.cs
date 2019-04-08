@@ -156,9 +156,16 @@ namespace socket
 
                         break;
                     case JsonManager.CMDType.Confirm:
-                        if (status == JsonManager.StatusType.StatusSet)
+                        JsonManager.StatusConfirmType cStatus = JsonManager.GetJsonStatusConfirm(js);
+
+                        if (cStatus == JsonManager.StatusConfirmType.StatusReqDev2Ser)
                         {
-                            resault = JsonManager.MakeConfirm(JsonManager.StatusType.StatusOK);
+                            resault = JsonManager.MakeConfirm(JsonManager.StatusConfirmType.StatusParaSer2Dev);
+                            server.SendAll(resault);
+                        }
+                        if(cStatus ==  JsonManager.StatusConfirmType.StatusAckDev2Ser)
+                        {
+                            resault = JsonManager.MakeConfirm(JsonManager.StatusConfirmType.StatusOKSer2Dev);
                             server.SendAll(resault);
                         }
 
@@ -386,8 +393,8 @@ namespace socket
 
         private void btnConfirm_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.MakeConfirm( JsonManager.StatusType.StatusSet);
-            server.SendAll(str);
+            //string str = JsonManager.MakeConfirm( JsonManager.StatusType.StatusSet);
+            //server.SendAll(str);
         }
 
         private void btnDeletAdPic_Click(object sender, EventArgs e)

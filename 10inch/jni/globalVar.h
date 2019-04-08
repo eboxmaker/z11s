@@ -39,6 +39,15 @@ typedef enum
 	UnLock
 }doorState_t;
 
+typedef enum
+{
+	StatusReqDev2Ser = 0,
+	StatusParaSer2Dev ,
+	StatusAckDev2Ser,
+	StatusOKSer2Dev,
+	StatusErrSer2Dev,
+}JsonConfirmStatus_t;
+
 typedef struct {
 	string organization;
 	string name;
@@ -53,6 +62,8 @@ typedef struct {
 	int	   heartbeatInterval;
 
 	struct sysinfo systemInfo;
+
+	bool confirmState;
 }Device_t;
 
 typedef enum
@@ -90,6 +101,8 @@ typedef enum
 	StatusOK,
 	StatusErr
 }JsonStatus_t;
+
+
 
 typedef union
 {

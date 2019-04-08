@@ -39,10 +39,6 @@ static void* socketThreadRx(void *lParam) {
 	return NULL;
 }
 
-static void* socketThreadHeatbeat(void *lParam) {
-	((SocketClient *) lParam)->threadGuard();
-	return NULL;
-}
 
 SocketClient::SocketClient() :
 	conncetState(false),
@@ -178,7 +174,7 @@ bool SocketClient::connected()
 
 	if(conncetState == true)
 	{
-		if(time(NULL) - lastHeartbeatTime > 10)
+		if(time(NULL) - lastHeartbeatTime > dev.heartbeatInterval*3)
 			conncetState = false;
 		else
 			conncetState = true;
@@ -204,34 +200,7 @@ bool SocketClient::disconnect() {
 	// 关闭socket
 	return true;
 }
-void SocketClient::hearbeatSend()
-{
-	if(mClientSocket > 0)
-	{
-		write_(hearbeatMsg);
-	}
 
-}
-bool SocketClient::creatGuard(int interval)
-{
-	this->interval = interval;
-	hearbeatMsg = jm.makeHeartbeat(StatusSet);
-
-	pthread_t threadID = 0;
-	pthread_attr_t attr; 		// 线程属性
-	pthread_attr_init(&attr);  	// 初始化线程属性
-	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);      // 设置线程属性
-	int ret = pthread_create(&threadID, &attr, socketThreadHeatbeat, this);
-	pthread_attr_destroy(&attr);
-	if (ret || !threadID) {
-		LOGE("create socket thread error, erro=%s\n", strerror(errno));
-		return false;
-	}
-	else
-	{
-		LOGE("create timer thread ok, threadID=%d\n",threadID);
-	}
-}
 
 void SocketClient::hearbeatUpdate()
 {
@@ -302,97 +271,7 @@ void SocketClient::disableTriger()
 ////	return rxbuf.available();
 //}
 
-void SocketClient::threadGuard()
-{
-	bool ret;
-	int counter = 0;
 
-	while(1)
-	{
-//		if(check_nic("eth0") == -1)
-//		{
-//			LOGE("网线断开");
-//			disconnect();
-//			conncetState = false;
-//
-//		}
-//
-//		{
-
-//			struct tcp_info info;
-//			int len = sizeof(info);
-//			getsockopt(mClientSocket,IPPROTO_TCP,TCP_INFO,&info,(socklen_t*)&len);
-//			if(info.tcpi_state == TCP_ESTABLISHED && gSocket->mClientSocket > 0)
-//			{
-//				//LOGE("已连接（%d)",gSocket->mClientSocket);
-//				conncetState = true;
-//			}
-//			else
-//			{
-//				LOGE("未连接");
-//				disconnect();
-//				ret = connect(gServerIP.c_str(),gServerPort);
-//				if(ret == true)
-//				{
-//					LOGE("连接服务器成功!\n");
-//					conncetState = true;
-//				}
-//				else
-//				{
-//					disconnect();
-//					LOGE("连接服务器失败 !\n");
-//					conncetState = false;
-//
-//				}
-//			}
-//		}
-
-
-		if(!connected())
-		{
-			LOGE("未连接");
-			disconnect();
-			ret = connect(dev.serverIP.c_str(),dev.serverPort);
-			if(ret == true)
-			{
-				LOGE("连接服务器成功!\n");
-				string idstr = jm.getID();
-				string jsid = jm.makeConfirm(idstr, dev.name,StatusSet);
-				write_(jsid);
-				conncetState = true;
-			}
-			else
-			{
-				disconnect();
-				LOGE("连接服务器失败 !\n");
-				conncetState = false;
-
-			}
-		}
-
-		if(	trigerTime != -1)
-		{
-			if(time(NULL) - trigerTime >= trigerTimeout)
-			{
-				LOGE("已经触发");
-				exeCMD("trigerTimeout");
-				trigerTime = -1;
-			}
-		}
-
-
-		if(interval < 3)
-			interval = 3;
-		if(++counter >= interval)
-		{
-			hearbeatSend();
-			counter = 0;
-		}
-		Thread::sleep(1000);
-
-	}
-
-}
 #define MSG_BUF_SIZE 1000*1024
 char msg_buf[MSG_BUF_SIZE];
 

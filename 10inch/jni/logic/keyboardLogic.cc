@@ -321,7 +321,7 @@ static void updateUI_time() {
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 	{0,  1000}, //定时器id=0, 时间间隔6秒
-	{1,  1000},
+	//{1,  1000},
 };
 
 /**
@@ -424,7 +424,29 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
 
 }
 
+static void adLoop()
+{
+	string cAppName;
+	long  timeNow;
 
+	if(gAdv.enable && (gAdv.list.size() > 0))
+	{
+		const char *ptr;
+		ptr = EASYUICONTEXT->currentAppName();
+		cAppName = ptr;
+		timeNow = time(NULL);
+
+		if(timeNow - gKeyboardLastActionTime > gAdv.idleTime)
+		{
+			EASYUICONTEXT->openActivity("AdvertisementActivity");
+			//LOGE("切换成功");
+		}
+		else
+		{
+			//LOGE("TIME:%D",timeNow - gKeyboardLastActionTime);
+		}
+	}
+}
 /**
  * 定时器触发函数
  * 不建议在此函数中写耗时操作，否则将影响UI刷新
@@ -437,8 +459,9 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  */
 static bool onUI_Timer(int id){
 	switch (id) {
-	case 1:
+	case 0:
 		updateUI_time();
+		adLoop();
 		break;
 		default:
 			break;

@@ -33,19 +33,15 @@ extern "C" {
 static void *MainLoop(void *lParam);
 static void LoadParament()
 {
-    dev.serverIP = StoragePreferences::getString("serverIP", "192.168.1.1");
-    dev.serverPort = StoragePreferences::getInt("serverPort", 6000);
-    dev.pwdLocal = StoragePreferences::getString("pwdLocal", "123456");
-    dev.id = jm.getID();
-    dev.name = StoragePreferences::getString("gDevName","none");
-    dev.heartbeatInterval = StoragePreferences::getInt("dev.heartbeatInterval", 5);
-//    LOGE("gServerIP %s\n", gServerIP.c_str());
-//    LOGE("gServerPort %d\n", gServerPort);
-//    LOGE("gServerPort %s\n", gAdminPwd.c_str());
+    dev.serverIP = StoragePreferences::getString("dev.serverIP", "192.168.1.1");
+    dev.serverPort = StoragePreferences::getInt("dev.serverPort", 6000);
+    dev.pwdLocal = StoragePreferences::getString("dev.pwdLocal", "123456");
 
-//    StoragePreferences::remove("gDisplayAdAfterTime");
-//    StoragePreferences::remove("gSwitchAdTime");
-//    StoragePreferences::remove("gAdEnable");
+    dev.id = jm.getID();
+    dev.organization = StoragePreferences::getString("dev.organization", "none");
+    dev.name = StoragePreferences::getString("dev.name","none");
+
+    dev.heartbeatInterval = StoragePreferences::getInt("dev.heartbeatInterval", 5);
 
     gAdv.idleTime = StoragePreferences::getInt("gAdv.idleTime", 20);
     gAdv.enable = StoragePreferences::getBool("gAdv.enable", true);
@@ -94,120 +90,104 @@ const char* onStartupApp(EasyUIContext *pContext) {
 
 	return "mainActivity";
 }
+static void reconncet()
+{
+	bool ret = false;
+	int counter = 0;
 
+	dev.confirmState = false;
+	LOGE("正在连接。。。");
+	gSocket->disconnect();
+	ret = gSocket->connect(dev.serverIP.c_str(),dev.serverPort);
+	if(ret == true)
+	{
+		LOGE("连接服务器成功!\n");
+		string js = jm.makeConfirm(dev, StatusReqDev2Ser);
+		gSocket->write_(js);
+
+		while(dev.confirmState == false )
+		{
+			if(counter >= 10)
+			{
+				LOGE("注册超时，重新注册！");
+				break;
+			}
+			counter++;
+			Thread::sleep(1000);
+		}
+		if(	dev.confirmState == false)
+		{
+			LOGE("断开服务器!\n");
+			gSocket->disconnect();
+		}
+		else
+		{
+			LOGE("注册成功!!!\n");
+			gSocket->conncetState = true;
+		}
+
+
+	}
+	else
+	{
+		gSocket->disconnect();
+		LOGE("连接服务器失败 !\n");
+		gSocket->conncetState = false;
+
+	}
+}
+static void timeoutLoop()
+{
+	if(	gSocket->trigerTime != -1)
+	{
+		if(time(NULL) - gSocket->trigerTime >= gSocket->trigerTimeout)
+		{
+			LOGE("已经触发");
+			exeCMD("trigerTimeout");
+			gSocket->trigerTime = -1;
+		}
+	}
+}
+//心跳轮训
+static void heartbeatLoop()
+{
+	static int counter = 0;
+	if(dev.heartbeatInterval < 3)
+		dev.heartbeatInterval = 3;
+	if(++counter >= dev.heartbeatInterval)
+	{
+		std::string hearbeatMsg;
+		hearbeatMsg = jm.makeHeartbeat(StatusSet);
+		gSocket->write_(hearbeatMsg);
+		counter = 0;
+	}
+}
 static void *MainLoop(void *lParam)
 {
     //pthread_mutex_init(&mutex,NULL);
 
-	string cAppName;
-	long long timeNow;
+
     bool ret;
     int len;
-//	msg.ptr = buf;
-//	msg.len = sizeof(buf);
-//	rmsg.ptr = rbuf;
-//	rmsg.len = sizeof(rbuf);
-//	memset(&msg.remote,0,sizeof(msg.remote));
-//	//数据初始化--清零
-//	msg.remote.sin_family=AF_INET; //设置为IP通信
-//	msg.remote.sin_addr.s_addr=inet_addr("192.168.1.101");//服务器IP地址
-//	msg.remote.sin_port=htons(8000); //服务器端口号
+	int counter = 0;
 
-	gSocket->creatGuard(5);
-	if(gSocket->connected() == false)
-	{
-		gSocket->disconnect();
-		ret = gSocket->connect(dev.serverIP.c_str(),dev.serverPort);
-		if(ret == true)
-		{
-			LOGE("连接服务器成功!\n");
-		}
-		else
-		{
-			gSocket->disconnect();
-			LOGE("连接服务器失败 !\n");
 
-		}
-	}
+	Thread::sleep(5000);
+
 
 	while(1)
 	{
-
-
+		//断线检测
+		if(!gSocket->connected())
+		{
+			reconncet();
+		}
+		//心跳轮训
+		heartbeatLoop();
+		//服务器响应时间计数循环
+		timeoutLoop();
 
 		Thread::sleep(1000);
-	    Person_t stq;
-//	    stq.name = "";
-//	    stq.id = "";
-//	    stq.level = 0;
-//	    stq.fingers.push_back("1231312321");
-//	    stq.fingers.push_back("asfsadfsadfsadf");
-//	    stq.fingers.push_back("打发时间了");
-//	    string x;
-//	    x = jm.makePerson(stq, StatusRead);
-//	    LOGE("%s",x.c_str());
-//
-//		if(check_nic("eth0") == -1)
-//		{
-//			LOGE("网线断开");
-//			gSocket->disconnect();
-//
-//		}
-//
-//		struct tcp_info info;
-//		int len = sizeof(info);
-//		getsockopt(gSocket->mClientSocket,IPPROTO_TCP,TCP_INFO,&info,(socklen_t*)&len);
-//		if(info.tcpi_state == TCP_ESTABLISHED && gSocket->mClientSocket > 0)
-//		{
-//			LOGE("已连接（%d)",gSocket->mClientSocket);
-//		}
-//		else
-//		{
-//			LOGE("未连接");
-//			gSocket->disconnect();
-//			ret = gSocket->connect(gServerIP.c_str(),gServerPort);
-//			if(ret == true)
-//			{
-//				setServerLiveState(true);
-//				LOGE("连接服务器成功!\n");
-//			}
-//			else
-//			{
-//				gSocket->disconnect();
-//				LOGE("连接服务器失败 !\n");
-//
-//			}
-//		}
-//
-	    // LOGE("en:%d;size:%d",gAdv.enable,gAdv.list.size());
-		if(gAdv.enable && (gAdv.list.size() > 0))
-		{
-			const char *ptr;
-			ptr = EASYUICONTEXT->currentAppName();
-			cAppName = ptr;
-			timeNow = time(NULL);
-			if(cAppName == "keyboardActivity")
-			{
-				if(timeNow - gKeyboardLastActionTime > gAdv.idleTime)
-				{
-					EASYUICONTEXT->openActivity("AdvertisementActivity");
-					//LOGE("切换成功");
-				}
-				else
-				{
-					//LOGE("TIME:%D",timeNow - gKeyboardLastActionTime);
-				}
-			}
-			else
-			{
-				//LOGE("xxxTIME:%D",timeNow - gKeyboardLastActionTime);
-
-			}
-		}
-		else if(cAppName == "AdvertisementActivity")
-		{
-			EASYUICONTEXT->openActivity("keyboardActivity");
-		}
 
 	}
 

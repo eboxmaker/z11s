@@ -147,8 +147,8 @@ static void onUI_intent(const Intent *intentPtr) {
  */
 static void onUI_show() {
     EASYUICONTEXT->showStatusBar();
-    dev.serverIP = StoragePreferences::getString("serverIP", "192.168.1.1");
-    dev.serverPort = StoragePreferences::getInt("serverPort", 6000);
+    dev.serverIP = StoragePreferences::getString("dev.serverIP", "192.168.1.1");
+    dev.serverPort = StoragePreferences::getInt("dev.serverPort", 6000);
     LOGD("gServerIP %s\n", dev.serverIP.c_str());
     LOGD("gServerPort %d\n", dev.serverPort);
     char temp[10];
@@ -297,8 +297,8 @@ static bool onButtonClick_BtnServer(ZKButton *pButton) {
 		dev.serverIP = tempServerIP;
 		dev.serverPort = tempServerPort;
 
-	    StoragePreferences::putString("serverIP", dev.serverIP.c_str());
-	    StoragePreferences::putInt("serverPort", dev.serverPort);
+	    StoragePreferences::putString("dev.serverIP", dev.serverIP.c_str());
+	    StoragePreferences::putInt("dev.serverPort", dev.serverPort);
 
 
 		gSocket->disconnect();
@@ -345,14 +345,14 @@ static void onEditTextChanged_EdittextNewAdminPwd2(const std::string &text) {
 static bool onButtonClick_BtnOK(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnOK !!!\n");
 	string temp = mEdittextOldAdminPwdPtr->getText();
-	dev.pwdLocal = StoragePreferences::getString("pwdLocal", "123456");
+	dev.pwdLocal = StoragePreferences::getString("dev.pwdLocal", "123456");
     mWindStatusNoticePtr->showWnd();
 	if(temp == dev.pwdLocal)
 	{
 		if(mEdittextNewAdminPwd1Ptr->getText() == mEdittextNewAdminPwd2Ptr->getText())
 		{
 			dev.pwdLocal = mEdittextNewAdminPwd1Ptr->getText();
-		    StoragePreferences::putString("gAdminPwd", dev.pwdLocal.c_str());
+		    StoragePreferences::putString("dev.pwdLocal", dev.pwdLocal.c_str());
 		   // mWndModifyAdminPwdPtr->hideWnd();
 		    mTextStatusNoticePtr->setText("修改成功");
 
@@ -503,7 +503,7 @@ static bool onButtonClick_BtnDevNameSet(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnNameSet !!!\n");
 	string temp;
 	dev.name = mEditDevNamePtr->getText();
-    StoragePreferences::putString("gDevName", dev.name);
+    StoragePreferences::putString("dev.name", dev.name);
     if(gSocket->connected())
     {
         mWindStatusNoticePtr->showWnd();

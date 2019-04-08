@@ -246,21 +246,26 @@ JsonStatus_t JsonCmdManager::parseDevName(string &js,string &name)
 }
 
 
-string JsonCmdManager::makeConfirm(string &id,string &name,JsonStatus_t status)
+string JsonCmdManager::makeConfirm(Device_t &dev_,JsonConfirmStatus_t status)
 {
 
 	//UTF8String u8 = L"UNICODE字符串";
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDConfirm);
-	  root["id"] = Json::Value(id);
-	  root["name"] = Json::Value(name);
+	  root["id"] = Json::Value(dev_.id);
+	  if(status == StatusAckDev2Ser)
+	  {
+		  root["org"] = Json::Value(dev_.organization);
+		  root["name"] = Json::Value(dev_.name);
+		  root["interval"] = Json::Value(dev_.heartbeatInterval);
+	  }
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
 	  return pack(temp);
 
 }
-JsonStatus_t JsonCmdManager::parseConfirm(string &js)
+JsonStatus_t JsonCmdManager::parseConfirm(string &js,Device_t &dev_,string &timeString)
 {
 	  Json::Reader reader;
 
@@ -269,6 +274,15 @@ JsonStatus_t JsonCmdManager::parseConfirm(string &js)
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
 		  status = root["status"].asInt();
+		  if(status == StatusParaSer2Dev)
+		  {
+			  dev_.heartbeatInterval = root["interval"].asInt();
+			  dev_.organization = root["org"].asString();
+			  dev_.name = root["name"].asString();
+			  dev_.id = root["id"].asString();
+			  timeString = root["dateTime"].asString();
+		  }
+
 	  }
 
 	  return status;

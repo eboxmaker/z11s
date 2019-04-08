@@ -64,8 +64,8 @@ public:
 	string makeDevID(string &id,JsonStatus_t status);
 	JsonStatus_t parseDevID(string &js);
 
-	string makeConfirm(string &id,string &name,JsonStatus_t status);
-	JsonStatus_t parseConfirm(string &js);
+	string makeConfirm(Device_t &dev_,JsonConfirmStatus_t status);
+	JsonStatus_t parseConfirm(string &js,Device_t &dev_,string &timeString);
 
 	string makeSyncDateTime(string &msg,JsonStatus_t status);
 	JsonStatus_t parseSyncDateTime(string &js,string &msg);

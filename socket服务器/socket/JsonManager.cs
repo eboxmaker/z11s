@@ -52,7 +52,17 @@ namespace MyJson
         StatusRead,
         StatusOK,
         StatusErr
-    }//同
+    }
+    public enum StatusConfirmType  //枚举类型，体会xml注释的样子
+    {
+        StatusReqDev2Ser = 0,
+        StatusParaSer2Dev,
+        StatusAckDev2Ser,
+        StatusOKSer2Dev,
+        StatusErr,
+    }
+
+        //同
        // public JObject jo;
 
         public static JObject OpenFile(string path)
@@ -363,6 +373,22 @@ namespace MyJson
             }
             return status;
         }
+        public static StatusConfirmType GetJsonStatusConfirm(string jstr)
+        {
+            JObject obj = new JObject();
+            StatusConfirmType status = StatusConfirmType.StatusErr;
+            try
+            {
+                obj = (JObject)JsonConvert.DeserializeObject(jstr);
+                status = (StatusConfirmType)Convert.ToInt16(obj["status"].ToString());
+
+            }
+            catch
+            {
+
+            }
+            return status;
+        }
         public static string ParseCMDHeartbeat(string js)
         {
 
@@ -519,12 +545,29 @@ namespace MyJson
             return str;
         }
 
-        public static string MakeConfirm(StatusType status)
+        public static string MakeConfirm(StatusConfirmType status)
         {
+            string dateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.Confirm);
-            obj.Add("id", "");
-            obj.Add("name", "");
+            if(status == StatusConfirmType.StatusParaSer2Dev)
+            {
+                obj.Add("organization", "reg");
+                obj.Add("name", "reg");
+                obj.Add("id", "3832001749591935784");
+                obj.Add("heartbeatInterval", "reg");
+                obj.Add("dateTime", dateTime);
+
+            }
+            if(status == StatusConfirmType.StatusOKSer2Dev)
+            {
+                obj.Add("organization", "reg");
+                obj.Add("name", "reg");
+                obj.Add("id", "3832001749591935784");
+                obj.Add("heartbeatInterval", "reg");
+                obj.Add("dateTime", dateTime);
+            }
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
             string str = Package(jstring);
