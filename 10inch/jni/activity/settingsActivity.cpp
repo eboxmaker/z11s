@@ -4,6 +4,9 @@
 #include "settingsActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextview6Ptr;
+static ZKButton* mBtnOrgNameSetPtr;
+static ZKEditText* mEditOrgNamePtr;
 static ZKSeekBar* mSoundSeekbarPtr;
 static ZKButton* mSoundButtonPtr;
 static ZKTextView* mTextMemUsagePtr;
@@ -83,6 +86,7 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_SETTINGS_BtnOrgNameSet, onButtonClick_BtnOrgNameSet,
     ID_SETTINGS_SoundButton, onButtonClick_SoundButton,
     ID_SETTINGS_BtnSetHeartbeat, onButtonClick_BtnSetHeartbeat,
     ID_SETTINGS_BtnDevNameSet, onButtonClick_BtnDevNameSet,
@@ -145,6 +149,7 @@ typedef struct {
 }S_EditTextInputCallback;
 /*TAG:EditTextInputCallback*/
 static S_EditTextInputCallback SEditTextInputCallbackTab[] = {
+    ID_SETTINGS_EditOrgName, onEditTextChanged_EditOrgName,
     ID_SETTINGS_EditHeartbeat, onEditTextChanged_EditHeartbeat,
     ID_SETTINGS_EditDevName, onEditTextChanged_EditDevName,
     ID_SETTINGS_EditDisplayAdAfterTime, onEditTextChanged_EditDisplayAdAfterTime,
@@ -188,6 +193,9 @@ const char* settingsActivity::getAppName() const{
 //TAG:onCreate
 void settingsActivity::onCreate() {
 	Activity::onCreate();
+    mTextview6Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview6);
+    mBtnOrgNameSetPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnOrgNameSet);
+    mEditOrgNamePtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditOrgName);if(mEditOrgNamePtr!= NULL){mEditOrgNamePtr->setTextChangeListener(this);}
     mSoundSeekbarPtr = (ZKSeekBar*)findControlByID(ID_SETTINGS_SoundSeekbar);if(mSoundSeekbarPtr!= NULL){mSoundSeekbarPtr->setSeekBarChangeListener(this);}
     mSoundButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_SoundButton);
     mTextMemUsagePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextMemUsage);

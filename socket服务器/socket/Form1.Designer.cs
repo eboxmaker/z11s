@@ -81,6 +81,7 @@
             this.tbENcoderLen = new System.Windows.Forms.TextBox();
             this.btnGetKeyHex = new System.Windows.Forms.Button();
             this.btnGetIVHex = new System.Windows.Forms.Button();
+            this.btnSendCourseInfo = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnStartServer
@@ -575,11 +576,22 @@
             this.btnGetIVHex.UseVisualStyleBackColor = true;
             this.btnGetIVHex.Click += new System.EventHandler(this.btnGetIVHex_Click);
             // 
+            // btnSendCourseInfo
+            // 
+            this.btnSendCourseInfo.Location = new System.Drawing.Point(685, 307);
+            this.btnSendCourseInfo.Name = "btnSendCourseInfo";
+            this.btnSendCourseInfo.Size = new System.Drawing.Size(94, 23);
+            this.btnSendCourseInfo.TabIndex = 55;
+            this.btnSendCourseInfo.Text = "发送课程信息";
+            this.btnSendCourseInfo.UseVisualStyleBackColor = true;
+            this.btnSendCourseInfo.Click += new System.EventHandler(this.btnSendCourseInfo_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(995, 436);
+            this.Controls.Add(this.btnSendCourseInfo);
             this.Controls.Add(this.btnGetKeyHex);
             this.Controls.Add(this.btnGetIVHex);
             this.Controls.Add(this.tbENcoderLen);
@@ -695,6 +707,7 @@
         private System.Windows.Forms.TextBox tbENcoderLen;
         private System.Windows.Forms.Button btnGetKeyHex;
         private System.Windows.Forms.Button btnGetIVHex;
+        private System.Windows.Forms.Button btnSendCourseInfo;
     }
 }
 

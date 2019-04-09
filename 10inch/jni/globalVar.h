@@ -28,6 +28,7 @@ using namespace std;
 
 #define QR_DIR		"/mnt/extsd/qr/"
 #define AD_DIR		"/mnt/extsd/ad/"
+#define PIC_DIR		"/mnt/extsd/picture/"
 #define SU_DIR		"/mnt/extsd/super/"
 
 
@@ -70,6 +71,7 @@ typedef enum
 {
 	CMDHeartbeat,
 	CMDSetHeartbeat,
+	CMDOrgName,
 	CMDDevName,
 	CMDDevID,
 	CMDConfirm,
@@ -77,6 +79,7 @@ typedef enum
 	CMDAdminPwd,
 	CMDDoorPwd,
 	CMDDoorCtr,
+	CMDCourseInfo,
 	CMDPlan,
 	CMDBroadcast,
 
@@ -128,7 +131,21 @@ typedef struct
 	string courser;
 }PlanRow_t;
 
+typedef struct
+{
+	string name;
+	long datalen;
+	string data;
+}Picture_t;
 
+typedef struct
+{
+	string name;
+	string class_;
+	string num;
+	string course;
+	Picture_t picture;
+}CourseInfo_t;
 
 class Plan
 {
@@ -180,7 +197,7 @@ extern PersonList_t gUserAdmin;
 extern Plan gPlan;
 extern string gBroadcastMsg;
 extern Person_t gPerson;
-
+extern CourseInfo_t gInfo;
 //class MySocketListener : public SocketClient::ISocketListener
 //{
 //	public:

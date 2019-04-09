@@ -237,6 +237,17 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 
 		break;
 
+	case CMDCourseInfo:
+		if(status == StatusSet)
+		{
+			mTextTecherNamePtr->setText(gInfo.name);
+			mTextClassPtr->setText(gInfo.class_);
+			mTextNumPtr->setText(gInfo.num);
+			mTextCoursePtr->setText(gInfo.course);
+			mBtnTecherPicturePtr->setBackgroundPic(msg.c_str());
+			LOGE("MSG:%s",msg.c_str());
+		}
+		break;
 	case CMDPlan:
 		if(status == StatusOK)
 		{
@@ -352,6 +363,7 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
+	LOGO("显示:key");
 	EASYUICONTEXT->hideStatusBar();
 	mWindStatusNoticePtr->hideWnd();
 	mWinPwdAdminPtr->hideWnd();
@@ -374,7 +386,7 @@ static void onUI_show() {
     }
 
     string title;
-    title = mTextTitlePtr->getText();
+    title = dev.organization;
     title += " | ";
     title += dev.name;
 
@@ -399,7 +411,7 @@ static void onUI_show() {
  */
 static void onUI_hide() {
 	EASYUICONTEXT->hideStatusBar();
-	LOGE("隐藏");
+	LOGO("隐藏:key");
 
 }
 
@@ -413,6 +425,7 @@ static void onUI_quit() {
 	mBtnBackPtr->setLongClickListener(NULL);
     gSocket->deattachOnConnect(1);
     gSocket->deattachOnDisconnect(1);
+	LOGO("注销:key");
 
 
 }
@@ -457,11 +470,13 @@ static void adLoop()
  *         false
  *             停止运行当前定时器
  */
+#include "readdir.h"
 static bool onUI_Timer(int id){
 	switch (id) {
 	case 0:
 		updateUI_time();
 		adLoop();
+		//dispMemUsage();
 		break;
 		default:
 			break;
@@ -733,5 +748,9 @@ static bool onButtonClick_Button5(ZKButton *pButton) {
 
 static bool onButtonClick_Button6(ZKButton *pButton) {
     //LOGD(" ButtonClick Button6 !!!\n");
+    return false;
+}
+static bool onButtonClick_BtnTecherPicture(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnTecherPicture !!!\n");
     return false;
 }

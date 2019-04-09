@@ -192,6 +192,15 @@ namespace socket
                             server.SendAll(resault);
                         }
                         break;
+                    case JsonManager.CMDType.OrgName:
+                        string org = JsonManager.ParseOrgName(js);
+                        if (status == JsonManager.StatusType.StatusSet)
+                        {
+                            resault = JsonManager.MakeOrgName(org, JsonManager.StatusType.StatusOK);
+                            server.SendAll(resault);
+                        }
+
+                        break;
                     case JsonManager.CMDType.DevName:
                         string name = JsonManager.ParseDevName(js);
                         if (status == JsonManager.StatusType.StatusSet)
@@ -459,6 +468,13 @@ namespace socket
             byte[] keyBytes = Encoding.UTF8.GetBytes("1234567890000000");
 
             tbAesTest.Text = AESEncrypt.ByteArrayToHexString(keyBytes);
+        }
+
+        private void btnSendCourseInfo_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeCourseInfoString("touxiang.jpg");
+            server.SendAll(str);
+
         }
 
 

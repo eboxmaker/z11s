@@ -26,8 +26,12 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_KEYBOARD_BtnTecherPicture    20017
+#define ID_KEYBOARD_TextCourse    50015
+#define ID_KEYBOARD_TextClass    50013
+#define ID_KEYBOARD_TextTecherName    50011
+#define ID_KEYBOARD_TextNum    50001
 #define ID_KEYBOARD_Textview13    50039
-#define ID_KEYBOARD_Textview1    50001
 #define ID_KEYBOARD_BtnBackMain    20014
 #define ID_KEYBOARD_TextBroadcast    50007
 #define ID_KEYBOARD_WindBroadcast    110004
@@ -65,11 +69,8 @@
 #define ID_KEYBOARD_Textview11    50017
 #define ID_KEYBOARD_WindPlan    110005
 #define ID_KEYBOARD_BtnPlan    20018
-#define ID_KEYBOARD_Textview9    50015
 #define ID_KEYBOARD_Textview8    50014
-#define ID_KEYBOARD_Textview7    50013
 #define ID_KEYBOARD_Textview6    50012
-#define ID_KEYBOARD_Textview5    50011
 #define ID_KEYBOARD_Textview4    50008
 #define ID_KEYBOARD_WindState    110002
 #define ID_KEYBOARD_TextWeek    50006

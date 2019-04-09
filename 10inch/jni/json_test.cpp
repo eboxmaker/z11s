@@ -111,7 +111,7 @@ bool JsonCmdManager::unPack(string& package,string& msg)
 	  }
 	  else
 	  {
-		  LOGE("帧错误");
+		  LOGE("%s:帧错误",__FILE__);
 		  return false;
 	  }
 
@@ -167,7 +167,7 @@ string JsonCmdManager::makeSetHeartbeat(int interval,JsonStatus_t status)
 {
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDSetHeartbeat);
-	  root["interval"] = Json::Value(interval);
+	  root["heartbeatInterval"] = Json::Value(interval);
 	  root["status"] = Json::Value((int)status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
@@ -183,7 +183,7 @@ JsonStatus_t JsonCmdManager::parseSetHeartbeat(string &js, int &interval)
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
 
-		  interval = root["interval"].asInt();
+		  interval = root["heartbeatInterval"].asInt();
 		  status = (JsonStatus_t)root["status"].asInt();
 	  }
 
@@ -216,6 +216,36 @@ JsonStatus_t JsonCmdManager::parseDevID(string &js)
 
 	  return status;
 }
+
+string JsonCmdManager::makeOrgName(string &org,JsonStatus_t status)
+{
+
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDOrgName);
+	  root["organization"] = Json::Value(org);
+	  root["status"] = Json::Value(status);
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return pack(temp);
+}
+JsonStatus_t JsonCmdManager::parseOrgName(string &js,string &org)
+{
+	  Json::Reader reader;
+
+	  Json::Value root;
+	  JsonStatus_t status;
+	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+		  status = root["status"].asInt();
+		  if(status == StatusSet)
+		  {
+			  org = root["organization"].asString();
+		  }
+	  }
+
+	  return status;
+}
+
 string JsonCmdManager::makeDevName(string &name,JsonStatus_t status)
 {
 
@@ -255,7 +285,7 @@ string JsonCmdManager::makeConfirm(Device_t &dev_,JsonConfirmStatus_t status)
 	  root["id"] = Json::Value(dev_.id);
 	  if(status == StatusAckDev2Ser)
 	  {
-		  root["org"] = Json::Value(dev_.organization);
+		  root["organization"] = Json::Value(dev_.organization);
 		  root["name"] = Json::Value(dev_.name);
 		  root["interval"] = Json::Value(dev_.heartbeatInterval);
 	  }
@@ -276,8 +306,8 @@ JsonStatus_t JsonCmdManager::parseConfirm(string &js,Device_t &dev_,string &time
 		  status = root["status"].asInt();
 		  if(status == StatusParaSer2Dev)
 		  {
-			  dev_.heartbeatInterval = root["interval"].asInt();
-			  dev_.organization = root["org"].asString();
+			  dev_.heartbeatInterval = root["heartbeatInterval"].asInt();
+			  dev_.organization = root["organization"].asString();
 			  dev_.name = root["name"].asString();
 			  dev_.id = root["id"].asString();
 			  timeString = root["dateTime"].asString();
@@ -413,6 +443,63 @@ JsonStatus_t JsonCmdManager::parseDoorCtr(string &js,doorState_t &door)
 
 	  return status;
 }
+
+string  JsonCmdManager::makeCourseInfo(CourseInfo_t &info,JsonStatus_t status)
+{
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDCourseInfo);
+	  root["name"] = Json::Value(info.name);
+	  root["class"] = Json::Value(info.class_);
+	  root["num"] = Json::Value(info.num);
+	  root["course"] = Json::Value(info.course);
+	  root["picture.name"] = Json::Value(info.picture.name);
+	  root["picture.datalen"] = Json::Value((int)info.picture.datalen);
+
+	  root["status"] = Json::Value(status);
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return pack(temp);
+}
+JsonStatus_t  JsonCmdManager::parseCourseInfo(string &js,CourseInfo_t &info)
+{
+	JsonStatus_t status;
+	Json::Reader reader;
+	Json::Value root;
+	if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	{
+		status = root["status"].asInt();
+		if(status == StatusSet )
+		{
+			info.name = root["name"].asString();
+			info.class_ = root["class"].asString();
+			info.num = root["num"].asString();
+			info.course = root["course"].asString();
+
+
+			info.picture.name = root["pic.name"].asString();  // 访问节点，upload_id = "UP000000"
+			info.picture.data = root["pic.data"].asString();    // 访问节点，code = 100
+			info.picture.datalen = root["pic.datalen"].asLargestUInt();
+
+
+			if(info.picture.datalen != info.picture.data.length())
+			{
+				LOGE("头像长度不匹配");
+				return StatusErr;
+			}
+			string picBuf;
+			picBuf = info.picture.data;
+			info.picture.data = "";
+			if(Base64::Decode(picBuf,&info.picture.data))
+			{
+
+			}
+		}
+
+	}
+
+	  return status;
+}
+
 string JsonCmdManager::makePlan(JsonStatus_t status)
 {
 	  Json::Value root;

@@ -38,7 +38,7 @@ static bool isFirstShow = true;
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	//{0,  6000}, //定时器id=0, 时间间隔6秒
+	{0,  1000}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
 };
 
@@ -64,6 +64,7 @@ static void onUI_intent(const Intent *intentPtr) {
  */
 static void onUI_show() {
 	EASYUICONTEXT->hideStatusBar();
+	LOGO("显示:main");
 	if(isFirstShow)
 	{
 		EASYUICONTEXT->openActivity("keyboardActivity");
@@ -76,6 +77,7 @@ static void onUI_show() {
  * 当界面隐藏时触发
  */
 static void onUI_hide() {
+	LOGO("隐藏:main");
 
 }
 
@@ -83,6 +85,7 @@ static void onUI_hide() {
  * 当界面完全退出时触发
  */
 static void onUI_quit() {
+	LOGO("注销:main");
 
 }
 
@@ -103,9 +106,11 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  *         false
  *             停止运行当前定时器
  */
+#include "readdir.h"
 static bool onUI_Timer(int id){
 	switch (id) {
-
+	case 0:
+		//dispMemUsage();
 		default:
 			break;
 	}
@@ -115,8 +120,8 @@ const char* IconTab[]={
 
 		"personActivity",
 		"settingsActivity",
-		"networkActivity",
 		"keyboardActivity",
+		"networkActivity"
 		"waveViewActivity",
 		"testpointerActivity",
 		"windowActivity",

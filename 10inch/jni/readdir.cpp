@@ -159,3 +159,16 @@ bool creat_file(string &fullName,const char *data,size_t size)
 	}
 	return true;
 }
+
+#include <sys/sysinfo.h>
+
+void dispMemUsage()
+{
+	struct sysinfo systemInfo;
+	float memUsage;
+
+    sysinfo(&systemInfo);
+    memUsage = (1 - ((float)systemInfo.freeram/(float)systemInfo.totalram))*100;
+    LOGO("%0.1f%%(%0.2fM/%0.2fM)",memUsage,systemInfo.freeram/1024.0/1024.0,systemInfo.totalram/1024.0/1024.0);
+
+}

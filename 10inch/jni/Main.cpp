@@ -33,11 +33,12 @@ extern "C" {
 static void *MainLoop(void *lParam);
 static void LoadParament()
 {
+    dev.id = jm.getID();
+
     dev.serverIP = StoragePreferences::getString("dev.serverIP", "192.168.1.1");
     dev.serverPort = StoragePreferences::getInt("dev.serverPort", 6000);
     dev.pwdLocal = StoragePreferences::getString("dev.pwdLocal", "123456");
 
-    dev.id = jm.getID();
     dev.organization = StoragePreferences::getString("dev.organization", "none");
     dev.name = StoragePreferences::getString("dev.name","none");
 
@@ -48,6 +49,7 @@ static void LoadParament()
 
 
 
+    make_dir(PIC_DIR);
     make_dir(QR_DIR);
     make_dir(AD_DIR);
     std::vector<S_INFOS> temp;
@@ -96,12 +98,13 @@ static void reconncet()
 	int counter = 0;
 
 	dev.confirmState = false;
-	LOGE("正在连接。。。");
+	LOGO("正在连接。。。");
 	gSocket->disconnect();
 	ret = gSocket->connect(dev.serverIP.c_str(),dev.serverPort);
 	if(ret == true)
 	{
-		LOGE("连接服务器成功!\n");
+//		LOGO("连接服务器成功!\n");
+		LOGO("正在注册。。。");
 		string js = jm.makeConfirm(dev, StatusReqDev2Ser);
 		gSocket->write_(js);
 
@@ -122,7 +125,7 @@ static void reconncet()
 		}
 		else
 		{
-			LOGE("注册成功!!!\n");
+			LOGO("注册成功!!!\n");
 			gSocket->conncetState = true;
 		}
 
@@ -140,9 +143,10 @@ static void timeoutLoop()
 {
 	if(	gSocket->trigerTime != -1)
 	{
+		//LOGO("开启超时检测触发");
 		if(time(NULL) - gSocket->trigerTime >= gSocket->trigerTimeout)
 		{
-			LOGE("已经触发");
+			//LOGO("已经触发");
 			exeCMD("trigerTimeout");
 			gSocket->trigerTime = -1;
 		}

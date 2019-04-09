@@ -76,7 +76,27 @@ static void updateAdSetWind()
 //}
 
 
+static void updateDisp()
+{
+	int interval = 0;
+	string org,name;
+	string serverIP;
+	int serverPort;
 
+    serverIP = StoragePreferences::getString("dev.serverIP", "192.168.1.1");
+    serverPort = StoragePreferences::getInt("dev.serverPort", 6000);
+    org = StoragePreferences::getString("dev.organization","none");
+	name = StoragePreferences::getString("dev.name","none");
+	interval = StoragePreferences::getInt("dev.heartbeatInterval", 5);
+
+
+    mEditTextServerIPPtr->setText(serverIP.c_str());
+    mEditTextServerPortPtr->setText(serverPort);
+    mEditOrgNamePtr->setText(org);
+	mEditDevNamePtr->setText(name);
+	mEditHeartbeatPtr->setText(interval);
+
+}
 //网络数据回调接口
 static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 {
@@ -87,6 +107,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 	case CMDAdminPwd:
 	case CMDSyncDateTime:
 	case CMDAdSet:
+	case CMDOrgName:
 	case CMDDevName:
 		mWindStatusNoticePtr->showWnd();
 		if(status == StatusSet)
@@ -98,6 +119,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		{
 			gSocket->disableTriger();
 			mTextStatusNoticePtr->setText("服务器同步成功");
+			updateDisp();
 		}
 		sleep(1);
 		mWindStatusNoticePtr->hideWnd();
@@ -147,14 +169,9 @@ static void onUI_intent(const Intent *intentPtr) {
  */
 static void onUI_show() {
     EASYUICONTEXT->showStatusBar();
-    dev.serverIP = StoragePreferences::getString("dev.serverIP", "192.168.1.1");
-    dev.serverPort = StoragePreferences::getInt("dev.serverPort", 6000);
-    LOGD("gServerIP %s\n", dev.serverIP.c_str());
-    LOGD("gServerPort %d\n", dev.serverPort);
-    char temp[10];
-    sprintf(temp,"%d",dev.serverPort);
-    mEditTextServerIPPtr->setText(dev.serverIP.c_str());
-    mEditTextServerPortPtr->setText(temp);
+
+    updateDisp();
+
 
     mWndModifyAdminPwdPtr->hideWnd();
     mWndAdSetPtr->hideWnd();
@@ -165,11 +182,7 @@ static void onUI_show() {
 	else
 		mBtnServerStatePtr->setBackgroundPic("guan.png");
 
-	mEditDevNamePtr->setText(dev.name);
 
-	itoa(dev.heartbeatInterval,temp);
-
-	mEditHeartbeatPtr->setText(temp);
 
 //	mSeekbarMemUsagePtr->setProgress(gMemUsage);
 //	sprintf(temp,"%0.1f%%",gMemUsage);
@@ -181,8 +194,6 @@ static void onUI_show() {
  */
 static void onUI_hide() {
 	EASYUICONTEXT->hideStatusBar();
-	LOGE("隐藏");
-
 }
 
 /*
@@ -274,7 +285,7 @@ static bool onButtonClick_BtnServer(ZKButton *pButton) {
 	tempServerPort = atoi(mEditTextServerPortPtr->getText().c_str());
 	if((tempServerIP == dev.serverIP ) && (tempServerPort == dev.serverPort))
 	{
-		LOGE("%s:%d",dev.serverIP.c_str(),tempServerPort);
+//		LOGE("%s:%d",dev.serverIP.c_str(),tempServerPort);
 	    mTextStatusNoticePtr->setText("无更改");
 	    mWindStatusNoticePtr->showWnd();
 		return true;
@@ -305,7 +316,7 @@ static bool onButtonClick_BtnServer(ZKButton *pButton) {
 		bool ret = gSocket->connect(dev.serverIP.c_str(),dev.serverPort);
 		if(ret == true)
 		{
-			LOGE("连接服务器成功!\n");
+//			LOGE("连接服务器成功!\n");
 		    mTextStatusNoticePtr->setText("连接服务器成功!");
 
 		}
@@ -439,13 +450,15 @@ static void onEditTextChanged_EditDisplayAdAfterTime(const std::string &text) {
 	string str = mEditDisplayAdAfterTimePtr->getText();
 	int temp = atoi(str.c_str());
 	if(temp > 100)
-		mEditDisplayAdAfterTimePtr->setText("100");
+		temp = 100;
 	else if(temp <= 10)
-		mEditDisplayAdAfterTimePtr->setText("10");
+		temp = 10;
 	else
 	{
 
 	}
+	mEditDisplayAdAfterTimePtr->setText(temp);
+
 }
 
 
@@ -498,7 +511,31 @@ static bool onButtonClick_BtnAdEnable(ZKButton *pButton) {
     return false;
 }
 
+static bool onButtonClick_BtnOrgNameSet(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnOrgNameSet !!!\n");
+    //LOGD(" ButtonClick BtnNameSet !!!\n");
+	string organization;
+	organization = mEditOrgNamePtr->getText();
+    StoragePreferences::putString("dev.organization", organization);
+    if(gSocket->connected())
+    {
+        mWindStatusNoticePtr->showWnd();
+        mTextStatusNoticePtr->setText("本地设置成功");
+        mTextStatusNotice2Ptr->setText("正在同步服务器设置");
 
+    	gSocket->updateTriger();
+    	string msg;
+    	msg = jm.makeOrgName(organization, StatusSet);
+		gSocket->write_(msg);
+    }
+    else
+    {
+        mWindStatusNoticePtr->showWnd();
+        mTextStatusNoticePtr->setText("本地设置成功");
+        mTextStatusNotice2Ptr->setText("无法同步设置服务器");
+    }
+    return false;
+}
 static bool onButtonClick_BtnDevNameSet(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnNameSet !!!\n");
 	string temp;
@@ -542,7 +579,6 @@ static bool onButtonClick_BtnSetHeartbeat(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnNameSet !!!\n");
 	int temp;
 	temp = atoi(mEditHeartbeatPtr->getText().c_str());
-	LOGE("TEMP:%d",temp);
 	if(temp>0 && temp < 100)
 	{
 		dev.heartbeatInterval = temp;
@@ -569,6 +605,14 @@ static bool onButtonClick_BtnSetHeartbeat(ZKButton *pButton) {
 }
 static void onEditTextChanged_EditHeartbeat(const std::string &text) {
     //LOGD(" onEditTextChanged_ EditHeartbeat %s !!!\n", text.c_str());
+	string str = mEditHeartbeatPtr->getText();
+	int temp = atoi(str.c_str());
+	if(temp > 100)
+		temp = 100;
+	else if(temp <= 3)
+		temp = 3;
+	mEditHeartbeatPtr->setText(temp);
+
 }
 static void onProgressChanged_SeekbarMemUsage(ZKSeekBar *pSeekBar, int progress) {
     //LOGD(" ProgressChanged SeekbarMemUsage %d !!!\n", progress);
@@ -582,3 +626,8 @@ static bool onButtonClick_SoundButton(ZKButton *pButton) {
 static void onProgressChanged_SoundSeekbar(ZKSeekBar *pSeekBar, int progress) {
     //LOGD(" ProgressChanged SoundSeekbar %d !!!\n", progress);
 }
+static void onEditTextChanged_EditOrgName(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EditOrgName %s !!!\n", text.c_str());
+}
+
+

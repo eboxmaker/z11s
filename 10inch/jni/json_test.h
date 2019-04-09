@@ -58,6 +58,9 @@ public:
 	string makeSetHeartbeat(int interval,JsonStatus_t status);
 	JsonStatus_t parseSetHeartbeat(string &js,int &interval);
 
+	string makeOrgName(string &org,JsonStatus_t status);
+	JsonStatus_t parseOrgName(string &js,string &org);
+
 	string makeDevName(string &name,JsonStatus_t status);
 	JsonStatus_t parseDevName(string &js,string &name);
 
@@ -79,6 +82,9 @@ public:
 	string 			makeDoorCtr(doorState_t &door,JsonStatus_t status);
 	JsonStatus_t 	parseDoorCtr(string &js,doorState_t &door);
 
+
+	string makeCourseInfo(CourseInfo_t &info,JsonStatus_t status);
+	JsonStatus_t parseCourseInfo(string &js, CourseInfo_t &info);
 
 	string makePlan(JsonStatus_t status);
 	JsonStatus_t parsePlan(string &js, Plan &plan);

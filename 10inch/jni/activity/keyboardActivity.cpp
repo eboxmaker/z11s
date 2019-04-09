@@ -4,8 +4,12 @@
 #include "keyboardActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKButton* mBtnTecherPicturePtr;
+static ZKTextView* mTextCoursePtr;
+static ZKTextView* mTextClassPtr;
+static ZKTextView* mTextTecherNamePtr;
+static ZKTextView* mTextNumPtr;
 static ZKTextView* mTextview13Ptr;
-static ZKTextView* mTextview1Ptr;
 static ZKTextView* mTextBroadcastPtr;
 static ZKButton* mBtnBackMainPtr;
 static ZKWindow* mWindBroadcastPtr;
@@ -43,11 +47,8 @@ static ZKTextView* mTextview10Ptr;
 static ZKTextView* mTextview11Ptr;
 static ZKWindow* mWindPlanPtr;
 static ZKButton* mBtnPlanPtr;
-static ZKTextView* mTextview9Ptr;
 static ZKTextView* mTextview8Ptr;
-static ZKTextView* mTextview7Ptr;
 static ZKTextView* mTextview6Ptr;
-static ZKTextView* mTextview5Ptr;
 static ZKTextView* mTextview4Ptr;
 static ZKWindow* mWindStatePtr;
 static ZKTextView* mTextWeekPtr;
@@ -110,6 +111,7 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_KEYBOARD_BtnTecherPicture, onButtonClick_BtnTecherPicture,
     ID_KEYBOARD_BtnBackMain, onButtonClick_BtnBackMain,
     ID_KEYBOARD_Button5, onButtonClick_Button5,
     ID_KEYBOARD_Button4, onButtonClick_Button4,
@@ -215,8 +217,12 @@ const char* keyboardActivity::getAppName() const{
 //TAG:onCreate
 void keyboardActivity::onCreate() {
 	Activity::onCreate();
+    mBtnTecherPicturePtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnTecherPicture);
+    mTextCoursePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextCourse);
+    mTextClassPtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextClass);
+    mTextTecherNamePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextTecherName);
+    mTextNumPtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextNum);
     mTextview13Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview13);
-    mTextview1Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview1);
     mTextBroadcastPtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextBroadcast);
     mBtnBackMainPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnBackMain);
     mWindBroadcastPtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindBroadcast);
@@ -254,11 +260,8 @@ void keyboardActivity::onCreate() {
     mTextview11Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview11);
     mWindPlanPtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindPlan);
     mBtnPlanPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnPlan);
-    mTextview9Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview9);
     mTextview8Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview8);
-    mTextview7Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview7);
     mTextview6Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview6);
-    mTextview5Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview5);
     mTextview4Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview4);
     mWindStatePtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindState);
     mTextWeekPtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextWeek);

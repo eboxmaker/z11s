@@ -23,8 +23,9 @@ long gKeyboardLastActionTime = 0;
 Person_t gPerson;
 PersonList_t gUserAdmin;
 Plan gPlan;
-string gBroadcastMsg;
+CourseInfo_t gInfo;
 
+string gBroadcastMsg;
 
 
 
@@ -52,14 +53,15 @@ void exeCMD(string &package)
 
 
 	int counter =0;
-	bool ret;
+	bool ret = false;
 	int status = -1;
 	int cStatus = -1;
 	msg = "";
+	char msgBuf[50];
 	string js;
-	if(msg == "trigerTimeout")
+	if(package == "trigerTimeout")
 	{
-
+		//LOGE("发出超时通知");
 		if(networkTestCallback != NULL)
 			networkTestCallback(255,StatusErr,msg);
 		if(keyboardCallback != NULL)
@@ -72,11 +74,15 @@ void exeCMD(string &package)
 			PersonCallback(255,StatusErr,msg);
 		return;
 	}
-	ret = jm.unPack(package, js);;
+	else
+	{
+		ret = jm.unPack(package, js);;
+	}
 	if(ret == true)
 	{
 
 		JsonCmd_t cmd = getJsonCMD(js);
+		LOGE("CMD:%d",cmd);
 		switch(cmd)
 		{
 		case CMDHeartbeat:
@@ -93,24 +99,27 @@ void exeCMD(string &package)
 			status = jm.parseSetHeartbeat(js,tempInterval);
 			if(status == StatusSet)
 			{
-				if(tempInterval > 10)tempInterval= 10;
+				if(tempInterval > 100)tempInterval= 100;
 				if(tempInterval < 3)tempInterval = 3;
 				dev.heartbeatInterval = tempInterval;
 				StoragePreferences::putInt("dev.heartbeatInterval", dev.heartbeatInterval);
-
+				ack = jm.makeSetHeartbeat(dev.heartbeatInterval, StatusOK);
+				gSocket->write_(ack);
 			}
-			ack = jm.makeSetHeartbeat(dev.heartbeatInterval, StatusOK);
-			gSocket->write_(ack);
+			if(status == StatusRead)
+			{
+				ack = jm.makeSetHeartbeat(dev.heartbeatInterval, StatusOK);
+				gSocket->write_(ack);
+			}
 			break;
 		case CMDConfirm:
 			cStatus = jm.parseConfirm(js,tempDev,msg);
-
-
+			//LOGE("%s",js.c_str());
 			if(cStatus == StatusParaSer2Dev)
 			{
 				if(tempDev.id == dev.id)
 				{
-					LOGE("服务器匹配设备正确！");
+					//LOGE("服务器匹配设备正确！");
 					//更新四个参数
 					TimeHelper::setDateTime(msg.c_str());
 					StoragePreferences::putInt("dev.heartbeatInterval", tempDev.heartbeatInterval);
@@ -144,7 +153,36 @@ void exeCMD(string &package)
 
 			}
 			break;
+		case CMDOrgName:
+			status = jm.parseOrgName(js,dev.organization);
+			if(status == StatusSet)
+			{
+			    StoragePreferences::putString("dev.organization", dev.organization);
 
+				ack = jm.makeOrgName(dev.organization, StatusOK);
+				gSocket->write_(ack);
+			}
+			else if(status == StatusRead)
+			{
+				ack = jm.makeOrgName(dev.organization, StatusOK);
+				gSocket->write_(ack);
+			}
+			break;
+		case CMDDevName:
+			status = jm.parseDevName(js,dev.name);
+			if(status == StatusSet)
+			{
+			    StoragePreferences::putString("dev.name", dev.name);
+
+				ack = jm.makeDevName(dev.name, StatusOK);
+				gSocket->write_(ack);
+			}
+			else if(status == StatusRead)
+			{
+				ack = jm.makeDevName(dev.name, StatusOK);
+				gSocket->write_(ack);
+			}
+			break;
 		case CMDDevID:
 			status = jm.parseDevID(js);
 			if(status == StatusSet || status == StatusRead)
@@ -297,6 +335,23 @@ void exeCMD(string &package)
 			//回复
 
 			break;
+
+		case CMDCourseInfo:
+			LOGE("CMD:CMDCourseInfo");
+			status = jm.parseCourseInfo(js, gInfo);
+			if(status == StatusSet)
+			{
+				msg = PIC_DIR + gInfo.picture.name;
+				if(creat_file(msg,gInfo.picture.data.c_str(),gInfo.picture.data.size()))
+				{
+					ack = jm.makeCourseInfo(gInfo,StatusOK);
+					gSocket->write_(ack);
+				}
+			}
+			LOGE("CMD:CMDCourseInfo:s=%d",status);
+			LOGE("%s，%s",gInfo.name.c_str(),gInfo.course.c_str());
+
+			break;
 		case CMDPlan:
 			status = jm.parsePlan(js, gPlan);
 			if(status == StatusRead)
@@ -318,22 +373,7 @@ void exeCMD(string &package)
 			gSocket->write_(ack);
 			break;
 
-		case CMDDevName:
-			status = jm.parseDevName(js,dev.name);
-			if(status == StatusSet)
-			{
-			    StoragePreferences::putString("dev.name", dev.name);
 
-				ack = jm.makeDevName(dev.name, StatusOK);
-				gSocket->write_(ack);
-			}
-			else if(status == StatusRead)
-			{
-				ack = jm.makeDevName(dev.name, StatusOK);
-				gSocket->write_(ack);
-			}
-			LOGE("status：%d",status);
-			break;
 		case CMDPerson:
 			status = jm.parsePerson(js, gPerson);
 			if(status == StatusOK)

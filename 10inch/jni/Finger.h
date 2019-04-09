@@ -13,8 +13,6 @@
 
 using namespace std;
 
-#define TRUE  0x01
-#define FALSE  0x00
 
 #define DATA_START			0xf5//数据包开始
 #define DATA_END			0xf5//数据包结束

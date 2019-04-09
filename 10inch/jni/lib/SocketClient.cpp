@@ -272,7 +272,7 @@ void SocketClient::disableTriger()
 //}
 
 
-#define MSG_BUF_SIZE 1000*1024
+#define MSG_BUF_SIZE 2000*1024
 char msg_buf[MSG_BUF_SIZE];
 
 void SocketClient::threadLoop() {
@@ -371,5 +371,5 @@ void SocketClient::threadLoop() {
 //
 	}
 
-	LOGE("关闭线程.\n");
+	LOGE("关闭接收数据的线程.\n");
 }

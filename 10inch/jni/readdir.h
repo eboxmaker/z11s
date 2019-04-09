@@ -34,5 +34,6 @@ class FileOpt
 	bool rm_file(string &file_full_name);
 
 };
+void dispMemUsage();
 
 #endif /* JNI_READDIR_H_ */

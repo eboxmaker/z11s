@@ -23,6 +23,7 @@ namespace MyJson
     {
         	Heartbeat,
 	        SetHeartbeat,
+            OrgName,
             DevName,
             DevID,
             Confirm,
@@ -30,6 +31,7 @@ namespace MyJson
             AdminPwd,
 	        DoorPwd,
 	        DoorCtr,
+            CourseInfo,
             Plan,
             Broadcast, 
         
@@ -264,6 +266,25 @@ namespace MyJson
             string jstring = JsonConvert.SerializeObject(obj);
             return jstring;
         }
+        public static string MakeCourseInfoString(string FilePath)
+        {
+            JObject obj = new JObject();
+            string name = Path.GetFileName(FilePath);
+            string data = FileToBase64(FilePath);
+            obj.Add("cmd",  (int)CMDType.CourseInfo);
+            obj.Add("name", "李建义");
+            obj.Add("class", "B12345");
+            obj.Add("num", "40");
+            obj.Add("course", "编译原理");
+            obj.Add("pic.name", FilePath);
+            obj.Add("pic.data", data);
+            obj.Add("pic.datalen", data.Length);
+            obj.Add("pic.type", "bas64");
+            obj.Add("status", (int)StatusType.StatusSet);
+            string jstring = JsonConvert.SerializeObject(obj);
+            string str = Package(jstring);
+            return str;
+        }
         public static bool SaveJsonStringFile(string JSFile,string Dircetoy)
         {
             JObject obj = JObject.Parse(JSFile);
@@ -400,7 +421,7 @@ namespace MyJson
         {
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.SetHeartbeat);
-            obj.Add("interval", interval);
+            obj.Add("heartbeatInterval", interval);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
             string str = Package(jstring);
@@ -553,25 +574,42 @@ namespace MyJson
             obj.Add("cmd", (int)CMDType.Confirm);
             if(status == StatusConfirmType.StatusParaSer2Dev)
             {
-                obj.Add("organization", "reg");
-                obj.Add("name", "reg");
+                obj.Add("organization", "北华航天工业学院");
+                obj.Add("name", "软三");
                 obj.Add("id", "3832001749591935784");
-                obj.Add("heartbeatInterval", "reg");
+                obj.Add("heartbeatInterval", 5);
                 obj.Add("dateTime", dateTime);
 
             }
             if(status == StatusConfirmType.StatusOKSer2Dev)
             {
-                obj.Add("organization", "reg");
-                obj.Add("name", "reg");
+                obj.Add("organization", "北华航天工业学院");
+                obj.Add("name", "软三");
                 obj.Add("id", "3832001749591935784");
-                obj.Add("heartbeatInterval", "reg");
+                obj.Add("heartbeatInterval", 5);
                 obj.Add("dateTime", dateTime);
             }
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
             string str = Package(jstring);
             return str;
+        }
+        public static string MakeOrgName(string organization, StatusType status)
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.OrgName);
+            obj.Add("organization", organization);
+            obj.Add("status", (int)status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            string str = Package(jstring);
+            return str;
+        }
+
+        public static string ParseOrgName(string js)
+        {
+            JObject jo = (JObject)JsonConvert.DeserializeObject(js);
+            string organization = jo["organization"].ToString();
+            return organization;
         }
 
         public static string MakeDevName(string name,StatusType status)
