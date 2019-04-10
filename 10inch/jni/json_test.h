@@ -114,7 +114,7 @@ public:
 	JsonStatus_t parseVersion(string &js);
 
 	string makeUpdate(JsonStatus_t status);
-	JsonStatus_t parseUpdate(string &js);
+	JsonStatus_t parseUpdate(string &js,StorageFileInfo_t &gFileInfo);
 
 	string makeReboot(JsonStatus_t status);
 	JsonStatus_t parseReboot(string &js);

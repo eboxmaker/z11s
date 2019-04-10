@@ -68,12 +68,6 @@ public:
 		CmdMode,
 		FileMode
 	}mode;
-	struct
-	{
-		long len;
-		std::string fullName;
-		FILE *fp;
-	}file;
 private:
 	int mClientSocket;
 

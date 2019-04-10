@@ -176,7 +176,7 @@ static void *MainLoop(void *lParam)
 	int counter = 0;
 
 
-	Thread::sleep(5000);
+	Thread::sleep(1000);
 
 
 	while(1)

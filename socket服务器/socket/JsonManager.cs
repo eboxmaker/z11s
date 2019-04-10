@@ -46,6 +46,10 @@ namespace MyJson
 
             Person,
 
+            CMDVersion,
+            CMDUpdate,
+            CMDReboot,
+
             CMDErr,
     }//同
     public enum StatusType  //枚举类型，体会xml注释的样子
@@ -576,7 +580,7 @@ namespace MyJson
             {
                 obj.Add("organization", "北华航天工业学院");
                 obj.Add("name", "软三");
-                obj.Add("id", "3832001749591935784");
+                obj.Add("id", "3832001749589048353");
                 obj.Add("heartbeatInterval", 5);
                 obj.Add("dateTime", dateTime);
 
@@ -686,5 +690,41 @@ namespace MyJson
             string str = Package(jstring);
             return str;
         }
+        public static string MakeVersion(StatusType status)
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.CMDVersion);
+            obj.Add("status", (int)status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            string str = Package(jstring);
+            return str;
+        }
+        public static string MakeReboot(StatusType status)
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.CMDReboot);
+            obj.Add("status", (int)status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            string str = Package(jstring);
+            return str;
+        }
+        public static string MakeUpdate(string fileName,StatusType status)
+        {
+            string name = Path.GetFileName(fileName);
+            FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+            long nbyte = fs.Length;
+
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.CMDUpdate);
+            obj.Add("name", fileName);
+            obj.Add("size", (long)nbyte);
+            obj.Add("md5", "dm5test123");
+            obj.Add("status", (int)status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            string str = Package(jstring);
+            return str;
+        }
+
+
     }
 }

@@ -82,6 +82,9 @@
             this.btnGetKeyHex = new System.Windows.Forms.Button();
             this.btnGetIVHex = new System.Windows.Forms.Button();
             this.btnSendCourseInfo = new System.Windows.Forms.Button();
+            this.btnReadVersion = new System.Windows.Forms.Button();
+            this.btnReboot = new System.Windows.Forms.Button();
+            this.btnSendFile = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnStartServer
@@ -281,7 +284,7 @@
             // 
             // btnAdSet
             // 
-            this.btnAdSet.Location = new System.Drawing.Point(683, 235);
+            this.btnAdSet.Location = new System.Drawing.Point(685, 280);
             this.btnAdSet.Name = "btnAdSet";
             this.btnAdSet.Size = new System.Drawing.Size(75, 23);
             this.btnAdSet.TabIndex = 21;
@@ -292,7 +295,7 @@
             // cbAdEnable
             // 
             this.cbAdEnable.AutoSize = true;
-            this.cbAdEnable.Location = new System.Drawing.Point(775, 239);
+            this.cbAdEnable.Location = new System.Drawing.Point(777, 284);
             this.cbAdEnable.Name = "cbAdEnable";
             this.cbAdEnable.Size = new System.Drawing.Size(78, 16);
             this.cbAdEnable.TabIndex = 22;
@@ -302,7 +305,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(683, 273);
+            this.label1.Location = new System.Drawing.Point(685, 318);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(89, 12);
             this.label1.TabIndex = 23;
@@ -310,7 +313,7 @@
             // 
             // tbAdTime
             // 
-            this.tbAdTime.Location = new System.Drawing.Point(770, 264);
+            this.tbAdTime.Location = new System.Drawing.Point(772, 309);
             this.tbAdTime.Name = "tbAdTime";
             this.tbAdTime.Size = new System.Drawing.Size(100, 21);
             this.tbAdTime.TabIndex = 24;
@@ -374,7 +377,7 @@
             // 
             // btnGetDevName
             // 
-            this.btnGetDevName.Location = new System.Drawing.Point(912, 146);
+            this.btnGetDevName.Location = new System.Drawing.Point(918, 222);
             this.btnGetDevName.Name = "btnGetDevName";
             this.btnGetDevName.Size = new System.Drawing.Size(75, 23);
             this.btnGetDevName.TabIndex = 33;
@@ -384,7 +387,7 @@
             // 
             // tbDevName
             // 
-            this.tbDevName.Location = new System.Drawing.Point(681, 148);
+            this.tbDevName.Location = new System.Drawing.Point(687, 224);
             this.tbDevName.Name = "tbDevName";
             this.tbDevName.Size = new System.Drawing.Size(139, 21);
             this.tbDevName.TabIndex = 34;
@@ -392,7 +395,7 @@
             // 
             // btnSetDevName
             // 
-            this.btnSetDevName.Location = new System.Drawing.Point(831, 146);
+            this.btnSetDevName.Location = new System.Drawing.Point(837, 222);
             this.btnSetDevName.Name = "btnSetDevName";
             this.btnSetDevName.Size = new System.Drawing.Size(75, 23);
             this.btnSetDevName.TabIndex = 35;
@@ -412,7 +415,7 @@
             // 
             // btnDeletAdPic
             // 
-            this.btnDeletAdPic.Location = new System.Drawing.Point(826, 65);
+            this.btnDeletAdPic.Location = new System.Drawing.Point(832, 141);
             this.btnDeletAdPic.Name = "btnDeletAdPic";
             this.btnDeletAdPic.Size = new System.Drawing.Size(156, 23);
             this.btnDeletAdPic.TabIndex = 37;
@@ -422,7 +425,7 @@
             // 
             // btnSetHeartbeatInterval
             // 
-            this.btnSetHeartbeatInterval.Location = new System.Drawing.Point(830, 117);
+            this.btnSetHeartbeatInterval.Location = new System.Drawing.Point(836, 193);
             this.btnSetHeartbeatInterval.Name = "btnSetHeartbeatInterval";
             this.btnSetHeartbeatInterval.Size = new System.Drawing.Size(75, 23);
             this.btnSetHeartbeatInterval.TabIndex = 38;
@@ -432,7 +435,7 @@
             // 
             // tbHeartInterval
             // 
-            this.tbHeartInterval.Location = new System.Drawing.Point(681, 117);
+            this.tbHeartInterval.Location = new System.Drawing.Point(687, 193);
             this.tbHeartInterval.Name = "tbHeartInterval";
             this.tbHeartInterval.Size = new System.Drawing.Size(139, 21);
             this.tbHeartInterval.TabIndex = 39;
@@ -450,7 +453,7 @@
             // 
             // btnReadHearInterval
             // 
-            this.btnReadHearInterval.Location = new System.Drawing.Point(911, 117);
+            this.btnReadHearInterval.Location = new System.Drawing.Point(917, 193);
             this.btnReadHearInterval.Name = "btnReadHearInterval";
             this.btnReadHearInterval.Size = new System.Drawing.Size(75, 23);
             this.btnReadHearInterval.TabIndex = 41;
@@ -460,7 +463,7 @@
             // 
             // tbAdName
             // 
-            this.tbAdName.Location = new System.Drawing.Point(677, 65);
+            this.tbAdName.Location = new System.Drawing.Point(683, 141);
             this.tbAdName.Name = "tbAdName";
             this.tbAdName.Size = new System.Drawing.Size(139, 21);
             this.tbAdName.TabIndex = 42;
@@ -468,7 +471,7 @@
             // 
             // btnSetDoorPwd
             // 
-            this.btnSetDoorPwd.Location = new System.Drawing.Point(830, 175);
+            this.btnSetDoorPwd.Location = new System.Drawing.Point(836, 251);
             this.btnSetDoorPwd.Name = "btnSetDoorPwd";
             this.btnSetDoorPwd.Size = new System.Drawing.Size(75, 23);
             this.btnSetDoorPwd.TabIndex = 44;
@@ -478,7 +481,7 @@
             // 
             // tbDoorPwd
             // 
-            this.tbDoorPwd.Location = new System.Drawing.Point(681, 177);
+            this.tbDoorPwd.Location = new System.Drawing.Point(687, 253);
             this.tbDoorPwd.Name = "tbDoorPwd";
             this.tbDoorPwd.Size = new System.Drawing.Size(139, 21);
             this.tbDoorPwd.TabIndex = 43;
@@ -486,7 +489,7 @@
             // 
             // btnReadDoorPwd
             // 
-            this.btnReadDoorPwd.Location = new System.Drawing.Point(912, 175);
+            this.btnReadDoorPwd.Location = new System.Drawing.Point(918, 251);
             this.btnReadDoorPwd.Name = "btnReadDoorPwd";
             this.btnReadDoorPwd.Size = new System.Drawing.Size(75, 23);
             this.btnReadDoorPwd.TabIndex = 45;
@@ -506,7 +509,7 @@
             // 
             // tbQRCodeName
             // 
-            this.tbQRCodeName.Location = new System.Drawing.Point(677, 88);
+            this.tbQRCodeName.Location = new System.Drawing.Point(683, 164);
             this.tbQRCodeName.Name = "tbQRCodeName";
             this.tbQRCodeName.Size = new System.Drawing.Size(139, 21);
             this.tbQRCodeName.TabIndex = 48;
@@ -514,7 +517,7 @@
             // 
             // btnDelQRCode
             // 
-            this.btnDelQRCode.Location = new System.Drawing.Point(826, 88);
+            this.btnDelQRCode.Location = new System.Drawing.Point(832, 164);
             this.btnDelQRCode.Name = "btnDelQRCode";
             this.btnDelQRCode.Size = new System.Drawing.Size(156, 23);
             this.btnDelQRCode.TabIndex = 47;
@@ -536,7 +539,7 @@
             // 
             this.tbAesTest.Location = new System.Drawing.Point(194, 208);
             this.tbAesTest.Name = "tbAesTest";
-            this.tbAesTest.Size = new System.Drawing.Size(793, 21);
+            this.tbAesTest.Size = new System.Drawing.Size(477, 21);
             this.tbAesTest.TabIndex = 50;
             // 
             // button2
@@ -578,19 +581,52 @@
             // 
             // btnSendCourseInfo
             // 
-            this.btnSendCourseInfo.Location = new System.Drawing.Point(685, 307);
+            this.btnSendCourseInfo.Location = new System.Drawing.Point(678, 65);
             this.btnSendCourseInfo.Name = "btnSendCourseInfo";
-            this.btnSendCourseInfo.Size = new System.Drawing.Size(94, 23);
+            this.btnSendCourseInfo.Size = new System.Drawing.Size(74, 23);
             this.btnSendCourseInfo.TabIndex = 55;
-            this.btnSendCourseInfo.Text = "发送课程信息";
+            this.btnSendCourseInfo.Text = "课程信息";
             this.btnSendCourseInfo.UseVisualStyleBackColor = true;
             this.btnSendCourseInfo.Click += new System.EventHandler(this.btnSendCourseInfo_Click);
+            // 
+            // btnReadVersion
+            // 
+            this.btnReadVersion.Location = new System.Drawing.Point(920, 10);
+            this.btnReadVersion.Name = "btnReadVersion";
+            this.btnReadVersion.Size = new System.Drawing.Size(75, 23);
+            this.btnReadVersion.TabIndex = 56;
+            this.btnReadVersion.Text = "查询版本";
+            this.btnReadVersion.UseVisualStyleBackColor = true;
+            this.btnReadVersion.Click += new System.EventHandler(this.btnReadVersion_Click);
+            // 
+            // btnReboot
+            // 
+            this.btnReboot.Location = new System.Drawing.Point(920, 38);
+            this.btnReboot.Name = "btnReboot";
+            this.btnReboot.Size = new System.Drawing.Size(75, 23);
+            this.btnReboot.TabIndex = 57;
+            this.btnReboot.Text = "重启";
+            this.btnReboot.UseVisualStyleBackColor = true;
+            this.btnReboot.Click += new System.EventHandler(this.btnReboot_Click);
+            // 
+            // btnSendFile
+            // 
+            this.btnSendFile.Location = new System.Drawing.Point(758, 67);
+            this.btnSendFile.Name = "btnSendFile";
+            this.btnSendFile.Size = new System.Drawing.Size(75, 23);
+            this.btnSendFile.TabIndex = 58;
+            this.btnSendFile.Text = "发送文件";
+            this.btnSendFile.UseVisualStyleBackColor = true;
+            this.btnSendFile.Click += new System.EventHandler(this.btnSendFile_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(995, 436);
+            this.Controls.Add(this.btnSendFile);
+            this.Controls.Add(this.btnReboot);
+            this.Controls.Add(this.btnReadVersion);
             this.Controls.Add(this.btnSendCourseInfo);
             this.Controls.Add(this.btnGetKeyHex);
             this.Controls.Add(this.btnGetIVHex);
@@ -708,6 +744,9 @@
         private System.Windows.Forms.Button btnGetKeyHex;
         private System.Windows.Forms.Button btnGetIVHex;
         private System.Windows.Forms.Button btnSendCourseInfo;
+        private System.Windows.Forms.Button btnReadVersion;
+        private System.Windows.Forms.Button btnReboot;
+        private System.Windows.Forms.Button btnSendFile;
     }
 }
 

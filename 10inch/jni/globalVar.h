@@ -26,6 +26,7 @@
 
 using namespace std;
 
+#define HOME_DIR	"/mnt/extsd/"
 #define QR_DIR		"/mnt/extsd/qr/"
 #define AD_DIR		"/mnt/extsd/ad/"
 #define PIC_DIR		"/mnt/extsd/picture/"
@@ -127,6 +128,12 @@ typedef struct
 
 }Person_t;
 
+typedef struct
+{
+	string name;
+	int size;
+	string md5;
+}StorageFileInfo_t;
 
 
 typedef struct
@@ -203,6 +210,7 @@ extern Plan gPlan;
 extern string gBroadcastMsg;
 extern Person_t gPerson;
 extern CourseInfo_t gInfo;
+extern StorageFileInfo_t gFileInfo;
 //class MySocketListener : public SocketClient::ISocketListener
 //{
 //	public:

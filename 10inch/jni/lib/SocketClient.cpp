@@ -274,7 +274,7 @@ void SocketClient::disableTriger()
 //}
 
 #define CMD_BUF_SIZE 2000*1024
-#define FILE_BUF_SIZE 1024
+#define FILE_BUF_SIZE 4096
 
 void SocketClient::asCmd()
 {
@@ -345,16 +345,67 @@ void SocketClient::asCmd()
 		msg_counter = 0;
 		memset(msg_buf,0,msg_counter);
 		state = 0;
-
 	}
 }
+#include "readdir.h"
 void SocketClient::asFile()
 {
 	static char buf[FILE_BUF_SIZE];
 	static long fileLength;
-	static int length = 0;
-	length = recv(mClientSocket, buf, FILE_BUF_SIZE,0);
+	static long length = 0;
+	static long counter1 = 0;
+	static long counter2 = 0;
+	static string fullName;
+	time_t timeNow = time(NULL);
 
+	LOGO("切换至FILE模式");
+
+	fullName = HOME_DIR + gFileInfo.name;
+
+	LOGO("文件全名：%s",fullName.c_str());
+
+	static FILE *fp = fopen(fullName.c_str(), "w");
+	if (fp == NULL)	{
+		LOGE("打开文件错误");
+	}
+	else{
+		LOGO("打开文件正确");
+	}
+	int endFlag = 0;
+	while(1)
+	{
+		if(time(NULL) - timeNow > 10)
+		{
+			LOGE("传输文件超时！！！");
+			this->mode = SocketClient::CmdMode;
+			break;
+		}
+		length = recv(mClientSocket, buf, FILE_BUF_SIZE,0);
+		if(length > 0)
+		{
+			counter1 += length;
+			LOGO("接收：%d--%d",length,counter1);
+			int writeLength = fwrite(buf, sizeof(char), length, fp);
+			counter2 += writeLength;
+			LOGO("写入：%d--%d",writeLength,counter2);
+			if(counter1 == gFileInfo.size)
+			{
+				mode = SocketClient::CmdMode;
+				if(fclose(fp) != 0)
+				{
+					LOGE("关闭文件错误");
+				}
+				else
+				{
+					LOGO("文件接收完成");
+				}
+				this->mode == CmdMode;
+				break;
+			}
+
+		}
+
+	}
 
 
 }

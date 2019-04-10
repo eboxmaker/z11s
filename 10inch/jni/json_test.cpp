@@ -771,7 +771,7 @@ string JsonCmdManager::makeUpdate(JsonStatus_t status)
 	  string temp =  fw.write(root);
 	  return pack(temp);
 }
-JsonStatus_t JsonCmdManager::parseUpdate(string &js)
+JsonStatus_t JsonCmdManager::parseUpdate(string &js,StorageFileInfo_t &info)
 {
 	  Json::Reader reader;
 
@@ -780,6 +780,12 @@ JsonStatus_t JsonCmdManager::parseUpdate(string &js)
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
 		  status = root["status"].asInt();
+		  if(status == StatusSet)
+		  {
+			  info.name = root["name"].asString();
+			  info.size = root["size"].asInt();
+			  info.md5 = root["md5"].asString();
+		  }
 	  }
 
 	  return status;

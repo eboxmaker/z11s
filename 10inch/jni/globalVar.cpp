@@ -25,6 +25,7 @@ Person_t gPerson;
 PersonList_t gUserAdmin;
 Plan gPlan;
 CourseInfo_t gInfo;
+StorageFileInfo_t gFileInfo;
 
 string gBroadcastMsg;
 
@@ -83,7 +84,7 @@ void exeCMD(string &package)
 	{
 
 		JsonCmd_t cmd = getJsonCMD(js);
-		LOGE("CMD:%d",cmd);
+		//LOGE("CMD:%d",cmd);
 		switch(cmd)
 		{
 		case CMDHeartbeat:
@@ -134,7 +135,7 @@ void exeCMD(string &package)
 
 				    ack = jm.makeConfirm(dev,StatusAckDev2Ser );
 					gSocket->write_(ack);
-					//LOGE("回复:%s:%s",gDevID.c_str(),gDevName.c_str());
+					//LOGE("回复:%s:%s",dev.organization.c_str(),dev.name.c_str());
 
 				}
 				else
@@ -396,11 +397,13 @@ void exeCMD(string &package)
 			}
 			break;
 		case CMDUpdate:
-			status = jm.parseUpdate(js);
+			status = jm.parseUpdate(js,gFileInfo);
 			if(status == StatusSet)
 			{
+				gSocket->mode = SocketClient::FileMode;
 				ack = jm.makeUpdate(StatusOK);
 				gSocket->write_(ack);
+				LOGE("FILE:%s,%d,%s",gFileInfo.name.c_str(),gFileInfo.size,gFileInfo.md5.c_str());
 			}
 			break;
 		case CMDReboot:

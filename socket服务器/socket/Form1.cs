@@ -14,6 +14,7 @@ using MyJson;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using AES;
+using System.IO;
 
 
 namespace socket
@@ -231,6 +232,11 @@ namespace socket
                             resault = JsonManager.MakePerson("201800123", "张云峰", 0, fingers, JsonManager.StatusType.StatusOK);
                             server.SendAll(resault);
                         }
+                        break;
+
+                    case JsonManager.CMDType.CMDVersion:
+
+
                         break;
                 }
                     
@@ -475,6 +481,35 @@ namespace socket
             string str = JsonManager.MakeCourseInfoString("touxiang.jpg");
             server.SendAll(str);
 
+        }
+
+        private void btnReadVersion_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeVersion(JsonManager.StatusType.StatusRead);
+            server.SendAll(str);
+        }
+
+        private void btnReboot_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeReboot(JsonManager.StatusType.StatusSet);
+            server.SendAll(str);
+        }
+
+        private void btnSendFile_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeUpdate("1.jpg",JsonManager.StatusType.StatusSet);
+            server.SendAll(str);
+
+             FileStream fs = File.OpenRead("1.jpg");
+             if (fs != null)
+             {
+                 int len = (int)fs.Length;
+                 byte[] byteArray = new byte[len];
+                 int ReadedLength = fs.Read(byteArray, 0, len);
+                 server.SendAll(byteArray);
+                 tbSendDataLength.Text = len.ToString();
+
+             }
         }
 
 
