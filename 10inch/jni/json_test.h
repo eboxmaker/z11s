@@ -110,6 +110,14 @@ public:
 	string makePerson(Person_t &person,JsonStatus_t status);
 	JsonStatus_t parsePerson(string &js,Person_t &person);
 
+	string makeVersion(JsonStatus_t status);
+	JsonStatus_t parseVersion(string &js);
+
+	string makeUpdate(JsonStatus_t status);
+	JsonStatus_t parseUpdate(string &js);
+
+	string makeReboot(JsonStatus_t status);
+	JsonStatus_t parseReboot(string &js);
 
 	AesEncryptor *aes;
 

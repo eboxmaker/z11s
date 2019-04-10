@@ -11,6 +11,7 @@
 #include "storage/StoragePreferences.h"
 #include "utils/TimeHelper.h"
 #include "readdir.h"
+#include <sys/reboot.h>
 
 Database dbAdv("/mnt/extsd/test.db");
 doorState_t gDoorState = Lock;
@@ -384,6 +385,32 @@ void exeCMD(string &package)
 			{
 				ack = jm.makePerson(gPerson, StatusOK);
 				gSocket->write_(ack);
+			}
+			break;
+		case CMDVersion:
+			status = jm.parseVersion(js);
+			if(status == StatusRead)
+			{
+				ack = jm.makeVersion(StatusOK);
+				gSocket->write_(ack);
+			}
+			break;
+		case CMDUpdate:
+			status = jm.parseUpdate(js);
+			if(status == StatusSet)
+			{
+				ack = jm.makeUpdate(StatusOK);
+				gSocket->write_(ack);
+			}
+			break;
+		case CMDReboot:
+			status = jm.parseReboot(js);
+			if(status == StatusSet)
+			{
+				ack = jm.makeReboot(StatusOK);
+				gSocket->write_(ack);
+				Thread::sleep(2000);
+			    reboot(RB_AUTOBOOT);
 			}
 			break;
 		default:

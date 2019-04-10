@@ -45,7 +45,9 @@ SocketClient::SocketClient() :
 	mClientSocket(-1),
 	trigerTimeout(5),
 	trigerTime(-1),
-	maxCallbackNum(5){
+	maxCallbackNum(5),
+	mode(SocketClient::CmdMode)
+{
 
 	for(int i = 0; i < maxCallbackNum; i++ )
 	{
@@ -271,19 +273,101 @@ void SocketClient::disableTriger()
 ////	return rxbuf.available();
 //}
 
+#define CMD_BUF_SIZE 2000*1024
+#define FILE_BUF_SIZE 1024
 
-#define MSG_BUF_SIZE 2000*1024
-char msg_buf[MSG_BUF_SIZE];
+void SocketClient::asCmd()
+{
+	static int counter =0;
+	static bool ret;
+	static int length = 0;
+	static int msg_counter = 0;
+	static int state = 0;
+	static char msg_buf[CMD_BUF_SIZE];
+
+	length = recv(mClientSocket, &msg_buf[msg_counter], 1,0);
+	if(errno == 110)
+	{
+		LOGE("断网线,服务器开启防火墙：%d-(%s)",errno,strerror(errno));
+		//断网线,服务器开启防火墙
+		disconnect();
+	}
+	if(length == 0)
+	{
+		//服务器主动断开
+		disconnect();
+	}
+	if(length > 0)
+	{
+		gSocket->hearbeatUpdate();
+
+		switch(state)
+		{
+			case 0:
+				if(msg_buf[msg_counter] == '{')
+				{
+					state = 1;
+					msg_counter++;
+				}
+				break;
+			case 1:
+				if(msg_buf[msg_counter] == '}')
+				{
+					msg_buf[msg_counter + 1] = '\0';
+					if(ParseJsonString(msg_buf) == true)
+					{
+						//LOGE("解析完成,size:%dbytes",msg_counter);
+						exeCMD(msg_buf);
+					}
+					else//解析失败。顶层使用加密。数据中不会出现额外的{}；
+					{
+//							msg_counter++;
+					}
+					msg_counter = 0;
+					memset(msg_buf,0,msg_counter);
+					state = 0;
+				}
+				else
+				{
+					msg_counter++;
+					if(msg_counter > CMD_BUF_SIZE*0.9)//防止缓冲区溢出
+					{
+						msg_counter = 0;
+						memset(msg_buf,0,msg_counter);
+						state = 0;
+					}
+				}
+				break;
+		}
+	}
+	else
+	{
+		msg_counter = 0;
+		memset(msg_buf,0,msg_counter);
+		state = 0;
+
+	}
+}
+void SocketClient::asFile()
+{
+	static char buf[FILE_BUF_SIZE];
+	static long fileLength;
+	static int length = 0;
+	length = recv(mClientSocket, buf, FILE_BUF_SIZE,0);
+
+
+
+}
+
 
 void SocketClient::threadLoop() {
 
 	int counter =0;
 	bool ret;
 	int length = 0;
-	int len;
-	bool flag = false;
 	int msg_counter = 0;
 	int state = 0;
+
 	struct timeval timeout = { 1,0  };     // 1s
 
 	setsockopt(mClientSocket, SOL_SOCKET, SO_RCVTIMEO,
@@ -300,68 +384,19 @@ void SocketClient::threadLoop() {
 
     while (1)
 	{
-		length = recv(mClientSocket, &msg_buf[msg_counter], 1,0);
-		if(errno == 110)
-		{
-			LOGE("断网线,服务器开启防火墙：%d-(%s)",errno,strerror(errno));
-			//断网线,服务器开启防火墙
-			disconnect();
-		}
-		if(length == 0)
-		{
-			//服务器主动断开
-			disconnect();
-		}
-		if(length > 0)
-		{
-			gSocket->hearbeatUpdate();
 
-			switch(state)
-			{
-				case 0:
-					if(msg_buf[msg_counter] == '{')
-					{
-						state = 1;
-						msg_counter++;
-					}
-					break;
-				case 1:
-					if(msg_buf[msg_counter] == '}')
-					{
-						msg_buf[msg_counter + 1] = '\0';
-						if(ParseJsonString(msg_buf) == true)
-						{
-							//LOGE("解析完成,size:%dbytes",msg_counter);
-							exeCMD(msg_buf);
-						}
-						else//解析失败。顶层使用加密。数据中不会出现额外的{}；
-						{
-//							msg_counter++;
-						}
-						msg_counter = 0;
-						memset(msg_buf,0,msg_counter);
-						state = 0;
-					}
-					else
-					{
-						msg_counter++;
-						if(msg_counter > MSG_BUF_SIZE*0.9)//防止缓冲区溢出
-						{
-							msg_counter = 0;
-							memset(msg_buf,0,msg_counter);
-							state = 0;
-						}
-					}
-					break;
-			}
-		}
-		else
-		{
-			msg_counter = 0;
-			memset(msg_buf,0,msg_counter);
-			state = 0;
+    	switch(this->mode )
+    	{
+    	case SocketClient::CmdMode:
+    		asCmd();
+    		break;
+    	case SocketClient::FileMode:
+    		asFile();
+    		break;
+    	default :
+    		break;
 
-		}
+    	}
 
 		if(mClientSocket < 0)
 		{

@@ -94,6 +94,11 @@ typedef enum
 
 	CMDPerson,
 
+
+	CMDVersion,
+	CMDUpdate,
+	CMDReboot,
+
     CMDErr,
 
 }JsonCmd_t;

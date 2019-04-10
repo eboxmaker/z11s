@@ -12,6 +12,7 @@
 #include <fstream>
 #include "netinet/tcp.h"
 #include <iostream>
+#include <fstream>
 
 typedef void (*NetNotify_t)(void);
 
@@ -48,6 +49,9 @@ public:
 	void deattachOnConnect(int num);
 	void deattachOnDisconnect(int num);
 
+	void asCmd();
+	void asFile();
+
 	class ISocketListener {
 	public:
 		virtual ~ISocketListener() { };
@@ -60,7 +64,16 @@ public:
 	long  trigerTime;
 	int trigerTimeout;
 	bool conncetState;
-
+	enum {
+		CmdMode,
+		FileMode
+	}mode;
+	struct
+	{
+		long len;
+		std::string fullName;
+		FILE *fp;
+	}file;
 private:
 	int mClientSocket;
 

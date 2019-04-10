@@ -15,6 +15,7 @@
 
 #include "readdir.h"
 #include "md5/md5.h"
+#include "version.h"
 
 static string key =  "12345678900000001234567890000000";
 static string iv =  "1234567890000000";
@@ -737,8 +738,75 @@ JsonStatus_t JsonCmdManager::parsePerson(string &js,Person_t &person)
 	  return status;
 }
 
+string JsonCmdManager::makeVersion(JsonStatus_t status)
+{
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDVersion);
+	  root["version"] = Json::Value(VERSION);
+	  root["status"] = Json::Value(status);
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return pack(temp);
+}
+JsonStatus_t JsonCmdManager::parseVersion(string &js)
+{
+	  Json::Reader reader;
 
+	  Json::Value root;
+	  JsonStatus_t status = StatusErr;
+	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+		  status = root["status"].asInt();
+	  }
 
+	  return status;
+}
+
+string JsonCmdManager::makeUpdate(JsonStatus_t status)
+{
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDUpdate);
+	  root["status"] = Json::Value(status);
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return pack(temp);
+}
+JsonStatus_t JsonCmdManager::parseUpdate(string &js)
+{
+	  Json::Reader reader;
+
+	  Json::Value root;
+	  JsonStatus_t status = StatusErr;
+	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+		  status = root["status"].asInt();
+	  }
+
+	  return status;
+}
+
+string JsonCmdManager::makeReboot(JsonStatus_t status)
+{
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDReboot);
+	  root["status"] = Json::Value(status);
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return pack(temp);
+}
+JsonStatus_t JsonCmdManager::parseReboot(string &js)
+{
+	  Json::Reader reader;
+
+	  Json::Value root;
+	  JsonStatus_t status = StatusErr;
+	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+		  status = root["status"].asInt();
+	  }
+
+	  return status;
+}
 
 
 
