@@ -12,7 +12,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "lib/SocketClient.h"
-#include "include/utils/GpioHelper.h"
 #include "utils/Log.h"
 
 #include <sys/sysinfo.h>
@@ -35,11 +34,7 @@ using namespace std;
 
 extern Database dbAdv;
 
-typedef enum
-{
-	Lock,
-	UnLock
-}doorState_t;
+
 
 typedef enum
 {

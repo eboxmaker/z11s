@@ -6,6 +6,7 @@
 #include "utils/TimeHelper.h"
 #include "lib/itoa.h"
 #include "httpdownload.h"
+#include "door.h"
 
 /*
 *此文件由GUI工具生成
@@ -125,6 +126,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 	case CMDAdSet:
 	case CMDOrgName:
 	case CMDDevName:
+		mTextStatusNotice2Ptr->setText("");
 		mWindStatusNoticePtr->showWnd();
 		if(status == StatusSet)
 		{
@@ -213,7 +215,16 @@ static void onUI_show() {
 	else
 		mBtnServerStatePtr->setBackgroundPic("guan.png");
 
-
+	if(door.get() == UnLock)
+	{
+		mBtnLockStatePtr->setBackgroundPic("kai.png");
+		mBtnLockStatePtr->setText("开");
+	}
+	else
+	{
+		mBtnLockStatePtr->setBackgroundPic("guan.png");
+		mBtnLockStatePtr->setText("关 ");
+	}
 
 //	mSeekbarMemUsagePtr->setProgress(gMemUsage);
 //	sprintf(temp,"%0.1f%%",gMemUsage);
@@ -254,11 +265,21 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  *             停止运行当前定时器
  */
 
-
 static bool onUI_Timer(int id){
 	float memUsage;
 	switch (id) {
 	case 0:
+
+		if(door.get() == UnLock)
+		{
+			mBtnLockStatePtr->setBackgroundPic("kai.png");
+			mBtnLockStatePtr->setText("开");
+		}
+		else
+		{
+			mBtnLockStatePtr->setBackgroundPic("guan.png");
+			mBtnLockStatePtr->setText("关 ");
+		}
 		if(gSocket->connected())
 			mBtnServerStatePtr->setBackgroundPic("kai.png");
 		else
@@ -677,3 +698,43 @@ static void onEditTextChanged_EditOrgName(const std::string &text) {
 
 
 
+static bool onButtonClick_Button1(ZKButton *pButton) {
+    //LOGD(" ButtonClick Button1 !!!\n");
+    return false;
+}
+
+static bool onButtonClick_BtnLock(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnLock !!!\n");
+	door.set(Lock);
+	if(door.get() == UnLock)
+	{
+		mBtnLockStatePtr->setBackgroundPic("kai.png");
+		mBtnLockStatePtr->setText("开");
+	}
+	else
+	{
+		mBtnLockStatePtr->setBackgroundPic("guan.png");
+		mBtnLockStatePtr->setText("关 ");
+	}
+    return false;
+}
+
+static bool onButtonClick_BtnUnLock(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnUnLock !!!\n");
+	door.set(UnLock);
+	if(door.get() == UnLock)
+	{
+		mBtnLockStatePtr->setBackgroundPic("kai.png");
+		mBtnLockStatePtr->setText("开");
+	}
+	else
+	{
+		mBtnLockStatePtr->setBackgroundPic("guan.png");
+		mBtnLockStatePtr->setText("关 ");
+	}
+	return false;
+}
+static bool onButtonClick_BtnLockState(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnLockState !!!\n");
+    return false;
+}

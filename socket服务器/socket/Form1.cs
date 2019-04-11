@@ -224,12 +224,12 @@ namespace socket
                         string[] fingers = {"1111111111","wwwwwwwwwww","124e2qerfwf"};
                         if (status == JsonManager.StatusType.StatusRead)
                         {
-                            resault = JsonManager.MakePerson("201800123", "张云峰", 0, fingers, JsonManager.StatusType.StatusOK);
+                            resault = JsonManager.MakePerson("201800123", "张云峰", 0, fingers, "touxiang.jpg",JsonManager.StatusType.StatusOK);
                             server.SendAll(resault);
                         }
                         if (status == JsonManager.StatusType.StatusSet)
                         {
-                            resault = JsonManager.MakePerson("201800123", "张云峰", 0, fingers, JsonManager.StatusType.StatusOK);
+                            resault = JsonManager.MakePerson("201800123", "张云峰", 0, fingers, "touxiang.jpg",JsonManager.StatusType.StatusOK);
                             server.SendAll(resault);
                         }
                         break;
@@ -243,7 +243,7 @@ namespace socket
                     case JsonManager.CMDType.CMDUpdate:
                         if (status == JsonManager.StatusType.StatusRead)
                         {
-                            resault = JsonManager.MakeUpdate("192.168.1.101/download/update.im", 8081, JsonManager.StatusType.StatusOK);
+                            resault = JsonManager.MakeUpdate("192.168.1.101/download/update.img", 8081, JsonManager.StatusType.StatusOK);
                             server.SendAll(resault);
                         }
 

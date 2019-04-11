@@ -9,7 +9,8 @@
 #define JNI_FINGER_H_
 
 #include <fstream>
-
+#include "ringbuf.h"
+#include "system/Thread.h"
 
 using namespace std;
 
@@ -71,22 +72,29 @@ public:
 	Finger();
 	virtual ~Finger();
 
-	bool getFeatures();//获取当前输入指纹的模板信息
-	bool getFeatures(unsigned int id);//获取指定ID的指纹模板信息
-	bool setIdFeatures(unsigned int id,unsigned char *buf);//上传从服务器获取的人员的模板信息，并存入指定区间（10-39）
+	void getFeatures();//获取当前输入指纹的模板信息
+	void getFeatures(unsigned int id);//获取指定ID的指纹模板信息
+	void setIdFeatures(unsigned int id,unsigned char *buf);//上传从服务器获取的人员的模板信息，并存入指定区间（10-39）
 
-	bool clear(void);
+	void clear(void);
 
-	bool Enroll_Step1(unsigned int u_id);
-	bool Enroll_Step2(unsigned int u_id);
-	bool Enroll_Step3(unsigned int u_id);
+	void Enroll_Step1(unsigned int u_id);
+	void Enroll_Step2(unsigned int u_id);
+	void Enroll_Step3(unsigned int u_id);
 	unsigned char Finger_Enroll(unsigned int u_id);
-	bool readTimeout();
-	bool setTimeout(unsigned char sec);
-	bool sendPackage(unsigned char wLen,unsigned char *ptr);
+	void getTimeout();
+	void setTimeout(unsigned char sec);
+	void sendPackage(unsigned char *ptr,unsigned char wLen);
 	void rx_event(char ch);
+
+	int parseHead(char ch);
+	int parseDate(char ch);
+	void parser(char ch);
 	string errToString(int err);
 	int ack;
+	int retState;
+	long timelast;
+	int dataLen;
 
 private:
 	unsigned char genCheck(unsigned char wLen,unsigned char *ptr);
@@ -103,6 +111,8 @@ private:
 	unsigned int counter;
 	exeState_t exeState;
 	long lastCmdTime;
+
+
 };
 extern Finger finger;
 

@@ -4,6 +4,7 @@
 #include "json_test.h"
 #include "utils/TimeHelper.h"
 #include "base64.h"
+#include "door.h"
 /*
 *此文件由GUI工具生成
 *文件功能：用于处理用户的逻辑相应代码
@@ -125,6 +126,7 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 		    	{
 		    		mTextStatusNoticePtr->setText("网络中断");
 		    		mTextStatusNotice2Ptr->setText("请输入管理员密码");
+		    		finger.getFeatures();
 		    	}
 
 //
@@ -223,7 +225,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 				mTextStatusNoticePtr->setText("门正在关闭");
 			}
 			sleep(2);
-			if(GpioHelper::input(GPIO_PIN_B_03) == UnLock)
+			if(door.get() == UnLock)
 			{
 				mTextStatusNoticePtr->setText("门状态：开");
 				mTextDoorStatePtr->setText("开");

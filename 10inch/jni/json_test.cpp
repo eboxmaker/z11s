@@ -731,6 +731,25 @@ JsonStatus_t JsonCmdManager::parsePerson(string &js,Person_t &person)
 			{
 				person.fingers.push_back(fingers[i]["finger"].asString());
 			}
+
+
+			person.picture.name = root["pic.name"].asString();  // 访问节点，upload_id = "UP000000"
+			person.picture.data = root["pic.data"].asString();    // 访问节点，code = 100
+			person.picture.datalen = root["pic.datalen"].asLargestUInt();
+
+
+			if(person.picture.datalen != person.picture.data.length())
+			{
+				LOGE("头像长度不匹配");
+				return StatusErr;
+			}
+			string picBuf;
+			picBuf = person.picture.data;
+			person.picture.data = "";
+			if(Base64::Decode(picBuf,&person.picture.data))
+			{
+
+			}
 		}
 
 	}

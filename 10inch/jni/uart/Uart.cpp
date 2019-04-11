@@ -109,7 +109,11 @@ bool MyUart::threadLoop() {
 
 		if (readNum > 0) {
 			for(int i = 0 ; i < readNum;i++)
-				finger.rx_event(mDataBufPtr[i]);
+			{
+				//finger.rx_event(mDataBufPtr[i]);
+				finger.parser(mDataBufPtr[i]);
+
+			}
 
 		} else {
 			Thread::sleep(10);

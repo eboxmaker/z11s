@@ -8,8 +8,10 @@
 #include "Finger.h"
 #include "uart/Uart.h"
 #include "utils/log.h"
+#include "ringbuf.h"
 
 using namespace std;
+
 
 FingerNotify_t fingerCallback;
 
@@ -21,7 +23,6 @@ Finger::Finger() :
 		counter(0){
 	// TODO 自动生成的构造函数存根
 	fingerCallback = NULL;
-
 }
 
 Finger::~Finger() {
@@ -32,7 +33,7 @@ Finger::~Finger() {
 **输入两次指纹注册一个指纹模板
 **参数：UserID 指纹号
 *******************************************************************************/
-bool Finger::Enroll_Step1(unsigned int u_id)
+void Finger::Enroll_Step1(unsigned int u_id)
 {
   unsigned char buf[8];
 
@@ -42,7 +43,7 @@ bool Finger::Enroll_Step1(unsigned int u_id)
   *(buf+3) = 1;
   *(buf+4) = 0x00;
 
-  return sendPackage(5, buf);
+  sendPackage( buf ,5);
 }
 
 /*******************************************************************************
@@ -50,7 +51,7 @@ bool Finger::Enroll_Step1(unsigned int u_id)
 **输入两次指纹注册一个指纹模板
 **参数：UserID 指纹号
 *******************************************************************************/
-bool Finger::Enroll_Step2(unsigned int u_id)
+void Finger::Enroll_Step2(unsigned int u_id)
 {
   unsigned char buf[8];
 
@@ -60,7 +61,7 @@ bool Finger::Enroll_Step2(unsigned int u_id)
   *(buf+3) = 1;
   *(buf+4) = 0x00;
 
-  return sendPackage(5, buf);
+   sendPackage(buf ,5);
 }
 
 /*******************************************************************************
@@ -68,7 +69,7 @@ bool Finger::Enroll_Step2(unsigned int u_id)
 **输入三次指纹注册一个指纹模板
 **参数：UserID 指纹号
 *******************************************************************************/
-bool Finger::Enroll_Step3(unsigned int u_id)
+void Finger::Enroll_Step3(unsigned int u_id)
 {
   unsigned char buf[8];
 
@@ -78,7 +79,7 @@ bool Finger::Enroll_Step3(unsigned int u_id)
   *(buf+3) = 1;
   *(buf+4) = 0x00;
 
-  return sendPackage(5, buf);
+  sendPackage(buf ,5);
 }
 
 /*******************************************************************************
@@ -92,78 +93,79 @@ unsigned char Finger::Finger_Enroll(unsigned int u_id)
 
 	LOGE("注册%d",u_id);
 
-
-	//////////////////////////////////////////////
-	ack = -1;
-	while(ret ==false)
-	{
-		ret = Enroll_Step1(u_id);
-		LOGE("正在 第一步");
-		Thread::sleep(1000);
-	}
-
-	ret = false;
-	while(ack == -1)
-	{
-		LOGE("ACK:%D",ack);
-		Thread::sleep(1000);
-	}
-	if(ack == ACK_SUCCESS)
-		LOGE("第一步完成");
-	else
-	{
-		LOGE("第一步失败:%d",ack);
-		return false;
-	}
-	//////////////////////////////////////////////
-
-
-	ack = -1;
-	while(ret ==false)
-	{
-		ret = Enroll_Step2(u_id);
-		LOGE("正在 第2步");
-		Thread::sleep(1000);
-	}
-
-	ret = false;
-	while(ack == -1)
-	{
-		LOGE("ACK:%D",ack);
-		Thread::sleep(1000);
-	}
-	if(ack == ACK_SUCCESS)
-		LOGE("第2步完成");
-	else
-	{
-		LOGE("第2步失败:%d",ack);
-		return false;
-	}
-	//////////////////////////////////////////////
-	ack = -1;
-
-	while(ret ==false)
-	{
-		ret = Enroll_Step3(u_id);
-		LOGE("正在 第3步");
-		Thread::sleep(1000);
-	}
-	while(ack == -1)
-	{
-		LOGE("ACK:%D",ack);
-		Thread::sleep(1000);
-	}
-	if(ack == ACK_SUCCESS)
-		LOGE("第3步完成");
-	else
-	{
-		LOGE("第3步失败:%d",ack);
-		return false;
-	}
+//
+//	//////////////////////////////////////////////
+//	ack = -1;
+//	while(ret ==false)
+//	{
+//		ret = Enroll_Step1(u_id);
+//		LOGE("正在 第一步");
+//		Thread::sleep(1000);
+//	}
+//
+//	ret = false;
+//	while(ack == -1)
+//	{
+//		LOGE("ACK:%D",ack);
+//		Thread::sleep(1000);
+//	}
+//	if(ack == ACK_SUCCESS)
+//		LOGE("第一步完成");
+//	else
+//	{
+//		LOGE("第一步失败:%d",ack);
+//		return false;
+//	}
+//	//////////////////////////////////////////////
+//
+//
+//	ack = -1;
+//	while(ret ==false)
+//	{
+//		ret = Enroll_Step2(u_id);
+//		LOGE("正在 第2步");
+//		Thread::sleep(1000);
+//	}
+//
+//	ret = false;
+//	while(ack == -1)
+//	{
+//		LOGE("ACK:%D",ack);
+//		Thread::sleep(1000);
+//	}
+//	if(ack == ACK_SUCCESS)
+//		LOGE("第2步完成");
+//	else
+//	{
+//		LOGE("第2步失败:%d",ack);
+//		return false;
+//	}
+//	//////////////////////////////////////////////
+//	ack = -1;
+//
+//	while(ret ==false)
+//	{
+//		ret = Enroll_Step3(u_id);
+//		LOGE("正在 第3步");
+//		Thread::sleep(1000);
+//	}
+//	while(ack == -1)
+//	{
+//		LOGE("ACK:%D",ack);
+//		Thread::sleep(1000);
+//	}
+//	if(ack == ACK_SUCCESS)
+//		LOGE("第3步完成");
+//	else
+//	{
+//		LOGE("第3步失败:%d",ack);
+//		return false;
+//	}
 
 }
-bool Finger::getFeatures()
+void Finger::getFeatures()
 {
+	int ret;
 	unsigned char buf[8];
 	int i = 0;
 	buf[i++] = CMD_GET_CURRENT_FEATURE;
@@ -171,10 +173,12 @@ bool Finger::getFeatures()
 	buf[i++] = 0;
 	buf[i++] = 0;
 	buf[i++] = 0;
-	return sendPackage(5,buf);
+
+	sendPackage(buf,5);
+
 }
 //获取指定ID的指纹模板信息
-bool Finger::getFeatures(unsigned int id)
+void Finger::getFeatures(unsigned int id)
 {
 	unsigned char buf[8];
 	int i = 0;
@@ -183,12 +187,12 @@ bool Finger::getFeatures(unsigned int id)
 	buf[i++] = id&0xff;
 	buf[i++] = 0;
 	buf[i++] = 0;
-	return sendPackage(5,buf);
+	sendPackage(buf,5);
 }
 
 
 //上传从服务器获取的人员的模板信息，并存入指定区间（10-39）
-bool Finger::setIdFeatures(unsigned int id,unsigned char *sbuf)
+void Finger::setIdFeatures(unsigned int id,unsigned char *sbuf)
 {
 	unsigned char buf[256];
 	int i = 0;
@@ -197,7 +201,9 @@ bool Finger::setIdFeatures(unsigned int id,unsigned char *sbuf)
 	buf[i++] = id&0xff;
 	buf[i++] = 0;
 	buf[i++] = 0;
-	while( sendPackage(5,buf) == false);
+	sendPackage(buf,5) ;
+
+
 	i = 0;
 	buf[i++] = id>>8;
 	buf[i++] = id&0xff;
@@ -206,7 +212,7 @@ bool Finger::setIdFeatures(unsigned int id,unsigned char *sbuf)
 	{
 		buf[i++] = sbuf[j];
 	}
-	return sendPackage(5,buf);
+	 sendPackage(buf,5);
 }
 
 /*******************************************************************************
@@ -214,8 +220,9 @@ bool Finger::setIdFeatures(unsigned int id,unsigned char *sbuf)
 **参数：
 **返回：无
 *******************************************************************************/
-bool Finger::clear(void)
+void Finger::clear(void)
 {
+	int ret = -1;
   unsigned char buf[8];
 
   *buf = CMD_CLEAR;
@@ -224,31 +231,33 @@ bool Finger::clear(void)
   *(buf+3) = 0x00;
   *(buf+4) = 0x00;
 
-  return sendPackage(5, buf);
+   sendPackage(buf,5);
+
 }
-bool Finger::readTimeout()
+void Finger::getTimeout()
 {
-	  unsigned char buf[8];
+	int ret;
+	unsigned char buf[8];
 
-	  *buf = CMD_TIMEOUT;
-	  *(buf+1) = 0x00;
-	  *(buf+2) = 0x00;
-	  *(buf+3) = 0x01;
-	  *(buf+4) = 0x00;
+	*buf = CMD_TIMEOUT;
+	*(buf+1) = 0x00;
+	*(buf+2) = 0x00;
+	*(buf+3) = 0x01;
+	*(buf+4) = 0x00;
 
-	  return sendPackage(5, buf);
+	sendPackage(buf,5);
 }
-bool Finger::setTimeout(unsigned char sec)
+void Finger::setTimeout(unsigned char sec)
 {
-	  unsigned char buf[8];
+	int ret;
+	unsigned char buf[8];
 
-	  *buf = CMD_TIMEOUT;
-	  *(buf+1) = 0x00;
-	  *(buf+2) = sec;
-	  *(buf+3) = 0x00;
-	  *(buf+4) = 0x00;
-
-	  return sendPackage(5, buf);
+	*buf = CMD_TIMEOUT;
+	*(buf+1) = 0x00;
+	*(buf+2) = sec;
+	*(buf+3) = 0x00;
+	*(buf+4) = 0x00;
+	sendPackage(buf,5);
 }
 
 /*******************************************************************************
@@ -273,7 +282,7 @@ unsigned char Finger::genCheck(unsigned char wLen,unsigned char *ptr)
         cpPara 发送的数据
 **返回：void
 *******************************************************************************/
-bool Finger::sendPackage(unsigned char wLen,unsigned char *ptr)
+void Finger::sendPackage(unsigned char *ptr,unsigned char wLen)
 {
   unsigned int i=0,len=0;
 
@@ -283,34 +292,11 @@ bool Finger::sendPackage(unsigned char wLen,unsigned char *ptr)
   {
 	  tbuf[1+i] = *(ptr+i);
   }
-
   tbuf[wLen + 1] = genCheck(wLen, ptr);         //Generate checkout data
   tbuf[wLen + 2] = DATA_END;
   len = wLen + 3;
-
-  //如果3s内模块没有响应，则重置模块为空闲状态
-  if(time(NULL) - lastCmdTime >= 1)
-	  exeState = exeFree;
-
-  if(exeState == exeFree)
-  {
-	  uart2.send(tbuf,len);
-	  for(int i =0;i<len;i++)
-	  {
-		  LOGD("SEND:%X",tbuf[i]);
-	  }
-	  exeState = exeSended;
-	  lastCmdTime = time(NULL);
-		state = HEAD;
-		counter = 0;
-	  return true;
-  }
-  else
-  {
-	  LOGE("finger busy now(%d)...",exeState);
-	  return false;
-  }
-
+  uart2.send(tbuf,len);
+  LOGD("发送一帧数据");
 }
 
 string Finger::errToString(int err)
@@ -349,68 +335,115 @@ string Finger::errToString(int err)
 	return errStr;
 
 }
-
-void Finger::rx_event(char ch)
+int Finger::parseHead(char ch)
 {
-	char err = -1;
-	LOGE("rx event %D:%d(%d):%x\r\n",counter,state,cmdState,ch);
-	exeState = exeRecving;
+	static bool isHaveDate = false;
+
 	switch(state)
 	{
 		case HEAD:
-		if(ch == 0xf5)
-		{
-			if(cmdState == 0)
+			if(ch == 0xf5)
+			{
+				rbuf[counter++] = ch;
 				state = CMD;
-			else
-				state = DATA;
-			rbuf[counter++] = ch;
-		}
-		else
-		{
-
-		}
-		break;
-
+			}
+			retState = 1;
+			break;
 		case CMD:
-
-			cmd = ch;
 			rbuf[counter++] = ch;
 			state = PARA;
-			if(cmd == CMD_GET_CURRENT_FEATURE || cmd == CMD_GET_ID_FEATURE)
-				cmdState = 1;
+			retState = 2;
 			break;
-
-		case DATA:
-			rbuf[counter++] = ch;
-			if(counter == 197)
-			{
-				state = CHECK;
-				cmdState = 0;//数据帧接收完成
-			}
-			else
-			{
-
-			}
-			break;
-
 		case PARA:
 			rbuf[counter++] = ch;
 			if(counter == 6)
-			{
 				state = CHECK;
-			}
-			else
-			{
-
-			}
+			retState = 3;
 			break;
 		case CHECK:
 			check = ch;
 			rbuf[counter++] = ch;
 			state = TAIL;
+			retState = 4;
 			break;
+		case TAIL:
+			if(ch == 0XF5)
+			{
 
+				rbuf[counter++] = ch;
+				unsigned int temp = genCheck(counter - 3,&rbuf[1]);
+				if(temp == check)
+				{
+					cmd = rbuf[1];
+					ack = rbuf[4];
+
+					if(fingerCallback != NULL)
+						fingerCallback(cmd,cmdState,&rbuf[2],2);
+					LOGD("finger parse ok\n");
+					if(cmd == CMD_GET_CURRENT_FEATURE || cmd == CMD_GET_ID_FEATURE)
+					{
+						if(rbuf[4] == ACK_SUCCESS || rbuf[4] == ACK_TIMEOUT)
+						{
+							dataLen  = ((rbuf[2])<<8) + rbuf[3];
+
+							cmdState = 1;
+						}
+					}
+					retState = 0;
+				}
+				else
+				{
+					LOGE("finger check err");
+					retState = 5;
+				}
+			}
+			else
+			{
+				LOGE("ERR\r\n");
+				retState = 6;
+			}
+			counter = 0;
+			state = HEAD;
+			break;
+		default:
+			cmdState = 0;
+			counter = 0;
+			state = HEAD;
+			break;
+	}
+	return retState;
+
+}
+int Finger::parseDate(char ch)
+{
+
+	static bool isHaveDate = false;
+
+	switch(state)
+	{
+		case HEAD:
+			if(ch == 0xf5)
+			{
+				rbuf[counter++] = ch;
+				if(dataLen != 0)
+					state = DATA;
+				else
+					state = CHECK;
+			}
+			retState = 1;
+			break;
+		case DATA:
+			rbuf[counter++] = ch;
+			if(counter == dataLen + 1)
+				state = CHECK;
+			retState = 3;
+			break;
+		case CHECK:
+			check = ch;
+			rbuf[counter++] = ch;
+			state = TAIL;
+			retState = 4;
+			break;
 		case TAIL:
 			if(ch == 0XF5)
 			{
@@ -418,74 +451,57 @@ void Finger::rx_event(char ch)
 				unsigned int temp = genCheck(counter - 3,&rbuf[1]);
 				if(temp == check)
 				{
-					err = 0;
-					LOGE("finger parse ok\n");
+					if(fingerCallback != NULL)
+						fingerCallback(cmd,cmdState,&rbuf[1],dataLen);
+
+					cmdState = 0;
+					LOGD("finger parse ok\n");
+					retState = 0;
 				}
 				else
 				{
 					LOGE("finger check err");
+					retState = 5;
 				}
 			}
 			else
 			{
-				state = HEAD;
+				cmdState = 0;
 				counter = 0;
-				exeState = exeFree;
-				LOGE("ERR\r\n");
-				break;
+				state = HEAD;
+				LOGE("帧结构出错\r\n");
+				retState = 6;
+
 			}
-			if(cmdState == 0)
-			{
-				exeState = exeFree;
-				switch(cmd)
-				{
-				case CMD_GET_CURRENT_FEATURE:
-					if(fingerCallback != NULL)
-						fingerCallback(cmd,cmdState,&rbuf[4],counter - 6);
-					break;
-				case CMD_GET_ID_FEATURE:
-					if(fingerCallback != NULL)
-						fingerCallback(cmd,cmdState,&rbuf[1],counter - 3);
-					break;
-				case CMD_CLEAR:
-				case CMD_TIMEOUT:
-				case CMD_ENROLL1:
-				case CMD_ENROLL2:
-				case CMD_ENROLL3:
-					ack = rbuf[4];
-					if(fingerCallback != NULL)
-						fingerCallback(cmd,cmdState,&rbuf[2],counter - 4);
-					break;
-
-				}
-			}
-			if(cmdState == 1)//含有数据包的命令会有数据头帧
-			{
-				switch(cmd)
-				{
-				case CMD_GET_CURRENT_FEATURE:
-				case CMD_GET_ID_FEATURE:
-
-					if(fingerCallback != NULL)
-						fingerCallback(cmd,cmdState,&rbuf[2],counter - 4);
-					if(rbuf[4] != ACK_SUCCESS)//后面没有数据包
-					{
-						cmdState = 0;
-
-					}
-					break;
-				default:
-					break;
-				}
-			}
-
 			counter = 0;
 			state = HEAD;
 			break;
 		default:
+			cmdState = 0;
+			counter = 0;
+			state = HEAD;
+			break;
+	}
+	return retState;
+}
+void Finger::parser(char ch)
+{
+	//LOGD("rx event %D:%d(%d):%x\r\n",counter,state,cmdState,ch);
+	switch(cmdState)
+	{
+		case 0:
+			retState = parseHead(ch);
+			break;
+		case 1:
+			retState = parseDate(ch);
+			break;
+		default:
+			LOGD("异常错误");
 			break;
 
 	}
 
 }
+
+
 Finger finger;

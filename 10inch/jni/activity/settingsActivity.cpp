@@ -4,6 +4,10 @@
 #include "settingsActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKButton* mBtnUnLockPtr;
+static ZKButton* mBtnLockPtr;
+static ZKButton* mBtnLockStatePtr;
+static ZKTextView* mTextview11Ptr;
 static ZKButton* mBtnDownloadPtr;
 static ZKTextView* mTextview6Ptr;
 static ZKButton* mBtnOrgNameSetPtr;
@@ -85,6 +89,9 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_SETTINGS_BtnUnLock, onButtonClick_BtnUnLock,
+    ID_SETTINGS_BtnLock, onButtonClick_BtnLock,
+    ID_SETTINGS_BtnLockState, onButtonClick_BtnLockState,
     ID_SETTINGS_BtnDownload, onButtonClick_BtnDownload,
     ID_SETTINGS_BtnOrgNameSet, onButtonClick_BtnOrgNameSet,
     ID_SETTINGS_BtnSetHeartbeat, onButtonClick_BtnSetHeartbeat,
@@ -191,6 +198,10 @@ const char* settingsActivity::getAppName() const{
 //TAG:onCreate
 void settingsActivity::onCreate() {
 	Activity::onCreate();
+    mBtnUnLockPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnUnLock);
+    mBtnLockPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnLock);
+    mBtnLockStatePtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnLockState);
+    mTextview11Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview11);
     mBtnDownloadPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnDownload);
     mTextview6Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview6);
     mBtnOrgNameSetPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnOrgNameSet);

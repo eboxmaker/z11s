@@ -615,7 +615,7 @@
             this.btnSendFile.Name = "btnSendFile";
             this.btnSendFile.Size = new System.Drawing.Size(75, 23);
             this.btnSendFile.TabIndex = 58;
-            this.btnSendFile.Text = "发送文件";
+            this.btnSendFile.Text = "系统更新";
             this.btnSendFile.UseVisualStyleBackColor = true;
             this.btnSendFile.Click += new System.EventHandler(this.btnSendFile_Click);
             // 

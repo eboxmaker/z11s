@@ -19,5 +19,9 @@ typedef union
 	unsigned char bytes[8];
 }XdataULong_t;
 
-
+typedef enum
+{
+	Lock,
+	UnLock
+}doorState_t;
 #endif /* JNI_OBJECTTYPE_H_ */

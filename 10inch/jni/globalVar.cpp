@@ -13,7 +13,7 @@
 #include "readdir.h"
 #include <sys/reboot.h>
 #include "httpDownload.h"
-
+#include "door.h"
 Database dbAdv("/mnt/extsd/test.db");
 doorState_t gDoorState = Lock;
 
@@ -294,16 +294,16 @@ void exeCMD(string &package)
 				if(gDoorState == UnLock)
 				{
 					msg = "unlock";
-					GpioHelper::output(GPIO_PIN_B_02, UnLock);
+					door.set(UnLock);
 				}
 				else
 				{
 					msg = "lock";
-					GpioHelper::output(GPIO_PIN_B_02, Lock);
+					door.set(Lock);
 				}
 			}else if(status == StatusRead)
 			{
-				tempDoorState = GpioHelper::input(GPIO_PIN_B_03);
+				tempDoorState = door.get();
 				LOGD("door：%d",tempDoorState);
 			}
 			//应该触发一个定时器，两秒之后返回该值
@@ -340,22 +340,7 @@ void exeCMD(string &package)
 
 			break;
 
-		case CMDCourseInfo:
-			LOGE("CMD:CMDCourseInfo");
-			status = jm.parseCourseInfo(js, gInfo);
-			if(status == StatusSet)
-			{
-				msg = PIC_DIR + gInfo.picture.name;
-				if(creat_file(msg,gInfo.picture.data.c_str(),gInfo.picture.data.size()))
-				{
-					ack = jm.makeCourseInfo(gInfo,StatusOK);
-					gSocket->write_(ack);
-				}
-			}
-			LOGE("CMD:CMDCourseInfo:s=%d",status);
-			LOGE("%s，%s",gInfo.name.c_str(),gInfo.course.c_str());
 
-			break;
 		case CMDPlan:
 			status = jm.parsePlan(js, gPlan);
 			if(status == StatusRead)
@@ -378,14 +363,35 @@ void exeCMD(string &package)
 			break;
 
 
+		case CMDCourseInfo:
+			LOGE("CMD:CMDCourseInfo");
+			status = jm.parseCourseInfo(js, gInfo);
+			if(status == StatusSet)
+			{
+				msg = PIC_DIR + gInfo.picture.name;
+				if(creat_file(msg,gInfo.picture.data.c_str(),gInfo.picture.data.size()))
+				{
+					ack = jm.makeCourseInfo(gInfo,StatusOK);
+					gSocket->write_(ack);
+				}
+			}
+			LOGE("CMD:CMDCourseInfo:s=%d",status);
+			LOGE("%s，%s",gInfo.name.c_str(),gInfo.course.c_str());
+
+			break;
+
 		case CMDPerson:
 			status = jm.parsePerson(js, gPerson);
 			if(status == StatusOK)
 			{
-				msg = "read or set ok";
+				msg = PIC_DIR + gPerson.picture.name;
+				creat_file(msg,gPerson.picture.data.c_str(),gPerson.picture.data.size());
+				//LOGE("%s，%s",gPerson.name.c_str(),gPerson.course.c_str());
+
 			}
-			else if(status == StatusSet || status == StatusRead)
+			else if(status == StatusSet)
 			{
+
 				ack = jm.makePerson(gPerson, StatusOK);
 				gSocket->write_(ack);
 			}

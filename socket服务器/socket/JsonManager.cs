@@ -667,15 +667,22 @@ namespace MyJson
         }
 
 
-        public static string MakePerson(string id,string name,int level, string[] fingers, StatusType status)
+        public static string MakePerson(string id, string name, int level, string[] fingers, string FilePath, StatusType status)
         {
             JObject obj = new JObject();
+
+            string picname = Path.GetFileName(FilePath);
+            string data = FileToBase64(FilePath);
+
             var ja = new JArray();
             
             obj.Add("cmd", (int)CMDType.Person);
             obj.Add("id",id);
             obj.Add("name", name);
             obj.Add("level", level);
+            obj.Add("pic.name", picname);
+            obj.Add("pic.data", data);
+            obj.Add("pic.datalen", data.Length);
 
             for (int i = 0; i < fingers.Length; i++)
             {
@@ -689,6 +696,9 @@ namespace MyJson
 
             string str = Package(jstring);
             return str;
+
+
+
         }
         public static string MakeVersion(StatusType status)
         {
