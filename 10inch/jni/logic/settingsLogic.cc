@@ -630,4 +630,12 @@ static void onEditTextChanged_EditOrgName(const std::string &text) {
     //LOGD(" onEditTextChanged_ EditOrgName %s !!!\n", text.c_str());
 }
 
+#include "httpDownload.h"
 
+static bool onButtonClick_BtnDownload(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnDownload !!!\n");
+    string url = dev.serverIP + "/download/update.img";
+	downloadThread.settings(url,8080,"/mnt/extsd/temp","update.img");
+    downloadThread.run("download-update");
+   return false;
+}

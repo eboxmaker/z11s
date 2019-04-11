@@ -4,6 +4,7 @@
 #include "settingsActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKButton* mBtnDownloadPtr;
 static ZKTextView* mTextview6Ptr;
 static ZKButton* mBtnOrgNameSetPtr;
 static ZKEditText* mEditOrgNamePtr;
@@ -86,6 +87,7 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_SETTINGS_BtnDownload, onButtonClick_BtnDownload,
     ID_SETTINGS_BtnOrgNameSet, onButtonClick_BtnOrgNameSet,
     ID_SETTINGS_SoundButton, onButtonClick_SoundButton,
     ID_SETTINGS_BtnSetHeartbeat, onButtonClick_BtnSetHeartbeat,
@@ -193,6 +195,7 @@ const char* settingsActivity::getAppName() const{
 //TAG:onCreate
 void settingsActivity::onCreate() {
 	Activity::onCreate();
+    mBtnDownloadPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnDownload);
     mTextview6Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview6);
     mBtnOrgNameSetPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnOrgNameSet);
     mEditOrgNamePtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditOrgName);if(mEditOrgNamePtr!= NULL){mEditOrgNamePtr->setTextChangeListener(this);}
