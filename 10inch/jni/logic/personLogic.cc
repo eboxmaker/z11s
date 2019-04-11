@@ -241,7 +241,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	//{0,  6000}, //定时器id=0, 时间间隔6秒
+	{0,  1000}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
 };
 
@@ -310,7 +310,8 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  */
 static bool onUI_Timer(int id){
 	switch (id) {
-
+	case 0:
+		break;
 		default:
 			break;
 	}

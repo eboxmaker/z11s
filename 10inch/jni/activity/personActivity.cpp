@@ -4,6 +4,8 @@
 #include "personActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextIsOnlinePtr;
+static ZKTextView* mTextview5Ptr;
 static ZKButton* mBtnGetIDFeaturePtr;
 static ZKButton* mBtnReadCurrentFeaturePtr;
 static ZKButton* mBtnUpdateServerPtr;
@@ -155,6 +157,8 @@ const char* personActivity::getAppName() const{
 //TAG:onCreate
 void personActivity::onCreate() {
 	Activity::onCreate();
+    mTextIsOnlinePtr = (ZKTextView*)findControlByID(ID_PERSON_TextIsOnline);
+    mTextview5Ptr = (ZKTextView*)findControlByID(ID_PERSON_Textview5);
     mBtnGetIDFeaturePtr = (ZKButton*)findControlByID(ID_PERSON_BtnGetIDFeature);
     mBtnReadCurrentFeaturePtr = (ZKButton*)findControlByID(ID_PERSON_BtnReadCurrentFeature);
     mBtnUpdateServerPtr = (ZKButton*)findControlByID(ID_PERSON_BtnUpdateServer);

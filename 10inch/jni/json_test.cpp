@@ -762,16 +762,18 @@ JsonStatus_t JsonCmdManager::parseVersion(string &js)
 	  return status;
 }
 
-string JsonCmdManager::makeUpdate(JsonStatus_t status)
+string JsonCmdManager::makeUpdate(DownloadInfo_t &info, JsonStatus_t status)
 {
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDUpdate);
+	  root["url"] = Json::Value(info.url);
+	  root["port"] = Json::Value(info.port);
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
 	  return pack(temp);
 }
-JsonStatus_t JsonCmdManager::parseUpdate(string &js,StorageFileInfo_t &info)
+JsonStatus_t JsonCmdManager::parseUpdate(string &js,DownloadInfo_t &info)
 {
 	  Json::Reader reader;
 
@@ -780,11 +782,10 @@ JsonStatus_t JsonCmdManager::parseUpdate(string &js,StorageFileInfo_t &info)
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
 		  status = root["status"].asInt();
-		  if(status == StatusSet)
+		  if(status == StatusSet || status == StatusOK)
 		  {
-			  info.name = root["name"].asString();
-			  info.size = root["size"].asInt();
-			  info.md5 = root["md5"].asString();
+			  info.url = root["url"].asString();
+			  info.port = root["port"].asInt();
 		  }
 	  }
 

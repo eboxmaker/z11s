@@ -14,7 +14,7 @@
 #include "uart/Uart.h"
 #include "utils/Log.h"
 #include "finger.h"
-#define UART_DATA_BUF_LEN			16384	// 16KB
+#define UART_DATA_BUF_LEN			2048	// 16KB
 
 
 MyUart::MyUart() :

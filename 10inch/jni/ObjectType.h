@@ -13,6 +13,11 @@
 
 typedef std::vector<std::string> stringList;
 
+typedef union
+{
+	unsigned long long value;
+	unsigned char bytes[8];
+}XdataULong_t;
 
 
 #endif /* JNI_OBJECTTYPE_H_ */

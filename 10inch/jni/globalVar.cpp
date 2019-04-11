@@ -12,6 +12,7 @@
 #include "utils/TimeHelper.h"
 #include "readdir.h"
 #include <sys/reboot.h>
+#include "httpDownload.h"
 
 Database dbAdv("/mnt/extsd/test.db");
 doorState_t gDoorState = Lock;
@@ -26,6 +27,7 @@ PersonList_t gUserAdmin;
 Plan gPlan;
 CourseInfo_t gInfo;
 StorageFileInfo_t gFileInfo;
+DownloadInfo_t gDownloadInfo;
 
 string gBroadcastMsg;
 
@@ -397,12 +399,32 @@ void exeCMD(string &package)
 			}
 			break;
 		case CMDUpdate:
-			status = jm.parseUpdate(js,gFileInfo);
+			status = jm.parseUpdate(js,gDownloadInfo);
 			if(status == StatusSet)
 			{
-				gSocket->mode = SocketClient::FileMode;
-				ack = jm.makeUpdate(StatusOK);
-				gSocket->write_(ack);
+			    string filename = gDownloadInfo.url.substr(gDownloadInfo.url.find_last_of('/') + 1);
+			    LOGE("文件名：%s",filename.c_str());
+				if(downloadThread.isRunning())
+				{
+					ack = jm.makeUpdate(gDownloadInfo,StatusErr);
+					gSocket->write_(ack);
+				}
+				else
+				{
+					ack = jm.makeUpdate(gDownloadInfo,StatusOK);
+					gSocket->write_(ack);
+					downloadThread.settings(gDownloadInfo.url,gDownloadInfo.port,"/mnt/extsd/temp",filename);
+				    downloadThread.run("download-update");
+				}
+				LOGE("FILE:%s,%d,%s",gFileInfo.name.c_str(),gFileInfo.size,gFileInfo.md5.c_str());
+			}
+			else if( status == StatusOK)
+			{
+			    string filename = gDownloadInfo.url.substr(gDownloadInfo.url.find_last_of('/') + 1);
+				//downloadThread.settings(gDownloadInfo.url,gDownloadInfo.port,"/mnt/extsd/temp",filename.c_str());
+				downloadThread.settings(gDownloadInfo.url,gDownloadInfo.port,"/mnt/extsd/temp",filename);
+			    downloadThread.run("download-update");
+
 				LOGE("FILE:%s,%d,%s",gFileInfo.name.c_str(),gFileInfo.size,gFileInfo.md5.c_str());
 			}
 			break;

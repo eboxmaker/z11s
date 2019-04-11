@@ -11,3 +11,4 @@
 
 
 DownloadThread downloadThread;
+dlNotify_t downloadEvent;

@@ -5,6 +5,8 @@
 #include "storage/StoragePreferences.h"
 #include "utils/TimeHelper.h"
 #include "lib/itoa.h"
+#include "httpdownload.h"
+
 /*
 *此文件由GUI工具生成
 *文件功能：用于处理用户的逻辑相应代码
@@ -97,10 +99,24 @@ static void updateDisp()
 	mEditHeartbeatPtr->setText(interval);
 
 }
+static void onDownloadEvent(string &msg)
+{
+	mWindStatusNoticePtr->showWnd();
+	if(msg.empty())
+	{
+		mTextStatusNoticePtr->setText("下载成功");
+		mTextStatusNotice2Ptr->setText("即将进入升级过程");
+	}
+	else
+	{
+		mTextStatusNoticePtr->setText("下载失败");
+		mTextStatusNotice2Ptr->setText(msg);
+	}
+}
 //网络数据回调接口
 static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 {
-	mTextStatusNotice2Ptr->setText("");
+//	mTextStatusNotice2Ptr->setText("");
 	switch(cmd)
 	{
 	case CMDSetHeartbeat:
@@ -123,6 +139,20 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		}
 		sleep(1);
 		mWindStatusNoticePtr->hideWnd();
+		break;
+	case CMDUpdate:
+		mWindStatusNoticePtr->showWnd();
+		if(status == StatusSet)
+		{
+			mTextStatusNoticePtr->setText("下载更新固件");
+		}
+		else if(status == StatusOK)
+		{
+			gSocket->disableTriger();
+			mTextStatusNoticePtr->setText("获得更新路径成功");
+			mTextStatusNotice2Ptr->setText("开始下载文件");
+			updateDisp();
+		}
 		break;
 	case 255:
 		mWindStatusNoticePtr->showWnd();
@@ -153,6 +183,7 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
 	settingsCallback = onNetWrokDataUpdate;
+	downloadEvent = onDownloadEvent;
 }
 
 /**
@@ -201,6 +232,7 @@ static void onUI_hide() {
  */
 static void onUI_quit() {
 	settingsCallback = NULL;
+	downloadEvent = NULL;
 
 }
 
@@ -438,11 +470,32 @@ static bool onButtonClick_BtnAdSet(ZKButton *pButton) {
 
 	updateAdSetWind();
 
-
-
     mWndAdSetPtr->showWnd();
 
     return false;
+}
+static bool onButtonClick_BtnDownload(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnDownload !!!\n");
+    if(gSocket->connected())
+    {
+    	string str = jm.makeUpdate(gDownloadInfo,  StatusRead);
+		gSocket->write_(str);
+    	gSocket->updateTriger();
+        mWindStatusNoticePtr->showWnd();
+        mTextStatusNoticePtr->setText("等待服务器响应");
+        mTextStatusNotice2Ptr->setText("");
+    }
+    else
+    {
+        mWindStatusNoticePtr->showWnd();
+        mTextStatusNoticePtr->setText("网络中断");
+        mTextStatusNotice2Ptr->setText("无法同步服务器设置");
+        mTextStatusNotice2Ptr->setText("");
+    }
+
+
+
+   return false;
 }
 
 static void onEditTextChanged_EditDisplayAdAfterTime(const std::string &text) {
@@ -618,24 +671,9 @@ static void onProgressChanged_SeekbarMemUsage(ZKSeekBar *pSeekBar, int progress)
     //LOGD(" ProgressChanged SeekbarMemUsage %d !!!\n", progress);
 }
 
-static bool onButtonClick_SoundButton(ZKButton *pButton) {
-    //LOGD(" ButtonClick SoundButton !!!\n");
-    return false;
-}
-
-static void onProgressChanged_SoundSeekbar(ZKSeekBar *pSeekBar, int progress) {
-    //LOGD(" ProgressChanged SoundSeekbar %d !!!\n", progress);
-}
 static void onEditTextChanged_EditOrgName(const std::string &text) {
     //LOGD(" onEditTextChanged_ EditOrgName %s !!!\n", text.c_str());
 }
 
-#include "httpDownload.h"
 
-static bool onButtonClick_BtnDownload(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnDownload !!!\n");
-    string url = dev.serverIP + "/download/update.img";
-	downloadThread.settings(url,8080,"/mnt/extsd/temp","update.img");
-    downloadThread.run("download-update");
-   return false;
-}
+

@@ -113,8 +113,8 @@ public:
 	string makeVersion(JsonStatus_t status);
 	JsonStatus_t parseVersion(string &js);
 
-	string makeUpdate(JsonStatus_t status);
-	JsonStatus_t parseUpdate(string &js,StorageFileInfo_t &gFileInfo);
+	string makeUpdate(DownloadInfo_t &info,JsonStatus_t status);
+	JsonStatus_t parseUpdate(string &js,DownloadInfo_t &info);
 
 	string makeReboot(JsonStatus_t status);
 	JsonStatus_t parseReboot(string &js);

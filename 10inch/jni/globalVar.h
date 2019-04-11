@@ -66,6 +66,7 @@ typedef struct {
 	struct sysinfo systemInfo;
 
 	bool confirmState;
+	bool enable;
 }Device_t;
 
 typedef enum
@@ -113,20 +114,8 @@ typedef enum
 
 
 
-typedef union
-{
-	unsigned long long value;
-	unsigned char bytes[8];
-}XdataULong_t;
 
-typedef struct
-{
-	string name;
-	string id;
-	int	   level;
-	stringList fingers;
 
-}Person_t;
 
 typedef struct
 {
@@ -135,6 +124,11 @@ typedef struct
 	string md5;
 }StorageFileInfo_t;
 
+typedef struct
+{
+	string url;
+	int port;
+}DownloadInfo_t;
 
 typedef struct
 {
@@ -158,7 +152,15 @@ typedef struct
 	string course;
 	Picture_t picture;
 }CourseInfo_t;
+typedef struct
+{
+	string name;
+	string id;
+	int	   level;
+	stringList fingers;
+	Picture_t picture;
 
+}Person_t;
 class Plan
 {
 public:
@@ -193,6 +195,7 @@ private:
 typedef std::vector< Person_t> PersonList_t;
 
 typedef void (*myNotify_t)(JsonCmd_t,JsonStatus_t, string &);
+typedef void (*dlNotify_t)(string &msg);
 
 
 
@@ -211,6 +214,7 @@ extern string gBroadcastMsg;
 extern Person_t gPerson;
 extern CourseInfo_t gInfo;
 extern StorageFileInfo_t gFileInfo;
+extern DownloadInfo_t gDownloadInfo;
 //class MySocketListener : public SocketClient::ISocketListener
 //{
 //	public:

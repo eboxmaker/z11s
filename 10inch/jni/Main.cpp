@@ -33,6 +33,7 @@ extern "C" {
 static void *MainLoop(void *lParam);
 static void LoadParament()
 {
+	dev.enable = true;
     dev.id = jm.getID();
 
     dev.serverIP = StoragePreferences::getString("dev.serverIP", "192.168.1.1");
@@ -181,15 +182,24 @@ static void *MainLoop(void *lParam)
 
 	while(1)
 	{
-		//断线检测
-		if(!gSocket->connected())
+		if(dev.enable)
 		{
-			reconncet();
+			//断线检测
+			if(!gSocket->connected())
+			{
+				reconncet();
+			}
+			//心跳轮训
+			heartbeatLoop();
+			//服务器响应时间计数循环
+			timeoutLoop();
 		}
-		//心跳轮训
-		heartbeatLoop();
-		//服务器响应时间计数循环
-		timeoutLoop();
+		else
+		{
+
+		}
+
+
 
 		Thread::sleep(1000);
 

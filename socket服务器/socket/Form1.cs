@@ -238,6 +238,17 @@ namespace socket
 
 
                         break;
+
+
+                    case JsonManager.CMDType.CMDUpdate:
+                        if (status == JsonManager.StatusType.StatusRead)
+                        {
+                            resault = JsonManager.MakeUpdate("192.168.1.101/download/update.im", 8081, JsonManager.StatusType.StatusOK);
+                            server.SendAll(resault);
+                        }
+
+
+                        break;
                 }
                     
             }
@@ -497,7 +508,7 @@ namespace socket
 
         private void btnSendFile_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.MakeUpdate("1.jpg",JsonManager.StatusType.StatusSet);
+            string str = JsonManager.MakeUpdate("192.168.1.101/download/update.img",8081,JsonManager.StatusType.StatusSet);
             server.SendAll(str);
 
              FileStream fs = File.OpenRead("1.jpg");

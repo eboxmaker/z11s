@@ -708,17 +708,13 @@ namespace MyJson
             string str = Package(jstring);
             return str;
         }
-        public static string MakeUpdate(string fileName,StatusType status)
+        public static string MakeUpdate(string url, int port, StatusType status)
         {
-            string name = Path.GetFileName(fileName);
-            FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-            long nbyte = fs.Length;
 
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.CMDUpdate);
-            obj.Add("name", fileName);
-            obj.Add("size", (long)nbyte);
-            obj.Add("md5", "dm5test123");
+            obj.Add("url", url);
+            obj.Add("port", port);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
             string str = Package(jstring);

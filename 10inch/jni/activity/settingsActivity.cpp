@@ -8,8 +8,6 @@ static ZKButton* mBtnDownloadPtr;
 static ZKTextView* mTextview6Ptr;
 static ZKButton* mBtnOrgNameSetPtr;
 static ZKEditText* mEditOrgNamePtr;
-static ZKSeekBar* mSoundSeekbarPtr;
-static ZKButton* mSoundButtonPtr;
 static ZKTextView* mTextMemUsagePtr;
 static ZKSeekBar* mSeekbarMemUsagePtr;
 static ZKTextView* mTextview10Ptr;
@@ -89,7 +87,6 @@ typedef struct {
 static S_ButtonCallback sButtonCallbackTab[] = {
     ID_SETTINGS_BtnDownload, onButtonClick_BtnDownload,
     ID_SETTINGS_BtnOrgNameSet, onButtonClick_BtnOrgNameSet,
-    ID_SETTINGS_SoundButton, onButtonClick_SoundButton,
     ID_SETTINGS_BtnSetHeartbeat, onButtonClick_BtnSetHeartbeat,
     ID_SETTINGS_BtnDevNameSet, onButtonClick_BtnDevNameSet,
     ID_SETTINGS_BtnServerState, onButtonClick_BtnServerState,
@@ -115,7 +112,6 @@ typedef struct {
 }S_ZKSeekBarCallback;
 /*TAG:SeekBarCallbackTab*/
 static S_ZKSeekBarCallback SZKSeekBarCallbackTab[] = {
-    ID_SETTINGS_SoundSeekbar, onProgressChanged_SoundSeekbar,
     ID_SETTINGS_SeekbarMemUsage, onProgressChanged_SeekbarMemUsage,
 };
 
@@ -199,8 +195,6 @@ void settingsActivity::onCreate() {
     mTextview6Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview6);
     mBtnOrgNameSetPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnOrgNameSet);
     mEditOrgNamePtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditOrgName);if(mEditOrgNamePtr!= NULL){mEditOrgNamePtr->setTextChangeListener(this);}
-    mSoundSeekbarPtr = (ZKSeekBar*)findControlByID(ID_SETTINGS_SoundSeekbar);if(mSoundSeekbarPtr!= NULL){mSoundSeekbarPtr->setSeekBarChangeListener(this);}
-    mSoundButtonPtr = (ZKButton*)findControlByID(ID_SETTINGS_SoundButton);
     mTextMemUsagePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextMemUsage);
     mSeekbarMemUsagePtr = (ZKSeekBar*)findControlByID(ID_SETTINGS_SeekbarMemUsage);if(mSeekbarMemUsagePtr!= NULL){mSeekbarMemUsagePtr->setSeekBarChangeListener(this);}
     mTextview10Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview10);
