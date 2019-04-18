@@ -85,6 +85,9 @@
             this.btnReadVersion = new System.Windows.Forms.Button();
             this.btnReboot = new System.Windows.Forms.Button();
             this.btnSendFile = new System.Windows.Forms.Button();
+            this.tbDownLoadUrl = new System.Windows.Forms.TextBox();
+            this.tbDownLoadPort = new System.Windows.Forms.TextBox();
+            this.btnAdClear = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnStartServer
@@ -284,7 +287,7 @@
             // 
             // btnAdSet
             // 
-            this.btnAdSet.Location = new System.Drawing.Point(685, 280);
+            this.btnAdSet.Location = new System.Drawing.Point(687, 296);
             this.btnAdSet.Name = "btnAdSet";
             this.btnAdSet.Size = new System.Drawing.Size(75, 23);
             this.btnAdSet.TabIndex = 21;
@@ -295,7 +298,7 @@
             // cbAdEnable
             // 
             this.cbAdEnable.AutoSize = true;
-            this.cbAdEnable.Location = new System.Drawing.Point(777, 284);
+            this.cbAdEnable.Location = new System.Drawing.Point(779, 300);
             this.cbAdEnable.Name = "cbAdEnable";
             this.cbAdEnable.Size = new System.Drawing.Size(78, 16);
             this.cbAdEnable.TabIndex = 22;
@@ -305,7 +308,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(685, 318);
+            this.label1.Location = new System.Drawing.Point(687, 334);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(89, 12);
             this.label1.TabIndex = 23;
@@ -313,7 +316,7 @@
             // 
             // tbAdTime
             // 
-            this.tbAdTime.Location = new System.Drawing.Point(772, 309);
+            this.tbAdTime.Location = new System.Drawing.Point(774, 325);
             this.tbAdTime.Name = "tbAdTime";
             this.tbAdTime.Size = new System.Drawing.Size(100, 21);
             this.tbAdTime.TabIndex = 24;
@@ -321,7 +324,7 @@
             // 
             // btnModifyAdminPwd
             // 
-            this.btnModifyAdminPwd.Location = new System.Drawing.Point(857, 336);
+            this.btnModifyAdminPwd.Location = new System.Drawing.Point(859, 352);
             this.btnModifyAdminPwd.Name = "btnModifyAdminPwd";
             this.btnModifyAdminPwd.Size = new System.Drawing.Size(42, 23);
             this.btnModifyAdminPwd.TabIndex = 27;
@@ -331,7 +334,7 @@
             // 
             // tbAdminPwd
             // 
-            this.tbAdminPwd.Location = new System.Drawing.Point(683, 336);
+            this.tbAdminPwd.Location = new System.Drawing.Point(685, 352);
             this.tbAdminPwd.Name = "tbAdminPwd";
             this.tbAdminPwd.Size = new System.Drawing.Size(168, 21);
             this.tbAdminPwd.TabIndex = 28;
@@ -357,7 +360,7 @@
             // 
             // btnReadAdminPwd
             // 
-            this.btnReadAdminPwd.Location = new System.Drawing.Point(908, 336);
+            this.btnReadAdminPwd.Location = new System.Drawing.Point(910, 352);
             this.btnReadAdminPwd.Name = "btnReadAdminPwd";
             this.btnReadAdminPwd.Size = new System.Drawing.Size(74, 23);
             this.btnReadAdminPwd.TabIndex = 31;
@@ -377,7 +380,7 @@
             // 
             // btnGetDevName
             // 
-            this.btnGetDevName.Location = new System.Drawing.Point(918, 222);
+            this.btnGetDevName.Location = new System.Drawing.Point(920, 239);
             this.btnGetDevName.Name = "btnGetDevName";
             this.btnGetDevName.Size = new System.Drawing.Size(75, 23);
             this.btnGetDevName.TabIndex = 33;
@@ -387,7 +390,7 @@
             // 
             // tbDevName
             // 
-            this.tbDevName.Location = new System.Drawing.Point(687, 224);
+            this.tbDevName.Location = new System.Drawing.Point(689, 241);
             this.tbDevName.Name = "tbDevName";
             this.tbDevName.Size = new System.Drawing.Size(139, 21);
             this.tbDevName.TabIndex = 34;
@@ -395,7 +398,7 @@
             // 
             // btnSetDevName
             // 
-            this.btnSetDevName.Location = new System.Drawing.Point(837, 222);
+            this.btnSetDevName.Location = new System.Drawing.Point(839, 239);
             this.btnSetDevName.Name = "btnSetDevName";
             this.btnSetDevName.Size = new System.Drawing.Size(75, 23);
             this.btnSetDevName.TabIndex = 35;
@@ -415,7 +418,7 @@
             // 
             // btnDeletAdPic
             // 
-            this.btnDeletAdPic.Location = new System.Drawing.Point(832, 141);
+            this.btnDeletAdPic.Location = new System.Drawing.Point(834, 158);
             this.btnDeletAdPic.Name = "btnDeletAdPic";
             this.btnDeletAdPic.Size = new System.Drawing.Size(156, 23);
             this.btnDeletAdPic.TabIndex = 37;
@@ -425,7 +428,7 @@
             // 
             // btnSetHeartbeatInterval
             // 
-            this.btnSetHeartbeatInterval.Location = new System.Drawing.Point(836, 193);
+            this.btnSetHeartbeatInterval.Location = new System.Drawing.Point(838, 210);
             this.btnSetHeartbeatInterval.Name = "btnSetHeartbeatInterval";
             this.btnSetHeartbeatInterval.Size = new System.Drawing.Size(75, 23);
             this.btnSetHeartbeatInterval.TabIndex = 38;
@@ -435,7 +438,7 @@
             // 
             // tbHeartInterval
             // 
-            this.tbHeartInterval.Location = new System.Drawing.Point(687, 193);
+            this.tbHeartInterval.Location = new System.Drawing.Point(689, 210);
             this.tbHeartInterval.Name = "tbHeartInterval";
             this.tbHeartInterval.Size = new System.Drawing.Size(139, 21);
             this.tbHeartInterval.TabIndex = 39;
@@ -453,7 +456,7 @@
             // 
             // btnReadHearInterval
             // 
-            this.btnReadHearInterval.Location = new System.Drawing.Point(917, 193);
+            this.btnReadHearInterval.Location = new System.Drawing.Point(919, 210);
             this.btnReadHearInterval.Name = "btnReadHearInterval";
             this.btnReadHearInterval.Size = new System.Drawing.Size(75, 23);
             this.btnReadHearInterval.TabIndex = 41;
@@ -463,7 +466,7 @@
             // 
             // tbAdName
             // 
-            this.tbAdName.Location = new System.Drawing.Point(683, 141);
+            this.tbAdName.Location = new System.Drawing.Point(685, 158);
             this.tbAdName.Name = "tbAdName";
             this.tbAdName.Size = new System.Drawing.Size(139, 21);
             this.tbAdName.TabIndex = 42;
@@ -471,7 +474,7 @@
             // 
             // btnSetDoorPwd
             // 
-            this.btnSetDoorPwd.Location = new System.Drawing.Point(836, 251);
+            this.btnSetDoorPwd.Location = new System.Drawing.Point(838, 268);
             this.btnSetDoorPwd.Name = "btnSetDoorPwd";
             this.btnSetDoorPwd.Size = new System.Drawing.Size(75, 23);
             this.btnSetDoorPwd.TabIndex = 44;
@@ -481,7 +484,7 @@
             // 
             // tbDoorPwd
             // 
-            this.tbDoorPwd.Location = new System.Drawing.Point(687, 253);
+            this.tbDoorPwd.Location = new System.Drawing.Point(689, 270);
             this.tbDoorPwd.Name = "tbDoorPwd";
             this.tbDoorPwd.Size = new System.Drawing.Size(139, 21);
             this.tbDoorPwd.TabIndex = 43;
@@ -489,7 +492,7 @@
             // 
             // btnReadDoorPwd
             // 
-            this.btnReadDoorPwd.Location = new System.Drawing.Point(918, 251);
+            this.btnReadDoorPwd.Location = new System.Drawing.Point(920, 268);
             this.btnReadDoorPwd.Name = "btnReadDoorPwd";
             this.btnReadDoorPwd.Size = new System.Drawing.Size(75, 23);
             this.btnReadDoorPwd.TabIndex = 45;
@@ -509,7 +512,7 @@
             // 
             // tbQRCodeName
             // 
-            this.tbQRCodeName.Location = new System.Drawing.Point(683, 164);
+            this.tbQRCodeName.Location = new System.Drawing.Point(685, 181);
             this.tbQRCodeName.Name = "tbQRCodeName";
             this.tbQRCodeName.Size = new System.Drawing.Size(139, 21);
             this.tbQRCodeName.TabIndex = 48;
@@ -517,7 +520,7 @@
             // 
             // btnDelQRCode
             // 
-            this.btnDelQRCode.Location = new System.Drawing.Point(832, 164);
+            this.btnDelQRCode.Location = new System.Drawing.Point(834, 181);
             this.btnDelQRCode.Name = "btnDelQRCode";
             this.btnDelQRCode.Size = new System.Drawing.Size(156, 23);
             this.btnDelQRCode.TabIndex = 47;
@@ -611,7 +614,7 @@
             // 
             // btnSendFile
             // 
-            this.btnSendFile.Location = new System.Drawing.Point(758, 67);
+            this.btnSendFile.Location = new System.Drawing.Point(681, 94);
             this.btnSendFile.Name = "btnSendFile";
             this.btnSendFile.Size = new System.Drawing.Size(75, 23);
             this.btnSendFile.TabIndex = 58;
@@ -619,11 +622,40 @@
             this.btnSendFile.UseVisualStyleBackColor = true;
             this.btnSendFile.Click += new System.EventHandler(this.btnSendFile_Click);
             // 
+            // tbDownLoadUrl
+            // 
+            this.tbDownLoadUrl.Location = new System.Drawing.Point(685, 123);
+            this.tbDownLoadUrl.Name = "tbDownLoadUrl";
+            this.tbDownLoadUrl.Size = new System.Drawing.Size(216, 21);
+            this.tbDownLoadUrl.TabIndex = 59;
+            this.tbDownLoadUrl.Text = "192.168.1.1/download/update.img";
+            // 
+            // tbDownLoadPort
+            // 
+            this.tbDownLoadPort.Location = new System.Drawing.Point(939, 123);
+            this.tbDownLoadPort.Name = "tbDownLoadPort";
+            this.tbDownLoadPort.Size = new System.Drawing.Size(51, 21);
+            this.tbDownLoadPort.TabIndex = 60;
+            this.tbDownLoadPort.Text = "8080";
+            // 
+            // btnAdClear
+            // 
+            this.btnAdClear.Location = new System.Drawing.Point(919, 293);
+            this.btnAdClear.Name = "btnAdClear";
+            this.btnAdClear.Size = new System.Drawing.Size(75, 23);
+            this.btnAdClear.TabIndex = 61;
+            this.btnAdClear.Text = "清空广告";
+            this.btnAdClear.UseVisualStyleBackColor = true;
+            this.btnAdClear.Click += new System.EventHandler(this.btnAdClear_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(995, 436);
+            this.Controls.Add(this.btnAdClear);
+            this.Controls.Add(this.tbDownLoadPort);
+            this.Controls.Add(this.tbDownLoadUrl);
             this.Controls.Add(this.btnSendFile);
             this.Controls.Add(this.btnReboot);
             this.Controls.Add(this.btnReadVersion);
@@ -747,6 +779,9 @@
         private System.Windows.Forms.Button btnReadVersion;
         private System.Windows.Forms.Button btnReboot;
         private System.Windows.Forms.Button btnSendFile;
+        private System.Windows.Forms.TextBox tbDownLoadUrl;
+        private System.Windows.Forms.TextBox tbDownLoadPort;
+        private System.Windows.Forms.Button btnAdClear;
     }
 }
 

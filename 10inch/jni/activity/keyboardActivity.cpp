@@ -4,6 +4,13 @@
 #include "keyboardActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextview7Ptr;
+static ZKTextView* mTextview5Ptr;
+static ZKButton* mBtnUnLockPtr;
+static ZKButton* mBtnLockPtr;
+static ZKButton* mBtnLockStatePtr;
+static ZKTextView* mTextview1Ptr;
+static ZKWindow* mWindAdminDoorPtr;
 static ZKButton* mBtnTecherPicturePtr;
 static ZKTextView* mTextCoursePtr;
 static ZKTextView* mTextClassPtr;
@@ -111,6 +118,9 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_KEYBOARD_BtnUnLock, onButtonClick_BtnUnLock,
+    ID_KEYBOARD_BtnLock, onButtonClick_BtnLock,
+    ID_KEYBOARD_BtnLockState, onButtonClick_BtnLockState,
     ID_KEYBOARD_BtnTecherPicture, onButtonClick_BtnTecherPicture,
     ID_KEYBOARD_BtnBackMain, onButtonClick_BtnBackMain,
     ID_KEYBOARD_Button5, onButtonClick_Button5,
@@ -217,6 +227,13 @@ const char* keyboardActivity::getAppName() const{
 //TAG:onCreate
 void keyboardActivity::onCreate() {
 	Activity::onCreate();
+    mTextview7Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview7);
+    mTextview5Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview5);
+    mBtnUnLockPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnUnLock);
+    mBtnLockPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnLock);
+    mBtnLockStatePtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnLockState);
+    mTextview1Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview1);
+    mWindAdminDoorPtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindAdminDoor);
     mBtnTecherPicturePtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnTecherPicture);
     mTextCoursePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextCourse);
     mTextClassPtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextClass);

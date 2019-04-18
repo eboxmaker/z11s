@@ -4,6 +4,16 @@
 #include "settingsActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKEditText* mEditAdNumPtr;
+static ZKTextView* mTextview16Ptr;
+static ZKTextView* mTextview15Ptr;
+static ZKTextView* mTextLightPtr;
+static ZKSeekBar* mSeekbarLightPtr;
+static ZKTextView* mTextview14Ptr;
+static ZKTextView* mTextIDPtr;
+static ZKTextView* mTextview13Ptr;
+static ZKTextView* mTextVersionPtr;
+static ZKTextView* mTextview12Ptr;
 static ZKButton* mBtnUnLockPtr;
 static ZKButton* mBtnLockPtr;
 static ZKButton* mBtnLockStatePtr;
@@ -119,6 +129,7 @@ typedef struct {
 }S_ZKSeekBarCallback;
 /*TAG:SeekBarCallbackTab*/
 static S_ZKSeekBarCallback SZKSeekBarCallbackTab[] = {
+    ID_SETTINGS_SeekbarLight, onProgressChanged_SeekbarLight,
     ID_SETTINGS_SeekbarMemUsage, onProgressChanged_SeekbarMemUsage,
 };
 
@@ -154,6 +165,7 @@ typedef struct {
 }S_EditTextInputCallback;
 /*TAG:EditTextInputCallback*/
 static S_EditTextInputCallback SEditTextInputCallbackTab[] = {
+    ID_SETTINGS_EditAdNum, onEditTextChanged_EditAdNum,
     ID_SETTINGS_EditOrgName, onEditTextChanged_EditOrgName,
     ID_SETTINGS_EditHeartbeat, onEditTextChanged_EditHeartbeat,
     ID_SETTINGS_EditDevName, onEditTextChanged_EditDevName,
@@ -198,6 +210,16 @@ const char* settingsActivity::getAppName() const{
 //TAG:onCreate
 void settingsActivity::onCreate() {
 	Activity::onCreate();
+    mEditAdNumPtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditAdNum);if(mEditAdNumPtr!= NULL){mEditAdNumPtr->setTextChangeListener(this);}
+    mTextview16Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview16);
+    mTextview15Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview15);
+    mTextLightPtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextLight);
+    mSeekbarLightPtr = (ZKSeekBar*)findControlByID(ID_SETTINGS_SeekbarLight);if(mSeekbarLightPtr!= NULL){mSeekbarLightPtr->setSeekBarChangeListener(this);}
+    mTextview14Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview14);
+    mTextIDPtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextID);
+    mTextview13Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview13);
+    mTextVersionPtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextVersion);
+    mTextview12Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview12);
     mBtnUnLockPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnUnLock);
     mBtnLockPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnLock);
     mBtnLockStatePtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnLockState);

@@ -18,14 +18,28 @@ class Advertisement {
 public:
 	Advertisement();
 	virtual ~Advertisement();
+
+
 	bool add(string js);
 	void remove(string fileName);
-	void updateFileList();
-	void updateRecode();
-	bool checkFileAndDB();
+	int	getNum();
+	void clear();
 	bool enable;
 	int  idleTime;
-	std::vector<S_INFOS> list;
+	std::vector<S_INFOS> dbList;
+
+	void logDBList();
+	void logFileList();
+
+private:
+	void updateList(std::vector<S_INFOS> &list);//更新dbList
+	stringList syncAdFileAndDB();//如果文件不存在，从数据库中删除对应条目，如果数据库中不存在，则删除文件
+	stringList getAdListFromFile();
+	stringList getAdListFromDB();
+
+	int num;
+
+
 
 };
 extern Advertisement gAdv;

@@ -16,7 +16,8 @@ bool Database::recodeResult(std::string fileName,int displayTime) {
 	std::string sqltestr ="";
 	char temp[10];
 	sprintf(temp,"%d",displayTime);
-	sqltestr += "insert into recode(fileName,displayTime) values('"+fileName+"',"+
+	//or replace
+	sqltestr += "insert or replace into recode(fileName,displayTime) values('"+fileName+"',"+
 			temp+");";
 
 	char* errmsg;
@@ -56,8 +57,8 @@ std::vector<S_INFOS> Database::getRecodes() {
 	   ++nIndex;
 	   dbs.push_back(info);
    }
-   LOGD("read size nRow %d",nRow);
-   LOGD("read size dbs.size %d",dbs.size());
+//   LOGD("read size nRow %d",nRow);
+//   LOGD("read size dbs.size %d",dbs.size());
 
 	sqlite3_free_table(result);
 	return dbs;
@@ -71,11 +72,14 @@ Database::Database(std::string path) {
 		pDB = NULL;
 		return;
 	}
-	const char* cmd = "CREATE TABLE IF NOT EXISTS recode(fileName,displayTime);";
+	const char* cmd = "CREATE TABLE IF NOT EXISTS recode(fileName TEXT UNIQUE,displayTime);";
 	char* errmsg;
 	sqlite3_exec(pDB,cmd,0,0, &errmsg);
 	if(ret != SQLITE_OK){
 		LOGD("create table ret:%s",errmsg);
+	}
+	else{
+		LOGD("创建数据库成功或者数据库已经存在：%s",errmsg);
 	}
 }
 

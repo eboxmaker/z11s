@@ -28,27 +28,19 @@ using namespace std;
 #define HOME_DIR	"/mnt/extsd/"
 #define QR_DIR		"/mnt/extsd/qr/"
 #define AD_DIR		"/mnt/extsd/ad/"
+#define AD_DB		"/mnt/extsd/advertisment.db"
 #define PIC_DIR		"/mnt/extsd/picture/"
-#define SU_DIR		"/mnt/extsd/super/"
 
 
 extern Database dbAdv;
 
 
 
-typedef enum
-{
-	StatusReqDev2Ser = 0,
-	StatusParaSer2Dev ,
-	StatusAckDev2Ser,
-	StatusOKSer2Dev,
-	StatusErrSer2Dev,
-}JsonConfirmStatus_t;
-
 typedef struct {
 	string organization;
 	string name;
 	string id;
+	string version;
 
 	string pwdLocal;
 	string pwdDoor;
@@ -64,54 +56,11 @@ typedef struct {
 	bool enable;
 }Device_t;
 
-typedef enum
-{
-	CMDHeartbeat,
-	CMDSetHeartbeat,
-	CMDOrgName,
-	CMDDevName,
-	CMDDevID,
-	CMDConfirm,
-	CMDSyncDateTime,
-	CMDAdminPwd,
-	CMDDoorPwd,
-	CMDDoorCtr,
-	CMDCourseInfo,
-	CMDPlan,
-	CMDBroadcast,
-
-	CMDQRCode,
-	CMDDelQRCode,
-
-	CMDAdPic,//CMDAdvertisement,
-	CMDDelAdPic,//CMDAdvertisement,
-	CMDAdSet,
-
-	CMDSuperPic,
-
-	CMDPerson,
-
-
-	CMDVersion,
-	CMDUpdate,
-	CMDReboot,
-
-    CMDErr,
-
-}JsonCmd_t;
-typedef enum
-{
-	StatusSet = 0,
-	StatusRead ,
-	StatusOK,
-	StatusErr
-}JsonStatus_t;
 
 
 
 
-
-
+//不可用
 typedef struct
 {
 	string name;
@@ -125,12 +74,7 @@ typedef struct
 	int port;
 }DownloadInfo_t;
 
-typedef struct
-{
-	string teacher;
-	string class_;
-	string courser;
-}PlanRow_t;
+
 
 typedef struct
 {
@@ -145,8 +89,11 @@ typedef struct
 	string class_;
 	string num;
 	string course;
+//	string time_start;
+//	string time_end;
 	Picture_t picture;
 }CourseInfo_t;
+
 typedef struct
 {
 	string name;
@@ -156,8 +103,20 @@ typedef struct
 	Picture_t picture;
 
 }Person_t;
+
+
+
 class Plan
 {
+
+public:
+	typedef struct
+	{
+		string teacher;
+		string class_;
+		string courser;
+	}PlanRow_t;
+
 public:
 	Plan() :
 		_maxSize(100),
@@ -207,7 +166,7 @@ extern PersonList_t gUserAdmin;
 extern Plan gPlan;
 extern string gBroadcastMsg;
 extern Person_t gPerson;
-extern CourseInfo_t gInfo;
+extern CourseInfo_t gCourseInfo;
 extern StorageFileInfo_t gFileInfo;
 extern DownloadInfo_t gDownloadInfo;
 //class MySocketListener : public SocketClient::ISocketListener

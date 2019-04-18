@@ -157,16 +157,17 @@ namespace socket
 
                         break;
                     case JsonManager.CMDType.Confirm:
-                        JsonManager.StatusConfirmType cStatus = JsonManager.GetJsonStatusConfirm(js);
+                        string id = "";
+                        JsonManager.StatusConfirmType cStatus = JsonManager.GetJsonStatusConfirm(js,ref id);
 
                         if (cStatus == JsonManager.StatusConfirmType.StatusReqDev2Ser)
                         {
-                            resault = JsonManager.MakeConfirm(JsonManager.StatusConfirmType.StatusParaSer2Dev);
+                            resault = JsonManager.MakeConfirm(id,JsonManager.StatusConfirmType.StatusParaSer2Dev);
                             server.SendAll(resault);
                         }
                         if(cStatus ==  JsonManager.StatusConfirmType.StatusAckDev2Ser)
                         {
-                            resault = JsonManager.MakeConfirm(JsonManager.StatusConfirmType.StatusOKSer2Dev);
+                            resault = JsonManager.MakeConfirm(id,JsonManager.StatusConfirmType.StatusOKSer2Dev);
                             server.SendAll(resault);
                         }
 
@@ -243,7 +244,7 @@ namespace socket
                     case JsonManager.CMDType.CMDUpdate:
                         if (status == JsonManager.StatusType.StatusRead)
                         {
-                            resault = JsonManager.MakeUpdate("192.168.1.101/download/update.img", 8081, JsonManager.StatusType.StatusOK);
+                            resault = JsonManager.MakeUpdate(tbDownLoadUrl.Text, Convert.ToInt32(tbDownLoadPort.Text), JsonManager.StatusType.StatusOK);
                             server.SendAll(resault);
                         }
 
@@ -306,18 +307,18 @@ namespace socket
 
         private void btnLoadFile_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.PackageFileToJsonString("1.jpg", (int)JsonManager.CMDType.AdPic);
+            string str = JsonManager.PackageAdFileToJsonString("1.jpg", 2);
            RichSend.Text = str;
         }
 
         private void btnLoadFile2_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.PackageFileToJsonString("2.jpg", (int)JsonManager.CMDType.AdPic);
+            string str = JsonManager.PackageAdFileToJsonString("2.jpg", 5);
             RichSend.Text = str;
         }
         private void btnLoadFile3_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.PackageFileToJsonString("3.jpg", (int)JsonManager.CMDType.AdPic);
+            string str = JsonManager.PackageAdFileToJsonString("3.jpg", 10);
             RichSend.Text = str;
         }
         private void btnLoadQR_Click(object sender, EventArgs e)
@@ -508,7 +509,7 @@ namespace socket
 
         private void btnSendFile_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.MakeUpdate("192.168.1.101/download/update.img",8081,JsonManager.StatusType.StatusSet);
+            string str = JsonManager.MakeUpdate(tbDownLoadUrl.Text,Convert.ToInt32(tbDownLoadPort.Text),JsonManager.StatusType.StatusSet);
             server.SendAll(str);
 
              FileStream fs = File.OpenRead("1.jpg");
@@ -521,6 +522,13 @@ namespace socket
                  tbSendDataLength.Text = len.ToString();
 
              }
+        }
+
+        private void btnAdClear_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeAdClear(JsonManager.StatusType.StatusSet);
+            server.SendAll(str);
+
         }
 
 

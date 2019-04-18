@@ -60,7 +60,6 @@ protected:
         	LOGD("下载成功:%s",err.c_str());
             if(downloadEvent != NULL)
             {
-            	LOGD("尝试触发");
             	downloadEvent(err);
             }
             if(name == "update.img")

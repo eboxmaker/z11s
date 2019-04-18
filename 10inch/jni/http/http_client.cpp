@@ -14,6 +14,7 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include "utils/log.h"
 
 using std::fstream;
 
@@ -103,6 +104,7 @@ string http::HttpClient::Download(const std::string& url, int port,
         LOGD("cpos is null, head is %d ", recv_length);
         return "ERROR: Head less";
     }
+
     fstream file;
     file.open(path_to_save.c_str(), std::ios::out | std::ios::binary);
     file.write(cpos + strlen("\r\n\r\n"),
@@ -112,7 +114,13 @@ string http::HttpClient::Download(const std::string& url, int port,
     string error_message;
     while (true) {
         recv_length = recv(socketfd, buf, recv_buf_len, 0);
+
+
         if (recv_length == 0) {
+
+            string temp = buf;
+            if(temp.size() != 0)
+                error_message = "ERROR: " + temp.substr(0, temp.find('\n',0));
             break;
         } else if (recv_length < 0) {
             if ((errno == EINTR || errno == EWOULDBLOCK || errno == EAGAIN)) {
@@ -125,16 +133,25 @@ string http::HttpClient::Download(const std::string& url, int port,
         } else if (recv_length > 0) {
             try {
                 file.write(buf, recv_length);
+                memset(buf,0,recv_length);
+//                for(int k = 0; k < recv_length; k++)
+//                	buf[k]=0;
             } catch (...) { //what's the catch effect?
                 error_message = "ERROR: write file exception";
                 break;
             }
         }
     }
+
     file.flush();
     file.close();
     freeaddrinfo(host_info_list);
     close(socketfd);
+//    if(error_message != "")
+//    {
+//    	string cmd = "rm " + path_to_save;
+//        system(cmd.c_str());
+//    }
     return error_message;
 }
 

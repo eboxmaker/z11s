@@ -16,11 +16,13 @@
 #include <fstream>
 #include <vector>
 #include "globalvar.h"
-void read_dir();
+//void read_dir();
+bool read_dir(string path,stringList &list);
 void make_dir(char *path);
 int rm_file(std::string &file_name);
 bool is_access(string &path);
 bool creat_file(string &fullName,const char *data,size_t size);
+unsigned long get_file_size(const char *path);
 class FileOpt
 {
 	FileOpt();

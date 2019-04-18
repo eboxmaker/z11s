@@ -7,6 +7,7 @@
 #include "lib/itoa.h"
 #include "httpdownload.h"
 #include "door.h"
+#include "utils/BrightnessHelper.h"
 
 /*
 *此文件由GUI工具生成
@@ -98,15 +99,17 @@ static void updateDisp()
     mEditOrgNamePtr->setText(org);
 	mEditDevNamePtr->setText(name);
 	mEditHeartbeatPtr->setText(interval);
+	mTextVersionPtr->setText(dev.version);
+	mTextIDPtr->setText(dev.id);
 
 }
 static void onDownloadEvent(string &msg)
 {
 	mWindStatusNoticePtr->showWnd();
+	mTextStatusNotice2Ptr->setText("");
 	if(msg.empty())
 	{
 		mTextStatusNoticePtr->setText("下载成功");
-		mTextStatusNotice2Ptr->setText("即将进入升级过程");
 	}
 	else
 	{
@@ -144,17 +147,21 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		break;
 	case CMDUpdate:
 		mWindStatusNoticePtr->showWnd();
+		mTextStatusNotice2Ptr->setText("开始下载文件...");
 		if(status == StatusSet)
 		{
-			mTextStatusNoticePtr->setText("下载更新固件");
+			mTextStatusNoticePtr->setText("获得更新路径成功");
 		}
 		else if(status == StatusOK)
 		{
 			gSocket->disableTriger();
 			mTextStatusNoticePtr->setText("获得更新路径成功");
-			mTextStatusNotice2Ptr->setText("开始下载文件");
 			updateDisp();
 		}
+		break;
+	case CMDAdClear:
+	case CMDAdPic:
+		mEditAdNumPtr->setText(gAdv.getNum());
 		break;
 	case 255:
 		mWindStatusNoticePtr->showWnd();
@@ -226,6 +233,9 @@ static void onUI_show() {
 		mBtnLockStatePtr->setText("关 ");
 	}
 
+	//
+	mSeekbarLightPtr->setProgress(BRIGHTNESSHELPER->getBrightness());
+	mTextLightPtr->setText(BRIGHTNESSHELPER->getBrightness());
 //	mSeekbarMemUsagePtr->setProgress(gMemUsage);
 //	sprintf(temp,"%0.1f%%",gMemUsage);
 //	mTextMemUsagePtr->setText(temp);
@@ -288,7 +298,9 @@ static bool onUI_Timer(int id){
 	     sysinfo(&dev.systemInfo);
 	     char temp[30];
 	     memUsage = (1 - ((float)dev.systemInfo.freeram/(float)dev.systemInfo.totalram))*100;
-	     sprintf(temp,"%0.1f%%(%dM/%dM)",memUsage,dev.systemInfo.freeram/1024/1024,dev.systemInfo.totalram/1024/1024);
+	     sprintf(temp,"%0.1f%%(%0.1fM/%0.1fM)",memUsage,\
+	    		 dev.systemInfo.freeram/1024.0/1024.0,\
+				 dev.systemInfo.totalram/1024.0/1024.0);
 	     mSeekbarMemUsagePtr->setProgress(memUsage);
 	     mTextMemUsagePtr->setText(temp);
 	     break;
@@ -340,6 +352,7 @@ static bool onButtonClick_BtnServer(ZKButton *pButton) {
 	{
 //		LOGE("%s:%d",dev.serverIP.c_str(),tempServerPort);
 	    mTextStatusNoticePtr->setText("无更改");
+	    mTextStatusNotice2Ptr->setText("");
 	    mWindStatusNoticePtr->showWnd();
 		return true;
 	}
@@ -352,6 +365,7 @@ static bool onButtonClick_BtnServer(ZKButton *pButton) {
 	if (inet_aton(tempServerIP.c_str(), &serverAddr.sin_addr) == 0) {     // 服务器的IP地址来自程序的参数
 		LOGD("Server IP Address Error!\n");
 	    mTextStatusNoticePtr->setText("服务器IP设置错误");
+	    mTextStatusNotice2Ptr->setText("");
 	    mWindStatusNoticePtr->showWnd();
 		return false;
 	}
@@ -371,6 +385,8 @@ static bool onButtonClick_BtnServer(ZKButton *pButton) {
 		{
 //			LOGE("连接服务器成功!\n");
 		    mTextStatusNoticePtr->setText("连接服务器成功!");
+		    mTextStatusNotice2Ptr->setText("");
+
 
 		}
 		else
@@ -378,6 +394,8 @@ static bool onButtonClick_BtnServer(ZKButton *pButton) {
 			gSocket->disconnect();
 			LOGE("连接服务器失败 !\n");
 		    mTextStatusNoticePtr->setText("连接服务器失败!");
+		    mTextStatusNotice2Ptr->setText("");
+
 		}
 	}
 
@@ -419,6 +437,7 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 		    StoragePreferences::putString("dev.pwdLocal", dev.pwdLocal.c_str());
 		   // mWndModifyAdminPwdPtr->hideWnd();
 		    mTextStatusNoticePtr->setText("修改成功");
+		    mTextStatusNotice2Ptr->setText("");
 
 		    if(gSocket->connected())
 		    {
@@ -492,6 +511,7 @@ static bool onButtonClick_BtnAdSet(ZKButton *pButton) {
 	updateAdSetWind();
 
     mWndAdSetPtr->showWnd();
+    mEditAdNumPtr->setText(gAdv.getNum());
 
     return false;
 }
@@ -549,7 +569,7 @@ static bool onButtonClick_BtnAdOK(ZKButton *pButton) {
     {
         mWindStatusNoticePtr->showWnd();
         mTextStatusNoticePtr->setText("设置成功");
-        mTextStatusNoticePtr->setText("正在同步服务器设置");
+        mTextStatusNotice2Ptr->setText("正在同步服务器设置");
         string str = jm.makeAdSet(gAdv,StatusSet);
 		gSocket->write_(str);
         gSocket->updateTriger();
@@ -637,6 +657,7 @@ static bool onButtonClick_BtnDevNameSet(ZKButton *pButton) {
 
 static bool onButtonClick_BtnServerState(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnServerState !!!\n");
+	dev.enable = true;
     return false;
 }
 
@@ -662,7 +683,7 @@ static bool onButtonClick_BtnSetHeartbeat(ZKButton *pButton) {
     {
         mWindStatusNoticePtr->showWnd();
         mTextStatusNoticePtr->setText("设置成功");
-        mTextStatusNoticePtr->setText("正在同步服务器设置");
+        mTextStatusNotice2Ptr->setText("正在同步服务器设置");
 
     	gSocket->updateTriger();
     	string msg;
@@ -687,9 +708,6 @@ static void onEditTextChanged_EditHeartbeat(const std::string &text) {
 		temp = 3;
 	mEditHeartbeatPtr->setText(temp);
 
-}
-static void onProgressChanged_SeekbarMemUsage(ZKSeekBar *pSeekBar, int progress) {
-    //LOGD(" ProgressChanged SeekbarMemUsage %d !!!\n", progress);
 }
 
 static void onEditTextChanged_EditOrgName(const std::string &text) {
@@ -737,4 +755,18 @@ static bool onButtonClick_BtnUnLock(ZKButton *pButton) {
 static bool onButtonClick_BtnLockState(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnLockState !!!\n");
     return false;
+}
+static void onProgressChanged_SeekbarLight(ZKSeekBar *pSeekBar, int progress) {
+    //LOGD(" ProgressChanged SeekbarLight %d !!!\n", progress);
+//	if(progress < 30)
+//		progress = 30;
+	BRIGHTNESSHELPER->setBrightness(progress);
+	mTextLightPtr->setText(progress);
+
+}
+static void onProgressChanged_SeekbarMemUsage(ZKSeekBar *pSeekBar, int progress) {
+    //LOGD(" ProgressChanged SeekbarMemUsage %d !!!\n", progress);
+}
+static void onEditTextChanged_EditAdNum(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EditAdNum %s !!!\n", text.c_str());
 }

@@ -24,4 +24,58 @@ typedef enum
 	Lock,
 	UnLock
 }doorState_t;
+
+typedef enum
+{
+	StatusSet = 0,
+	StatusRead ,
+	StatusOK,
+	StatusErr
+}JsonStatus_t;
+
+typedef enum
+{
+	StatusReqDev2Ser = 0,
+	StatusParaSer2Dev ,
+	StatusAckDev2Ser,
+	StatusOKSer2Dev,
+	StatusErrSer2Dev,
+}JsonConfirmStatus_t;
+
+typedef enum
+{
+	CMDHeartbeat,
+	CMDSetHeartbeat,
+	CMDOrgName,
+	CMDDevName,
+	CMDDevID,
+	CMDConfirm,
+	CMDSyncDateTime,
+	CMDAdminPwd,
+	CMDDoorPwd,
+	CMDDoorCtr,
+	CMDCourseInfo,
+	CMDPlan,
+	CMDBroadcast,
+
+	CMDQRCode,
+	CMDDelQRCode,
+
+	CMDAdPic,//CMDAdvertisement,
+	CMDDelAdPic,//CMDAdvertisement,
+	CMDAdClear,//清空广告,
+	CMDAdSet,
+
+	CMDSuperPic,
+
+	CMDPerson,
+
+
+	CMDVersion,
+	CMDUpdate,
+	CMDReboot,
+
+    CMDErr,
+
+}JsonCmd_t;
 #endif /* JNI_OBJECTTYPE_H_ */

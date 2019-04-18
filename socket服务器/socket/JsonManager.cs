@@ -40,6 +40,7 @@ namespace MyJson
 
             AdPic,
             DelAdPic,
+            AdClear,
             AdSet,
 
             SuperPic,
@@ -263,7 +264,20 @@ namespace MyJson
             string data = FileToBase64(FilePath);
             obj.Add("cmd", FileType);
             obj.Add("name", name);
-            obj.Add("displayTime", 2);
+            obj.Add("dataLength", data.Length);
+            obj.Add("data", data);
+            obj.Add("status", (int)StatusType.StatusSet);
+            string jstring = JsonConvert.SerializeObject(obj);
+            return jstring;
+        }
+        public static string PackageAdFileToJsonString(string FilePath,int dispTime)
+        {
+            JObject obj = new JObject();
+            string name = Path.GetFileName(FilePath);
+            string data = FileToBase64(FilePath);
+            obj.Add("cmd", (int)CMDType.AdPic);
+            obj.Add("name", name);
+            obj.Add("displayTime", dispTime);
             obj.Add("dataLength", data.Length);
             obj.Add("data", data);
             obj.Add("status", (int)StatusType.StatusSet);
@@ -398,7 +412,7 @@ namespace MyJson
             }
             return status;
         }
-        public static StatusConfirmType GetJsonStatusConfirm(string jstr)
+        public static StatusConfirmType GetJsonStatusConfirm(string jstr,ref string id)
         {
             JObject obj = new JObject();
             StatusConfirmType status = StatusConfirmType.StatusErr;
@@ -406,6 +420,7 @@ namespace MyJson
             {
                 obj = (JObject)JsonConvert.DeserializeObject(jstr);
                 status = (StatusConfirmType)Convert.ToInt16(obj["status"].ToString());
+                id = obj["id"].ToString();
 
             }
             catch
@@ -570,7 +585,7 @@ namespace MyJson
             return str;
         }
 
-        public static string MakeConfirm(StatusConfirmType status)
+        public static string MakeConfirm(string id,StatusConfirmType status)
         {
             string dateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
@@ -580,7 +595,7 @@ namespace MyJson
             {
                 obj.Add("organization", "北华航天工业学院");
                 obj.Add("name", "软三");
-                obj.Add("id", "3832001749589048353");
+                obj.Add("id", id);
                 obj.Add("heartbeatInterval", 5);
                 obj.Add("dateTime", dateTime);
 
@@ -650,6 +665,15 @@ namespace MyJson
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.DelAdPic);
             obj.Add("name", fileName);
+            obj.Add("status", (int)status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            string str = Package(jstring);
+            return str;
+        }
+        public static string MakeAdClear( StatusType status)
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.AdClear);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
             string str = Package(jstring);

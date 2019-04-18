@@ -525,7 +525,8 @@ JsonStatus_t JsonCmdManager::parsePlan(string &js, Plan &plan)
 			plan.clear();
 			for(int i = 0; i < course_size; i++)
 			{
-				PlanRow_t row;
+				Plan::PlanRow_t row;
+
 				row.teacher = course[i]["teacher"].asString();
 				row.class_ = course[i]["class"].asString();
 				row.courser = course[i]["course"].asString();
@@ -574,11 +575,13 @@ string JsonCmdManager::makeQRCodeAck(string &fullname,JsonStatus_t status)
 	  string temp =  fw.write(root);
 	  return pack(temp);
 }
-string JsonCmdManager::makePicAck(string &fullname,JsonStatus_t status)
+string JsonCmdManager::makeAdPicAck(string &fullname,JsonStatus_t status)
 {
 	  Json::Value root;
+	  uint64_t size = get_file_size(fullname.c_str());
 	  root["cmd"] = Json::Value(CMDAdPic);
 	  root["name"] = Json::Value(fullname);
+	  root["size"] = Json::Value(size);
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
@@ -646,7 +649,30 @@ JsonStatus_t JsonCmdManager::parseDeleteFile(string js, char* directory, string 
 }
 
 
+string JsonCmdManager::makeAdClearAck(JsonStatus_t status){
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDAdClear);
+	  root["status"] = Json::Value(status);
 
+//	  string temp =  root.asCString();
+
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return pack(temp);
+}
+JsonStatus_t JsonCmdManager::parseAdClearAck(string &js){
+	  Json::Reader reader;
+
+	  Json::Value root;
+	  JsonStatus_t status;
+	  std::string val_str;
+	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+		  status = root["status"].asInt();
+	  }
+
+	  return status;
+}
 string JsonCmdManager::makeAdSet(Advertisement &set,JsonStatus_t status)
 {
 	  Json::Value root;

@@ -22,7 +22,7 @@
 #include <iostream>
 
 #include "sqlite/database.h"
-
+#include "version.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,6 +35,7 @@ static void LoadParament()
 {
 	dev.enable = true;
     dev.id = jm.getID();
+    dev.version = VERSION;
 
     dev.serverIP = StoragePreferences::getString("dev.serverIP", "192.168.1.1");
     dev.serverPort = StoragePreferences::getInt("dev.serverPort", 6000);
@@ -45,18 +46,29 @@ static void LoadParament()
 
     dev.heartbeatInterval = StoragePreferences::getInt("dev.heartbeatInterval", 5);
 
-    gAdv.idleTime = StoragePreferences::getInt("gAdv.idleTime", 20);
-    gAdv.enable = StoragePreferences::getBool("gAdv.enable", true);
+
+
 
 
 
     make_dir(PIC_DIR);
     make_dir(QR_DIR);
     make_dir(AD_DIR);
-    std::vector<S_INFOS> temp;
 
-    gAdv.updateRecode();
 
+    //从系统变量存储区更新广告使能设置
+    gAdv.idleTime = StoragePreferences::getInt("gAdv.idleTime", 20);
+    gAdv.enable = StoragePreferences::getBool("gAdv.enable", true);
+    //从数据库中更新广告信息
+
+	 dbAdv.recodeResult("1.jpg", 5);
+	 dbAdv.recodeResult("1.jpg", 6);
+	 dbAdv.recodeResult("1.jpg", 7);
+	 gAdv.logDBList();
+	 gAdv.logFileList();
+
+
+    //system("rm /mnt/extsd/update.img");
 
 }
 void onEasyUIInit(EasyUIContext *pContext) {

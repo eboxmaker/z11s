@@ -37,7 +37,7 @@
 */
 static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 {
-	LOGE("%s",msg.c_str());
+	//LOGE("%s",msg.c_str());
 
 	switch(cmd)
 	{
@@ -63,10 +63,10 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
  */
 static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
-	if(gAdv.list.size() > 0)
+	if(gAdv.dbList.size() > 0)
 	{
 		mBtnPicPtr->setText("");
-		mBtnPicPtr->setBackgroundPic(gAdv.list[0].fullName.c_str());
+		mBtnPicPtr->setBackgroundPic(gAdv.dbList[0].fullName.c_str());
 	}
 	AdvertisementCallback = onNetWrokDataUpdate;
 //	REGISTER_ACTIVITY_TIMER_TAB[0] = {0,gAdSet.switchTime*1000};
@@ -126,16 +126,16 @@ static int time_conter = 0;
 static bool onUI_Timer(int id){
 	switch (id) {
 	case 0:
-		if(gAdv.list.size() > 0 )
+		if(gAdv.dbList.size() > 0 )
 		{
 
-			if(pic_counter >= gAdv.list.size() )
+			if(pic_counter >= gAdv.dbList.size() )
 			{
 				pic_counter = 0;
 			}
-			mBtnPicPtr->setBackgroundPic(gAdv.list[pic_counter].fullName.c_str());
+			mBtnPicPtr->setBackgroundPic(gAdv.dbList[pic_counter].fullName.c_str());
 			time_conter++;
-			if(time_conter >= gAdv.list[pic_counter].displayTime)
+			if(time_conter >= gAdv.dbList[pic_counter].displayTime)
 			{
 				time_conter = 0;
 				pic_counter++;

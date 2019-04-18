@@ -98,11 +98,14 @@ public:
 
 
 	string makeQRCodeAck(string &fullname,JsonStatus_t status);
-	string makePicAck(string &fullname,JsonStatus_t status);
+	string makeAdPicAck(string &fullname,JsonStatus_t status);
 	JsonStatus_t parseFile(string str, char* directory, string &fullName,string &dataout);
 
 	string makeDeleteFile(string &fullName,JsonStatus_t status);
 	JsonStatus_t parseDeleteFile(string js, char* directory, string &fileName,string &fullName);
+
+	string makeAdClearAck(JsonStatus_t status);
+	JsonStatus_t parseAdClearAck(string &js);
 
 	string makeAdSet(Advertisement &set,JsonStatus_t status);
 	JsonStatus_t parseAdSet(string &js,Advertisement &set);

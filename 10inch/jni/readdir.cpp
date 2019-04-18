@@ -17,19 +17,44 @@
 //#include <stdlib.h>
 
 using namespace std;
-void read_dir()
+//void read_dir()
+//{
+//    DIR    *dir;
+//    struct    dirent    *ptr;
+//    dir = opendir("/mnt/extsd/"); ///open the dir
+//
+//    while((ptr = readdir(dir)) != NULL) ///read the list of this dir
+//    {
+//    	LOGE("d_type:%d d_name: %s\n", ptr->d_type,ptr->d_name);
+//    }
+//    closedir(dir);
+//    return 0;
+//}
+
+bool read_dir(string path,stringList &list)
 {
     DIR    *dir;
     struct    dirent    *ptr;
-    dir = opendir("/mnt/extsd/"); ///open the dir
+    dir = opendir(path.c_str()); ///open the dir
 
+    if(dir == NULL)
+    	return false;
     while((ptr = readdir(dir)) != NULL) ///read the list of this dir
     {
+    	if(ptr->d_type == 8)//file
+    	{
+    		list.push_back(ptr->d_name);
+    	}else if(ptr->d_type == 10)//link file
+    	{
 
-            LOGE("d_type:%d d_name: %s\n", ptr->d_type,ptr->d_name);
+    	}else if(ptr->d_type == 4)//dir
+    	{
+
+    	}
+    	//LOGE("d_type:%d d_name: %s\n", ptr->d_type,ptr->d_name);
     }
     closedir(dir);
-    return 0;
+    return true;
 }
 bool is_access(string &path)
 {
@@ -143,10 +168,16 @@ int rm_file(std::string &file_name)
 
 bool creat_file(string &fullName,const char *data,size_t size)
 {
+	size_t writed;
 	FILE *fp = fopen(fullName.c_str(), "w");
 	if (fp != NULL)
 	{
-		int writeLength = fwrite(data, sizeof(char), size, fp);
+		 writed = fwrite(data, sizeof(char), size, fp);
+		 if(writed != size){
+				LOGE("写入文件错误");
+				return false;
+		 }
+
 	}
 	else
 	{
@@ -159,7 +190,18 @@ bool creat_file(string &fullName,const char *data,size_t size)
 	}
 	return true;
 }
-
+unsigned long get_file_size(const char *path)
+{
+	unsigned long filesize = -1;
+	FILE *fp;
+	fp = fopen(path, "r");
+	if(fp == NULL)
+		return filesize;
+	fseek(fp, 0L, SEEK_END);
+	filesize = ftell(fp);
+	fclose(fp);
+	return filesize;
+}
 #include <sys/sysinfo.h>
 
 void dispMemUsage()

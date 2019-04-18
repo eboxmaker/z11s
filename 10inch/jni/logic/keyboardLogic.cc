@@ -77,6 +77,34 @@ static void clearPlanText()
 	mTextCourse4Ptr->setText("");
 
 }
+
+
+static void updateUI_time() {
+	char timeStr[20];
+	struct tm *t = TimeHelper::getDateTime();
+
+	sprintf(timeStr, "%02d:%02d:%02d", t->tm_hour,t->tm_min,t->tm_sec);
+	mTextTimePtr->setText(timeStr); // 注意修改控件名称
+
+	sprintf(timeStr, "%d年%02d月%02d日", 1900 + t->tm_year, t->tm_mon + 1, t->tm_mday);
+	mTextDatePtr->setText(timeStr); // 注意修改控件名称
+
+	static const char *day[] = { "日", "一", "二", "三", "四", "五", "六" };
+	sprintf(timeStr, "星期%s", day[t->tm_wday]);
+	mTextWeekPtr->setText(timeStr); // 注意修改控件名称
+}
+static void updateCourseInfo()
+{
+	string picFullName = PIC_DIR +  gCourseInfo.picture.name;
+	mTextTecherNamePtr->setText(gCourseInfo.name);
+	mTextClassPtr->setText(gCourseInfo.class_);
+	mTextNumPtr->setText(gCourseInfo.num);
+	mTextCoursePtr->setText(gCourseInfo.course);
+	mBtnTecherPicturePtr->setBackgroundPic(picFullName.c_str());
+	if(gSocket->connected())
+		mBtnQRCodePtr->setBackgroundPic(QRCodeFullName.c_str());
+
+}
 static void onNetConnect()
 {
 	mBtnQRCodePtr->setBackgroundPic(QRCodeFullName.c_str());
@@ -242,12 +270,8 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 	case CMDCourseInfo:
 		if(status == StatusSet)
 		{
-			mTextTecherNamePtr->setText(gInfo.name);
-			mTextClassPtr->setText(gInfo.class_);
-			mTextNumPtr->setText(gInfo.num);
-			mTextCoursePtr->setText(gInfo.course);
-			mBtnTecherPicturePtr->setBackgroundPic(msg.c_str());
-			LOGE("MSG:%s",msg.c_str());
+			updateCourseInfo();
+			//LOGE("MSG:%s",msg.c_str());
 		}
 		break;
 	case CMDPlan:
@@ -313,20 +337,6 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 }
 
 
-static void updateUI_time() {
-	char timeStr[20];
-	struct tm *t = TimeHelper::getDateTime();
-
-	sprintf(timeStr, "%02d:%02d:%02d", t->tm_hour,t->tm_min,t->tm_sec);
-	mTextTimePtr->setText(timeStr); // 注意修改控件名称
-
-	sprintf(timeStr, "%d年%02d月%02d日", 1900 + t->tm_year, t->tm_mon + 1, t->tm_mday);
-	mTextDatePtr->setText(timeStr); // 注意修改控件名称
-
-	static const char *day[] = { "日", "一", "二", "三", "四", "五", "六" };
-	sprintf(timeStr, "星期%s", day[t->tm_wday]);
-	mTextWeekPtr->setText(timeStr); // 注意修改控件名称
-}
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -370,6 +380,7 @@ static void onUI_show() {
 	mWindStatusNoticePtr->hideWnd();
 	mWinPwdAdminPtr->hideWnd();
 	mWindPlanPtr->hideWnd();
+	mWindAdminDoorPtr->hideWnd();
 	lastDoorState = gDoorState;
 	doorPwd.clear();
     gKeyboardLastActionTime = time(NULL);
@@ -406,6 +417,7 @@ static void onUI_show() {
 
 	updateUI_time();
 
+	updateCourseInfo();
 }
 
 /*
@@ -443,13 +455,13 @@ static void adLoop()
 {
 	string cAppName;
 	long  timeNow;
+	timeNow = time(NULL);
 
-	if(gAdv.enable && (gAdv.list.size() > 0))
+	if(gAdv.enable && (gAdv.dbList.size() > 0))
 	{
 		const char *ptr;
 		ptr = EASYUICONTEXT->currentAppName();
 		cAppName = ptr;
-		timeNow = time(NULL);
 
 		if(timeNow - gKeyboardLastActionTime > gAdv.idleTime)
 		{
@@ -460,6 +472,13 @@ static void adLoop()
 		{
 			//LOGE("TIME:%D",timeNow - gKeyboardLastActionTime);
 		}
+	}
+	else
+	{
+		//LOGE("enable:%d,ad size:%d,TIME:%D",gAdv.enable,\
+				gAdv.list.size(),\
+				timeNow - gKeyboardLastActionTime);
+
 	}
 }
 /**
@@ -472,10 +491,21 @@ static void adLoop()
  *         false
  *             停止运行当前定时器
  */
-#include "readdir.h"
+//#include "readdir.h"
 static bool onUI_Timer(int id){
 	switch (id) {
 	case 0:
+		if(door.get() == UnLock)
+		{
+			mBtnLockStatePtr->setBackgroundPic("kai.png");
+			mBtnLockStatePtr->setText("开");
+		}
+		else
+		{
+			mBtnLockStatePtr->setBackgroundPic("guan.png");
+			mBtnLockStatePtr->setText("关 ");
+		}
+
 		updateUI_time();
 		adLoop();
 		//dispMemUsage();
@@ -594,13 +624,18 @@ static bool onButtonClick_Btn9(ZKButton *pButton) {
 
 static bool onButtonClick_BtnOK(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnOK !!!\n");
-	string  str = jm.makeDoorPwd(doorPwd, StatusSet);
-	mWindStatusNoticePtr->showWnd();
+
 	if(gSocket->connected())
 	{
+		string  str = jm.makeDoorPwd(doorPwd, StatusSet);
+		mWindStatusNoticePtr->showWnd();
 		gSocket->write_(str);
 		mTextStatusNoticePtr->setText("密码验证中");
 		gSocket->updateTriger();
+	}
+	else if(doorPwd == dev.pwdLocal)
+	{
+		mWindAdminDoorPtr->showWnd();
 	}
 	else
 	{
@@ -755,4 +790,43 @@ static bool onButtonClick_Button6(ZKButton *pButton) {
 static bool onButtonClick_BtnTecherPicture(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnTecherPicture !!!\n");
     return false;
+}
+static bool onButtonClick_BtnLockState(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnLockState !!!\n");
+    return false;
+}
+
+static bool onButtonClick_BtnLock(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnLock !!!\n");
+    gKeyboardLastActionTime = time(NULL);
+	door.set(Lock);
+	if(door.get() == UnLock)
+	{
+		mBtnLockStatePtr->setBackgroundPic("kai.png");
+		mBtnLockStatePtr->setText("开");
+	}
+	else
+	{
+		mBtnLockStatePtr->setBackgroundPic("guan.png");
+		mBtnLockStatePtr->setText("关 ");
+	}
+    return false;
+}
+
+static bool onButtonClick_BtnUnLock(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnUnLock !!!\n");
+    //LOGD(" ButtonClick BtnUnLock !!!\n");
+    gKeyboardLastActionTime = time(NULL);
+	door.set(UnLock);
+	if(door.get() == UnLock)
+	{
+		mBtnLockStatePtr->setBackgroundPic("kai.png");
+		mBtnLockStatePtr->setText("开");
+	}
+	else
+	{
+		mBtnLockStatePtr->setBackgroundPic("guan.png");
+		mBtnLockStatePtr->setText("关 ");
+	}
+	return false;
 }

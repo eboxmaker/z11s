@@ -14,7 +14,7 @@
 #include <sys/reboot.h>
 #include "httpDownload.h"
 #include "door.h"
-Database dbAdv("/mnt/extsd/test.db");
+Database dbAdv(AD_DB);
 doorState_t gDoorState = Lock;
 
 SocketClient* gSocket= new SocketClient();
@@ -25,7 +25,7 @@ long gKeyboardLastActionTime = 0;
 Person_t gPerson;
 PersonList_t gUserAdmin;
 Plan gPlan;
-CourseInfo_t gInfo;
+CourseInfo_t gCourseInfo;
 StorageFileInfo_t gFileInfo;
 DownloadInfo_t gDownloadInfo;
 
@@ -238,12 +238,15 @@ void exeCMD(string &package)
 		case CMDAdPic:
 			status = jm.parseFile(js,AD_DIR,msg,dataout);
 
-			ack = jm.makeQRCodeAck(msg,StatusErr);
 			if(status == StatusSet || status == StatusRead)
 			{
 				if(gAdv.add(js)  && creat_file(msg,dataout.c_str(),dataout.size()) )
 				{
-					ack = jm.makePicAck(msg,StatusOK);
+					ack = jm.makeAdPicAck(msg,StatusOK);
+				}
+				else
+				{
+					ack = jm.makeAdPicAck(msg,StatusErr);
 				}
 			}
 			gSocket->write_(ack);
@@ -262,6 +265,23 @@ void exeCMD(string &package)
 				ack = jm.makeQRCodeAck(msg,StatusErr);
 				gSocket->write_(ack);
 			}
+			break;
+		case CMDAdClear:
+			status = jm.parseAdClearAck(js);//(js,AD_DIR,fileName,msg);
+			if(status == StatusSet || status == StatusRead)
+			{
+				gAdv.clear();
+				ack = jm.makeAdClearAck(StatusOK);
+				gSocket->write_(ack);
+			}
+			else if(status == StatusErr)
+			{
+				ack = jm.makeAdClearAck(StatusErr);
+				gSocket->write_(ack);
+			}
+			gAdv.logDBList();
+			gAdv.logFileList();
+			//LOGO("")
 			break;
 		case CMDAdSet:
 			status = jm.parseAdSet(js,gAdv);
@@ -365,18 +385,18 @@ void exeCMD(string &package)
 
 		case CMDCourseInfo:
 			LOGE("CMD:CMDCourseInfo");
-			status = jm.parseCourseInfo(js, gInfo);
+			status = jm.parseCourseInfo(js, gCourseInfo);
 			if(status == StatusSet)
 			{
-				msg = PIC_DIR + gInfo.picture.name;
-				if(creat_file(msg,gInfo.picture.data.c_str(),gInfo.picture.data.size()))
+				msg = PIC_DIR + gCourseInfo.picture.name;
+				if(creat_file(msg,gCourseInfo.picture.data.c_str(),gCourseInfo.picture.data.size()))
 				{
-					ack = jm.makeCourseInfo(gInfo,StatusOK);
+					ack = jm.makeCourseInfo(gCourseInfo,StatusOK);
 					gSocket->write_(ack);
 				}
 			}
-			LOGE("CMD:CMDCourseInfo:s=%d",status);
-			LOGE("%s，%s",gInfo.name.c_str(),gInfo.course.c_str());
+			//LOGE("CMD:CMDCourseInfo:s=%d",status);
+			//LOGE("%s，%s",gCourseInfo.name.c_str(),gCourseInfo.course.c_str());
 
 			break;
 
@@ -409,8 +429,8 @@ void exeCMD(string &package)
 			if(status == StatusSet)
 			{
 			    string filename = gDownloadInfo.url.substr(gDownloadInfo.url.find_last_of('/') + 1);
-			    LOGE("文件名：%s",filename.c_str());
-				if(downloadThread.isRunning())
+				msg = filename;
+			    if(downloadThread.isRunning())
 				{
 					ack = jm.makeUpdate(gDownloadInfo,StatusErr);
 					gSocket->write_(ack);
@@ -420,15 +440,15 @@ void exeCMD(string &package)
 					ack = jm.makeUpdate(gDownloadInfo,StatusOK);
 					gSocket->write_(ack);
 					downloadThread.settings(gDownloadInfo.url,gDownloadInfo.port,"/mnt/extsd/temp",filename);
-				    downloadThread.run("download-update");
+				    downloadThread.run("download-file");
 				}
 				LOGE("FILE:%s,%d,%s",gFileInfo.name.c_str(),gFileInfo.size,gFileInfo.md5.c_str());
 			}
 			else if( status == StatusOK)
 			{
 			    string filename = gDownloadInfo.url.substr(gDownloadInfo.url.find_last_of('/') + 1);
-				//downloadThread.settings(gDownloadInfo.url,gDownloadInfo.port,"/mnt/extsd/temp",filename.c_str());
-				downloadThread.settings(gDownloadInfo.url,gDownloadInfo.port,"/mnt/extsd/temp",filename);
+				msg = filename;
+			    downloadThread.settings(gDownloadInfo.url,gDownloadInfo.port,"/mnt/extsd/temp",filename);
 			    downloadThread.run("download-update");
 
 				LOGE("FILE:%s,%d,%s",gFileInfo.name.c_str(),gFileInfo.size,gFileInfo.md5.c_str());
