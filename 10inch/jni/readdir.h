@@ -8,34 +8,21 @@
 #ifndef JNI_READDIR_H_
 #define JNI_READDIR_H_
 
-
+#include "objectType.h"
 #include <sys/types.h>
 #include <dirent.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <fstream>
 #include <vector>
-#include "globalvar.h"
-//void read_dir();
+
 bool read_dir(string path,stringList &list);
-void make_dir(char *path);
+void make_dir(const char *path);
 int rm_file(std::string &file_name);
 bool is_access(string &path);
 bool creat_file(string &fullName,const char *data,size_t size);
 unsigned long get_file_size(const char *path);
-class FileOpt
-{
-	FileOpt();
-	virtual ~FileOpt();
 
-	bool is_access();
-	bool make_dir(string &path);
-	bool rm_dir(string &path);
-	stringList read_dir(string &path);
-
-	bool rm_file(string &file_full_name);
-
-};
 void dispMemUsage();
 
 #endif /* JNI_READDIR_H_ */

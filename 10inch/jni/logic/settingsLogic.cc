@@ -1,16 +1,18 @@
 #pragma once
+
+#include "utils/BrightnessHelper.h"
+#include "utils/TimeHelper.h"
+#include "storage/StoragePreferences.h"
 #include "uart/ProtocolSender.h"
+
+#include "lib/itoa.h"
+#include <sys/sysinfo.h>
+
 #include "json_manager.h"
 #include "globalVar.h"
-#include "storage/StoragePreferences.h"
-#include "utils/TimeHelper.h"
-#include "lib/itoa.h"
 #include "httpdownload.h"
 #include "door.h"
-#include "utils/BrightnessHelper.h"
-#include <sys/sysinfo.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+
 /*
 *此文件由GUI工具生成
 *文件功能：用于处理用户的逻辑相应代码
@@ -60,26 +62,6 @@ static void updateAdSetWind()
 	mEditDisplayAdAfterTimePtr->setText(buf);
 
 }
-
-
-//static void updateDateEditText() {
-//	struct tm *t = TimeHelper::getDateTime();
-//	mYearEdittextPtr->setText(t->tm_year + 1900);
-//	mMonthEdittextPtr->setText(t->tm_mon + 1);
-//	mDayEdittextPtr->setText(t->tm_mday);
-//}
-
-//static void setSystemTime() {
-//	struct tm t;
-//	t.tm_year = atoi(mYearEdittextPtr->getText().c_str()) - 1900;		//年
-//	t.tm_mon = atoi(mMonthEdittextPtr->getText().c_str()) - 1;			//月
-//	t.tm_mday = atoi(mDayEdittextPtr->getText().c_str());				//日
-//	t.tm_hour = 0;		//时
-//	t.tm_min = 0;		//分
-//	t.tm_sec = 0;		//秒
-//
-//	TimeHelper::setDateTime(&t);
-//}
 
 
 static void updateDisp()
@@ -351,63 +333,30 @@ static bool onButtonClick_BtnServer(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnServer !!!\n");
 	string tempServerIP ;
 	int tempServerPort = 0;
-	struct sockaddr_in serverAddr;
 
 	tempServerIP = mEditTextServerIPPtr->getText();
 	tempServerPort = atoi(mEditTextServerPortPtr->getText().c_str());
 	if((tempServerIP == dev.serverIP ) && (tempServerPort == dev.serverPort))
 	{
-//		LOGE("%s:%d",dev.serverIP.c_str(),tempServerPort);
 	    mTextStatusNoticePtr->setText("无更改");
 	    mTextStatusNotice2Ptr->setText("");
 	    mWindStatusNoticePtr->showWnd();
 		return true;
 	}
-	// 设置一个socket地址结构serverAddr,代表服务器的internet地址, 端口
-	bzero(&serverAddr, sizeof(serverAddr));
-	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_port=htons(tempServerPort); //服务器端口号
 
+	dev.serverIP = tempServerIP;
+	dev.serverPort = tempServerPort;
 
-	if (inet_aton(tempServerIP.c_str(), &serverAddr.sin_addr) == 0) {     // 服务器的IP地址来自程序的参数
-		LOGD("Server IP Address Error!\n");
-	    mTextStatusNoticePtr->setText("服务器IP设置错误");
-	    mTextStatusNotice2Ptr->setText("");
-	    mWindStatusNoticePtr->showWnd();
-		return false;
-	}
-	else
-	{
-		LOGD("Server IP Address OK!\n");
-		dev.serverIP = tempServerIP;
-		dev.serverPort = tempServerPort;
+	StoragePreferences::putString("dev.serverIP", dev.serverIP.c_str());
+	StoragePreferences::putInt("dev.serverPort", dev.serverPort);
 
-	    StoragePreferences::putString("dev.serverIP", dev.serverIP.c_str());
-	    StoragePreferences::putInt("dev.serverPort", dev.serverPort);
+    mTextStatusNoticePtr->setText("设置成功！");
+    mTextStatusNotice2Ptr->setText("");
 
-
-		gSocket->disconnect();
-		bool ret = gSocket->connect(dev.serverIP.c_str(),dev.serverPort);
-		if(ret == true)
-		{
-//			LOGE("连接服务器成功!\n");
-		    mTextStatusNoticePtr->setText("连接服务器成功!");
-		    mTextStatusNotice2Ptr->setText("");
-
-
-		}
-		else
-		{
-			gSocket->disconnect();
-			LOGE("连接服务器失败 !\n");
-		    mTextStatusNoticePtr->setText("连接服务器失败!");
-		    mTextStatusNotice2Ptr->setText("");
-
-		}
-	}
+    //断开当前连接。守护进程会重新连接新的服务器
+	gSocket->disconnect();
 
     mWindStatusNoticePtr->showWnd();
-//	LOGE("%s:%d",dev.serverIP.c_str(),dev.serverPort);
     return true;
 }
 

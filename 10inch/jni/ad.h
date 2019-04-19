@@ -12,6 +12,9 @@
 #include <iostream>
 #include "sqlite/database.h"
 
+#define AD_DIR		"/mnt/extsd/ad/"
+#define AD_DB		"/mnt/extsd/advertisment.db"
+
 namespace std {
 
 class Advertisement {

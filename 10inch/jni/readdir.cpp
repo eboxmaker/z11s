@@ -12,24 +12,8 @@
 #include "utils/log.h"
 #include <sys/stat.h>
 #include <string.h>
-//#include <sys/types.h>
-//#include <stdio.h>
-//#include <stdlib.h>
 
 using namespace std;
-//void read_dir()
-//{
-//    DIR    *dir;
-//    struct    dirent    *ptr;
-//    dir = opendir("/mnt/extsd/"); ///open the dir
-//
-//    while((ptr = readdir(dir)) != NULL) ///read the list of this dir
-//    {
-//    	LOGE("d_type:%d d_name: %s\n", ptr->d_type,ptr->d_name);
-//    }
-//    closedir(dir);
-//    return 0;
-//}
 
 bool read_dir(string path,stringList &list)
 {
@@ -69,7 +53,7 @@ bool is_access(string &path)
 	}
 }
 
-void make_dir(char *path)
+void make_dir(const char *path)
 {
 	if (access(path, F_OK) < 0)
 	{

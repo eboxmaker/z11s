@@ -5,10 +5,9 @@
  *      Author: shentq
  */
 
-#include "Finger.h"
 #include "uart/Uart.h"
 #include "utils/log.h"
-#include "ringbuf.h"
+#include "Finger.h"
 
 using namespace std;
 

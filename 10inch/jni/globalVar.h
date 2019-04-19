@@ -17,15 +17,12 @@ using namespace std;
 
 #define HOME_DIR	"/mnt/extsd/"
 #define QR_DIR		"/mnt/extsd/qr/"
-#define AD_DIR		"/mnt/extsd/ad/"
-#define AD_DB		"/mnt/extsd/advertisment.db"
 #define PIC_DIR		"/mnt/extsd/picture/"
 
 
 
 
-typedef void (*myNotify_t)(JsonCmd_t,JsonStatus_t, string &);
-typedef void (*dlNotify_t)(string &msg);
+
 
 
 
@@ -43,6 +40,8 @@ extern CourseInfo_t gCourseInfo;
 
 
 //回调函数声明区域
+
+
 extern myNotify_t keyboardCallback;
 extern myNotify_t AdvertisementCallback;
 extern myNotify_t networkTestCallback;

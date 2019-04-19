@@ -3,25 +3,16 @@
 #include "manager/ConfigManager.h"
 #include <pthread.h>
 #include "utils/Log.h"
-#include "globalVar.h"
-#include "include/utils/GpioHelper.h"
 
-#include "check_nic.h"
-
-#include "udp.h"
-#include "storage/StoragePreferences.h"
-#include "json_manager.h"
-#include "packageFile.h"
-#include "readdir.h"
-#include "netinet/tcp.h"
-
-#include "uart/ProtocolSender.h"
 #include "uart/Uart.h"
 #include "termio.h"
-
 #include <iostream>
 
-#include "sqlite/database.h"
+#include "globalVar.h"
+
+#include "storage/StoragePreferences.h"
+#include "json_manager.h"
+#include "readdir.h"
 #include "version.h"
 
 #ifdef __cplusplus
@@ -47,9 +38,6 @@ static void LoadParament()
     dev.name = StoragePreferences::getString("dev.name","none");
 
     dev.heartbeatInterval = StoragePreferences::getInt("dev.heartbeatInterval", 5);
-
-
-
 
 
 

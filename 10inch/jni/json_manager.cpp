@@ -5,6 +5,7 @@
  *      Author: Administrator
  */
 
+#include "utils/log.h"
 #include "json_manager.h"
 #include "lib/itoa.h"
 #include "globalVar.h"
@@ -16,6 +17,7 @@
 #include "readdir.h"
 #include "md5/md5.h"
 #include "version.h"
+
 
 static string key =  "12345678900000001234567890000000";
 static string iv =  "1234567890000000";
@@ -51,6 +53,7 @@ JsonCmd_t getJsonCMD(string &str)
 
 	  return cmd;
 }
+
 
 
 JsonCmdManager::JsonCmdManager(){
@@ -1004,7 +1007,7 @@ int ParseJsonFromString()
   return 0;
 
 }
-
+/*
 //定义文件指针
 FILE *openfile(uint32_t *len)
 {
@@ -1036,6 +1039,6 @@ FILE *openfile(uint32_t *len)
 	printf("打开读取文件成功");
 	return fp;
 }
-
+*/
 
 JsonCmdManager jm;

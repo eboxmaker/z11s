@@ -8,9 +8,7 @@
 #ifndef JNI_FINGER_H_
 #define JNI_FINGER_H_
 
-#include <fstream>
-#include "ringbuf.h"
-#include "system/Thread.h"
+#include <iostream>
 
 using namespace std;
 

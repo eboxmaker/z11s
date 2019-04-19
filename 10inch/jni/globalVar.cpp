@@ -4,19 +4,20 @@
  *  Created on: 2018年12月26日
  *      Author: shentq
  */
-#include "utils/Log.h"
-#include "json_manager.h"
-
-#include "globalVar.h"
-#include "packageFile.h"
+#include <sys/reboot.h>
 #include "storage/StoragePreferences.h"
 #include "utils/TimeHelper.h"
-#include "readdir.h"
-#include <sys/reboot.h>
 #include "httpDownload.h"
+#include "utils/Log.h"
+
+#include "json_manager.h"
+#include "packageFile.h"
+#include "readdir.h"
 #include "door.h"
 #include "plan.h"
 #include "ad.h"
+
+#include "globalVar.h"
 
 doorState_t gDoorState = Lock;
 

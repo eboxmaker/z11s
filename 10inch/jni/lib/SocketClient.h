@@ -8,7 +8,6 @@
 #ifndef _SOCKET_SOCKETCLIENT_H_
 #define _SOCKET_SOCKETCLIENT_H_
 
-#include "ringbuf.h"
 #include <fstream>
 #include "netinet/tcp.h"
 #include <iostream>

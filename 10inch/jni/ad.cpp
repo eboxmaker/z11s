@@ -4,14 +4,14 @@
  *  Created on: 2019年3月7日
  *      Author: shentq
  */
-#include "json/json.h"
-#include "ad.h"
-#include <fstream>
-#include "base64.h"
-#include <dirent.h>
-#include <unistd.h>
-#include "readdir.h"
 #include "storage/StoragePreferences.h"
+#include "utils/log.h"
+#include "json/json.h"
+#include "base64.h"
+#include "readdir.h"
+
+#include "ad.h"
+
 
 Database dbAdv(AD_DB);
 

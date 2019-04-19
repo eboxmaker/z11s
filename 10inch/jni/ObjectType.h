@@ -13,6 +13,7 @@
 
 typedef std::vector<std::string> stringList;
 
+
 using namespace std;
 
 typedef struct {
@@ -137,4 +138,9 @@ typedef enum
     CMDErr,
 
 }JsonCmd_t;
+
+
+typedef void (*myNotify_t)(JsonCmd_t,JsonStatus_t, string &);
+typedef void (*dlNotify_t)(string &msg);
+
 #endif /* JNI_OBJECTTYPE_H_ */

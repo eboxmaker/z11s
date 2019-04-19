@@ -17,20 +17,14 @@
 #include <string.h>
 #include <pthread.h>
 #include <errno.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include <linux/rtc.h>
-#include <time.h>
-#include <sys/time.h>
-//#include <signal.h>
-//#include "system/Thread.h"
+
+
 
 
 #include "SocketClient.h"
 #include "utils/Log.h"
 #include "json_manager.h"
 
-#include "packageFile.h"
 #include "globalVar.h"
 
 
@@ -412,15 +406,15 @@ void SocketClient::threadLoop() {
 
 	setsockopt(mClientSocket, SOL_SOCKET, SO_RCVTIMEO,
 			(const char*)&timeout, sizeof(timeout));
-    int keepAlive = 1; // 开启keepalive属性
-    int keepIdle = 3; // 如该连接在5秒内没有任何数据往来,则进行探测
-    int keepInterval = 3; // 探测时发包的时间间隔为3 秒
-    int keepCount = 3; // 探测尝试的次数.如果第1次探测包就收到响应了,则后2次的不再发.
-
-    setsockopt(mClientSocket, SOL_SOCKET, SO_KEEPALIVE, (void *)&keepAlive, sizeof(keepAlive));
-    setsockopt(mClientSocket, SOL_TCP, TCP_KEEPIDLE, (void*)&keepIdle, sizeof(keepIdle));
-    setsockopt(mClientSocket, SOL_TCP, TCP_KEEPINTVL, (void *)&keepInterval, sizeof(keepInterval));
-    setsockopt(mClientSocket, SOL_TCP, TCP_KEEPCNT, (void *)&keepCount, sizeof(keepCount));
+//    int keepAlive = 1; // 开启keepalive属性
+//    int keepIdle = 3; // 如该连接在5秒内没有任何数据往来,则进行探测
+//    int keepInterval = 3; // 探测时发包的时间间隔为3 秒
+//    int keepCount = 3; // 探测尝试的次数.如果第1次探测包就收到响应了,则后2次的不再发.
+//
+//    setsockopt(mClientSocket, SOL_SOCKET, SO_KEEPALIVE, (void *)&keepAlive, sizeof(keepAlive));
+//    setsockopt(mClientSocket, SOL_TCP, TCP_KEEPIDLE, (void*)&keepIdle, sizeof(keepIdle));
+//    setsockopt(mClientSocket, SOL_TCP, TCP_KEEPINTVL, (void *)&keepInterval, sizeof(keepInterval));
+//    setsockopt(mClientSocket, SOL_TCP, TCP_KEEPCNT, (void *)&keepCount, sizeof(keepCount));
 
     while (1)
 	{

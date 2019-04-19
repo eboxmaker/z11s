@@ -12,30 +12,17 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "ringbuf.h"
+
 #include "globalVar.h"
 #include "aes/myaes256.h"
 #include "plan.h"
 #include "ad.h"
 
 using namespace std;
-bool CheckJsonPackage(string& package,string& msg);
+
+
 bool ParseJsonString(char *str);
 JsonCmd_t getJsonCMD(string &str);
-
-
-
-
-
-JsonStatus_t 	ParseCMDDoor2(string &js,doorState_t &door);
-
-
-FILE *openfile(uint32_t *len);
-
-
-
-
-
 
 
 

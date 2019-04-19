@@ -14,6 +14,7 @@
 #include "http/http_client.h"
 #include "readdir.h"
 #include "globalvar.h"
+
 extern dlNotify_t downloadEvent;
 class DownloadThread : public Thread {
 public:
