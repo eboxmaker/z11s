@@ -10,7 +10,7 @@
 
 #include "udp.h"
 #include "storage/StoragePreferences.h"
-#include "json_test.h"
+#include "json_manager.h"
 #include "packageFile.h"
 #include "readdir.h"
 #include "netinet/tcp.h"
@@ -34,6 +34,8 @@ static void *MainLoop(void *lParam);
 static void LoadParament()
 {
 	dev.enable = true;
+    dev.confirmState = false;
+
     dev.id = jm.getID();
     dev.version = VERSION;
 
@@ -56,16 +58,9 @@ static void LoadParament()
     make_dir(AD_DIR);
 
 
-    //从系统变量存储区更新广告使能设置
-    gAdv.idleTime = StoragePreferences::getInt("gAdv.idleTime", 20);
-    gAdv.enable = StoragePreferences::getBool("gAdv.enable", true);
-    //从数据库中更新广告信息
 
-	 dbAdv.recodeResult("1.jpg", 5);
-	 dbAdv.recodeResult("1.jpg", 6);
-	 dbAdv.recodeResult("1.jpg", 7);
-	 gAdv.logDBList();
-	 gAdv.logFileList();
+    gAdv.load();
+
 
 
     //system("rm /mnt/extsd/update.img");

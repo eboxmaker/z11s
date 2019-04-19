@@ -1,10 +1,10 @@
 #pragma once
 #include "uart/ProtocolSender.h"
-#include "json_test.h"
+#include "ad.h"
+
 #include "readdir.h"
 #include "globalVar.h"
 #include "storage/StoragePreferences.h"
-
 
 /*
 *此文件由GUI工具生成
@@ -41,10 +41,21 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 
 	switch(cmd)
 	{
-	case CMDAdPic:
+	case CMDAdAdd:
 		mBtnPicPtr->setText("");
 		mBtnPicPtr->setBackgroundPic(msg.c_str());
 		 break;
+	case CMDAdClear:
+	case CMDAdDel:
+		if(gAdv.dbList.size() > 0)
+		{
+			mBtnPicPtr->setText("");
+			mBtnPicPtr->setBackgroundPic(gAdv.dbList[0].fullName.c_str());
+		}
+		else
+		{
+			EASYUICONTEXT->openActivity("keyboardActivity");
+		}
 	}
 }
 

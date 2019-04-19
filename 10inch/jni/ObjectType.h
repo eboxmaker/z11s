@@ -13,6 +13,64 @@
 
 typedef std::vector<std::string> stringList;
 
+using namespace std;
+
+typedef struct {
+	string organization;
+	string name;
+	string id;
+	string version;
+
+	string pwdLocal;
+	string pwdDoor;
+
+	string serverIP;
+	int serverPort;
+
+	int	   heartbeatInterval;
+
+
+	bool confirmState;
+	bool enable;
+}Device_t;
+
+typedef struct
+{
+	string url;
+	int port;
+}HttpInfo_t;
+
+
+
+typedef struct
+{
+	string name;
+	long datalen;
+	string data;
+}Picture_t;
+
+typedef struct
+{
+	string name;
+	string class_;
+	string num;
+	string course;
+//	string time_start;
+//	string time_end;
+	Picture_t picture;
+}CourseInfo_t;
+
+typedef struct
+{
+	string name;
+	string id;
+	int	   level;
+	stringList fingers;
+	Picture_t picture;
+
+}Person_t;
+
+
 typedef union
 {
 	unsigned long long value;
@@ -61,8 +119,9 @@ typedef enum
 	CMDQRCode,
 	CMDDelQRCode,
 
-	CMDAdPic,//CMDAdvertisement,
-	CMDDelAdPic,//CMDAdvertisement,
+	CMDAdAdd,//CMDAdvertisement,
+	CMDAdRead,//CMDAdvertisement,
+	CMDAdDel,//CMDAdvertisement,
 	CMDAdClear,//清空广告,
 	CMDAdSet,
 

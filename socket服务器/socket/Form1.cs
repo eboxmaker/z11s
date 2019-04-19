@@ -531,6 +531,13 @@ namespace socket
 
         }
 
+        private void btnAdRead_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakeAdRead(JsonManager.StatusType.StatusSet);
+            server.SendAll(str);
+        }
+        
+
 
  
 

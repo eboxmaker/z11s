@@ -15,6 +15,8 @@
 #include "ringbuf.h"
 #include "globalVar.h"
 #include "aes/myaes256.h"
+#include "plan.h"
+#include "ad.h"
 
 using namespace std;
 bool CheckJsonPackage(string& package,string& msg);
@@ -52,6 +54,9 @@ public:
 	bool unPack(char* package,string& msg);
 
 public:
+//	JsonStatus_t parseStatus(string &js);
+
+
 	string makeHeartbeat(JsonStatus_t status);
 	JsonStatus_t parseHeartbeat(string &js, string &msg);
 
@@ -98,14 +103,21 @@ public:
 
 
 	string makeQRCodeAck(string &fullname,JsonStatus_t status);
-	string makeAdPicAck(string &fullname,JsonStatus_t status);
 	JsonStatus_t parseFile(string str, char* directory, string &fullName,string &dataout);
 
-	string makeDeleteFile(string &fullName,JsonStatus_t status);
+	string makeDeleteFile(string &fileName,JsonStatus_t status);
 	JsonStatus_t parseDeleteFile(string js, char* directory, string &fileName,string &fullName);
 
-	string makeAdClearAck(JsonStatus_t status);
-	JsonStatus_t parseAdClearAck(string &js);
+
+	string makeAdAdd(string &fullname,JsonStatus_t status);
+	string makeAdRead(Advertisement &ad, JsonStatus_t status);
+	string makeAdDelet(string fileName,JsonStatus_t status);//回复服务器删除某个广告执行结果
+	string makeAdClear(JsonStatus_t status);
+
+	JsonStatus_t parseAdAdd(string js,string &fileName);//不需要
+	JsonStatus_t parseAdRead(string js);//不需要
+	JsonStatus_t parseAdDelet(string js, string &fileName);
+	JsonStatus_t parseAdClear(string &js);
 
 	string makeAdSet(Advertisement &set,JsonStatus_t status);
 	JsonStatus_t parseAdSet(string &js,Advertisement &set);
@@ -116,8 +128,8 @@ public:
 	string makeVersion(JsonStatus_t status);
 	JsonStatus_t parseVersion(string &js);
 
-	string makeUpdate(DownloadInfo_t &info,JsonStatus_t status);
-	JsonStatus_t parseUpdate(string &js,DownloadInfo_t &info);
+	string makeUpdate(HttpInfo_t &info,JsonStatus_t status);
+	JsonStatus_t parseUpdate(string &js,HttpInfo_t &info);
 
 	string makeReboot(JsonStatus_t status);
 	JsonStatus_t parseReboot(string &js);

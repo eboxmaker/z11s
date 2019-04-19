@@ -39,6 +39,7 @@ namespace MyJson
             DelQRCode,
 
             AdPic,
+            AdRead,
             DelAdPic,
             AdClear,
             AdSet,
@@ -674,6 +675,15 @@ namespace MyJson
         {
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.AdClear);
+            obj.Add("status", (int)status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            string str = Package(jstring);
+            return str;
+        }
+        public static string MakeAdRead(StatusType status)
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.AdRead);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
             string str = Package(jstring);

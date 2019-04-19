@@ -1,6 +1,6 @@
 #pragma once
 #include "uart/ProtocolSender.h"
-#include "json_test.h"
+#include "json_manager.h"
 #include "globalVar.h"
 #include "storage/StoragePreferences.h"
 #include "utils/TimeHelper.h"
@@ -8,7 +8,9 @@
 #include "httpdownload.h"
 #include "door.h"
 #include "utils/BrightnessHelper.h"
-
+#include <sys/sysinfo.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 /*
 *此文件由GUI工具生成
 *文件功能：用于处理用户的逻辑相应代码
@@ -159,8 +161,9 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 			updateDisp();
 		}
 		break;
+	case CMDAdAdd:
+	case CMDAdDel:
 	case CMDAdClear:
-	case CMDAdPic:
 		mEditAdNumPtr->setText(gAdv.getNum());
 		break;
 	case 255:
@@ -276,6 +279,8 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  */
 
 static bool onUI_Timer(int id){
+
+	struct sysinfo systemInfo;
 	float memUsage;
 	switch (id) {
 	case 0:
@@ -295,12 +300,14 @@ static bool onUI_Timer(int id){
 		else
 			mBtnServerStatePtr->setBackgroundPic("guan.png");
 
-	     sysinfo(&dev.systemInfo);
+
+
+	     sysinfo(&systemInfo);
 	     char temp[30];
-	     memUsage = (1 - ((float)dev.systemInfo.freeram/(float)dev.systemInfo.totalram))*100;
+	     memUsage = (1 - ((float)systemInfo.freeram/(float)systemInfo.totalram))*100;
 	     sprintf(temp,"%0.1f%%(%0.1fM/%0.1fM)",memUsage,\
-	    		 dev.systemInfo.freeram/1024.0/1024.0,\
-				 dev.systemInfo.totalram/1024.0/1024.0);
+	    		 systemInfo.freeram/1024.0/1024.0,\
+				 systemInfo.totalram/1024.0/1024.0);
 	     mSeekbarMemUsagePtr->setProgress(memUsage);
 	     mTextMemUsagePtr->setText(temp);
 	     break;
@@ -507,7 +514,6 @@ static bool onButtonClick_BtnSyncDateTime(ZKButton *pButton) {
 static bool onButtonClick_BtnAdSet(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnAdSet !!!\n");
 
-
 	updateAdSetWind();
 
     mWndAdSetPtr->showWnd();
@@ -519,7 +525,9 @@ static bool onButtonClick_BtnDownload(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnDownload !!!\n");
     if(gSocket->connected())
     {
-    	string str = jm.makeUpdate(gDownloadInfo,  StatusRead);
+    	HttpInfo_t info;
+
+    	string str = jm.makeUpdate(info,  StatusRead);
 		gSocket->write_(str);
     	gSocket->updateTriger();
         mWindStatusNoticePtr->showWnd();

@@ -8,20 +8,10 @@
 #ifndef JNI_LIB_GLOBALVAR_H_
 #define JNI_LIB_GLOBALVAR_H_
 #include "objectType.h"
-#include <netinet/in.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+
 #include "lib/SocketClient.h"
-#include "utils/Log.h"
 
-#include <sys/sysinfo.h>
 
-#include "sqlite/database.h"
-
-#include "uart/Uart.h"
-
-#include "finger.h"
-#include "ad.h"
 
 using namespace std;
 
@@ -32,121 +22,7 @@ using namespace std;
 #define PIC_DIR		"/mnt/extsd/picture/"
 
 
-extern Database dbAdv;
 
-
-
-typedef struct {
-	string organization;
-	string name;
-	string id;
-	string version;
-
-	string pwdLocal;
-	string pwdDoor;
-
-	string serverIP;
-	int serverPort;
-
-	int	   heartbeatInterval;
-
-	struct sysinfo systemInfo;
-
-	bool confirmState;
-	bool enable;
-}Device_t;
-
-
-
-
-
-//不可用
-typedef struct
-{
-	string name;
-	int size;
-	string md5;
-}StorageFileInfo_t;
-
-typedef struct
-{
-	string url;
-	int port;
-}DownloadInfo_t;
-
-
-
-typedef struct
-{
-	string name;
-	long datalen;
-	string data;
-}Picture_t;
-
-typedef struct
-{
-	string name;
-	string class_;
-	string num;
-	string course;
-//	string time_start;
-//	string time_end;
-	Picture_t picture;
-}CourseInfo_t;
-
-typedef struct
-{
-	string name;
-	string id;
-	int	   level;
-	stringList fingers;
-	Picture_t picture;
-
-}Person_t;
-
-
-
-class Plan
-{
-
-public:
-	typedef struct
-	{
-		string teacher;
-		string class_;
-		string courser;
-	}PlanRow_t;
-
-public:
-	Plan() :
-		_maxSize(100),
-		_size(0){
-	}
-	int size()	{return _size;}
-	int maxSize(){return _maxSize;}
-	bool add(PlanRow_t &_row)
-	{
-		if(_size < _maxSize)
-		{
-			row[_size].teacher = _row.teacher;
-			row[_size].class_ = _row.class_;
-			row[_size].courser = _row.courser;
-			_size++;
-		}
-	}
-	void clear()
-	{
-		_size = 0;
-	}
-
-	PlanRow_t row[100];
-
-private:
-	int _maxSize;
-	int _size;
-};
-
-typedef std::vector< Person_t> PersonList_t;
 
 typedef void (*myNotify_t)(JsonCmd_t,JsonStatus_t, string &);
 typedef void (*dlNotify_t)(string &msg);
@@ -154,28 +30,18 @@ typedef void (*dlNotify_t)(string &msg);
 
 
 extern Device_t dev;
-
 extern SocketClient* gSocket;
 
 extern long gLastHelloTime;
 extern  long gKeyboardLastActionTime;
 
-extern doorState_t gDoorState;
 
-extern PersonList_t gUserAdmin;
-extern Plan gPlan;
+extern doorState_t gDoorState;
 extern string gBroadcastMsg;
 extern Person_t gPerson;
 extern CourseInfo_t gCourseInfo;
-extern StorageFileInfo_t gFileInfo;
-extern DownloadInfo_t gDownloadInfo;
-//class MySocketListener : public SocketClient::ISocketListener
-//{
-//	public:
-//		virtual void notify(int what, int status, const char *msg);
-//};
-//static MySocketListener gSocketListener;
-//
+
+
 //回调函数声明区域
 extern myNotify_t keyboardCallback;
 extern myNotify_t AdvertisementCallback;

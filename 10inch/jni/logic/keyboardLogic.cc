@@ -1,10 +1,12 @@
 #pragma once
 #include "uart/ProtocolSender.h"
 #include "globalVar.h"
-#include "json_test.h"
+#include "json_manager.h"
 #include "utils/TimeHelper.h"
 #include "base64.h"
 #include "door.h"
+#include "finger.h"
+
 /*
 *此文件由GUI工具生成
 *文件功能：用于处理用户的逻辑相应代码
@@ -639,6 +641,7 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 	}
 	else
 	{
+		mWindStatusNoticePtr->showWnd();
 		mTextStatusNoticePtr->setText("网络中断");
 		mTextStatusNotice2Ptr->setText("请输入管理员密码");
 	}
@@ -654,16 +657,6 @@ static bool onButtonClick_BtnBack(ZKButton *pButton) {
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
     gKeyboardLastActionTime = time(NULL);
     return false;
-}
-
-
-
-static void onEditTextChanged_Edittext1(const std::string &text) {
-    //LOGD(" onEditTextChanged_ Edittext1 %s !!!\n", text.c_str());
-}
-
-static void onEditTextChanged_EditTextKey(const std::string &text) {
-    //LOGD(" onEditTextChanged_ EditTextKey %s !!!\n", text.c_str());
 }
 
 

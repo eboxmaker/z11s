@@ -18,6 +18,7 @@ class Advertisement {
 public:
 	Advertisement();
 	virtual ~Advertisement();
+	void load();
 
 
 	bool add(string js);

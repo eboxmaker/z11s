@@ -109,6 +109,9 @@ void Database::clear() {
 	if(ret != SQLITE_OK){
 		LOGD("create DELETE ret:%s",errmsg);
 	}
+	else{
+		LOGO("清除数据库成功！");
+	}
 }
 
 void Database::saveas(std::string path) {

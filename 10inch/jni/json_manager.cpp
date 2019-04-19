@@ -5,7 +5,7 @@
  *      Author: Administrator
  */
 
-#include "json_test.h"
+#include "json_manager.h"
 #include "lib/itoa.h"
 #include "globalVar.h"
 #include   <iostream>
@@ -136,6 +136,19 @@ bool JsonCmdManager::unPack(char* data,string& msg)
 {
 
 }
+//JsonStatus_t JsonCmdManager::parseStatus(string &js)
+//{
+//	  Json::Reader reader;
+//	  Json::Value root;
+//
+//	  JsonStatus_t status;
+//
+//	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+//	  {
+//		  return  (JsonStatus_t)root["status"].asInt();
+//	  }
+//	  return StatusErr;
+//}
 
 string JsonCmdManager::makeHeartbeat(JsonStatus_t status)
 {
@@ -565,6 +578,8 @@ JsonStatus_t JsonCmdManager::parseBroadcast(string &js,string &msg)
 	  return status;
 }
 
+
+//广告的增删改查
 string JsonCmdManager::makeQRCodeAck(string &fullname,JsonStatus_t status)
 {
 	  Json::Value root;
@@ -575,17 +590,121 @@ string JsonCmdManager::makeQRCodeAck(string &fullname,JsonStatus_t status)
 	  string temp =  fw.write(root);
 	  return pack(temp);
 }
-string JsonCmdManager::makeAdPicAck(string &fullname,JsonStatus_t status)
+string JsonCmdManager::makeAdAdd(string &fullname,JsonStatus_t status)
 {
 	  Json::Value root;
 	  uint64_t size = get_file_size(fullname.c_str());
-	  root["cmd"] = Json::Value(CMDAdPic);
+	  root["cmd"] = Json::Value(CMDAdAdd);
 	  root["name"] = Json::Value(fullname);
 	  root["size"] = Json::Value(size);
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
 	  return pack(temp);
+}
+
+string JsonCmdManager::makeAdRead(Advertisement &ad, JsonStatus_t status)
+{
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDAdRead);
+
+
+	  if(ad.getNum() > 0)
+	  {
+		  Json::Value adv;
+		  Json::Value item;
+		  for(int i = 0; i < ad.getNum(); i++)
+		  {
+			  item["name"] = ad.dbList[i].fileName;
+			  item["displayTime"] = ad.dbList[i].displayTime;
+			  adv.append(item);
+		  }
+		  root["adv"] = Json::Value(adv);
+
+	  }
+	  root["status"] = Json::Value(status);
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return pack(temp);
+}
+string JsonCmdManager::makeAdDelet(string fileName,JsonStatus_t status)
+{
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDAdDel);
+	  root["name"] = Json::Value(fileName);
+	  root["status"] = Json::Value(status);
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return pack(temp);
+}
+string JsonCmdManager::makeAdClear(JsonStatus_t status){
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDAdClear);
+	  root["status"] = Json::Value(status);
+
+//	  string temp =  root.asCString();
+
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return pack(temp);
+}
+
+JsonStatus_t JsonCmdManager::parseAdAdd(string js,string &fileName){
+	  Json::Reader reader;
+	  Json::Value root;
+
+	  JsonStatus_t status;
+
+	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+		  fileName = root["name"].asString();
+		  return  (JsonStatus_t)root["status"].asInt();
+	  }
+	  return StatusErr;
+}
+JsonStatus_t JsonCmdManager::parseAdRead(string js)
+{
+	  Json::Reader reader;
+	  Json::Value root;
+
+	  JsonStatus_t status;
+
+	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+		  return  (JsonStatus_t)root["status"].asInt();
+	  }
+	  return StatusErr;
+}
+
+JsonStatus_t JsonCmdManager::parseAdDelet(string js, string &fileName)
+{
+	Json::Reader reader;
+	Json::Value root;
+	JsonStatus_t status;
+
+	if (reader.parse(js, root)){  // reader将Json字符串解析到root，root将包含Json里所有子元素
+		status = root["status"].asInt();
+		if(status == StatusSet)	{
+			fileName = root["name"].asString();  // 访问节点，upload_id = "UP000000"
+		}
+		else{
+			fileName = "";
+		}
+	}
+	return status;
+}
+JsonStatus_t JsonCmdManager::parseAdClear(string &js){
+	  Json::Reader reader;
+
+	  Json::Value root;
+	  JsonStatus_t status;
+	  std::string val_str;
+	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	  {
+		  status = root["status"].asInt();
+	  }
+
+	  return status;
 }
 JsonStatus_t JsonCmdManager::parseFile(string js, char* directory, string &fullName,string &dataout)
 {
@@ -617,11 +736,11 @@ JsonStatus_t JsonCmdManager::parseFile(string js, char* directory, string &fullN
 }
 
 
-string JsonCmdManager::makeDeleteFile(string &fullName,JsonStatus_t status)
+string JsonCmdManager::makeDeleteFile(string &fileName,JsonStatus_t status)
 {
 	  Json::Value root;
-	  root["cmd"] = Json::Value(CMDDelAdPic);
-	  root["name"] = Json::Value(fullName);
+	  root["cmd"] = Json::Value(CMDAdDel);
+	  root["name"] = Json::Value(fileName);
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
@@ -649,30 +768,6 @@ JsonStatus_t JsonCmdManager::parseDeleteFile(string js, char* directory, string 
 }
 
 
-string JsonCmdManager::makeAdClearAck(JsonStatus_t status){
-	  Json::Value root;
-	  root["cmd"] = Json::Value(CMDAdClear);
-	  root["status"] = Json::Value(status);
-
-//	  string temp =  root.asCString();
-
-	  Json::FastWriter fw;
-	  string temp =  fw.write(root);
-	  return pack(temp);
-}
-JsonStatus_t JsonCmdManager::parseAdClearAck(string &js){
-	  Json::Reader reader;
-
-	  Json::Value root;
-	  JsonStatus_t status;
-	  std::string val_str;
-	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
-	  {
-		  status = root["status"].asInt();
-	  }
-
-	  return status;
-}
 string JsonCmdManager::makeAdSet(Advertisement &set,JsonStatus_t status)
 {
 	  Json::Value root;
@@ -807,7 +902,7 @@ JsonStatus_t JsonCmdManager::parseVersion(string &js)
 	  return status;
 }
 
-string JsonCmdManager::makeUpdate(DownloadInfo_t &info, JsonStatus_t status)
+string JsonCmdManager::makeUpdate(HttpInfo_t &info, JsonStatus_t status)
 {
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDUpdate);
@@ -818,7 +913,7 @@ string JsonCmdManager::makeUpdate(DownloadInfo_t &info, JsonStatus_t status)
 	  string temp =  fw.write(root);
 	  return pack(temp);
 }
-JsonStatus_t JsonCmdManager::parseUpdate(string &js,DownloadInfo_t &info)
+JsonStatus_t JsonCmdManager::parseUpdate(string &js,HttpInfo_t &info)
 {
 	  Json::Reader reader;
 

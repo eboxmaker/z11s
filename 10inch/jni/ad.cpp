@@ -4,14 +4,16 @@
  *  Created on: 2019年3月7日
  *      Author: shentq
  */
-
+#include "json/json.h"
 #include "ad.h"
-#include "json_test.h"
 #include <fstream>
 #include "base64.h"
 #include <dirent.h>
 #include <unistd.h>
 #include "readdir.h"
+#include "storage/StoragePreferences.h"
+
+Database dbAdv(AD_DB);
 
 namespace std {
 
@@ -27,24 +29,52 @@ Advertisement::~Advertisement() {
 	// TODO 自动生成的析构函数存根
 }
 //#define AD_DIR		"/mnt/extsd/ad/"
+void Advertisement::load(){
+
+    //从系统变量存储区更新广告使能设置
+    gAdv.idleTime = StoragePreferences::getInt("gAdv.idleTime", 20);
+    gAdv.enable = StoragePreferences::getBool("gAdv.enable", true);
+    //从数据库中更新广告信息
+    updateList(dbList);
+
+}
 
 bool Advertisement::add(string js)
 {
 	Json::Reader reader;
 	Json::Value root;
-	string fileName;
+	string fileName = "";
+	string fullName = "";
 	int displayTime;
 	bool ret;
+	string dataout = "";
+	unsigned long length;
+	JsonStatus_t status;
+
 	if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	{
 		fileName = root["name"].asString();  // 访问节点，upload_id = "UP000000"
 		displayTime = root["displayTime"].asInt();    // 访问节点，code = 100
+		length = root["dataLength"].asLargestUInt();
+
+
+		if(length != root["data"].asString().length())
+		{
+			LOGE("接收长度不匹配");
+			return false;
+		}
+		fullName = AD_DIR ;
+		fullName +=  fileName;
+		Base64::Decode(root["data"].asString(), &dataout);
+		if(creat_file(fullName,dataout.c_str(),dataout.size()) == false)
+			return false;
 	}
 	else
 	{
 		return false;
 	}
 	ret =  dbAdv.recodeResult(fileName, displayTime);
+
 
 	updateList(dbList);
 	return ret;
@@ -106,7 +136,7 @@ void Advertisement::updateList(std::vector<S_INFOS> &list)
 	num = list.size();
 	for(int i = 0; i < list.size(); i++)
 	{
-		list[i].fullName = AD_DIR + dbList[i].fileName;
+		list[i].fullName = AD_DIR + list[i].fileName;
 	}
 }
 

@@ -22,16 +22,17 @@
 #include <linux/rtc.h>
 #include <time.h>
 #include <sys/time.h>
+//#include <signal.h>
+//#include "system/Thread.h"
+
 
 #include "SocketClient.h"
 #include "utils/Log.h"
-#include "json_test.h"
+#include "json_manager.h"
+
 #include "packageFile.h"
 #include "globalVar.h"
-#include "check_nic.h"
-#include <time.h>
-#include <signal.h>
-#include "system/Thread.h"
+
 
 
 static void* socketThreadRx(void *lParam) {
@@ -114,20 +115,7 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 		disconnect();
 		return false;
 	}
-	LOGE("connect %s success!\n", ip);
-//	bool bSet=true;
-//	   setsockopt(mClientSocket,SOL_SOCKET,SO_KEEPALIVE,(const char*)&bSet,sizeof(bool));
-//
-//
-//
-//	   int                 keepIdle = 6;
-//	     int                 keepInterval = 5;
-//	     int                 keepCount = 3;
-//	     setsockopt(mClientSocket, SOL_TCP, TCP_KEEPIDLE, (void *)&keepIdle, sizeof(keepIdle));
-//	     setsockopt(mClientSocket, SOL_TCP,TCP_KEEPINTVL, (void *)&keepInterval, sizeof(keepInterval));
-//	     setsockopt(mClientSocket,SOL_TCP, TCP_KEEPCNT, (void *)&keepCount, sizeof(keepCount));
-
-
+	//LOGE("connect %s success!\n", ip);
 
 	pthread_t threadID = 0;
 	pthread_attr_t attr; 		// 线程属性
@@ -350,6 +338,7 @@ void SocketClient::asCmd()
 #include "readdir.h"
 void SocketClient::asFile()
 {
+	/*
 	static char buf[FILE_BUF_SIZE];
 	static long fileLength;
 	static long length = 0;
@@ -406,7 +395,7 @@ void SocketClient::asFile()
 		}
 
 	}
-
+*/
 
 }
 
@@ -435,7 +424,8 @@ void SocketClient::threadLoop() {
 
     while (1)
 	{
-
+		asCmd();
+/*
     	switch(this->mode )
     	{
     	case SocketClient::CmdMode:
@@ -448,7 +438,7 @@ void SocketClient::threadLoop() {
     		break;
 
     	}
-
+*/
 		if(mClientSocket < 0)
 		{
 			//pthread_detach(pthread_self());

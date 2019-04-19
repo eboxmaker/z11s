@@ -4,9 +4,10 @@
  *  Created on: 2018年12月26日
  *      Author: shentq
  */
+#include "utils/Log.h"
+#include "json_manager.h"
 
 #include "globalVar.h"
-#include "json_test.h"
 #include "packageFile.h"
 #include "storage/StoragePreferences.h"
 #include "utils/TimeHelper.h"
@@ -14,7 +15,9 @@
 #include <sys/reboot.h>
 #include "httpDownload.h"
 #include "door.h"
-Database dbAdv(AD_DB);
+#include "plan.h"
+#include "ad.h"
+
 doorState_t gDoorState = Lock;
 
 SocketClient* gSocket= new SocketClient();
@@ -23,11 +26,7 @@ SocketClient* gSocket= new SocketClient();
 long gKeyboardLastActionTime = 0;
 
 Person_t gPerson;
-PersonList_t gUserAdmin;
-Plan gPlan;
 CourseInfo_t gCourseInfo;
-StorageFileInfo_t gFileInfo;
-DownloadInfo_t gDownloadInfo;
 
 string gBroadcastMsg;
 
@@ -49,6 +48,8 @@ void exeCMD(char *ptr)
 }
 void exeCMD(string &package)
 {
+	HttpInfo_t info;
+
 	string fileName = "";
 	string msg;
 	string dataout;
@@ -235,48 +236,58 @@ void exeCMD(string &package)
 				gSocket->write_(ack);
 			}
 			break;
-		case CMDAdPic:
-			status = jm.parseFile(js,AD_DIR,msg,dataout);
+		case CMDAdAdd:
+			status = jm.parseAdAdd(js,msg);
 
 			if(status == StatusSet || status == StatusRead)
 			{
-				if(gAdv.add(js)  && creat_file(msg,dataout.c_str(),dataout.size()) )
+				if(gAdv.add(js))
 				{
-					ack = jm.makeAdPicAck(msg,StatusOK);
+					ack = jm.makeAdAdd(msg,StatusOK);
 				}
 				else
 				{
-					ack = jm.makeAdPicAck(msg,StatusErr);
+					ack = jm.makeAdAdd(msg,StatusErr);
 				}
 			}
+
 			gSocket->write_(ack);
 			LOGE("接收到图片!%d:%s\n",status,msg.c_str());
 			break;
-		case CMDDelAdPic:
-			status = jm.parseDeleteFile(js,AD_DIR,fileName,msg);
+		case CMDAdRead:
+			status = jm.parseAdRead(js);
+			if(status == StatusSet || status == StatusRead)
+			{
+
+				ack = jm.makeAdRead(gAdv,StatusOK);
+				gSocket->write_(ack);
+
+			}
+			break;
+		case CMDAdDel:
+			status = jm.parseAdDelet(js,fileName);
 			if(status == StatusSet || status == StatusRead)
 			{
 				gAdv.remove(fileName);
-				ack = jm.makeDeleteFile(msg,StatusOK);
+				ack = jm.makeDeleteFile(fileName,StatusOK);
 				gSocket->write_(ack);
 			}
 			else if(status == StatusErr)
 			{
-				ack = jm.makeQRCodeAck(msg,StatusErr);
 				gSocket->write_(ack);
 			}
 			break;
 		case CMDAdClear:
-			status = jm.parseAdClearAck(js);//(js,AD_DIR,fileName,msg);
+			status = jm.parseAdClear(js);//(js,AD_DIR,fileName,msg);
 			if(status == StatusSet || status == StatusRead)
 			{
 				gAdv.clear();
-				ack = jm.makeAdClearAck(StatusOK);
+				ack = jm.makeAdClear(StatusOK);
 				gSocket->write_(ack);
 			}
 			else if(status == StatusErr)
 			{
-				ack = jm.makeAdClearAck(StatusErr);
+				ack = jm.makeAdClear(StatusErr);
 				gSocket->write_(ack);
 			}
 			gAdv.logDBList();
@@ -425,33 +436,30 @@ void exeCMD(string &package)
 			}
 			break;
 		case CMDUpdate:
-			status = jm.parseUpdate(js,gDownloadInfo);
+			status = jm.parseUpdate(js,info);
 			if(status == StatusSet)
 			{
-			    string filename = gDownloadInfo.url.substr(gDownloadInfo.url.find_last_of('/') + 1);
+			    string filename = info.url.substr(info.url.find_last_of('/') + 1);
 				msg = filename;
 			    if(downloadThread.isRunning())
 				{
-					ack = jm.makeUpdate(gDownloadInfo,StatusErr);
+					ack = jm.makeUpdate(info,StatusErr);
 					gSocket->write_(ack);
 				}
 				else
 				{
-					ack = jm.makeUpdate(gDownloadInfo,StatusOK);
+					ack = jm.makeUpdate(info,StatusOK);
 					gSocket->write_(ack);
-					downloadThread.settings(gDownloadInfo.url,gDownloadInfo.port,"/mnt/extsd/temp",filename);
+					downloadThread.settings(info.url,info.port,"/mnt/extsd/temp",filename);
 				    downloadThread.run("download-file");
 				}
-				LOGE("FILE:%s,%d,%s",gFileInfo.name.c_str(),gFileInfo.size,gFileInfo.md5.c_str());
 			}
 			else if( status == StatusOK)
 			{
-			    string filename = gDownloadInfo.url.substr(gDownloadInfo.url.find_last_of('/') + 1);
+			    string filename = info.url.substr(info.url.find_last_of('/') + 1);
 				msg = filename;
-			    downloadThread.settings(gDownloadInfo.url,gDownloadInfo.port,"/mnt/extsd/temp",filename);
+			    downloadThread.settings(info.url,info.port,"/mnt/extsd/temp",filename);
 			    downloadThread.run("download-update");
-
-				LOGE("FILE:%s,%d,%s",gFileInfo.name.c_str(),gFileInfo.size,gFileInfo.md5.c_str());
 			}
 			break;
 		case CMDReboot:
