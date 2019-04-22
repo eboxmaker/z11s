@@ -26,6 +26,9 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_SETTINGS_WindAdSet    110002
+#define ID_SETTINGS_WindLocalPwd    110001
+#define ID_SETTINGS_BtnLocalPwd    20005
 #define ID_SETTINGS_EditAdNum    51010
 #define ID_SETTINGS_Textview16    50024
 #define ID_SETTINGS_Textview15    50023
@@ -64,12 +67,9 @@
 #define ID_SETTINGS_EditDisplayAdAfterTime    51006
 #define ID_SETTINGS_Textview1    50012
 #define ID_SETTINGS_TextAdEnavle    50011
-#define ID_SETTINGS_WndAdSet    110002
 #define ID_SETTINGS_BtnAdSet    20008
 #define ID_SETTINGS_BtnSyncDateTime    20002
 #define ID_SETTINGS_Textview5    50007
-#define ID_SETTINGS_BtnModifyAdminPwd    20005
-#define ID_SETTINGS_WndModifyAdminPwd    110001
 #define ID_SETTINGS_BtnCancel    20007
 #define ID_SETTINGS_BtnOK    20006
 #define ID_SETTINGS_EdittextNewAdminPwd2    51005

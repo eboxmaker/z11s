@@ -16,6 +16,8 @@ typedef std::vector<std::string> stringList;
 
 using namespace std;
 
+
+//设备信息结构体
 typedef struct {
 	string organization;
 	string name;
@@ -35,6 +37,8 @@ typedef struct {
 	bool enable;
 }Device_t;
 
+
+//系统更新结网址构体
 typedef struct
 {
 	string url;
@@ -43,6 +47,7 @@ typedef struct
 
 
 
+//用户存储json传递过来的图片。
 typedef struct
 {
 	string name;
@@ -50,6 +55,7 @@ typedef struct
 	string data;
 }Picture_t;
 
+//主界面课程信息
 typedef struct
 {
 	string name;
@@ -61,6 +67,7 @@ typedef struct
 	Picture_t picture;
 }CourseInfo_t;
 
+//录入指纹时传递的信息
 typedef struct
 {
 	string name;
@@ -78,12 +85,15 @@ typedef union
 	unsigned char bytes[8];
 }XdataULong_t;
 
+//门锁状态结构体
 typedef enum
 {
 	Lock,
 	UnLock
 }doorState_t;
 
+
+//普通命令传输状态枚举类型
 typedef enum
 {
 	StatusSet = 0,
@@ -92,6 +102,7 @@ typedef enum
 	StatusErr
 }JsonStatus_t;
 
+//注册过程传输状态枚举类型
 typedef enum
 {
 	StatusReqDev2Ser = 0,
@@ -101,6 +112,7 @@ typedef enum
 	StatusErrSer2Dev,
 }JsonConfirmStatus_t;
 
+//命令列表
 typedef enum
 {
 	CMDHeartbeat,
@@ -110,7 +122,7 @@ typedef enum
 	CMDDevID,
 	CMDConfirm,
 	CMDSyncDateTime,
-	CMDAdminPwd,
+	CMDLocalPwd,
 	CMDDoorPwd,
 	CMDDoorCtr,
 	CMDCourseInfo,

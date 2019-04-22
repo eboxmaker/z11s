@@ -48,7 +48,7 @@ protected:
         system(cmd.c_str());
         if(name == "update.img")
         {
-            char buf[]="1";
+            char buf[]="3";
             string autouFileFullName = path + "/zkautoupgrade";
 			creat_file(autouFileFullName, buf, 1);
 			LOGD("creat auto file:%s,",autouFileFullName.c_str());
@@ -65,7 +65,7 @@ protected:
             }
             if(name == "update.img")
             {
-                Thread::sleep(5000);
+                Thread::sleep(1000);//显示下载成功
     		    dev.enable = false;
     		    gSocket->disconnect();
                 UpgradeMonitor::getInstance()->checkUpgradeFile(path.c_str());

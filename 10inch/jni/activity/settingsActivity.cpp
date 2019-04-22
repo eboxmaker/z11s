@@ -4,6 +4,9 @@
 #include "settingsActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKWindow* mWindAdSetPtr;
+static ZKWindow* mWindLocalPwdPtr;
+static ZKButton* mBtnLocalPwdPtr;
 static ZKEditText* mEditAdNumPtr;
 static ZKTextView* mTextview16Ptr;
 static ZKTextView* mTextview15Ptr;
@@ -42,12 +45,9 @@ static ZKTextView* mTextview7Ptr;
 static ZKEditText* mEditDisplayAdAfterTimePtr;
 static ZKTextView* mTextview1Ptr;
 static ZKTextView* mTextAdEnavlePtr;
-static ZKWindow* mWndAdSetPtr;
 static ZKButton* mBtnAdSetPtr;
 static ZKButton* mBtnSyncDateTimePtr;
 static ZKTextView* mTextview5Ptr;
-static ZKButton* mBtnModifyAdminPwdPtr;
-static ZKWindow* mWndModifyAdminPwdPtr;
 static ZKButton* mBtnCancelPtr;
 static ZKButton* mBtnOKPtr;
 static ZKEditText* mEdittextNewAdminPwd2Ptr;
@@ -99,6 +99,7 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_SETTINGS_BtnLocalPwd, onButtonClick_BtnLocalPwd,
     ID_SETTINGS_BtnUnLock, onButtonClick_BtnUnLock,
     ID_SETTINGS_BtnLock, onButtonClick_BtnLock,
     ID_SETTINGS_BtnLockState, onButtonClick_BtnLockState,
@@ -112,7 +113,6 @@ static S_ButtonCallback sButtonCallbackTab[] = {
     ID_SETTINGS_BtnAdOK, onButtonClick_BtnAdOK,
     ID_SETTINGS_BtnAdSet, onButtonClick_BtnAdSet,
     ID_SETTINGS_BtnSyncDateTime, onButtonClick_BtnSyncDateTime,
-    ID_SETTINGS_BtnModifyAdminPwd, onButtonClick_BtnModifyAdminPwd,
     ID_SETTINGS_BtnCancel, onButtonClick_BtnCancel,
     ID_SETTINGS_BtnOK, onButtonClick_BtnOK,
     ID_SETTINGS_BtnServer, onButtonClick_BtnServer,
@@ -210,6 +210,9 @@ const char* settingsActivity::getAppName() const{
 //TAG:onCreate
 void settingsActivity::onCreate() {
 	Activity::onCreate();
+    mWindAdSetPtr = (ZKWindow*)findControlByID(ID_SETTINGS_WindAdSet);
+    mWindLocalPwdPtr = (ZKWindow*)findControlByID(ID_SETTINGS_WindLocalPwd);
+    mBtnLocalPwdPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnLocalPwd);
     mEditAdNumPtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditAdNum);if(mEditAdNumPtr!= NULL){mEditAdNumPtr->setTextChangeListener(this);}
     mTextview16Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview16);
     mTextview15Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview15);
@@ -248,12 +251,9 @@ void settingsActivity::onCreate() {
     mEditDisplayAdAfterTimePtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditDisplayAdAfterTime);if(mEditDisplayAdAfterTimePtr!= NULL){mEditDisplayAdAfterTimePtr->setTextChangeListener(this);}
     mTextview1Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview1);
     mTextAdEnavlePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextAdEnavle);
-    mWndAdSetPtr = (ZKWindow*)findControlByID(ID_SETTINGS_WndAdSet);
     mBtnAdSetPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnAdSet);
     mBtnSyncDateTimePtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnSyncDateTime);
     mTextview5Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview5);
-    mBtnModifyAdminPwdPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnModifyAdminPwd);
-    mWndModifyAdminPwdPtr = (ZKWindow*)findControlByID(ID_SETTINGS_WndModifyAdminPwd);
     mBtnCancelPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnCancel);
     mBtnOKPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnOK);
     mEdittextNewAdminPwd2Ptr = (ZKEditText*)findControlByID(ID_SETTINGS_EdittextNewAdminPwd2);if(mEdittextNewAdminPwd2Ptr!= NULL){mEdittextNewAdminPwd2Ptr->setTextChangeListener(this);}

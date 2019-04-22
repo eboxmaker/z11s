@@ -65,8 +65,8 @@ public:
 	string makeSyncDateTime(string &msg,JsonStatus_t status);
 	JsonStatus_t parseSyncDateTime(string &js,string &msg);
 
-	string makeAdminPwd(string &pwd,JsonStatus_t status);
-	JsonStatus_t parseAdminPwd(string &js,string &adminPwd);
+	string makeLocalPwd(string &pwd,JsonStatus_t status);
+	JsonStatus_t parseLocalPwd(string &js,string &pwd);
 
 	string makeDoorPwd(string &pwd,JsonStatus_t status);
 	JsonStatus_t parseDoorPwd(string &js,string &pwd);

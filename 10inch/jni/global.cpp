@@ -198,17 +198,17 @@ void exeCMD(string &package)
 				gSocket->write_(ack);
 			}
 			break;
-		case CMDAdminPwd:
-			status = jm.parseAdminPwd(js,dev.pwdLocal);
+		case CMDLocalPwd:
+			status = jm.parseLocalPwd(js,dev.pwdLocal);
 			if(status == StatusSet)
 			{
 			    StoragePreferences::putString("dev.pwdLocal", dev.pwdLocal.c_str());
-				ack = jm.makeAdminPwd(dev.pwdLocal,StatusOK);
+				ack = jm.makeLocalPwd(dev.pwdLocal,StatusOK);
 				gSocket->write_(ack);
 			}
 			else if(status == StatusRead)
 			{
-				ack = jm.makeAdminPwd(dev.pwdLocal,StatusOK);
+				ack = jm.makeLocalPwd(dev.pwdLocal,StatusOK);
 				gSocket->write_(ack);
 			}
 			break;

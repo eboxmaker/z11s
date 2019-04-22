@@ -362,17 +362,17 @@ JsonStatus_t JsonCmdManager::parseSyncDateTime(string &js,string &msg)
 }
 
 
-string JsonCmdManager::makeAdminPwd(string &pwd,JsonStatus_t status)
+string JsonCmdManager::makeLocalPwd(string &pwd,JsonStatus_t status)
 {
 	  Json::Value root;
-	  root["cmd"] = Json::Value(CMDAdminPwd);
+	  root["cmd"] = Json::Value(CMDLocalPwd);
 	  root["pwd"] = Json::Value(pwd);
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
 	  return pack(temp);
 }
-JsonStatus_t JsonCmdManager::parseAdminPwd(string &js,string &adminPwd)
+JsonStatus_t JsonCmdManager::parseLocalPwd(string &js,string &pwd)
 {
 	  Json::Reader reader;
 
@@ -383,7 +383,7 @@ JsonStatus_t JsonCmdManager::parseAdminPwd(string &js,string &adminPwd)
 		  status = root["status"].asInt();
 		  if(status == StatusSet)
 		  {
-			  adminPwd = root["pwd"].asString();
+			  pwd = root["pwd"].asString();
 		  }
 	  }
 

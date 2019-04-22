@@ -49,7 +49,7 @@ static void updateAdSetWind()
 	gAdv.idleTime = StoragePreferences::getInt("gAdv.idleTime", gAdv.idleTime);
 	if(gAdv.enable == true)
 	{
-		mBtnAdEnablePtr->setBackgroundPic("kai.png");
+		mBtnAdEnablePtr->setBackgroundPic("kai.png"); // @suppress("Symbol is not resolved")
 	}
 	else
 	{
@@ -108,7 +108,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 	switch(cmd)
 	{
 	case CMDSetHeartbeat:
-	case CMDAdminPwd:
+	case CMDLocalPwd:
 	case CMDSyncDateTime:
 	case CMDAdSet:
 	case CMDOrgName:
@@ -198,8 +198,8 @@ static void onUI_show() {
     updateDisp();
 
 
-    mWndModifyAdminPwdPtr->hideWnd();
-    mWndAdSetPtr->hideWnd();
+    mWindLocalPwdPtr->hideWnd();
+    mWindAdSetPtr->hideWnd();
 
 
 	if(gSocket->connected())
@@ -399,7 +399,7 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 		    {
 				mTextStatusNoticePtr->setText("等待同步设置服务器");
 			    string str ;
-			    str = jm.makeAdminPwd(dev.pwdLocal,StatusSet);
+			    str = jm.makeLocalPwd(dev.pwdLocal,StatusSet);
 				gSocket->write_(str);
 			    gSocket->updateTriger();
 		    }
@@ -424,12 +424,12 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 
 static bool onButtonClick_BtnCancel(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnCancel !!!\n");
-    mWndModifyAdminPwdPtr->hideWnd();
+	mWindLocalPwdPtr->hideWnd();
     return false;
 }
-static bool onButtonClick_BtnModifyAdminPwd(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnModifyAdminPwd !!!\n");
-    mWndModifyAdminPwdPtr->showWnd();
+static bool onButtonClick_BtnLocalPwd(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnLocalPwd !!!\n");
+	mWindLocalPwdPtr->showWnd();
     return false;
 }
 static bool onButtonClick_BtnSyncDateTime(ZKButton *pButton) {
@@ -465,7 +465,7 @@ static bool onButtonClick_BtnAdSet(ZKButton *pButton) {
 
 	updateAdSetWind();
 
-    mWndAdSetPtr->showWnd();
+	mWindAdSetPtr->showWnd();
     mEditAdNumPtr->setText(gAdv.getNum());
 
     return false;
@@ -544,7 +544,7 @@ static bool onButtonClick_BtnAdOK(ZKButton *pButton) {
 
 static bool onButtonClick_BtnAdCancel(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnAdCancel !!!\n");
-	mWndAdSetPtr->hideWnd();
+	mWindAdSetPtr->hideWnd();
     return false;
 }
 static bool onButtonClick_BtnAdEnable(ZKButton *pButton) {
@@ -727,3 +727,4 @@ static void onProgressChanged_SeekbarMemUsage(ZKSeekBar *pSeekBar, int progress)
 static void onEditTextChanged_EditAdNum(const std::string &text) {
     //LOGD(" onEditTextChanged_ EditAdNum %s !!!\n", text.c_str());
 }
+

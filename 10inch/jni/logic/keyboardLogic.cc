@@ -221,7 +221,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		QRCodeFullName = msg;
 		mBtnQRCodePtr->setBackgroundPic(msg.c_str());
 		break;
-	case CMDAdminPwd:
+	case CMDLocalPwd:
 		if(status == StatusSet)
 		{
 			mWindStatusNoticePtr->showWnd();
