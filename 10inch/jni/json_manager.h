@@ -13,10 +13,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "globalVar.h"
 #include "aes/myaes256.h"
 #include "plan.h"
 #include "ad.h"
+#include "global.h"
 
 using namespace std;
 

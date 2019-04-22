@@ -8,10 +8,10 @@
 
 
 
-#include "readdir.h"
 #include "utils/log.h"
 #include <sys/stat.h>
 #include <string.h>
+#include "fileOpt.h"
 
 using namespace std;
 

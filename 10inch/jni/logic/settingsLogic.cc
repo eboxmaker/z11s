@@ -8,8 +8,8 @@
 #include "lib/itoa.h"
 #include <sys/sysinfo.h>
 
+#include "../global.h"
 #include "json_manager.h"
-#include "globalVar.h"
 #include "httpdownload.h"
 #include "door.h"
 

@@ -1,11 +1,11 @@
 #pragma once
+#include "../global.h"
 #include "uart/ProtocolSender.h"
-#include "globalVar.h"
 #include "json_manager.h"
 #include "utils/TimeHelper.h"
-#include "base64.h"
+#include "lib/base64.h"
 #include "door.h"
-#include "finger.h"
+#include "lib/finger.h"
 
 /*
 *此文件由GUI工具生成

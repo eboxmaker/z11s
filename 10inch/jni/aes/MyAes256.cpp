@@ -9,7 +9,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include "utils/log.h"
-#include "base64.h"
+#include "lib/base64.h"
 
 AesEncryptor::AesEncryptor(string key,string iv):
 	cipherMode(CBC),

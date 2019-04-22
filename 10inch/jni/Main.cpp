@@ -8,11 +8,10 @@
 #include "termio.h"
 #include <iostream>
 
-#include "globalVar.h"
-
+#include "global.h"
 #include "storage/StoragePreferences.h"
 #include "json_manager.h"
-#include "readdir.h"
+#include "lib/fileOpt.h"
 #include "version.h"
 
 #ifdef __cplusplus

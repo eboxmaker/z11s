@@ -17,15 +17,17 @@
 #include <string.h>
 #include <pthread.h>
 #include <errno.h>
+#include "fileOpt.h"
 
 
 
 
 #include "SocketClient.h"
+
+#include "../global.h"
 #include "utils/Log.h"
 #include "json_manager.h"
 
-#include "globalVar.h"
 
 
 
@@ -329,7 +331,6 @@ void SocketClient::asCmd()
 		state = 0;
 	}
 }
-#include "readdir.h"
 void SocketClient::asFile()
 {
 	/*

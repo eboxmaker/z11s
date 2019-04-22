@@ -111,7 +111,8 @@ namespace socket
 
                 string js = JsonManager.unPackage(enjs);
 
-                RichRecv.Text += sender.Client.RemoteEndPoint.ToString() + js;
+                //RichRecv.Text += sender.Client.RemoteEndPoint.ToString() + js;
+                RichRecv.Text +=  js;
                 JsonManager.CMDType cmd = JsonManager.GetJsonCMD(js);
                 JsonManager.StatusType status = JsonManager.GetJsonStatus(js);
                 switch (cmd)

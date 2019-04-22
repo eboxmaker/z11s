@@ -1,9 +1,9 @@
 #pragma once
+#include "../global.h"
 #include "uart/ProtocolSender.h"
-#include "globalvar.h"
 #include "json_manager.h"
-#include "base64.h"
-#include "finger.h"
+#include "lib/base64.h"
+#include "lib/finger.h"
 
 /*
 *此文件由GUI工具生成

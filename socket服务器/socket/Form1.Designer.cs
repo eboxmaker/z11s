@@ -128,7 +128,7 @@
             // 
             this.RichRecv.Location = new System.Drawing.Point(139, 12);
             this.RichRecv.Name = "RichRecv";
-            this.RichRecv.Size = new System.Drawing.Size(477, 150);
+            this.RichRecv.Size = new System.Drawing.Size(477, 219);
             this.RichRecv.TabIndex = 6;
             this.RichRecv.Text = "";
             // 
@@ -144,17 +144,17 @@
             // 
             // RichSend
             // 
-            this.RichSend.Location = new System.Drawing.Point(139, 235);
+            this.RichSend.Location = new System.Drawing.Point(139, 293);
             this.RichSend.Name = "RichSend";
-            this.RichSend.Size = new System.Drawing.Size(477, 167);
+            this.RichSend.Size = new System.Drawing.Size(477, 109);
             this.RichSend.TabIndex = 8;
             this.RichSend.Text = "";
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(541, 168);
+            this.btnClear.Location = new System.Drawing.Point(519, 239);
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(75, 23);
+            this.btnClear.Size = new System.Drawing.Size(97, 23);
             this.btnClear.TabIndex = 9;
             this.btnClear.Text = "清空数据";
             this.btnClear.UseVisualStyleBackColor = true;
@@ -512,7 +512,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(139, 177);
+            this.button1.Location = new System.Drawing.Point(139, 235);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 49;
@@ -522,14 +522,14 @@
             // 
             // tbAesTest
             // 
-            this.tbAesTest.Location = new System.Drawing.Point(139, 208);
+            this.tbAesTest.Location = new System.Drawing.Point(139, 266);
             this.tbAesTest.Name = "tbAesTest";
             this.tbAesTest.Size = new System.Drawing.Size(477, 21);
             this.tbAesTest.TabIndex = 50;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(220, 179);
+            this.button2.Location = new System.Drawing.Point(220, 237);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 51;
@@ -539,14 +539,14 @@
             // 
             // tbENcoderLen
             // 
-            this.tbENcoderLen.Location = new System.Drawing.Point(301, 181);
+            this.tbENcoderLen.Location = new System.Drawing.Point(301, 239);
             this.tbENcoderLen.Name = "tbENcoderLen";
-            this.tbENcoderLen.Size = new System.Drawing.Size(95, 21);
+            this.tbENcoderLen.Size = new System.Drawing.Size(64, 21);
             this.tbENcoderLen.TabIndex = 52;
             // 
             // btnGetKeyHex
             // 
-            this.btnGetKeyHex.Location = new System.Drawing.Point(402, 179);
+            this.btnGetKeyHex.Location = new System.Drawing.Point(371, 237);
             this.btnGetKeyHex.Name = "btnGetKeyHex";
             this.btnGetKeyHex.Size = new System.Drawing.Size(75, 23);
             this.btnGetKeyHex.TabIndex = 54;
@@ -556,9 +556,9 @@
             // 
             // btnGetIVHex
             // 
-            this.btnGetIVHex.Location = new System.Drawing.Point(483, 179);
+            this.btnGetIVHex.Location = new System.Drawing.Point(452, 239);
             this.btnGetIVHex.Name = "btnGetIVHex";
-            this.btnGetIVHex.Size = new System.Drawing.Size(75, 23);
+            this.btnGetIVHex.Size = new System.Drawing.Size(61, 23);
             this.btnGetIVHex.TabIndex = 53;
             this.btnGetIVHex.Text = "button4";
             this.btnGetIVHex.UseVisualStyleBackColor = true;

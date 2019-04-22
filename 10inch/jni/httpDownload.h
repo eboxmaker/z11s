@@ -12,8 +12,8 @@
 #include "os/UpgradeMonitor.h"
 
 #include "http/http_client.h"
-#include "readdir.h"
-#include "globalvar.h"
+#include "lib/fileOpt.h"
+#include "global.h"
 
 extern dlNotify_t downloadEvent;
 class DownloadThread : public Thread {

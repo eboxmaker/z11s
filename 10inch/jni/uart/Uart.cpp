@@ -13,7 +13,7 @@
 
 #include "uart/Uart.h"
 #include "utils/Log.h"
-#include "finger.h"
+#include "lib/finger.h"
 #define UART_DATA_BUF_LEN			2048	// 16KB
 
 

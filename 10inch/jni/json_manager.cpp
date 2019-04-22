@@ -8,13 +8,13 @@
 #include "utils/log.h"
 #include "json_manager.h"
 #include "lib/itoa.h"
-#include "globalVar.h"
 #include   <iostream>
-#include "base64.h"
+#include "lib/base64.h"
+#include "global.h"
+#include "lib/fileOpt.h"
 
 #include "security/SecurityManager.h"
 
-#include "readdir.h"
 #include "md5/md5.h"
 #include "version.h"
 
@@ -300,6 +300,7 @@ string JsonCmdManager::makeConfirm(Device_t &dev_,JsonConfirmStatus_t status)
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDConfirm);
 	  root["id"] = Json::Value(dev_.id);
+	  root["version"] = Json::Value(dev_.version);
 	  if(status == StatusAckDev2Ser)
 	  {
 		  root["organization"] = Json::Value(dev_.organization);

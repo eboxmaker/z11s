@@ -1,9 +1,9 @@
 #pragma once
+#include "../global.h"
 #include "uart/ProtocolSender.h"
 #include "ad.h"
 
-#include "readdir.h"
-#include "globalVar.h"
+#include "lib/fileOpt.h"
 #include "storage/StoragePreferences.h"
 
 /*

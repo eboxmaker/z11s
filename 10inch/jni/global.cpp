@@ -4,6 +4,8 @@
  *  Created on: 2018年12月26日
  *      Author: shentq
  */
+#include "global.h"
+
 #include <sys/reboot.h>
 #include "storage/StoragePreferences.h"
 #include "utils/TimeHelper.h"
@@ -11,13 +13,11 @@
 #include "utils/Log.h"
 
 #include "json_manager.h"
-#include "packageFile.h"
-#include "readdir.h"
+#include "lib/fileOpt.h"
 #include "door.h"
 #include "plan.h"
 #include "ad.h"
 
-#include "globalVar.h"
 
 doorState_t gDoorState = Lock;
 
