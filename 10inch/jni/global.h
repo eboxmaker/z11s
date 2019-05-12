@@ -8,7 +8,7 @@
 #ifndef JNI_LIB_GLOBALVAR_H_
 #define JNI_LIB_GLOBALVAR_H_
 #include "objectType.h"
-
+#include "door.h"
 #include "lib/SocketClient.h"
 
 

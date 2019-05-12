@@ -7,9 +7,16 @@
 
 #ifndef JNI_DOOR_H_
 #define JNI_DOOR_H_
-#include "objectType.h"
 
 namespace std {
+
+	typedef enum {HighLock,HighOpen,NONE}LockLogic_t;
+	//门锁状态结构体
+	typedef enum
+	{
+		Lock,
+		UnLock,
+	}doorState_t;
 
 class Door {
 public:
@@ -17,6 +24,10 @@ public:
 	virtual ~Door();
 	void set(doorState_t state);
 	doorState_t get();
+
+	LockLogic_t LockLogic;
+	LockLogic_t TongueLogic;
+	LockLogic_t MagnetLogic;
 };
 extern Door door;
 

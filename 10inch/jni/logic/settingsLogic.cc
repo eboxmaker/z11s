@@ -728,3 +728,15 @@ static void onEditTextChanged_EditAdNum(const std::string &text) {
     //LOGD(" onEditTextChanged_ EditAdNum %s !!!\n", text.c_str());
 }
 
+static int getListItemCount_ListLockType(const ZKListView *pListView) {
+    //LOGD("getListItemCount_ListLockType !\n");
+    return 1;
+}
+
+static void obtainListItemData_ListLockType(ZKListView *pListView,ZKListView::ZKListItem *pListItem, int index) {
+    //LOGD(" obtainListItemData_ ListLockType  !!!\n");
+}
+
+static void onListItemClick_ListLockType(ZKListView *pListView, int index, int id) {
+    //LOGD(" onListItemClick_ ListLockType  !!!\n");
+}

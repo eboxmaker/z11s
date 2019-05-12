@@ -536,6 +536,7 @@ namespace socket
         {
             string str = JsonManager.MakeAdRead(JsonManager.StatusType.StatusSet);
             server.SendAll(str);
+            server.Send(server.clients[0].TcpClient,str);
         }
         
 

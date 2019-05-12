@@ -85,12 +85,8 @@ typedef union
 	unsigned char bytes[8];
 }XdataULong_t;
 
-//门锁状态结构体
-typedef enum
-{
-	Lock,
-	UnLock
-}doorState_t;
+
+
 
 
 //普通命令传输状态枚举类型

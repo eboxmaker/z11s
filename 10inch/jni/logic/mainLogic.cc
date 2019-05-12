@@ -121,7 +121,7 @@ const char* IconTab[]={
 		"personActivity",
 		"settingsActivity",
 		"keyboardActivity",
-		"networkActivity"
+		"LockSettingsActivity",
 		"waveViewActivity",
 		"testpointerActivity",
 		"windowActivity",
@@ -148,5 +148,6 @@ static void onSlideItemClick_Slidewindow1(ZKSlideWindow *pSlideWindow, int index
     //LOGD(" onSlideItemClick_ Slidewindow1 %d !!!\n", index);
 	if(index <= sizeof(IconTab)/sizeof(char*)){
 		EASYUICONTEXT->openActivity(IconTab[index]);
+		LOGD("%s",IconTab[index]);
 	}
 }
