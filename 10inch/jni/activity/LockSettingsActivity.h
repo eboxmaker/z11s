@@ -26,6 +26,12 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_LOCKSETTINGS_BtnEnable    20005
+#define ID_LOCKSETTINGS_Button1    20004
+#define ID_LOCKSETTINGS_BtnLock    20018
+#define ID_LOCKSETTINGS_BtnLockState    20016
+#define ID_LOCKSETTINGS_BtnUnLock    20019
+#define ID_LOCKSETTINGS_Textview11    50009
 #define ID_LOCKSETTINGS_SubItem3    20003
 #define ID_LOCKSETTINGS_SubItem2    20002
 #define ID_LOCKSETTINGS_Textview3    50003

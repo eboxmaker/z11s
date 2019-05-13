@@ -4,6 +4,12 @@
 #include "LockSettingsActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKButton* mBtnEnablePtr;
+static ZKButton* mButton1Ptr;
+static ZKButton* mBtnLockPtr;
+static ZKButton* mBtnLockStatePtr;
+static ZKButton* mBtnUnLockPtr;
+static ZKTextView* mTextview11Ptr;
 static ZKListView* mListFeed2LogicPtr;
 static ZKTextView* mTextview3Ptr;
 static ZKListView* mListFeed1LogicPtr;
@@ -47,6 +53,11 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_LOCKSETTINGS_BtnEnable, onButtonClick_BtnEnable,
+    ID_LOCKSETTINGS_Button1, onButtonClick_Button1,
+    ID_LOCKSETTINGS_BtnLock, onButtonClick_BtnLock,
+    ID_LOCKSETTINGS_BtnLockState, onButtonClick_BtnLockState,
+    ID_LOCKSETTINGS_BtnUnLock, onButtonClick_BtnUnLock,
 };
 /***************/
 
@@ -130,6 +141,12 @@ const char* LockSettingsActivity::getAppName() const{
 //TAG:onCreate
 void LockSettingsActivity::onCreate() {
 	Activity::onCreate();
+    mBtnEnablePtr = (ZKButton*)findControlByID(ID_LOCKSETTINGS_BtnEnable);
+    mButton1Ptr = (ZKButton*)findControlByID(ID_LOCKSETTINGS_Button1);
+    mBtnLockPtr = (ZKButton*)findControlByID(ID_LOCKSETTINGS_BtnLock);
+    mBtnLockStatePtr = (ZKButton*)findControlByID(ID_LOCKSETTINGS_BtnLockState);
+    mBtnUnLockPtr = (ZKButton*)findControlByID(ID_LOCKSETTINGS_BtnUnLock);
+    mTextview11Ptr = (ZKTextView*)findControlByID(ID_LOCKSETTINGS_Textview11);
     mListFeed2LogicPtr = (ZKListView*)findControlByID(ID_LOCKSETTINGS_ListFeed2Logic);if(mListFeed2LogicPtr!= NULL){mListFeed2LogicPtr->setListAdapter(this);mListFeed2LogicPtr->setItemClickListener(this);}
     mTextview3Ptr = (ZKTextView*)findControlByID(ID_LOCKSETTINGS_Textview3);
     mListFeed1LogicPtr = (ZKListView*)findControlByID(ID_LOCKSETTINGS_ListFeed1Logic);if(mListFeed1LogicPtr!= NULL){mListFeed1LogicPtr->setListAdapter(this);mListFeed1LogicPtr->setItemClickListener(this);}

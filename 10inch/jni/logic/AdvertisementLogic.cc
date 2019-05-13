@@ -192,7 +192,7 @@ static bool onAdvertisementActivityTouchEvent(const MotionEvent &ev) {
 }
 static bool onButtonClick_BtnPic(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnPic !!!\n");
-	EASYUICONTEXT->openActivity("keyboardActivity");
-
+	//EASYUICONTEXT->openActivity("keyboardActivity");
+	EASYUICONTEXT->goBack();
     return false;
 }

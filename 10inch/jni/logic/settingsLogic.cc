@@ -207,16 +207,6 @@ static void onUI_show() {
 	else
 		mBtnServerStatePtr->setBackgroundPic("guan.png");
 
-	if(door.get() == UnLock)
-	{
-		mBtnLockStatePtr->setBackgroundPic("kai.png");
-		mBtnLockStatePtr->setText("开");
-	}
-	else
-	{
-		mBtnLockStatePtr->setBackgroundPic("guan.png");
-		mBtnLockStatePtr->setText("关 ");
-	}
 
 	//
 	mSeekbarLightPtr->setProgress(BRIGHTNESSHELPER->getBrightness());
@@ -266,23 +256,6 @@ static bool onUI_Timer(int id){
 	float memUsage;
 	switch (id) {
 	case 0:
-
-		if(door.get() == UnLock)
-		{
-			mBtnLockStatePtr->setBackgroundPic("kai.png");
-			mBtnLockStatePtr->setText("开");
-		}
-		else
-		{
-			mBtnLockStatePtr->setBackgroundPic("guan.png");
-			mBtnLockStatePtr->setText("关 ");
-		}
-		if(gSocket->connected())
-			mBtnServerStatePtr->setBackgroundPic("kai.png");
-		else
-			mBtnServerStatePtr->setBackgroundPic("guan.png");
-
-
 
 	     sysinfo(&systemInfo);
 	     char temp[30];
@@ -678,41 +651,6 @@ static bool onButtonClick_Button1(ZKButton *pButton) {
     return false;
 }
 
-static bool onButtonClick_BtnLock(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnLock !!!\n");
-	door.set(Lock);
-	if(door.get() == UnLock)
-	{
-		mBtnLockStatePtr->setBackgroundPic("kai.png");
-		mBtnLockStatePtr->setText("开");
-	}
-	else
-	{
-		mBtnLockStatePtr->setBackgroundPic("guan.png");
-		mBtnLockStatePtr->setText("关 ");
-	}
-    return false;
-}
-
-static bool onButtonClick_BtnUnLock(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnUnLock !!!\n");
-	door.set(UnLock);
-	if(door.get() == UnLock)
-	{
-		mBtnLockStatePtr->setBackgroundPic("kai.png");
-		mBtnLockStatePtr->setText("开");
-	}
-	else
-	{
-		mBtnLockStatePtr->setBackgroundPic("guan.png");
-		mBtnLockStatePtr->setText("关 ");
-	}
-	return false;
-}
-static bool onButtonClick_BtnLockState(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnLockState !!!\n");
-    return false;
-}
 static void onProgressChanged_SeekbarLight(ZKSeekBar *pSeekBar, int progress) {
     //LOGD(" ProgressChanged SeekbarLight %d !!!\n", progress);
 //	if(progress < 30)
@@ -739,4 +677,18 @@ static void obtainListItemData_ListLockType(ZKListView *pListView,ZKListView::ZK
 
 static void onListItemClick_ListLockType(ZKListView *pListView, int index, int id) {
     //LOGD(" onListItemClick_ ListLockType  !!!\n");
+}
+static bool onButtonClick_BtnLockState(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnLockState !!!\n");
+    return false;
+}
+
+static bool onButtonClick_BtnLock(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnLock !!!\n");
+    return false;
+}
+
+static bool onButtonClick_BtnUnLock(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnUnLock !!!\n");
+    return false;
 }

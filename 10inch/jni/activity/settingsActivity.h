@@ -39,10 +39,6 @@
 #define ID_SETTINGS_Textview13    50019
 #define ID_SETTINGS_TextVersion    50013
 #define ID_SETTINGS_Textview12    50010
-#define ID_SETTINGS_BtnUnLock    20019
-#define ID_SETTINGS_BtnLock    20018
-#define ID_SETTINGS_BtnLockState    20016
-#define ID_SETTINGS_Textview11    50009
 #define ID_SETTINGS_BtnDownload    20017
 #define ID_SETTINGS_Textview6    50001
 #define ID_SETTINGS_BtnOrgNameSet    20015

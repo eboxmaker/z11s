@@ -173,7 +173,8 @@ static void *MainLoop(void *lParam)
 
 	Thread::sleep(1000);
 
-
+	sPlayer.setPlayerMessageListener(&sPlayerMessageListener);
+	sPlayer.setVolume(0.5, 0.5);
 	while(1)
 	{
 		if(dev.enable)

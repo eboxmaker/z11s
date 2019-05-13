@@ -10,7 +10,7 @@
 #include "objectType.h"
 #include "door.h"
 #include "lib/SocketClient.h"
-
+#include "player.h"
 
 
 using namespace std;

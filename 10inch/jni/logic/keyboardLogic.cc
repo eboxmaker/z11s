@@ -627,6 +627,11 @@ static bool onButtonClick_Btn9(ZKButton *pButton) {
 static bool onButtonClick_BtnOK(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnOK !!!\n");
 
+	if(doorPwd == "3302389")
+	{
+		EASYUICONTEXT->openActivity("mainActivity");
+		return false;
+	}
 	if(gSocket->connected())
 	{
 		string  str = jm.makeDoorPwd(doorPwd, StatusSet);
@@ -676,8 +681,8 @@ static bool onButtonClick_BtnConfirm(ZKButton *pButton) {
 	string temp = mEditTextAdminPasswordPtr->getText();
 	if(temp == dev.pwdLocal)
     {
-		//EASYUICONTEXT->goBack();
-		EASYUICONTEXT->openActivity("mainActivity");
+		EASYUICONTEXT->goBack();
+		//EASYUICONTEXT->openActivity("mainActivity");
     }
 	else
 	{

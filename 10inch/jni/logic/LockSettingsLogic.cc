@@ -31,7 +31,9 @@
 */
 
 #include "door.h"
+#include "player.h"
 
+static bool editEnable = false;
 
 typedef struct {
 	const char* mainText;
@@ -59,7 +61,7 @@ static LockData_t ListFeed2Data[] = {
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	{0,  2000}, //定时器id=0, 时间间隔6秒
+	{0,  1000}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
 };
 
@@ -88,6 +90,20 @@ static void onUI_show() {
     ListLockStr[door.LockLogic].bOn = true;
     ListFeed1Data[door.TongueLogic].bOn = true;
     ListFeed2Data[door.MagnetLogic].bOn = true;
+
+	if(door.get() == UnLock)
+	{
+		mBtnLockStatePtr->setBackgroundPic("kai.png");
+		mBtnLockStatePtr->setText("开");
+	}
+	else
+	{
+		mBtnLockStatePtr->setBackgroundPic("guan.png");
+		mBtnLockStatePtr->setText("关 ");
+	}
+	editEnable = false;
+	mBtnEnablePtr->setText("不允许编辑锁选项");
+
 }
 
 /*
@@ -125,13 +141,19 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
 static int i = 0;
 static bool onUI_Timer(int id){
 	switch (id) {
-//	case 0:
-//		i++;
-//		i%=3;
-//	    mListFeed1LogicPtr->setSelection(i);
-//	    LOGD("Test:lock=%d\ntong=%d\nmag = %d",door.LockLogic,door.TongueLogic,door.MagnetLogic);
-//
-//	    break;
+	case 0:
+
+		if(door.get() == UnLock)
+		{
+			mBtnLockStatePtr->setBackgroundPic("kai.png");
+			mBtnLockStatePtr->setText("开");
+		}
+		else
+		{
+			mBtnLockStatePtr->setBackgroundPic("guan.png");
+			mBtnLockStatePtr->setText("关 ");
+		}
+	    break;
 		default:
 			break;
 	}
@@ -178,12 +200,16 @@ static void obtainListItemData_ListLockLogic(ZKListView *pListView,ZKListView::Z
 
 static void onListItemClick_ListLockLogic(ZKListView *pListView, int index, int id) {
     LOGD(" onListItemClick_ ListLockLogic  !!!index=%d;id=%d\n",index,id);
-    for(int i = 0; i <  2; i++ )
+    if(editEnable)
     {
-    	ListLockStr[i].bOn = false;
+        for(int i = 0; i <  2; i++ )
+        {
+        	ListLockStr[i].bOn = false;
+        }
+        ListLockStr[index].bOn = true;
+        door.LockLogic = index;
     }
-    ListLockStr[index].bOn = true;
-    door.LockLogic = index;
+
 }
 
 
@@ -206,12 +232,15 @@ static void obtainListItemData_ListFeed1Logic(ZKListView *pListView,ZKListView::
 
 static void onListItemClick_ListFeed1Logic(ZKListView *pListView, int index, int id) {
     //LOGD(" onListItemClick_ ListFeed1Logic  !!!\n");
-    for(int i = 0; i <  3; i++ )
+    if(editEnable)
     {
-    	ListFeed1Data[i].bOn = false;
-    }
-    ListFeed1Data[index].bOn = true;
-    door.TongueLogic = index;
+    	for(int i = 0; i <  3; i++ )
+		{
+			ListFeed1Data[i].bOn = false;
+		}
+		ListFeed1Data[index].bOn = true;
+		door.TongueLogic = index;
+	}
 }
 
 
@@ -235,11 +264,77 @@ static void obtainListItemData_ListFeed2Logic(ZKListView *pListView,ZKListView::
 
 static void onListItemClick_ListFeed2Logic(ZKListView *pListView, int index, int id) {
     //LOGD(" onListItemClick_ ListFeed2Logic  !!!\n");
-    for(int i = 0; i <  3; i++ )
+    if(editEnable)
     {
-    	ListFeed2Data[i].bOn = false;
+    	for(int i = 0; i <  3; i++ )
+		{
+			ListFeed2Data[i].bOn = false;
+		}
+		ListFeed2Data[index].bOn = true;
+		door.MagnetLogic = index;
     }
-    ListFeed2Data[index].bOn = true;
-    door.MagnetLogic = index;
 
+}
+static bool onButtonClick_BtnUnLock(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnUnLock !!!\n");
+	door.set(UnLock);
+	if(door.get() == UnLock)
+	{
+		mBtnLockStatePtr->setBackgroundPic("kai.png");
+		mBtnLockStatePtr->setText("开");
+	}
+	else
+	{
+		mBtnLockStatePtr->setBackgroundPic("guan.png");
+		mBtnLockStatePtr->setText("关 ");
+	}
+	return false;}
+
+static bool onButtonClick_BtnLockState(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnLockState !!!\n");
+    return false;
+}
+
+static bool onButtonClick_BtnLock(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnLock !!!\n");
+	door.set(Lock);
+	if(door.get() == UnLock)
+	{
+		mBtnLockStatePtr->setBackgroundPic("kai.png");
+		mBtnLockStatePtr->setText("开");
+	}
+	else
+	{
+		mBtnLockStatePtr->setBackgroundPic("guan.png");
+		mBtnLockStatePtr->setText("关 ");
+	}
+    return false;
+}
+static bool onButtonClick_Button1(ZKButton *pButton) {
+    //LOGD(" ButtonClick Button1 !!!\n");
+	if (!sIsPlayOK) {
+	    LOGD(" OK !!!\n");
+		sPlayer.play("/mnt/extsd/success.mp3");
+	    LOGD(" OK2 !!!\n");
+
+	} else {
+		sPlayer.resume();
+	    LOGD(" failed !!!\n");
+
+	}
+
+    return false;
+}
+static bool onButtonClick_BtnEnable(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnEnable !!!\n");
+	editEnable = !editEnable;
+	if(editEnable == true)
+	{
+		mBtnEnablePtr->setText("允许编辑锁选项");
+	}
+	else
+	{
+		mBtnEnablePtr->setText("不允许编辑锁选项");
+	}
+    return false;
 }
