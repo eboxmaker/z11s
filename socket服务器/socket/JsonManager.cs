@@ -357,7 +357,6 @@ namespace MyJson
             JObject obj = new JObject();
             string md5;
             string js = "";
-            string js1 = "";
 
             try
             {
@@ -518,26 +517,59 @@ namespace MyJson
             string str = Package(jstring);
             return str;
         }
-        public static string MakePlan()
+        public static string MakePlan(StatusType status)
+        {
+            string dateTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+            JObject obj = new JObject();
+            var ja = new JArray();
+            string[] class_ = { "B19521,B18253,B19537,B52645", "B19521,B18253,B19537", "B19521,B18253", "B19521", "B19521,B18253", "B19521" };
+            string[] name = { "张云峰", "李建义", "性一览", "刘喜梅", "朱杰", "尹国才", "刘喜梅", "朱杰", "尹国才", "刘喜梅", "朱杰", "尹国才" };
+            string[] course = { "嵌入式基础教学", "PHP开发", "C语言实训项目集合", "航天系统测试", "物联网概论", "尹国才", "刘喜梅", "朱杰", "尹国才", "刘喜梅", "朱杰", "尹国才" };
+            obj.Add("cmd", (int)CMDType.Plan);
+
+            for (int i = 0; i < 3; i++)
+            {
+                JObject jo = new JObject();
+                jo.Add("uint", "第" + i.ToString()+"单元");
+                jo.Add("startTime", "22:16");
+                jo.Add("endTime", "10:30");
+                jo.Add("teacher", name[i]);
+                jo.Add("class", class_[i]);
+                jo.Add("course", course[i]);
+                ja.Add(jo);
+            } 
+            obj.Add("plan",ja);
+            obj.Add("status", (int)status);
+
+            string jstring = JsonConvert.SerializeObject(obj);
+
+            string str = Package(jstring);
+            return str;
+        }
+        public static string MakePlan2(StatusType status)
         {
             string dateTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
             JObject obj = new JObject();
             var ja = new JArray();
 
+            string[] name = { "刘喜梅", "朱杰", "", "刘喜梅", "朱杰", "张云峰", "李建义", "性一览", "尹国才", "刘喜梅", "朱杰", "尹国才" };
+            string[] class_ = { "B19521\nB18253,B19537", "B19521\nB18253", "", "B19521", "B19521,B18253,B19537,B52645", "B19521" };
+            string[] course = { "航天系统测试", "物联网概论", "", "刘喜梅", "朱杰", "尹国才", "刘喜梅", "朱杰", "尹国才" };
             obj.Add("cmd", (int)CMDType.Plan);
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 6; i++)
             {
                 JObject jo = new JObject();
-                jo.Add("timeStart", "8:00:00");
-                jo.Add("timeEnd", "10:30:00");
-                jo.Add("teacher", "张云峰");
-                jo.Add("class", "B08333");
-                jo.Add("course", "aaaaaaaaaaaaa");
+                jo.Add("uint", "第" + (i+1).ToString() + "单元");
+                jo.Add("startTime", "8:00");
+                jo.Add("endTime", "10:30");
+                jo.Add("teacher", name[i]);
+                jo.Add("class", class_[i]);
+                jo.Add("course", course[i]);
                 ja.Add(jo);
-            } 
-            obj.Add("plan",ja);
-            obj.Add("status", (int)StatusType.StatusOK);
+            }
+            obj.Add("plan", ja);
+            obj.Add("status", (int)status);
 
             string jstring = JsonConvert.SerializeObject(obj);
 

@@ -182,8 +182,12 @@ namespace socket
 
                         break;
                     case JsonManager.CMDType.Plan:
-                        resault = JsonManager.MakePlan();
-                        server.SendAll(resault);
+                        if (status == JsonManager.StatusType.StatusRead)
+                        {
+                            resault = JsonManager.MakePlan(JsonManager.StatusType.StatusOK);
+                            server.SendAll(resault);
+                        }
+
                         break;
                     case JsonManager.CMDType.AdSet:
                         if(status == JsonManager.StatusType.StatusSet)
@@ -537,6 +541,18 @@ namespace socket
             string str = JsonManager.MakeAdRead(JsonManager.StatusType.StatusSet);
             server.SendAll(str);
             server.Send(server.clients[0].TcpClient,str);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakePlan(JsonManager.StatusType.StatusSet);
+            server.SendAll(str);
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            string str = JsonManager.MakePlan2(JsonManager.StatusType.StatusSet);
+            server.SendAll(str);
         }
         
 

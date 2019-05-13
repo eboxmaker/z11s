@@ -15,9 +15,12 @@ class Plan {
 public:
 	typedef struct
 	{
+		string uint;
+		string startTime;
+		string endTime;
 		string teacher;
 		string class_;
-		string courser;
+		string course;
 	}PlanRow_t;
 
 public:
@@ -29,7 +32,7 @@ public:
 	bool add(PlanRow_t &_row);
 	void clear();
 
-	PlanRow_t row[100];
+	PlanRow_t row[10];
 
 private:
 	int _maxSize;

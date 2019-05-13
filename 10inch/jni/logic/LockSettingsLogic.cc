@@ -1,5 +1,7 @@
 #pragma once
 #include "uart/ProtocolSender.h"
+#include "storage/StoragePreferences.h"
+
 /*
 *此文件由GUI工具生成
 *文件功能：用于处理用户的逻辑相应代码
@@ -32,6 +34,8 @@
 
 #include "door.h"
 #include "player.h"
+#include "alarm.h"
+#define	getArraySize(__ARR)									(sizeof(__ARR)/sizeof(__ARR[0]))		// 获取数组大小
 
 static bool editEnable = false;
 
@@ -47,12 +51,6 @@ static LockData_t ListLockStr[] = {
 static LockData_t ListFeed1Data[] = {
 	{"高电平锁门",false},
 	{"高电平开门",false},
-	{"不使用",false},
-};
-static LockData_t ListFeed2Data[] = {
-	{"高电平锁门",false},
-	{"高电平开门",false},
-	{"不使用",false},
 };
 
 /**
@@ -88,8 +86,7 @@ static void onUI_intent(const Intent *intentPtr) {
 static void onUI_show() {
     EASYUICONTEXT->showStatusBar();
     ListLockStr[door.LockLogic].bOn = true;
-    ListFeed1Data[door.TongueLogic].bOn = true;
-    ListFeed2Data[door.MagnetLogic].bOn = true;
+    ListFeed1Data[door.Feed1Logic].bOn = true;
 
 	if(door.get() == UnLock)
 	{
@@ -103,6 +100,8 @@ static void onUI_show() {
 	}
 	editEnable = false;
 	mBtnEnablePtr->setText("不允许编辑锁选项");
+
+	myAlarm.syncPlan();
 
 }
 
@@ -186,7 +185,7 @@ static bool onLockSettingsActivityTouchEvent(const MotionEvent &ev) {
 
 static int getListItemCount_ListLockLogic(const ZKListView *pListView) {
     //LOGD("getListItemCount_ListLockLogic !\n");
-    return 2;
+    return getArraySize(ListLockStr);
 }
 
 static void obtainListItemData_ListLockLogic(ZKListView *pListView,ZKListView::ZKListItem *pListItem, int index) {
@@ -202,12 +201,15 @@ static void onListItemClick_ListLockLogic(ZKListView *pListView, int index, int 
     LOGD(" onListItemClick_ ListLockLogic  !!!index=%d;id=%d\n",index,id);
     if(editEnable)
     {
-        for(int i = 0; i <  2; i++ )
+        for(int i = 0; i <  getArraySize(ListLockStr); i++ )
         {
         	ListLockStr[i].bOn = false;
         }
         ListLockStr[index].bOn = true;
         door.LockLogic = index;
+
+        StoragePreferences::putInt("door.LockLogic", door.LockLogic);
+
     }
 
 }
@@ -220,7 +222,7 @@ static void onListItemClick_ListLockLogic(ZKListView *pListView, int index, int 
 
 static int getListItemCount_ListFeed1Logic(const ZKListView *pListView) {
     //LOGD("getListItemCount_ListFeed1Logic !\n");
-    return 3;
+    return getArraySize(ListFeed1Data);
 }
 
 static void obtainListItemData_ListFeed1Logic(ZKListView *pListView,ZKListView::ZKListItem *pListItem, int index) {
@@ -234,47 +236,18 @@ static void onListItemClick_ListFeed1Logic(ZKListView *pListView, int index, int
     //LOGD(" onListItemClick_ ListFeed1Logic  !!!\n");
     if(editEnable)
     {
-    	for(int i = 0; i <  3; i++ )
+    	for(int i = 0; i <  getArraySize(ListFeed1Data); i++ )
 		{
 			ListFeed1Data[i].bOn = false;
 		}
 		ListFeed1Data[index].bOn = true;
-		door.TongueLogic = index;
+		door.Feed1Logic = index;
+        StoragePreferences::putInt("door.Feed1Logic", door.Feed1Logic);
+
 	}
 }
 
 
-
-
-
-
-
-
-static int getListItemCount_ListFeed2Logic(const ZKListView *pListView) {
-    //LOGD("getListItemCount_ListFeed2Logic !\n");
-    return 3;
-}
-
-static void obtainListItemData_ListFeed2Logic(ZKListView *pListView,ZKListView::ZKListItem *pListItem, int index) {
-    //LOGD(" obtainListItemData_ ListFeed2Logic  !!!\n");
-	ZKListView::ZKListSubItem* psubButton = pListItem->findSubItemByID(ID_LOCKSETTINGS_SubItem3);
-	pListItem->setText(ListFeed2Data[index].mainText);
-	psubButton->setSelected(ListFeed2Data[index].bOn);
-}
-
-static void onListItemClick_ListFeed2Logic(ZKListView *pListView, int index, int id) {
-    //LOGD(" onListItemClick_ ListFeed2Logic  !!!\n");
-    if(editEnable)
-    {
-    	for(int i = 0; i <  3; i++ )
-		{
-			ListFeed2Data[i].bOn = false;
-		}
-		ListFeed2Data[index].bOn = true;
-		door.MagnetLogic = index;
-    }
-
-}
 static bool onButtonClick_BtnUnLock(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnUnLock !!!\n");
 	door.set(UnLock);
@@ -337,4 +310,19 @@ static bool onButtonClick_BtnEnable(ZKButton *pButton) {
 		mBtnEnablePtr->setText("不允许编辑锁选项");
 	}
     return false;
+}
+static int getListItemCount_ListAlarm(const ZKListView *pListView) {
+    //LOGD("getListItemCount_ListAlarm !\n");
+    return myAlarm.alarmList.size();
+}
+
+static void obtainListItemData_ListAlarm(ZKListView *pListView,ZKListView::ZKListItem *pListItem, int index) {
+    //LOGD(" obtainListItemData_ ListAlarm  !!!\n");
+	ZKListView::ZKListSubItem* psubText = pListItem->findSubItemByID(ID_LOCKSETTINGS_SubItemAlarmType);
+	pListItem->setText(myAlarm.alarmList[index].time);
+	psubText->setText(myAlarm.alarmList[index].alarmTypeStr);
+}
+
+static void onListItemClick_ListAlarm(ZKListView *pListView, int index, int id) {
+    //LOGD(" onListItemClick_ ListAlarm  !!!\n");
 }

@@ -374,10 +374,12 @@ void exeCMD(string &package)
 
 
 		case CMDPlan:
+			LOGE("CMD:CMDPlan");
 			status = jm.parsePlan(js, gPlan);
-			if(status == StatusRead)
+			if(status == StatusSet)
 			{
-
+				string str = jm.makePlan(StatusOK);
+				gSocket->write_(str);
 			}
 			break;
 		case CMDBroadcast:

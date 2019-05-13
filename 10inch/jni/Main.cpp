@@ -13,6 +13,7 @@
 #include "json_manager.h"
 #include "lib/fileOpt.h"
 #include "version.h"
+#include "alarm.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -173,7 +174,7 @@ static void *MainLoop(void *lParam)
 
 	Thread::sleep(1000);
 
-	sPlayer.setPlayerMessageListener(&sPlayerMessageListener);
+	sPlayer.setPlayerMessageListener(&myAlarm);
 	sPlayer.setVolume(0.5, 0.5);
 	while(1)
 	{
@@ -194,6 +195,7 @@ static void *MainLoop(void *lParam)
 
 		}
 
+		myAlarm.loop();
 
 
 		Thread::sleep(1000);

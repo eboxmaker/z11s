@@ -4,6 +4,8 @@
 #include "personActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextview5Ptr;
+static ZKEditText* mEditInstructionPtr;
 static ZKButton* mBtnPicturePtr;
 static ZKButton* mBtnGetIDFeaturePtr;
 static ZKButton* mBtnReadCurrentFeaturePtr;
@@ -19,7 +21,6 @@ static ZKTextView* mTextStatusNotice2Ptr;
 static ZKTextView* mTextStatusNoticePtr;
 static ZKWindow* mWindStatusNoticePtr;
 static ZKTextView* mTextview6Ptr;
-static ZKButton* mBtnFingerPicPtr;
 static ZKButton* mButton2Ptr;
 static ZKTextView* mTextview4Ptr;
 static ZKTextView* mTextview3Ptr;
@@ -71,7 +72,6 @@ static S_ButtonCallback sButtonCallbackTab[] = {
     ID_PERSON_BtnSetTimeout, onButtonClick_BtnSetTimeout,
     ID_PERSON_BtnReadTimeout, onButtonClick_BtnReadTimeout,
     ID_PERSON_BtnClearFinger, onButtonClick_BtnClearFinger,
-    ID_PERSON_BtnFingerPic, onButtonClick_BtnFingerPic,
     ID_PERSON_Button2, onButtonClick_Button2,
     ID_PERSON_BtnQuaryPerson, onButtonClick_BtnQuaryPerson,
 };
@@ -119,6 +119,7 @@ typedef struct {
 }S_EditTextInputCallback;
 /*TAG:EditTextInputCallback*/
 static S_EditTextInputCallback SEditTextInputCallbackTab[] = {
+    ID_PERSON_EditInstruction, onEditTextChanged_EditInstruction,
     ID_PERSON_EditPersonID, onEditTextChanged_EditPersonID,
 };
 
@@ -155,6 +156,8 @@ const char* personActivity::getAppName() const{
 //TAG:onCreate
 void personActivity::onCreate() {
 	Activity::onCreate();
+    mTextview5Ptr = (ZKTextView*)findControlByID(ID_PERSON_Textview5);
+    mEditInstructionPtr = (ZKEditText*)findControlByID(ID_PERSON_EditInstruction);if(mEditInstructionPtr!= NULL){mEditInstructionPtr->setTextChangeListener(this);}
     mBtnPicturePtr = (ZKButton*)findControlByID(ID_PERSON_BtnPicture);
     mBtnGetIDFeaturePtr = (ZKButton*)findControlByID(ID_PERSON_BtnGetIDFeature);
     mBtnReadCurrentFeaturePtr = (ZKButton*)findControlByID(ID_PERSON_BtnReadCurrentFeature);
@@ -170,7 +173,6 @@ void personActivity::onCreate() {
     mTextStatusNoticePtr = (ZKTextView*)findControlByID(ID_PERSON_TextStatusNotice);
     mWindStatusNoticePtr = (ZKWindow*)findControlByID(ID_PERSON_WindStatusNotice);
     mTextview6Ptr = (ZKTextView*)findControlByID(ID_PERSON_Textview6);
-    mBtnFingerPicPtr = (ZKButton*)findControlByID(ID_PERSON_BtnFingerPic);
     mButton2Ptr = (ZKButton*)findControlByID(ID_PERSON_Button2);
     mTextview4Ptr = (ZKTextView*)findControlByID(ID_PERSON_Textview4);
     mTextview3Ptr = (ZKTextView*)findControlByID(ID_PERSON_Textview3);

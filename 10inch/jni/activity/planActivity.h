@@ -1,8 +1,8 @@
 /***********************************************
 /gen auto by zuitools
 ***********************************************/
-#ifndef __KEYBOARDACTIVITY_H__
-#define __KEYBOARDACTIVITY_H__
+#ifndef __PLANACTIVITY_H__
+#define __PLANACTIVITY_H__
 
 
 #include "app/Activity.h"
@@ -26,65 +26,20 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
-#define ID_KEYBOARD_Textview7    50042
-#define ID_KEYBOARD_Textview5    50041
-#define ID_KEYBOARD_BtnUnLock    20027
-#define ID_KEYBOARD_BtnLock    20026
-#define ID_KEYBOARD_BtnLockState    20025
-#define ID_KEYBOARD_Textview1    50040
-#define ID_KEYBOARD_WindAdminDoor    110006
-#define ID_KEYBOARD_BtnTecherPicture    20017
-#define ID_KEYBOARD_TextCourse    50015
-#define ID_KEYBOARD_TextClass    50013
-#define ID_KEYBOARD_TextTecherName    50011
-#define ID_KEYBOARD_TextNum    50001
-#define ID_KEYBOARD_Textview13    50039
-#define ID_KEYBOARD_BtnBackMain    20014
-#define ID_KEYBOARD_TextBroadcast    50007
-#define ID_KEYBOARD_WindBroadcast    110004
-#define ID_KEYBOARD_Button5    20024
-#define ID_KEYBOARD_TextTitle    50038
-#define ID_KEYBOARD_Button4    20023
-#define ID_KEYBOARD_Button3    20022
-#define ID_KEYBOARD_Button2    20021
-#define ID_KEYBOARD_Button1    20020
-#define ID_KEYBOARD_Textview12    50037
-#define ID_KEYBOARD_TextDoorState    50036
-#define ID_KEYBOARD_BtnQRCode    20001
-#define ID_KEYBOARD_TextStatusNotice2    50035
-#define ID_KEYBOARD_TextStatusNotice    50005
-#define ID_KEYBOARD_WindStatusNotice    110003
-#define ID_KEYBOARD_BtnPlan    20018
-#define ID_KEYBOARD_Textview8    50014
-#define ID_KEYBOARD_Textview6    50012
-#define ID_KEYBOARD_Textview4    50008
-#define ID_KEYBOARD_WindState    110002
-#define ID_KEYBOARD_TextWeek    50006
-#define ID_KEYBOARD_TextTime    50010
-#define ID_KEYBOARD_TextDate    50009
-#define ID_KEYBOARD_TvConnectState    50004
-#define ID_KEYBOARD_Textview3    50003
-#define ID_KEYBOARD_EditTextAdminPassword    51002
-#define ID_KEYBOARD_EditTextDoorPassword    51001
-#define ID_KEYBOARD_BtnConfirm    20015
-#define ID_KEYBOARD_WinPwdAdmin    110001
-#define ID_KEYBOARD_BtnCancel    20016
-#define ID_KEYBOARD_Textview2    50002
-#define ID_KEYBOARD_BtnBack    20012
-#define ID_KEYBOARD_Btn0    20013
-#define ID_KEYBOARD_BtnOK    20011
-#define ID_KEYBOARD_Btn7    20010
-#define ID_KEYBOARD_Btn9    20009
-#define ID_KEYBOARD_Btn8    20008
-#define ID_KEYBOARD_Btn4    20007
-#define ID_KEYBOARD_Btn6    20006
-#define ID_KEYBOARD_Btn5    20005
-#define ID_KEYBOARD_Btn3    20004
-#define ID_KEYBOARD_Btn2    20003
-#define ID_KEYBOARD_Btn1    20002
+#define ID_PLAN_SubItemCourse    20004
+#define ID_PLAN_SubItemClass    20005
+#define ID_PLAN_SubItemTeacher    20002
+#define ID_PLAN_SubItemTime    20001
+#define ID_PLAN_TextTitle    50006
+#define ID_PLAN_Textview5    50005
+#define ID_PLAN_Textview4    50004
+#define ID_PLAN_Textview3    50003
+#define ID_PLAN_Textview2    50002
+#define ID_PLAN_Textview1    50001
+#define ID_PLAN_List    80001
 /*TAG:Macro宏ID END*/
 
-class keyboardActivity : public Activity, 
+class planActivity : public Activity, 
                      public ZKSeekBar::ISeekBarChangeListener, 
                      public ZKListView::IItemClickListener,
                      public ZKListView::AbsListAdapter,
@@ -94,8 +49,8 @@ class keyboardActivity : public Activity,
                      public ZKVideoView::IVideoPlayerMessageListener
 {
 public:
-    keyboardActivity();
-    virtual ~keyboardActivity();
+    planActivity();
+    virtual ~planActivity();
 
     /**
      * 注册定时器

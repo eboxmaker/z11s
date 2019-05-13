@@ -152,12 +152,23 @@ bool JsonCmdManager::unPack(char* data,string& msg)
 //	  }
 //	  return StatusErr;
 //}
+#include <sys/types.h>
+#include <sys/sysinfo.h>
 
 string JsonCmdManager::makeHeartbeat(JsonStatus_t status)
 {
+	struct sysinfo systemInfo;
+	float memUsage;
+    char tempbuf[30];
+	sysinfo(&systemInfo);
+    memUsage = (1 - ((float)systemInfo.freeram/(float)systemInfo.totalram))*100;
+    sprintf(tempbuf,"%0.1f%%(%0.1fM/%0.1fM)",memUsage,\
+   		 systemInfo.freeram/1024.0/1024.0,\
+			 systemInfo.totalram/1024.0/1024.0);
+
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDHeartbeat);
-	  root["value"] = Json::Value("hello");
+	  root["value"] = Json::Value(tempbuf);
 	  root["status"] = Json::Value((int)status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
@@ -540,13 +551,17 @@ JsonStatus_t JsonCmdManager::parsePlan(string &js, Plan &plan)
 		if(status == StatusOK || status == StatusSet)
 		{
 			plan.clear();
+			LOGE("SIZE course_size = %d",course_size);
 			for(int i = 0; i < course_size; i++)
 			{
 				Plan::PlanRow_t row;
 
-				row.teacher = course[i]["teacher"].asString();
-				row.class_ = course[i]["class"].asString();
-				row.courser = course[i]["course"].asString();
+				row.uint	 	= course[i]["uint"].asString();
+				row.startTime 	= course[i]["startTime"].asString();
+				row.endTime 	= course[i]["endTime"].asString();
+				row.teacher 	= course[i]["teacher"].asString();
+				row.class_ 		= course[i]["class"].asString();
+				row.course	 	= course[i]["course"].asString();
 				gPlan.add(row);
 			}
 		}

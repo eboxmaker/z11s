@@ -277,6 +277,16 @@ static void onUI_show() {
 	mWindStatusNoticePtr->hideWnd();
     EASYUICONTEXT->showStatusBar();
 
+    string instruction;
+    instruction = "\
+1.输入人员ID，点击查询，确保查询成功。\n\n\
+2.点击录入指纹，左下角显示“请放手指”，将手指放在指纹模块上,并保持不动，提示：“录入1次成功”，再次按录入指纹按钮\
+提示：“录入2次成功”，第三次次按录入指纹按钮，提示：“录入指纹完成”，当前指纹则录入完成，若果出现失败，则\
+需要重新重复第二步\n\n\
+3.如果需要录入多个指纹，请重复第二步\n\n\
+4.点击“更新服务器指纹数据库”，则将该人员的指纹信息保存至服务器上。\
+失败请检查服务器连接状态。";
+    mEditInstructionPtr->setText(instruction);
 }
 
 /*
@@ -504,4 +514,7 @@ static bool onButtonClick_BtnGetIDFeature(ZKButton *pButton) {
 static bool onButtonClick_BtnPicture(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnPicture !!!\n");
     return false;
+}
+static void onEditTextChanged_EditInstruction(const std::string &text) {
+    //LOGD(" onEditTextChanged_ EditInstruction %s !!!\n", text.c_str());
 }

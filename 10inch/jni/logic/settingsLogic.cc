@@ -221,6 +221,7 @@ static void onUI_show() {
  */
 static void onUI_hide() {
 	EASYUICONTEXT->hideStatusBar();
+	LOGD("隐藏settings");
 }
 
 /*
@@ -229,6 +230,7 @@ static void onUI_hide() {
 static void onUI_quit() {
 	settingsCallback = NULL;
 	downloadEvent = NULL;
+	LOGD("注销settings");
 
 }
 

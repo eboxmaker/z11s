@@ -56,31 +56,6 @@ static LongClickListener longButtonClickListener;
 
 static string QRCodeFullName = "/mnt/extsd/qr/qr.jpg";
 
-
-static void clearPlanText()
-{
-
-	mTextTeacher1Ptr->setText("");
-	mTextClass1Ptr->setText("");
-	mTextCourse1Ptr->setText("");
-
-	mTextTeacher2Ptr->setText("");
-	mTextClass2Ptr->setText("");
-	mTextCourse2Ptr->setText("");
-
-
-	mTextTeacher3Ptr->setText("");
-	mTextClass3Ptr->setText("");
-	mTextCourse3Ptr->setText("");
-
-
-	mTextTeacher4Ptr->setText("");
-	mTextClass4Ptr->setText("");
-	mTextCourse4Ptr->setText("");
-
-}
-
-
 static void updateUI_time() {
 	char timeStr[20];
 	struct tm *t = TimeHelper::getDateTime();
@@ -276,43 +251,11 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 			//LOGE("MSG:%s",msg.c_str());
 		}
 		break;
-	case CMDPlan:
+	case CMDPlan://不需要执行
 		if(status == StatusOK)
 		{
-			clearPlanText();
-			gSocket->disableTriger();
-			mWindStatusNoticePtr->hideWnd();
-			LOGE("gplan size :%d",gPlan.size());
-			for(int i = 0; i < gPlan.size(); i++)
-			{
-				switch(i)
-				{
-				case 0:
-					mTextTeacher1Ptr->setText(gPlan.row[i].teacher);
-					mTextClass1Ptr->setText(gPlan.row[i].class_);
-					mTextCourse1Ptr->setText(gPlan.row[i].courser);
-					break;
-				case 1:
-					mTextTeacher2Ptr->setText(gPlan.row[i].teacher);
-					mTextClass2Ptr->setText(gPlan.row[i].class_);
-					mTextCourse2Ptr->setText(gPlan.row[i].courser);
-
-					break;
-				case 2:
-					mTextTeacher3Ptr->setText(gPlan.row[i].teacher);
-					mTextClass3Ptr->setText(gPlan.row[i].class_);
-					mTextCourse3Ptr->setText(gPlan.row[i].courser);
-
-					break;
-				case 3:
-					mTextTeacher4Ptr->setText(gPlan.row[i].teacher);
-					mTextClass4Ptr->setText(gPlan.row[i].class_);
-					mTextCourse4Ptr->setText(gPlan.row[i].courser);
-
-					break;
-				}
-			}
-			mWindPlanPtr->showWnd();
+//			LOGE("tirger :%d",gSocket->trigerTime);
+				gSocket->disableTriger();
 		}
 		break;
 	case CMDBroadcast:
@@ -381,7 +324,6 @@ static void onUI_show() {
 	EASYUICONTEXT->hideStatusBar();
 	mWindStatusNoticePtr->hideWnd();
 	mWinPwdAdminPtr->hideWnd();
-	mWindPlanPtr->hideWnd();
 	mWindAdminDoorPtr->hideWnd();
 	lastDoorState = gDoorState;
 	doorPwd.clear();
@@ -739,6 +681,8 @@ static bool onButtonClick_BtnPlan(ZKButton *pButton) {
 		gSocket->write_(str);
 	    gKeyboardLastActionTime = time(NULL);
 	    gSocket->updateTriger();
+		EASYUICONTEXT->openActivity("planActivity");
+
 	}
 	else
 	{
@@ -749,13 +693,7 @@ static bool onButtonClick_BtnPlan(ZKButton *pButton) {
 
     return false;
 }
-static bool onButtonClick_BtnExitPlan(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnExitPlan !!!\n");
-	mWindPlanPtr->hideWnd();
-    gKeyboardLastActionTime = time(NULL);
 
-    return false;
-}
 static bool onButtonClick_BtnQRCode(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnQRCode !!!\n");
     return false;

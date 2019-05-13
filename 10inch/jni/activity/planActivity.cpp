@@ -1,76 +1,27 @@
 /***********************************************
 /gen auto by zuitools
 ***********************************************/
-#include "keyboardActivity.h"
+#include "planActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
-static ZKTextView* mTextview7Ptr;
-static ZKTextView* mTextview5Ptr;
-static ZKButton* mBtnUnLockPtr;
-static ZKButton* mBtnLockPtr;
-static ZKButton* mBtnLockStatePtr;
-static ZKTextView* mTextview1Ptr;
-static ZKWindow* mWindAdminDoorPtr;
-static ZKButton* mBtnTecherPicturePtr;
-static ZKTextView* mTextCoursePtr;
-static ZKTextView* mTextClassPtr;
-static ZKTextView* mTextTecherNamePtr;
-static ZKTextView* mTextNumPtr;
-static ZKTextView* mTextview13Ptr;
-static ZKTextView* mTextBroadcastPtr;
-static ZKButton* mBtnBackMainPtr;
-static ZKWindow* mWindBroadcastPtr;
-static ZKButton* mButton5Ptr;
-static ZKButton* mButton4Ptr;
-static ZKButton* mButton3Ptr;
-static ZKButton* mButton2Ptr;
-static ZKButton* mButton1Ptr;
-static ZKTextView* mTextview12Ptr;
-static ZKTextView* mTextDoorStatePtr;
 static ZKTextView* mTextTitlePtr;
-static ZKButton* mBtnQRCodePtr;
-static ZKTextView* mTextStatusNotice2Ptr;
-static ZKTextView* mTextStatusNoticePtr;
-static ZKWindow* mWindStatusNoticePtr;
-static ZKButton* mBtnPlanPtr;
-static ZKTextView* mTextview8Ptr;
-static ZKTextView* mTextview6Ptr;
+static ZKTextView* mTextview5Ptr;
 static ZKTextView* mTextview4Ptr;
-static ZKWindow* mWindStatePtr;
-static ZKTextView* mTextWeekPtr;
-static ZKTextView* mTextTimePtr;
-static ZKTextView* mTextDatePtr;
-static ZKTextView* mTvConnectStatePtr;
 static ZKTextView* mTextview3Ptr;
-static ZKEditText* mEditTextAdminPasswordPtr;
-static ZKEditText* mEditTextDoorPasswordPtr;
-static ZKButton* mBtnConfirmPtr;
-static ZKWindow* mWinPwdAdminPtr;
-static ZKButton* mBtnCancelPtr;
 static ZKTextView* mTextview2Ptr;
-static ZKButton* mBtnBackPtr;
-static ZKButton* mBtn0Ptr;
-static ZKButton* mBtnOKPtr;
-static ZKButton* mBtn7Ptr;
-static ZKButton* mBtn9Ptr;
-static ZKButton* mBtn8Ptr;
-static ZKButton* mBtn4Ptr;
-static ZKButton* mBtn6Ptr;
-static ZKButton* mBtn5Ptr;
-static ZKButton* mBtn3Ptr;
-static ZKButton* mBtn2Ptr;
-static ZKButton* mBtn1Ptr;
-static keyboardActivity* mActivityPtr;
+static ZKTextView* mTextview1Ptr;
+static ZKListView* mListPtr;
+static planActivity* mActivityPtr;
 
 /*register activity*/
-REGISTER_ACTIVITY(keyboardActivity);
+REGISTER_ACTIVITY(planActivity);
 
 typedef struct {
 	int id; // 定时器ID ， 不能重复
 	int time; // 定时器  时间间隔  单位 毫秒
 }S_ACTIVITY_TIMEER;
 
-#include "logic/keyboardLogic.cc"
+#include "logic/planLogic.cc"
 
 /***********/
 typedef struct {
@@ -97,32 +48,6 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
-    ID_KEYBOARD_BtnUnLock, onButtonClick_BtnUnLock,
-    ID_KEYBOARD_BtnLock, onButtonClick_BtnLock,
-    ID_KEYBOARD_BtnLockState, onButtonClick_BtnLockState,
-    ID_KEYBOARD_BtnTecherPicture, onButtonClick_BtnTecherPicture,
-    ID_KEYBOARD_BtnBackMain, onButtonClick_BtnBackMain,
-    ID_KEYBOARD_Button5, onButtonClick_Button5,
-    ID_KEYBOARD_Button4, onButtonClick_Button4,
-    ID_KEYBOARD_Button3, onButtonClick_Button3,
-    ID_KEYBOARD_Button2, onButtonClick_Button2,
-    ID_KEYBOARD_Button1, onButtonClick_Button1,
-    ID_KEYBOARD_BtnQRCode, onButtonClick_BtnQRCode,
-    ID_KEYBOARD_BtnPlan, onButtonClick_BtnPlan,
-    ID_KEYBOARD_BtnConfirm, onButtonClick_BtnConfirm,
-    ID_KEYBOARD_BtnCancel, onButtonClick_BtnCancel,
-    ID_KEYBOARD_BtnBack, onButtonClick_BtnBack,
-    ID_KEYBOARD_Btn0, onButtonClick_Btn0,
-    ID_KEYBOARD_BtnOK, onButtonClick_BtnOK,
-    ID_KEYBOARD_Btn7, onButtonClick_Btn7,
-    ID_KEYBOARD_Btn9, onButtonClick_Btn9,
-    ID_KEYBOARD_Btn8, onButtonClick_Btn8,
-    ID_KEYBOARD_Btn4, onButtonClick_Btn4,
-    ID_KEYBOARD_Btn6, onButtonClick_Btn6,
-    ID_KEYBOARD_Btn5, onButtonClick_Btn5,
-    ID_KEYBOARD_Btn3, onButtonClick_Btn3,
-    ID_KEYBOARD_Btn2, onButtonClick_Btn2,
-    ID_KEYBOARD_Btn1, onButtonClick_Btn1,
 };
 /***************/
 
@@ -148,6 +73,7 @@ typedef struct {
 }S_ListViewFunctionsCallback;
 /*TAG:ListViewFunctionsCallback*/
 static S_ListViewFunctionsCallback SListViewFunctionsCallbackTab[] = {
+    ID_PLAN_List, getListItemCount_List, obtainListItemData_List, onListItemClick_List,
 };
 
 
@@ -168,8 +94,6 @@ typedef struct {
 }S_EditTextInputCallback;
 /*TAG:EditTextInputCallback*/
 static S_EditTextInputCallback SEditTextInputCallbackTab[] = {
-    ID_KEYBOARD_EditTextAdminPassword, onEditTextChanged_EditTextAdminPassword,
-    ID_KEYBOARD_EditTextDoorPassword, onEditTextChanged_EditTextDoorPassword,
 };
 
 typedef void (*VideoViewCallback)(ZKVideoView *pVideoView, int msg);
@@ -184,13 +108,13 @@ static S_VideoViewCallback SVideoViewCallbackTab[] = {
 };
 
 
-keyboardActivity::keyboardActivity() {
+planActivity::planActivity() {
 	//todo add init code here
 	mVideoLoopIndex = 0;
 	mVideoLoopErrorCount = 0;
 }
 
-keyboardActivity::~keyboardActivity() {
+planActivity::~planActivity() {
 	//todo add init file here
     // 退出应用时需要反注册
     EASYUICONTEXT->unregisterGlobalTouchListener(this);
@@ -198,76 +122,27 @@ keyboardActivity::~keyboardActivity() {
     unregisterProtocolDataUpdateListener(onProtocolDataUpdate);
 }
 
-const char* keyboardActivity::getAppName() const{
-	return "keyboard.ftu";
+const char* planActivity::getAppName() const{
+	return "plan.ftu";
 }
 
 //TAG:onCreate
-void keyboardActivity::onCreate() {
+void planActivity::onCreate() {
 	Activity::onCreate();
-    mTextview7Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview7);
-    mTextview5Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview5);
-    mBtnUnLockPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnUnLock);
-    mBtnLockPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnLock);
-    mBtnLockStatePtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnLockState);
-    mTextview1Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview1);
-    mWindAdminDoorPtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindAdminDoor);
-    mBtnTecherPicturePtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnTecherPicture);
-    mTextCoursePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextCourse);
-    mTextClassPtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextClass);
-    mTextTecherNamePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextTecherName);
-    mTextNumPtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextNum);
-    mTextview13Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview13);
-    mTextBroadcastPtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextBroadcast);
-    mBtnBackMainPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnBackMain);
-    mWindBroadcastPtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindBroadcast);
-    mButton5Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Button5);
-    mButton4Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Button4);
-    mButton3Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Button3);
-    mButton2Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Button2);
-    mButton1Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Button1);
-    mTextview12Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview12);
-    mTextDoorStatePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextDoorState);
-    mTextTitlePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextTitle);
-    mBtnQRCodePtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnQRCode);
-    mTextStatusNotice2Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextStatusNotice2);
-    mTextStatusNoticePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextStatusNotice);
-    mWindStatusNoticePtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindStatusNotice);
-    mBtnPlanPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnPlan);
-    mTextview8Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview8);
-    mTextview6Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview6);
-    mTextview4Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview4);
-    mWindStatePtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindState);
-    mTextWeekPtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextWeek);
-    mTextTimePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextTime);
-    mTextDatePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextDate);
-    mTvConnectStatePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TvConnectState);
-    mTextview3Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview3);
-    mEditTextAdminPasswordPtr = (ZKEditText*)findControlByID(ID_KEYBOARD_EditTextAdminPassword);if(mEditTextAdminPasswordPtr!= NULL){mEditTextAdminPasswordPtr->setTextChangeListener(this);}
-    mEditTextDoorPasswordPtr = (ZKEditText*)findControlByID(ID_KEYBOARD_EditTextDoorPassword);if(mEditTextDoorPasswordPtr!= NULL){mEditTextDoorPasswordPtr->setTextChangeListener(this);}
-    mBtnConfirmPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnConfirm);
-    mWinPwdAdminPtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WinPwdAdmin);
-    mBtnCancelPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnCancel);
-    mTextview2Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview2);
-    mBtnBackPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnBack);
-    mBtn0Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Btn0);
-    mBtnOKPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnOK);
-    mBtn7Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Btn7);
-    mBtn9Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Btn9);
-    mBtn8Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Btn8);
-    mBtn4Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Btn4);
-    mBtn6Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Btn6);
-    mBtn5Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Btn5);
-    mBtn3Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Btn3);
-    mBtn2Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Btn2);
-    mBtn1Ptr = (ZKButton*)findControlByID(ID_KEYBOARD_Btn1);
+    mTextTitlePtr = (ZKTextView*)findControlByID(ID_PLAN_TextTitle);
+    mTextview5Ptr = (ZKTextView*)findControlByID(ID_PLAN_Textview5);
+    mTextview4Ptr = (ZKTextView*)findControlByID(ID_PLAN_Textview4);
+    mTextview3Ptr = (ZKTextView*)findControlByID(ID_PLAN_Textview3);
+    mTextview2Ptr = (ZKTextView*)findControlByID(ID_PLAN_Textview2);
+    mTextview1Ptr = (ZKTextView*)findControlByID(ID_PLAN_Textview1);
+    mListPtr = (ZKListView*)findControlByID(ID_PLAN_List);if(mListPtr!= NULL){mListPtr->setListAdapter(this);mListPtr->setItemClickListener(this);}
 	mActivityPtr = this;
 	onUI_init();
     registerProtocolDataUpdateListener(onProtocolDataUpdate); 
     rigesterActivityTimer();
 }
 
-void keyboardActivity::onClick(ZKBase *pBase) {
+void planActivity::onClick(ZKBase *pBase) {
 	//TODO: add widget onClik code 
     int buttonTablen = sizeof(sButtonCallbackTab) / sizeof(S_ButtonCallback);
     for (int i = 0; i < buttonTablen; ++i) {
@@ -291,30 +166,30 @@ void keyboardActivity::onClick(ZKBase *pBase) {
 	Activity::onClick(pBase);
 }
 
-void keyboardActivity::onResume() {
+void planActivity::onResume() {
 	Activity::onResume();
 	EASYUICONTEXT->registerGlobalTouchListener(this);
 	startVideoLoopPlayback();
 	onUI_show();
 }
 
-void keyboardActivity::onPause() {
+void planActivity::onPause() {
 	Activity::onPause();
 	EASYUICONTEXT->unregisterGlobalTouchListener(this);
 	stopVideoLoopPlayback();
 	onUI_hide();
 }
 
-void keyboardActivity::onIntent(const Intent *intentPtr) {
+void planActivity::onIntent(const Intent *intentPtr) {
 	Activity::onIntent(intentPtr);
 	onUI_intent(intentPtr);
 }
 
-bool keyboardActivity::onTimer(int id) {
+bool planActivity::onTimer(int id) {
 	return onUI_Timer(id);
 }
 
-void keyboardActivity::onProgressChanged(ZKSeekBar *pSeekBar, int progress){
+void planActivity::onProgressChanged(ZKSeekBar *pSeekBar, int progress){
 
     int seekBarTablen = sizeof(SZKSeekBarCallbackTab) / sizeof(S_ZKSeekBarCallback);
     for (int i = 0; i < seekBarTablen; ++i) {
@@ -325,7 +200,7 @@ void keyboardActivity::onProgressChanged(ZKSeekBar *pSeekBar, int progress){
     }
 }
 
-int keyboardActivity::getListItemCount(const ZKListView *pListView) const{
+int planActivity::getListItemCount(const ZKListView *pListView) const{
     int tablen = sizeof(SListViewFunctionsCallbackTab) / sizeof(S_ListViewFunctionsCallback);
     for (int i = 0; i < tablen; ++i) {
         if (SListViewFunctionsCallbackTab[i].id == pListView->getID()) {
@@ -336,7 +211,7 @@ int keyboardActivity::getListItemCount(const ZKListView *pListView) const{
     return 0;
 }
 
-void keyboardActivity::obtainListItemData(ZKListView *pListView,ZKListView::ZKListItem *pListItem, int index){
+void planActivity::obtainListItemData(ZKListView *pListView,ZKListView::ZKListItem *pListItem, int index){
     int tablen = sizeof(SListViewFunctionsCallbackTab) / sizeof(S_ListViewFunctionsCallback);
     for (int i = 0; i < tablen; ++i) {
         if (SListViewFunctionsCallbackTab[i].id == pListView->getID()) {
@@ -346,7 +221,7 @@ void keyboardActivity::obtainListItemData(ZKListView *pListView,ZKListView::ZKLi
     }
 }
 
-void keyboardActivity::onItemClick(ZKListView *pListView, int index, int id){
+void planActivity::onItemClick(ZKListView *pListView, int index, int id){
     int tablen = sizeof(SListViewFunctionsCallbackTab) / sizeof(S_ListViewFunctionsCallback);
     for (int i = 0; i < tablen; ++i) {
         if (SListViewFunctionsCallbackTab[i].id == pListView->getID()) {
@@ -356,7 +231,7 @@ void keyboardActivity::onItemClick(ZKListView *pListView, int index, int id){
     }
 }
 
-void keyboardActivity::onSlideItemClick(ZKSlideWindow *pSlideWindow, int index) {
+void planActivity::onSlideItemClick(ZKSlideWindow *pSlideWindow, int index) {
     int tablen = sizeof(SSlideWindowItemClickCallbackTab) / sizeof(S_SlideWindowItemClickCallback);
     for (int i = 0; i < tablen; ++i) {
         if (SSlideWindowItemClickCallbackTab[i].id == pSlideWindow->getID()) {
@@ -366,11 +241,11 @@ void keyboardActivity::onSlideItemClick(ZKSlideWindow *pSlideWindow, int index) 
     }
 }
 
-bool keyboardActivity::onTouchEvent(const MotionEvent &ev) {
-    return onkeyboardActivityTouchEvent(ev);
+bool planActivity::onTouchEvent(const MotionEvent &ev) {
+    return onplanActivityTouchEvent(ev);
 }
 
-void keyboardActivity::onTextChanged(ZKTextView *pTextView, const std::string &text) {
+void planActivity::onTextChanged(ZKTextView *pTextView, const std::string &text) {
     int tablen = sizeof(SEditTextInputCallbackTab) / sizeof(S_EditTextInputCallback);
     for (int i = 0; i < tablen; ++i) {
         if (SEditTextInputCallbackTab[i].id == pTextView->getID()) {
@@ -380,7 +255,7 @@ void keyboardActivity::onTextChanged(ZKTextView *pTextView, const std::string &t
     }
 }
 
-void keyboardActivity::rigesterActivityTimer() {
+void planActivity::rigesterActivityTimer() {
     int tablen = sizeof(REGISTER_ACTIVITY_TIMER_TAB) / sizeof(S_ACTIVITY_TIMEER);
     for (int i = 0; i < tablen; ++i) {
         S_ACTIVITY_TIMEER temp = REGISTER_ACTIVITY_TIMER_TAB[i];
@@ -389,7 +264,7 @@ void keyboardActivity::rigesterActivityTimer() {
 }
 
 
-void keyboardActivity::onVideoPlayerMessage(ZKVideoView *pVideoView, int msg) {
+void planActivity::onVideoPlayerMessage(ZKVideoView *pVideoView, int msg) {
     int tablen = sizeof(SVideoViewCallbackTab) / sizeof(S_VideoViewCallback);
     for (int i = 0; i < tablen; ++i) {
         if (SVideoViewCallbackTab[i].id == pVideoView->getID()) {
@@ -404,7 +279,7 @@ void keyboardActivity::onVideoPlayerMessage(ZKVideoView *pVideoView, int msg) {
     }
 }
 
-void keyboardActivity::videoLoopPlayback(ZKVideoView *pVideoView, int msg, int callbackTabIndex) {
+void planActivity::videoLoopPlayback(ZKVideoView *pVideoView, int msg, int callbackTabIndex) {
 
 	switch (msg) {
 	case ZKVideoView::E_MSGTYPE_VIDEO_PLAY_STARTED:
@@ -441,7 +316,7 @@ void keyboardActivity::videoLoopPlayback(ZKVideoView *pVideoView, int msg, int c
 	}
 }
 
-void keyboardActivity::startVideoLoopPlayback() {
+void planActivity::startVideoLoopPlayback() {
     int tablen = sizeof(SVideoViewCallbackTab) / sizeof(S_VideoViewCallback);
     for (int i = 0; i < tablen; ++i) {
     	if (SVideoViewCallbackTab[i].loop) {
@@ -456,7 +331,7 @@ void keyboardActivity::startVideoLoopPlayback() {
     }
 }
 
-void keyboardActivity::stopVideoLoopPlayback() {
+void planActivity::stopVideoLoopPlayback() {
     int tablen = sizeof(SVideoViewCallbackTab) / sizeof(S_VideoViewCallback);
     for (int i = 0; i < tablen; ++i) {
     	if (SVideoViewCallbackTab[i].loop) {
@@ -472,7 +347,7 @@ void keyboardActivity::stopVideoLoopPlayback() {
     }
 }
 
-bool keyboardActivity::parseVideoFileList(const char *pFileListPath, std::vector<string>& mediaFileList) {
+bool planActivity::parseVideoFileList(const char *pFileListPath, std::vector<string>& mediaFileList) {
 	mediaFileList.clear();
 	if (NULL == pFileListPath || 0 == strlen(pFileListPath)) {
         LOGD("video file list is null!");
@@ -504,7 +379,7 @@ bool keyboardActivity::parseVideoFileList(const char *pFileListPath, std::vector
 	return true;
 }
 
-int keyboardActivity::removeCharFromString(string& nString, char c) {
+int planActivity::removeCharFromString(string& nString, char c) {
     string::size_type   pos;
     while(1) {
         pos = nString.find(c);
@@ -517,14 +392,14 @@ int keyboardActivity::removeCharFromString(string& nString, char c) {
     return (int)nString.size();
 }
 
-void keyboardActivity::registerUserTimer(int id, int time) {
+void planActivity::registerUserTimer(int id, int time) {
 	registerTimer(id, time);
 }
 
-void keyboardActivity::unregisterUserTimer(int id) {
+void planActivity::unregisterUserTimer(int id) {
 	unregisterTimer(id);
 }
 
-void keyboardActivity::resetUserTimer(int id, int time) {
+void planActivity::resetUserTimer(int id, int time) {
 	resetTimer(id, time);
 }
