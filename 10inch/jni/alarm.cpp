@@ -32,7 +32,7 @@ void AlarmClass::loop()
 	sprintf(timeBuf, "%02d:%02d",t->tm_hour, t->tm_min);
 	timeStr = timeBuf;
 	//LOGE("%s",timeStr);
-	if(t->tm_sec <= 5){
+	if(t->tm_sec <= 20){
 		ret = checkAlarm(timeStr, type);
 		if(ret == true){
 			play(type);

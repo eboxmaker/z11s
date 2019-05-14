@@ -17,7 +17,7 @@
 #include "door.h"
 #include "plan.h"
 #include "ad.h"
-
+#include "alarm.h"
 
 doorState_t gDoorState = Lock;
 
@@ -379,6 +379,7 @@ void exeCMD(string &package)
 			if(status == StatusSet)
 			{
 				string str = jm.makePlan(StatusOK);
+				myAlarm.syncPlan();
 				gSocket->write_(str);
 			}
 			break;

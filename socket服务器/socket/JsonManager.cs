@@ -531,8 +531,8 @@ namespace MyJson
             {
                 JObject jo = new JObject();
                 jo.Add("uint", "第" + i.ToString()+"单元");
-                jo.Add("startTime", "22:16");
-                jo.Add("endTime", "10:30");
+                jo.Add("startTime", "08:00");
+                jo.Add("endTime", "08:30");
                 jo.Add("teacher", name[i]);
                 jo.Add("class", class_[i]);
                 jo.Add("course", course[i]);
