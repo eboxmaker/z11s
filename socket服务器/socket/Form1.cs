@@ -5,11 +5,9 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using MyFun;
 using System.Net.Sockets;
-using System.Threading;
 using MyJson;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -539,7 +537,7 @@ namespace socket
         private void btnAdRead_Click(object sender, EventArgs e)
         {
             string str = JsonManager.MakeAdRead(JsonManager.StatusType.StatusSet);
-            server.SendAll(str);
+            //server.SendAll(str);
             server.Send(server.clients[0].TcpClient,str);
         }
 

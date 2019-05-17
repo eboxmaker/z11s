@@ -31,7 +31,7 @@
 *
 * 在Eclipse编辑器中  使用 “alt + /”  快捷键可以打开智能提示
 */
-
+#include "global.h"
 #include "door.h"
 #include "player.h"
 #include "alarm.h"
@@ -61,6 +61,7 @@ static LockData_t ListFeed1Data[] = {
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 	{0,  1000}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
+	{10,  GO_HOME_TIME},
 };
 
 /**
@@ -153,7 +154,11 @@ static bool onUI_Timer(int id){
 			mBtnLockStatePtr->setText("关 ");
 		}
 	    break;
-		default:
+	case 10:
+		EASYUICONTEXT->goHome();
+		isShowKeyboard = true;
+		break;
+	default:
 			break;
 	}
     return true;

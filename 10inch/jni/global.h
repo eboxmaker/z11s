@@ -22,9 +22,10 @@ using namespace std;
 
 
 
+#define GO_HOME_TIME 10*1000
 
 
-
+extern bool isShowKeyboard;
 
 extern Device_t dev;
 extern SocketClient* gSocket;

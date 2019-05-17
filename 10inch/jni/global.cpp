@@ -19,6 +19,9 @@
 #include "ad.h"
 #include "alarm.h"
 
+
+bool isShowKeyboard = true;
+
 doorState_t gDoorState = Lock;
 
 SocketClient* gSocket= new SocketClient();

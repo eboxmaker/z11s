@@ -30,16 +30,16 @@
 * 在Eclipse编辑器中  使用 “alt + /”  快捷键可以打开智能提示
 */
 
-static bool isFirstShow = true;
-
+#include "global.h"
 /**
  * 注册定时器
  * 填充数组用于注册定时器
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	{0,  1000}, //定时器id=0, 时间间隔6秒
+	//{0,  1000}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
+	{10,  GO_HOME_TIME},
 };
 
 /**
@@ -65,10 +65,10 @@ static void onUI_intent(const Intent *intentPtr) {
 static void onUI_show() {
 	EASYUICONTEXT->hideStatusBar();
 	LOGO("显示:main");
-	if(isFirstShow)
+	if(isShowKeyboard)
 	{
 		EASYUICONTEXT->openActivity("keyboardActivity");
-		isFirstShow =false;
+		isShowKeyboard  =false;
 	}
 
 }
@@ -111,8 +111,12 @@ static bool onUI_Timer(int id){
 	switch (id) {
 	case 0:
 		//dispMemUsage();
-		default:
-			break;
+		break;
+	case 10:
+		EASYUICONTEXT->openActivity("keyboardActivity");
+		break;
+	default:
+		break;
 	}
     return true;
 }
@@ -148,6 +152,5 @@ static void onSlideItemClick_Slidewindow1(ZKSlideWindow *pSlideWindow, int index
     //LOGD(" onSlideItemClick_ Slidewindow1 %d !!!\n", index);
 	if(index <= sizeof(IconTab)/sizeof(char*)){
 		EASYUICONTEXT->openActivity(IconTab[index]);
-		LOGD("%s",IconTab[index]);
 	}
 }

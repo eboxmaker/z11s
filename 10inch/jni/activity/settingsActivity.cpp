@@ -4,12 +4,18 @@
 #include "settingsActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKButton* mBtnDevEnablePtr;
+static ZKTextView* mTextview15Ptr;
+static ZKButton* mBtnStopPtr;
+static ZKButton* mButtonVolumeTestPtr;
+static ZKTextView* mTextVolumePtr;
+static ZKSeekBar* mSeekbarVolumePtr;
+static ZKTextView* mTextview11Ptr;
 static ZKWindow* mWindAdSetPtr;
 static ZKWindow* mWindLocalPwdPtr;
 static ZKButton* mBtnLocalPwdPtr;
 static ZKEditText* mEditAdNumPtr;
 static ZKTextView* mTextview16Ptr;
-static ZKTextView* mTextview15Ptr;
 static ZKTextView* mTextLightPtr;
 static ZKSeekBar* mSeekbarLightPtr;
 static ZKTextView* mTextview14Ptr;
@@ -95,6 +101,9 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_SETTINGS_BtnDevEnable, onButtonClick_BtnDevEnable,
+    ID_SETTINGS_BtnStop, onButtonClick_BtnStop,
+    ID_SETTINGS_ButtonVolumeTest, onButtonClick_ButtonVolumeTest,
     ID_SETTINGS_BtnLocalPwd, onButtonClick_BtnLocalPwd,
     ID_SETTINGS_BtnDownload, onButtonClick_BtnDownload,
     ID_SETTINGS_BtnOrgNameSet, onButtonClick_BtnOrgNameSet,
@@ -122,6 +131,7 @@ typedef struct {
 }S_ZKSeekBarCallback;
 /*TAG:SeekBarCallbackTab*/
 static S_ZKSeekBarCallback SZKSeekBarCallbackTab[] = {
+    ID_SETTINGS_SeekbarVolume, onProgressChanged_SeekbarVolume,
     ID_SETTINGS_SeekbarLight, onProgressChanged_SeekbarLight,
     ID_SETTINGS_SeekbarMemUsage, onProgressChanged_SeekbarMemUsage,
 };
@@ -203,12 +213,18 @@ const char* settingsActivity::getAppName() const{
 //TAG:onCreate
 void settingsActivity::onCreate() {
 	Activity::onCreate();
+    mBtnDevEnablePtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnDevEnable);
+    mTextview15Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview15);
+    mBtnStopPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnStop);
+    mButtonVolumeTestPtr = (ZKButton*)findControlByID(ID_SETTINGS_ButtonVolumeTest);
+    mTextVolumePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextVolume);
+    mSeekbarVolumePtr = (ZKSeekBar*)findControlByID(ID_SETTINGS_SeekbarVolume);if(mSeekbarVolumePtr!= NULL){mSeekbarVolumePtr->setSeekBarChangeListener(this);}
+    mTextview11Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview11);
     mWindAdSetPtr = (ZKWindow*)findControlByID(ID_SETTINGS_WindAdSet);
     mWindLocalPwdPtr = (ZKWindow*)findControlByID(ID_SETTINGS_WindLocalPwd);
     mBtnLocalPwdPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnLocalPwd);
     mEditAdNumPtr = (ZKEditText*)findControlByID(ID_SETTINGS_EditAdNum);if(mEditAdNumPtr!= NULL){mEditAdNumPtr->setTextChangeListener(this);}
     mTextview16Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview16);
-    mTextview15Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview15);
     mTextLightPtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextLight);
     mSeekbarLightPtr = (ZKSeekBar*)findControlByID(ID_SETTINGS_SeekbarLight);if(mSeekbarLightPtr!= NULL){mSeekbarLightPtr->setSeekBarChangeListener(this);}
     mTextview14Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview14);

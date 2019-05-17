@@ -32,7 +32,7 @@ typedef struct {
 
 	int	   heartbeatInterval;
 
-
+	int	 volume;
 	bool confirmState;
 	bool enable;
 }Device_t;

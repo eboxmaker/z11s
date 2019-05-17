@@ -26,12 +26,18 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_SETTINGS_BtnDevEnable    20019
+#define ID_SETTINGS_Textview15    50023
+#define ID_SETTINGS_BtnStop    20018
+#define ID_SETTINGS_ButtonVolumeTest    20016
+#define ID_SETTINGS_TextVolume    50025
+#define ID_SETTINGS_SeekbarVolume    91002
+#define ID_SETTINGS_Textview11    50009
 #define ID_SETTINGS_WindAdSet    110002
 #define ID_SETTINGS_WindLocalPwd    110001
 #define ID_SETTINGS_BtnLocalPwd    20005
 #define ID_SETTINGS_EditAdNum    51010
 #define ID_SETTINGS_Textview16    50024
-#define ID_SETTINGS_Textview15    50023
 #define ID_SETTINGS_TextLight    50022
 #define ID_SETTINGS_SeekbarLight    91001
 #define ID_SETTINGS_Textview14    50021

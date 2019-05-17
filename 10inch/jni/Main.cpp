@@ -24,7 +24,7 @@ extern "C" {
 static void *MainLoop(void *lParam);
 static void LoadParament()
 {
-	dev.enable = true;
+	dev.enable = StoragePreferences::getBool("dev.enable", true);
     dev.confirmState = false;
 
     dev.id = jm.getID();
@@ -39,6 +39,7 @@ static void LoadParament()
 
     dev.heartbeatInterval = StoragePreferences::getInt("dev.heartbeatInterval", 5);
 
+    dev.volume =  StoragePreferences::getInt("dev.volume", 5);
 
 
     make_dir(PIC_DIR);
@@ -175,7 +176,7 @@ static void *MainLoop(void *lParam)
 	Thread::sleep(1000);
 
 	sPlayer.setPlayerMessageListener(&myAlarm);
-	sPlayer.setVolume(0.5, 0.5);
+	sPlayer.setVolume(10,10);
 	while(1)
 	{
 		if(dev.enable)

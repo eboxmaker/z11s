@@ -168,7 +168,8 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 	{0,  1000}, //定时器id=0, 时间间隔6秒
-	//{1,  1000},
+	{1,  3000},
+	{10, GO_HOME_TIME},
 };
 
 /**
@@ -194,12 +195,14 @@ static void onUI_intent(const Intent *intentPtr) {
  */
 static void onUI_show() {
     EASYUICONTEXT->showStatusBar();
-
-    updateDisp();
-
-
     mWindLocalPwdPtr->hideWnd();
     mWindAdSetPtr->hideWnd();
+    updateDisp();
+
+	if(dev.enable == true)
+		mBtnDevEnablePtr->setBackgroundPic("kai.png");
+	else
+		mBtnDevEnablePtr->setBackgroundPic("guan.png");
 
 
 	if(gSocket->connected())
@@ -211,6 +214,9 @@ static void onUI_show() {
 	//
 	mSeekbarLightPtr->setProgress(BRIGHTNESSHELPER->getBrightness());
 	mTextLightPtr->setText(BRIGHTNESSHELPER->getBrightness());
+	mSeekbarVolumePtr->setProgress(dev.volume);
+	mTextVolumePtr->setText(dev.volume);
+
 //	mSeekbarMemUsagePtr->setProgress(gMemUsage);
 //	sprintf(temp,"%0.1f%%",gMemUsage);
 //	mTextMemUsagePtr->setText(temp);
@@ -258,7 +264,6 @@ static bool onUI_Timer(int id){
 	float memUsage;
 	switch (id) {
 	case 0:
-
 	     sysinfo(&systemInfo);
 	     char temp[30];
 	     memUsage = (1 - ((float)systemInfo.freeram/(float)systemInfo.totalram))*100;
@@ -268,6 +273,26 @@ static bool onUI_Timer(int id){
 	     mSeekbarMemUsagePtr->setProgress(memUsage);
 	     mTextMemUsagePtr->setText(temp);
 	     break;
+	case 1:
+		if(dev.enable == true)
+			mBtnDevEnablePtr->setBackgroundPic("kai.png");
+		else
+			mBtnDevEnablePtr->setBackgroundPic("guan.png");
+
+
+		if(gSocket->connected())
+			mBtnServerStatePtr->setBackgroundPic("kai.png");
+		else
+			mBtnServerStatePtr->setBackgroundPic("guan.png");
+
+		mSeekbarLightPtr->setProgress(BRIGHTNESSHELPER->getBrightness());
+		mTextLightPtr->setText(BRIGHTNESSHELPER->getBrightness());
+		mSeekbarVolumePtr->setProgress(dev.volume);
+		mTextVolumePtr->setText(dev.volume);
+	case 10:
+		EASYUICONTEXT->goHome();
+		isShowKeyboard = true;
+		break;
 		default:
 			break;
 	}
@@ -586,10 +611,27 @@ static bool onButtonClick_BtnDevNameSet(ZKButton *pButton) {
     }
     return false;
 }
+static bool onButtonClick_BtnDevEnable(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnDevEnable !!!\n");
+	dev.enable = !dev.enable;
+	StoragePreferences::putBool("dev.enable", dev.enable);
 
+	if(dev.enable == true)
+		mBtnDevEnablePtr->setBackgroundPic("kai.png");
+	else{
+		gSocket->disconnect();
+		mBtnDevEnablePtr->setBackgroundPic("guan.png");
+
+	}
+
+	if(gSocket->connected())
+		mBtnServerStatePtr->setBackgroundPic("kai.png");
+	else
+		mBtnServerStatePtr->setBackgroundPic("guan.png");
+    return false;
+}
 static bool onButtonClick_BtnServerState(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnServerState !!!\n");
-	dev.enable = true;
     return false;
 }
 
@@ -694,3 +736,34 @@ static bool onButtonClick_BtnUnLock(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnUnLock !!!\n");
     return false;
 }
+static void onProgressChanged_SeekbarVolume(ZKSeekBar *pSeekBar, int progress) {
+    //LOGD(" ProgressChanged SeekbarVolume %d !!!\n", progress);
+	sPlayer.setVolume((float) progress / 10, (float) progress / 10);
+	mTextVolumePtr->setText(progress);
+	dev.volume = progress;
+	StoragePreferences::putInt("dev.volume", dev.volume);
+}
+static bool onButtonClick_ButtonVolumeTest(ZKButton *pButton) {
+    //LOGD(" ButtonClick ButtonVolumeTest !!!\n");
+
+	sPlayer.setVolume((float)dev.volume/10,(float)dev.volume/10);
+	if (!sIsPlayOK) {
+		LOGD(" OK !!!\n");
+		sPlayer.play("/mnt/extsd/test.mp3");
+
+	} else {
+		sPlayer.resume();
+		LOGD(" failed !!!\n");
+	}
+	sPlayer.setVolume((float)dev.volume/10,(float)dev.volume/10);
+	LOGE("volume=%0.2f",(float)dev.volume/10);
+
+	return false;
+}
+static bool onButtonClick_BtnStop(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnStop !!!\n");
+	sPlayer.stop();
+	sIsPlayOK = false;
+	return false;
+}
+

@@ -302,7 +302,6 @@ static void onUI_init(){
     keyboardCallback = onNetWrokDataUpdate;
     mTextStatusNoticePtr->setText("提示：...");
 	mBtnQRCodePtr->setBackgroundPic(QRCodeFullName.c_str());
-    gKeyboardLastActionTime = time(NULL);
     mBtnBackPtr->setLongClickListener(&longButtonClickListener);
     finger.getFeatures();
 }
@@ -400,6 +399,12 @@ static void adLoop()
 	string cAppName;
 	long  timeNow;
 	timeNow = time(NULL);
+	string cApp = EASYUICONTEXT->currentAppName();
+	string target = "keyboardActivity";
+	if(cApp != "keyboardActivity")
+	{
+		return;
+	}
 
 	if(gAdv.enable && (gAdv.dbList.size() > 0))
 	{
@@ -422,7 +427,6 @@ static void adLoop()
 		//LOGE("enable:%d,ad size:%d,TIME:%D",gAdv.enable,\
 				gAdv.list.size(),\
 				timeNow - gKeyboardLastActionTime);
-
 	}
 }
 /**
@@ -454,7 +458,7 @@ static bool onUI_Timer(int id){
 		adLoop();
 		//dispMemUsage();
 		break;
-		default:
+	default:
 			break;
 	}
     return true;
@@ -481,6 +485,7 @@ static bool onkeyboardActivityTouchEvent(const MotionEvent &ev) {
 		default:
 			break;
 	}
+    gKeyboardLastActionTime = time(NULL);
 	return false;
 }
 
@@ -488,7 +493,6 @@ static bool onButtonClick_Btn0(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn0 !!!\n");
 	doorPwd.append("0");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
-    gKeyboardLastActionTime = time(NULL);
 
     return false;
 }
@@ -496,7 +500,6 @@ static bool onButtonClick_Btn1(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn1 !!!\n");
 	doorPwd.append("1");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
-    gKeyboardLastActionTime = time(NULL);
 	return false;
 }
 
@@ -504,7 +507,6 @@ static bool onButtonClick_Btn2(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn2 !!!\n");
 	doorPwd.append("2");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
-    gKeyboardLastActionTime = time(NULL);
    return false;
 }
 
@@ -512,7 +514,7 @@ static bool onButtonClick_Btn3(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn3 !!!\n");
 	doorPwd.append("3");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
-    gKeyboardLastActionTime = time(NULL);
+
     return false;
 }
 
@@ -520,7 +522,7 @@ static bool onButtonClick_Btn4(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn4 !!!\n");
 	doorPwd.append("4");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
-    gKeyboardLastActionTime = time(NULL);
+
     return false;
 }
 
@@ -528,7 +530,7 @@ static bool onButtonClick_Btn5(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn5 !!!\n");
 	doorPwd.append("5");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
-    gKeyboardLastActionTime = time(NULL);
+
     return false;
 }
 
@@ -536,7 +538,7 @@ static bool onButtonClick_Btn6(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn6 !!!\n");
 	doorPwd.append("6");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
-    gKeyboardLastActionTime = time(NULL);
+
   return false;
 }
 
@@ -544,7 +546,7 @@ static bool onButtonClick_Btn7(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn7 !!!\n");
 	doorPwd.append("7");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
-    gKeyboardLastActionTime = time(NULL);
+
     return false;
 }
 
@@ -552,7 +554,7 @@ static bool onButtonClick_Btn8(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn8 !!!\n");
 	doorPwd.append("8");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
-    gKeyboardLastActionTime = time(NULL);
+
     return false;
 }
 
@@ -561,7 +563,7 @@ static bool onButtonClick_Btn9(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn9 !!!\n");
 	doorPwd.append("9");
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
-    gKeyboardLastActionTime = time(NULL);
+
     return false;
 }
 
@@ -594,7 +596,7 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 	}
 	doorPwd.clear();
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
-    gKeyboardLastActionTime = time(NULL);
+
     return false;
 }
 
@@ -602,7 +604,7 @@ static bool onButtonClick_BtnBack(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnBackUp !!!\n");
 	doorPwd = doorPwd.substr(0, doorPwd.length() - 1);
 	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
-    gKeyboardLastActionTime = time(NULL);
+
     return false;
 }
 
@@ -611,7 +613,7 @@ static bool onButtonClick_BtnBack(ZKButton *pButton) {
 static bool onButtonClick_BtnCancel(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnCancel !!!\n");
 	mWinPwdAdminPtr->hideWnd();
-    gKeyboardLastActionTime = time(NULL);
+
     return false;
 }
 static void onEditTextChanged_EdittextPassword(const std::string &text) {
@@ -632,7 +634,7 @@ static bool onButtonClick_BtnConfirm(ZKButton *pButton) {
 		mTextStatusNoticePtr->setText("管理员密码错误");
 		LOGE("管理员密码：%s",dev.pwdLocal.c_str());
 	}
-    gKeyboardLastActionTime = time(NULL);
+
 	return false;
 
 }
@@ -660,7 +662,7 @@ static bool onButtonClick_BtnBackMain(ZKButton *pButton) {
 
 	//WindInAdminPwd->showWnd();
 	mWinPwdAdminPtr->showWnd();
-    gKeyboardLastActionTime = time(NULL);
+
 	return false;
 }
 static bool onButtonClick_BtnBackMain2(ZKButton *pButton) {
@@ -668,7 +670,7 @@ static bool onButtonClick_BtnBackMain2(ZKButton *pButton) {
 
 	//WindInAdminPwd->showWnd();
 	mWinPwdAdminPtr->showWnd();
-    gKeyboardLastActionTime = time(NULL);
+
 	return false;}
 
 static bool onButtonClick_BtnPlan(ZKButton *pButton) {
@@ -679,7 +681,7 @@ static bool onButtonClick_BtnPlan(ZKButton *pButton) {
 		mTextStatusNoticePtr->setText("正在获取课程表");
 		string str = jm.makePlan(StatusRead);
 		gSocket->write_(str);
-	    gKeyboardLastActionTime = time(NULL);
+
 	    gSocket->updateTriger();
 		EASYUICONTEXT->openActivity("planActivity");
 
@@ -734,7 +736,7 @@ static bool onButtonClick_BtnLockState(ZKButton *pButton) {
 
 static bool onButtonClick_BtnLock(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnLock !!!\n");
-    gKeyboardLastActionTime = time(NULL);
+
 	door.set(Lock);
 	if(door.get() == UnLock)
 	{
@@ -752,7 +754,7 @@ static bool onButtonClick_BtnLock(ZKButton *pButton) {
 static bool onButtonClick_BtnUnLock(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnUnLock !!!\n");
     //LOGD(" ButtonClick BtnUnLock !!!\n");
-    gKeyboardLastActionTime = time(NULL);
+
 	door.set(UnLock);
 	if(door.get() == UnLock)
 	{
