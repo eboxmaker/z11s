@@ -39,7 +39,7 @@
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 	//{0,  1000}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
-	{10,  GO_HOME_TIME},
+//	{10,  GO_HOME_TIME},
 };
 
 /**
@@ -112,9 +112,9 @@ static bool onUI_Timer(int id){
 	case 0:
 		//dispMemUsage();
 		break;
-	case 10:
-		EASYUICONTEXT->openActivity("keyboardActivity");
-		break;
+//	case 10:
+//		EASYUICONTEXT->openActivity("keyboardActivity");
+//		break;
 	default:
 		break;
 	}

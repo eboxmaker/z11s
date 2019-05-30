@@ -169,7 +169,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 	{0,  1000}, //定时器id=0, 时间间隔6秒
 	{1,  3000},
-	{10, GO_HOME_TIME},
+//	{10, GO_HOME_TIME},
 };
 
 /**
@@ -289,10 +289,10 @@ static bool onUI_Timer(int id){
 		mTextLightPtr->setText(BRIGHTNESSHELPER->getBrightness());
 		mSeekbarVolumePtr->setProgress(dev.volume);
 		mTextVolumePtr->setText(dev.volume);
-	case 10:
-		EASYUICONTEXT->goHome();
-		isShowKeyboard = true;
-		break;
+//	case 10:
+//		EASYUICONTEXT->goHome();
+//		isShowKeyboard = true;
+//		break;
 		default:
 			break;
 	}

@@ -37,6 +37,7 @@ static void updateUI_time() {
 	sprintf(timeStr, "%d年%02d月%02d日", 1900 + t->tm_year, t->tm_mon + 1, t->tm_mday);
 	mTextDatePtr->setText(timeStr); // 注意修改控件名称
 
+
 	static const char *day[] = { "日", "一", "二", "三", "四", "五", "六" };
 	sprintf(timeStr, "星期%s", day[t->tm_wday]);
 	mTextWeekPtr->setText(timeStr); // 注意修改控件名称

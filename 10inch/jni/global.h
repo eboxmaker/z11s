@@ -22,9 +22,8 @@ using namespace std;
 
 
 
-#define GO_HOME_TIME 10*1000
-
-
+//60s后自动进入keyboard页面
+//#define GO_HOME_TIME 60*1000
 extern bool isShowKeyboard;
 
 extern Device_t dev;

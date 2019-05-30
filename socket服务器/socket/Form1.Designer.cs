@@ -409,6 +409,7 @@
             this.btnDeletAdPic.Text = "删除广告文件";
             this.btnDeletAdPic.UseVisualStyleBackColor = true;
             this.btnDeletAdPic.Click += new System.EventHandler(this.btnDeletAdPic_Click);
+            this.btnDeletAdPic.MouseUp += new System.Windows.Forms.MouseEventHandler(this.btnDeletAdPic_MouseUp);
             // 
             // btnSetHeartbeatInterval
             // 

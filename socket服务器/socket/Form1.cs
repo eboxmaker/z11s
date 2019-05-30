@@ -536,6 +536,7 @@ namespace socket
 
         private void btnAdRead_Click(object sender, EventArgs e)
         {
+            
             string str = JsonManager.MakeAdRead(JsonManager.StatusType.StatusSet);
             //server.SendAll(str);
             server.Send(server.clients[0].TcpClient,str);
@@ -551,6 +552,11 @@ namespace socket
         {
             string str = JsonManager.MakePlan2(JsonManager.StatusType.StatusSet);
             server.SendAll(str);
+        }
+
+        private void btnDeletAdPic_MouseUp(object sender, MouseEventArgs e)
+        {
+
         }
         
 
