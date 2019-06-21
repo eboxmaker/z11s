@@ -109,6 +109,7 @@ private:
 	unsigned int counter;
 	exeState_t exeState;
 	long lastCmdTime;
+	bool is_requesting_finger;
 
 
 };

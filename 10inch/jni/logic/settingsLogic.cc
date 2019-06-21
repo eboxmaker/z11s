@@ -45,9 +45,8 @@
 
 static void updateAdSetWind()
 {
-	gAdv.enable = StoragePreferences::getBool("gAdv.enable", gAdv.enable);
-	gAdv.idleTime = StoragePreferences::getInt("gAdv.idleTime", gAdv.idleTime);
-	if(gAdv.enable == true)
+
+	if(gAdv.get_enable() == true)
 	{
 		mBtnAdEnablePtr->setBackgroundPic("kai.png"); // @suppress("Symbol is not resolved")
 	}
@@ -56,10 +55,7 @@ static void updateAdSetWind()
 		mBtnAdEnablePtr->setBackgroundPic("guan.png");
 	}
 
-	char buf[10];
-	memset(buf,0,10);
-	itoa(gAdv.idleTime,buf);
-	mEditDisplayAdAfterTimePtr->setText(buf);
+	mEditDisplayAdAfterTimePtr->setText(gAdv.get_idleTime());
 
 }
 
@@ -199,7 +195,7 @@ static void onUI_show() {
     mWindAdSetPtr->hideWnd();
     updateDisp();
 
-	if(dev.enable == true)
+	if(dev.get_enable() == true)
 		mBtnDevEnablePtr->setBackgroundPic("kai.png");
 	else
 		mBtnDevEnablePtr->setBackgroundPic("guan.png");
@@ -214,8 +210,8 @@ static void onUI_show() {
 	//
 	mSeekbarLightPtr->setProgress(BRIGHTNESSHELPER->getBrightness());
 	mTextLightPtr->setText(BRIGHTNESSHELPER->getBrightness());
-	mSeekbarVolumePtr->setProgress(dev.volume);
-	mTextVolumePtr->setText(dev.volume);
+	mSeekbarVolumePtr->setProgress(dev.get_volume());
+	mTextVolumePtr->setText(dev.get_volume());
 
 //	mSeekbarMemUsagePtr->setProgress(gMemUsage);
 //	sprintf(temp,"%0.1f%%",gMemUsage);
@@ -274,7 +270,7 @@ static bool onUI_Timer(int id){
 	     mTextMemUsagePtr->setText(temp);
 	     break;
 	case 1:
-		if(dev.enable == true)
+		if(dev.get_enable() == true)
 			mBtnDevEnablePtr->setBackgroundPic("kai.png");
 		else
 			mBtnDevEnablePtr->setBackgroundPic("guan.png");
@@ -287,8 +283,8 @@ static bool onUI_Timer(int id){
 
 		mSeekbarLightPtr->setProgress(BRIGHTNESSHELPER->getBrightness());
 		mTextLightPtr->setText(BRIGHTNESSHELPER->getBrightness());
-		mSeekbarVolumePtr->setProgress(dev.volume);
-		mTextVolumePtr->setText(dev.volume);
+		mSeekbarVolumePtr->setProgress(dev.get_volume());
+		mTextVolumePtr->setText(dev.get_volume());
 //	case 10:
 //		EASYUICONTEXT->goHome();
 //		isShowKeyboard = true;
@@ -336,7 +332,7 @@ static bool onButtonClick_BtnServer(ZKButton *pButton) {
 
 	tempServerIP = mEditTextServerIPPtr->getText();
 	tempServerPort = atoi(mEditTextServerPortPtr->getText().c_str());
-	if((tempServerIP == dev.serverIP ) && (tempServerPort == dev.serverPort))
+	if((tempServerIP == dev.get_serverIP() ) && (tempServerPort == dev.get_serverPort()))
 	{
 	    mTextStatusNoticePtr->setText("无更改");
 	    mTextStatusNotice2Ptr->setText("");
@@ -344,11 +340,9 @@ static bool onButtonClick_BtnServer(ZKButton *pButton) {
 		return true;
 	}
 
-	dev.serverIP = tempServerIP;
-	dev.serverPort = tempServerPort;
+	dev.set_serverIP(tempServerIP);
+	dev.set_serverPort(tempServerPort);
 
-	StoragePreferences::putString("dev.serverIP", dev.serverIP.c_str());
-	StoragePreferences::putInt("dev.serverPort", dev.serverPort);
 
     mTextStatusNoticePtr->setText("设置成功！");
     mTextStatusNotice2Ptr->setText("");
@@ -383,14 +377,13 @@ static void onEditTextChanged_EdittextNewAdminPwd2(const std::string &text) {
 static bool onButtonClick_BtnOK(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnOK !!!\n");
 	string temp = mEdittextOldAdminPwdPtr->getText();
-	dev.pwdLocal = StoragePreferences::getString("dev.pwdLocal", "123456");
     mWindStatusNoticePtr->showWnd();
-	if(temp == dev.pwdLocal)
+	if(temp == dev.get_pwdLocal())
 	{
 		if(mEdittextNewAdminPwd1Ptr->getText() == mEdittextNewAdminPwd2Ptr->getText())
 		{
-			dev.pwdLocal = mEdittextNewAdminPwd1Ptr->getText();
-		    StoragePreferences::putString("dev.pwdLocal", dev.pwdLocal.c_str());
+			dev.set_pwdLocal(mEdittextNewAdminPwd1Ptr->getText());// = StoragePreferences::getString("dev.pwdLocal", "123456");
+
 		   // mWndModifyAdminPwdPtr->hideWnd();
 		    mTextStatusNoticePtr->setText("修改成功");
 		    mTextStatusNotice2Ptr->setText("");
@@ -399,7 +392,7 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 		    {
 				mTextStatusNoticePtr->setText("等待同步设置服务器");
 			    string str ;
-			    str = jm.makeLocalPwd(dev.pwdLocal,StatusSet);
+			    str = jm.makeLocalPwd(dev.get_pwdLocal(),StatusSet);
 				gSocket->write_(str);
 			    gSocket->updateTriger();
 		    }
@@ -500,14 +493,9 @@ static void onEditTextChanged_EditDisplayAdAfterTime(const std::string &text) {
     //LOGD(" onEditTextChanged_ EditDisplayAdAfterTime %s !!!\n", text.c_str());
 	string str = mEditDisplayAdAfterTimePtr->getText();
 	int temp = atoi(str.c_str());
-	if(temp > 100)
-		temp = 100;
-	else if(temp <= 10)
-		temp = 10;
-	else
-	{
+	if(temp > 1000)		temp = 1000;
+	if(temp <= 10)		temp = 10;
 
-	}
 	mEditDisplayAdAfterTimePtr->setText(temp);
 
 }
@@ -517,10 +505,8 @@ static bool onButtonClick_BtnAdOK(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnAdOK !!!\n");
 	string str = mEditDisplayAdAfterTimePtr->getText();
 	int temp = atoi(str.c_str());
-	gAdv.idleTime = temp;
-
-    StoragePreferences::putBool("gAdv.enable", gAdv.enable);
-    StoragePreferences::putInt("gAdv.idleTime", gAdv.idleTime);
+	gAdv.set_idleTime(temp);
+	gAdv.set_enable(gAdv.get_enable());
 
     if(gSocket->connected())
     {
@@ -549,15 +535,15 @@ static bool onButtonClick_BtnAdCancel(ZKButton *pButton) {
 }
 static bool onButtonClick_BtnAdEnable(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnAdEnable !!!\n");
-	if(gAdv.enable == true)
+	if(gAdv.get_enable() == true)
 	{
 		mBtnAdEnablePtr->setBackgroundPic("guan.png");
-		gAdv.enable = false;
+		gAdv.set_enable_temp( false);
 	}
 	else
 	{
 		mBtnAdEnablePtr->setBackgroundPic("kai.png");
-		gAdv.enable = true;
+		gAdv.set_enable_temp(true);
 	}
     return false;
 }
@@ -590,8 +576,8 @@ static bool onButtonClick_BtnOrgNameSet(ZKButton *pButton) {
 static bool onButtonClick_BtnDevNameSet(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnNameSet !!!\n");
 	string temp;
-	dev.name = mEditDevNamePtr->getText();
-    StoragePreferences::putString("dev.name", dev.name);
+	dev.set_name(mEditDevNamePtr->getText());
+
     if(gSocket->connected())
     {
         mWindStatusNoticePtr->showWnd();
@@ -600,7 +586,7 @@ static bool onButtonClick_BtnDevNameSet(ZKButton *pButton) {
 
     	gSocket->updateTriger();
     	string msg;
-    	msg = jm.makeDevName(dev.name, StatusSet);
+    	msg = jm.makeDevName(dev.get_name(), StatusSet);
 		gSocket->write_(msg);
     }
     else
@@ -612,11 +598,10 @@ static bool onButtonClick_BtnDevNameSet(ZKButton *pButton) {
     return false;
 }
 static bool onButtonClick_BtnDevEnable(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnDevEnable !!!\n");
-	dev.enable = !dev.enable;
-	StoragePreferences::putBool("dev.enable", dev.enable);
+//    LOGD(" ButtonClick BtnDevEnable (%d%d)!!!\n",dev.get_enable(),!dev.get_enable());
+	dev.set_enable(!dev.get_enable());
 
-	if(dev.enable == true)
+	if(dev.get_enable() == true)
 		mBtnDevEnablePtr->setBackgroundPic("kai.png");
 	else{
 		gSocket->disconnect();
@@ -648,11 +633,8 @@ static bool onButtonClick_BtnSetHeartbeat(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnNameSet !!!\n");
 	int temp;
 	temp = atoi(mEditHeartbeatPtr->getText().c_str());
-	if(temp>0 && temp < 100)
-	{
-		dev.heartbeatInterval = temp;
-	    StoragePreferences::putInt("dev.heartbeatInterval", dev.heartbeatInterval);
-	}
+
+	dev.set_heartbeatInterval(temp);// = temp;
     if(gSocket->connected())
     {
         mWindStatusNoticePtr->showWnd();
@@ -661,7 +643,7 @@ static bool onButtonClick_BtnSetHeartbeat(ZKButton *pButton) {
 
     	gSocket->updateTriger();
     	string msg;
-    	msg = jm.makeSetHeartbeat(dev.heartbeatInterval, StatusSet);
+    	msg = jm.makeSetHeartbeat(dev.get_heartbeatInterval(), StatusSet);
 		gSocket->write_(msg);
     }
     else
@@ -740,13 +722,12 @@ static void onProgressChanged_SeekbarVolume(ZKSeekBar *pSeekBar, int progress) {
     //LOGD(" ProgressChanged SeekbarVolume %d !!!\n", progress);
 	sPlayer.setVolume((float) progress / 10, (float) progress / 10);
 	mTextVolumePtr->setText(progress);
-	dev.volume = progress;
-	StoragePreferences::putInt("dev.volume", dev.volume);
+	dev.set_volume(progress);//
 }
 static bool onButtonClick_ButtonVolumeTest(ZKButton *pButton) {
     //LOGD(" ButtonClick ButtonVolumeTest !!!\n");
 
-	sPlayer.setVolume((float)dev.volume/10,(float)dev.volume/10);
+	sPlayer.setVolume((float)dev.get_volume()/10,(float)dev.get_volume()/10);
 	if (!sIsPlayOK) {
 		LOGD(" OK !!!\n");
 		sPlayer.play("/mnt/extsd/test.mp3");
@@ -755,8 +736,7 @@ static bool onButtonClick_ButtonVolumeTest(ZKButton *pButton) {
 		sPlayer.resume();
 		LOGD(" failed !!!\n");
 	}
-	sPlayer.setVolume((float)dev.volume/10,(float)dev.volume/10);
-	LOGE("volume=%0.2f",(float)dev.volume/10);
+	sPlayer.setVolume((float)dev.get_volume()/10,(float)dev.get_volume()/10);
 
 	return false;
 }

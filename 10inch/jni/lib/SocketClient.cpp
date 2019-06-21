@@ -160,7 +160,7 @@ bool SocketClient::connected()
 
 	if(conncetState == true)
 	{
-		if(time(NULL) - lastHeartbeatTime > dev.heartbeatInterval*3)
+		if(time(NULL) - lastHeartbeatTime > dev.get_heartbeatInterval()*3)
 			conncetState = false;
 		else
 			conncetState = true;

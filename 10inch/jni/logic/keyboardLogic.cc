@@ -38,6 +38,7 @@
 */
 static string doorPwd;
 static doorState_t lastDoorState;
+bool is_requesting_finger;
 class LongClickListener : public ZKBase::ILongClickListener {
 
           virtual void onLongClick(ZKBase *pBase) {
@@ -103,19 +104,21 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 	switch(cmd)
 	{
 	case CMD_GET_CURRENT_FEATURE:
-		if(cmdState == 1)
+		is_requesting_finger = false;
+		if(cmdState == 0)
 		{
 			int value = ((data[0])<<8) + data[1];
 
 			LOGE("获取指纹执行状态%d",value);
 		}
-		else if(cmdState == 0)
+		else if(cmdState == 1)
 		{
 			LOGE("获取指数据包%d",len);
 			if(Base64::Encode(data, len, out, 1024) == true)
 			{
 				Person_t person;
 				outstring = out;
+				LOGE("outstring :%s",outstring.c_str());
 				person.fingers.push_back(outstring);
 		    	person.id = "";
 		    	mWindStatusNoticePtr->showWnd();
@@ -125,13 +128,14 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 			        x = jm.makePerson(person, StatusRead);
 			        gSocket->write_(x);
 		    		mTextStatusNoticePtr->setText("指纹验证中");
+		    		mTextStatusNotice2Ptr->setText("");
 		    		gSocket->updateTriger();
 		    	}
 		    	else
 		    	{
 		    		mTextStatusNoticePtr->setText("网络中断");
 		    		mTextStatusNotice2Ptr->setText("请输入管理员密码");
-		    		finger.getFeatures();
+
 		    	}
 
 //
@@ -187,7 +191,8 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		for(int i = 0 ; i < gPerson.fingers.size();i++)
 			LOGE("len:%d,%s",gPerson.fingers[i].length(),gPerson.fingers[i].c_str());
 
-		finger.getFeatures();
+//		finger.getFeatures();
+//		LOGE("重新触发指纹");
 		break;
 	case CMDDelQRCode:
 
@@ -274,6 +279,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		mWindStatusNoticePtr->showWnd();
 		mTextStatusNoticePtr->setText("服务器响应超时");
 		mTextStatusNotice2Ptr->setText("");
+
 		break;
 
 
@@ -289,7 +295,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 	{0,  1000}, //定时器id=0, 时间间隔6秒
-	//{1,  1000},
+	{1,  5000},
 };
 
 /**
@@ -303,7 +309,6 @@ static void onUI_init(){
     mTextStatusNoticePtr->setText("提示：...");
 	mBtnQRCodePtr->setBackgroundPic(QRCodeFullName.c_str());
     mBtnBackPtr->setLongClickListener(&longButtonClickListener);
-    finger.getFeatures();
 }
 
 /**
@@ -329,6 +334,7 @@ static void onUI_show() {
     gKeyboardLastActionTime = time(NULL);
     gSocket->attachOnConnect(onNetConnect, 1);
     gSocket->attachOnDisconnect(onNetDisconnect, 1);
+    finger.getFeatures();
 
     if(gSocket->connected())
     {
@@ -342,9 +348,9 @@ static void onUI_show() {
     }
 
     string title;
-    title = dev.organization;
+    title = dev.get_organization();
     title += " | ";
-    title += dev.name;
+    title += dev.get_name();
 
     mTextTitlePtr->setText(title.c_str());
 
@@ -406,13 +412,13 @@ static void adLoop()
 		return;
 	}
 
-	if(gAdv.enable && (gAdv.dbList.size() > 0))
+	if(gAdv.get_enable() && (gAdv.dbList.size() > 0))
 	{
 		const char *ptr;
 		ptr = EASYUICONTEXT->currentAppName();
 		cAppName = ptr;
 
-		if(timeNow - gKeyboardLastActionTime > gAdv.idleTime)
+		if(timeNow - gKeyboardLastActionTime > gAdv.get_idleTime())
 		{
 			EASYUICONTEXT->openActivity("AdvertisementActivity");
 			//LOGE("切换成功");
@@ -457,6 +463,14 @@ static bool onUI_Timer(int id){
 		updateUI_time();
 		adLoop();
 		//dispMemUsage();
+		break;
+	case 1:
+		if(is_requesting_finger == false)
+		{
+			is_requesting_finger = true;
+    		finger.getFeatures();
+    		LOGE("重新触发指纹");
+		}
 		break;
 	default:
 			break;
@@ -578,13 +592,21 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 	}
 	if(gSocket->connected())
 	{
-		string  str = jm.makeDoorPwd(doorPwd, StatusSet);
-		mWindStatusNoticePtr->showWnd();
-		gSocket->write_(str);
-		mTextStatusNoticePtr->setText("密码验证中");
-		gSocket->updateTriger();
+		if(doorPwd != "")
+		{
+			string  str = jm.makeDoorPwd(doorPwd, StatusSet);
+			mWindStatusNoticePtr->showWnd();
+			gSocket->write_(str);
+			mTextStatusNoticePtr->setText("密码验证中");
+			gSocket->updateTriger();
+		}
+		else
+		{
+			mWindStatusNoticePtr->showWnd();
+			mTextStatusNoticePtr->setText("请输入密码");
+		}
 	}
-	else if(doorPwd == dev.pwdLocal)
+	else if(doorPwd == dev.get_pwdLocal())
 	{
 		mWindAdminDoorPtr->showWnd();
 	}
@@ -623,7 +645,7 @@ static void onEditTextChanged_EdittextPassword(const std::string &text) {
 static bool onButtonClick_BtnConfirm(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnConfirm !!!\n");
 	string temp = mEditTextAdminPasswordPtr->getText();
-	if(temp == dev.pwdLocal)
+	if(temp == dev.get_pwdLocal())
     {
 		EASYUICONTEXT->goBack();
 		//EASYUICONTEXT->openActivity("mainActivity");
@@ -632,7 +654,7 @@ static bool onButtonClick_BtnConfirm(ZKButton *pButton) {
 	{
 		mWindStatusNoticePtr->showWnd();
 		mTextStatusNoticePtr->setText("管理员密码错误");
-		LOGE("管理员密码：%s",dev.pwdLocal.c_str());
+		LOGE("管理员密码：%s",dev.get_pwdLocal().c_str());
 	}
 
 	return false;

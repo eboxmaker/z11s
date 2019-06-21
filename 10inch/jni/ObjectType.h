@@ -18,24 +18,6 @@ using namespace std;
 
 
 //设备信息结构体
-typedef struct {
-	string organization;
-	string name;
-	string id;
-	string version;
-
-	string pwdLocal;
-	string pwdDoor;
-
-	string serverIP;
-	int serverPort;
-
-	int	   heartbeatInterval;
-
-	int	 volume;
-	bool confirmState;
-	bool enable;
-}Device_t;
 
 
 //系统更新结网址构体

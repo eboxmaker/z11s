@@ -152,7 +152,7 @@ static bool onUI_Timer(int id){
 				pic_counter++;
 			}
 		}
-		if(gAdv.enable == false)
+		if(gAdv.get_enable() == false)
 		{
 			EASYUICONTEXT->openActivity("keyboardActivity");
 		}

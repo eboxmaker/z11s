@@ -7,7 +7,6 @@
 #include "global.h"
 
 #include <sys/reboot.h>
-#include "storage/StoragePreferences.h"
 #include "utils/TimeHelper.h"
 #include "httpDownload.h"
 #include "utils/Log.h"
@@ -36,7 +35,7 @@ string gBroadcastMsg;
 
 
 
-Device_t dev;
+Device dev;
 
 myNotify_t keyboardCallback;
 myNotify_t AdvertisementCallback;
@@ -58,7 +57,7 @@ void exeCMD(string &package)
 	string msg;
 	string dataout;
 	string ack ;
-	Device_t tempDev;
+	DevicePara_t tempDevPara;
 
 
 	int counter =0;
@@ -108,37 +107,30 @@ void exeCMD(string &package)
 			status = jm.parseSetHeartbeat(js,tempInterval);
 			if(status == StatusSet)
 			{
-				if(tempInterval > 100)tempInterval= 100;
-				if(tempInterval < 3)tempInterval = 3;
-				dev.heartbeatInterval = tempInterval;
-				StoragePreferences::putInt("dev.heartbeatInterval", dev.heartbeatInterval);
-				ack = jm.makeSetHeartbeat(dev.heartbeatInterval, StatusOK);
+				dev.set_heartbeatInterval(tempInterval);
+				ack = jm.makeSetHeartbeat(dev.get_heartbeatInterval(), StatusOK);
 				gSocket->write_(ack);
 			}
 			if(status == StatusRead)
 			{
-				ack = jm.makeSetHeartbeat(dev.heartbeatInterval, StatusOK);
+				ack = jm.makeSetHeartbeat(dev.get_heartbeatInterval(), StatusOK);
 				gSocket->write_(ack);
 			}
 			break;
 		case CMDConfirm:
-			cStatus = jm.parseConfirm(js,tempDev,msg);
+			cStatus = jm.parseConfirm(js,tempDevPara,msg);
 			//LOGE("%s",js.c_str());
 			if(cStatus == StatusParaSer2Dev)
 			{
-				if(tempDev.id == dev.id)
+				if(tempDevPara.id == dev.id)
 				{
 					//LOGE("服务器匹配设备正确！");
 					//更新四个参数
 					TimeHelper::setDateTime(msg.c_str());
-					StoragePreferences::putInt("dev.heartbeatInterval", tempDev.heartbeatInterval);
-					StoragePreferences::putString("dev.organization", tempDev.organization);
-					StoragePreferences::putString("dev.name", tempDev.name);
+					dev.set_heartbeatInterval(tempDevPara.heartbeatInterval);
+					dev.set_organization(tempDevPara.organization);
+					dev.set_name(tempDevPara.name);
 
-
-					dev.organization = StoragePreferences::getString("dev.organization","none");
-					dev.name = StoragePreferences::getString("dev.name","none");
-				    dev.heartbeatInterval = StoragePreferences::getInt("dev.heartbeatInterval", 5);
 
 				    ack = jm.makeConfirm(dev,StatusAckDev2Ser );
 					gSocket->write_(ack);
@@ -163,32 +155,39 @@ void exeCMD(string &package)
 			}
 			break;
 		case CMDOrgName:
-			status = jm.parseOrgName(js,dev.organization);
+			status = jm.parseOrgName(js,msg);
 			if(status == StatusSet)
 			{
-			    StoragePreferences::putString("dev.organization", dev.organization);
+				dev.set_organization(msg);
+				msg = dev.get_organization();
 
-				ack = jm.makeOrgName(dev.organization, StatusOK);
+				ack = jm.makeOrgName(msg, StatusOK);
 				gSocket->write_(ack);
 			}
 			else if(status == StatusRead)
 			{
-				ack = jm.makeOrgName(dev.organization, StatusOK);
+				msg = dev.get_organization();
+
+				ack = jm.makeOrgName(msg, StatusOK);
 				gSocket->write_(ack);
 			}
 			break;
 		case CMDDevName:
-			status = jm.parseDevName(js,dev.name);
+			status = jm.parseDevName(js,msg);
 			if(status == StatusSet)
 			{
-			    StoragePreferences::putString("dev.name", dev.name);
 
-				ack = jm.makeDevName(dev.name, StatusOK);
+				dev.set_name(msg);
+				msg = dev.get_name();
+
+				ack = jm.makeDevName(msg, StatusOK);
 				gSocket->write_(ack);
 			}
 			else if(status == StatusRead)
 			{
-				ack = jm.makeDevName(dev.name, StatusOK);
+				msg = dev.get_name();
+
+				ack = jm.makeDevName( msg, StatusOK);
 				gSocket->write_(ack);
 			}
 			break;
@@ -202,16 +201,19 @@ void exeCMD(string &package)
 			}
 			break;
 		case CMDLocalPwd:
-			status = jm.parseLocalPwd(js,dev.pwdLocal);
+			status = jm.parseLocalPwd(js,msg);
 			if(status == StatusSet)
 			{
-			    StoragePreferences::putString("dev.pwdLocal", dev.pwdLocal.c_str());
-				ack = jm.makeLocalPwd(dev.pwdLocal,StatusOK);
+				dev.set_pwdLocal(msg);
+				msg = dev.get_pwdLocal();
+				ack = jm.makeLocalPwd(msg,StatusOK);
 				gSocket->write_(ack);
 			}
 			else if(status == StatusRead)
 			{
-				ack = jm.makeLocalPwd(dev.pwdLocal,StatusOK);
+				msg = dev.get_pwdLocal();
+
+				ack = jm.makeLocalPwd(msg,StatusOK);
 				gSocket->write_(ack);
 			}
 			break;
@@ -302,9 +304,6 @@ void exeCMD(string &package)
 			status = jm.parseAdSet(js,gAdv);
 			if(status == StatusSet)
 			{
-			    StoragePreferences::putBool("gAdv.enable", gAdv.enable);
-			    StoragePreferences::putInt("gAdv.idleTime", gAdv.idleTime);
-
 				ack = jm.makeAdSet(gAdv, StatusOK);
 				gSocket->write_(ack);
 			}

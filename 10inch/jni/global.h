@@ -11,6 +11,7 @@
 #include "door.h"
 #include "lib/SocketClient.h"
 #include "player.h"
+#include "device.h"
 
 
 using namespace std;
@@ -26,7 +27,7 @@ using namespace std;
 //#define GO_HOME_TIME 60*1000
 extern bool isShowKeyboard;
 
-extern Device_t dev;
+extern Device dev;
 extern SocketClient* gSocket;
 
 extern long gLastHelloTime;

@@ -138,7 +138,7 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 		}
 		break;
 	case CMD_ENROLL1:
-		para_err += finger.errToString(finger.ack);
+		para_err = finger.errToString(finger.ack);
 		if(finger.ack == ACK_SUCCESS)
 		{
 			fingerInputState++;
@@ -156,7 +156,7 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 
 
 	case CMD_ENROLL2:
-		para_err += finger.errToString(finger.ack);
+		para_err = finger.errToString(finger.ack);
 		if(finger.ack == ACK_SUCCESS)
 		{
 			fingerInputState++;
@@ -173,7 +173,7 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 
 
 	case CMD_ENROLL3:
-		para_err += finger.errToString(finger.ack);
+		para_err = finger.errToString(finger.ack);
 		if(finger.ack == ACK_SUCCESS)
 		{
 			fingerInputState = 0;
@@ -440,9 +440,9 @@ static bool onButtonClick_Button2(ZKButton *pButton) {
 			 finger.Enroll_Step1(u_id);
 			break;
 		case 1:
-//		case 2:
-//		case 3:
-//		case 4:
+		case 2:
+		case 3:
+		case 4:
 
 			 finger.Enroll_Step2(u_id);
 			LOGE("正在 第%d步",fingerInputState);

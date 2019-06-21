@@ -38,6 +38,29 @@ void Advertisement::load(){
 
 }
 
+void Advertisement::set_enable_temp(bool state){
+    enable = state;
+}
+
+void Advertisement::set_enable(bool state){
+    StoragePreferences::putBool("gAdv.enable", state);
+    enable = StoragePreferences::getBool("gAdv.enable", false);
+}
+
+bool Advertisement::get_enable(){
+	return enable;
+}
+void Advertisement::set_idleTime(int time){
+
+	if(time < 10) 		time = 10;
+	if(time > 10000)	time = 10000;
+
+	StoragePreferences::putInt("gAdv.idleTime",time);
+    idleTime = StoragePreferences::getInt("gAdv.idleTime", 30);
+}
+int Advertisement::get_idleTime(){
+	return idleTime;
+}
 bool Advertisement::add(string js)
 {
 	Json::Reader reader;

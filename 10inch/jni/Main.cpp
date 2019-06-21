@@ -24,35 +24,14 @@ extern "C" {
 static void *MainLoop(void *lParam);
 static void LoadParament()
 {
-	dev.enable = StoragePreferences::getBool("dev.enable", true);
-    dev.confirmState = false;
 
-    dev.id = jm.getID();
-    dev.version = VERSION;
-
-    dev.serverIP = StoragePreferences::getString("dev.serverIP", "192.168.1.1");
-    dev.serverPort = StoragePreferences::getInt("dev.serverPort", 6000);
-    dev.pwdLocal = StoragePreferences::getString("dev.pwdLocal", "123456");
-
-    dev.organization = StoragePreferences::getString("dev.organization", "none");
-    dev.name = StoragePreferences::getString("dev.name","none");
-
-    dev.heartbeatInterval = StoragePreferences::getInt("dev.heartbeatInterval", 5);
-
-    dev.volume =  StoragePreferences::getInt("dev.volume", 5);
-
+	dev.load();
+    gAdv.load();
 
     make_dir(PIC_DIR);
     make_dir(QR_DIR);
     make_dir(AD_DIR);
 
-
-
-    gAdv.load();
-
-
-
-    //system("rm /mnt/extsd/update.img");
 
 }
 void onEasyUIInit(EasyUIContext *pContext) {
@@ -97,7 +76,7 @@ static void reconncet()
 	dev.confirmState = false;
 	LOGO("正在连接。。。");
 	gSocket->disconnect();
-	ret = gSocket->connect(dev.serverIP.c_str(),dev.serverPort);
+	ret = gSocket->connect(dev.get_serverIP().c_str(),dev.get_serverPort());
 	if(ret == true)
 	{
 //		LOGO("连接服务器成功!\n");
@@ -153,9 +132,8 @@ static void timeoutLoop()
 static void heartbeatLoop()
 {
 	static int counter = 0;
-	if(dev.heartbeatInterval < 3)
-		dev.heartbeatInterval = 3;
-	if(++counter >= dev.heartbeatInterval)
+
+	if(++counter >= dev.get_heartbeatInterval())
 	{
 		std::string hearbeatMsg;
 		hearbeatMsg = jm.makeHeartbeat(StatusSet);
@@ -168,9 +146,9 @@ static void *MainLoop(void *lParam)
     //pthread_mutex_init(&mutex,NULL);
 
 
-    bool ret;
-    int len;
+    int len = 0;
 	int counter = 0;
+	int reconnect_counter = 0;
 
 
 	Thread::sleep(1000);
@@ -179,12 +157,17 @@ static void *MainLoop(void *lParam)
 	sPlayer.setVolume(10,10);
 	while(1)
 	{
-		if(dev.enable)
+		if(dev.get_enable())
 		{
 			//断线检测
 			if(!gSocket->connected())
 			{
-				reconncet();
+				if(reconnect_counter > 5)
+				{
+					reconncet();
+					reconnect_counter = 0;
+				}
+				reconnect_counter++;
 			}
 			//心跳轮训
 			heartbeatLoop();

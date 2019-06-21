@@ -24,12 +24,18 @@ public:
 	void load();
 
 
+	void set_enable_temp(bool state);
+	void set_enable(bool state);
+	bool get_enable();
+
+	void set_idleTime(int time);
+	int get_idleTime();
+
 	bool add(string js);
 	void remove(string fileName);
 	int	getNum();
 	void clear();
-	bool enable;
-	int  idleTime;
+
 	std::vector<S_INFOS> dbList;
 
 	void logDBList();
@@ -43,6 +49,8 @@ private:
 
 	int num;
 
+	bool enable;
+	int  idleTime;
 
 
 };

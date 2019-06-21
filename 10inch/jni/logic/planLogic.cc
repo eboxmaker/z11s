@@ -101,9 +101,9 @@ static void onUI_intent(const Intent *intentPtr) {
 static void onUI_show() {
     EASYUICONTEXT->showStatusBar();
     string title;
-    title = dev.organization;
+    title = dev.get_organization();
     title += " | ";
-    title += dev.name;
+    title += dev.get_name();
 
     mTextTitlePtr->setText(title);
 }
@@ -113,7 +113,7 @@ static void onUI_show() {
  */
 static void onUI_hide() {
     EASYUICONTEXT->hideStatusBar();
-
+LOGD("隐藏 plan");
 }
 
 /*
@@ -121,6 +121,7 @@ static void onUI_hide() {
  */
 static void onUI_quit() {
     keyboardCallback = NULL;
+    LOGD("注销 plan");
 
 }
 

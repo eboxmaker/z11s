@@ -304,19 +304,19 @@ JsonStatus_t JsonCmdManager::parseDevName(string &js,string &name)
 }
 
 
-string JsonCmdManager::makeConfirm(Device_t &dev_,JsonConfirmStatus_t status)
+string JsonCmdManager::makeConfirm(Device &pDev,JsonConfirmStatus_t status)
 {
 
 	//UTF8String u8 = L"UNICODE字符串";
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDConfirm);
-	  root["id"] = Json::Value(dev_.id);
-	  root["version"] = Json::Value(dev_.version);
+	  root["id"] = Json::Value(pDev.get_id());
+	  root["version"] = Json::Value(pDev.get_version());
 	  if(status == StatusAckDev2Ser)
 	  {
-		  root["organization"] = Json::Value(dev_.organization);
-		  root["name"] = Json::Value(dev_.name);
-		  root["interval"] = Json::Value(dev_.heartbeatInterval);
+		  root["organization"] = Json::Value(pDev.get_organization());
+		  root["name"] = Json::Value(pDev.get_name());
+		  root["interval"] = Json::Value(pDev.get_heartbeatInterval());
 	  }
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
@@ -324,7 +324,7 @@ string JsonCmdManager::makeConfirm(Device_t &dev_,JsonConfirmStatus_t status)
 	  return pack(temp);
 
 }
-JsonStatus_t JsonCmdManager::parseConfirm(string &js,Device_t &dev_,string &timeString)
+JsonStatus_t JsonCmdManager::parseConfirm(string &js,DevicePara_t &para,string &timeString)
 {
 	  Json::Reader reader;
 
@@ -335,10 +335,10 @@ JsonStatus_t JsonCmdManager::parseConfirm(string &js,Device_t &dev_,string &time
 		  status = root["status"].asInt();
 		  if(status == StatusParaSer2Dev)
 		  {
-			  dev_.heartbeatInterval = root["heartbeatInterval"].asInt();
-			  dev_.organization = root["organization"].asString();
-			  dev_.name = root["name"].asString();
-			  dev_.id = root["id"].asString();
+			  para.heartbeatInterval = root["heartbeatInterval"].asInt();
+			  para.organization = root["organization"].asString();
+			  para.name = root["name"].asString();
+			  para.id = root["id"].asString();
 			  timeString = root["dateTime"].asString();
 		  }
 
@@ -791,8 +791,8 @@ string JsonCmdManager::makeAdSet(Advertisement &set,JsonStatus_t status)
 {
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDAdSet);
-	  root["enable"] = Json::Value(set.enable);
-	  root["idleTime"] = Json::Value(set.idleTime);
+	  root["enable"] = Json::Value(set.get_enable());
+	  root["idleTime"] = Json::Value(set.get_idleTime());
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
@@ -813,8 +813,8 @@ JsonStatus_t JsonCmdManager::parseAdSet(string &js,Advertisement &set)
 		  }
 		  else if(status == StatusSet)
 		  {
-			  set.idleTime = root["idleTime"].asInt();
-			  set.enable = root["enable"].asBool();
+			  set.set_idleTime(root["idleTime"].asInt());
+			  set.set_enable(root["enable"].asBool());
 		  }
 	  }
 

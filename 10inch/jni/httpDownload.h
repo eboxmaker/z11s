@@ -66,7 +66,7 @@ protected:
             if(name == "update.img")
             {
                 Thread::sleep(1000);//显示下载成功
-    		    dev.enable = false;
+    		    dev.set_enable_temp(false);
     		    gSocket->disconnect();
                 UpgradeMonitor::getInstance()->checkUpgradeFile(path.c_str());
             }
