@@ -28,7 +28,8 @@ SocketClient* gSocket= new SocketClient();
 
 long gKeyboardLastActionTime = 0;
 
-Person_t gPerson;
+PersonList gPersonAll;
+PersonDump_t gPersonDump;
 CourseInfo_t gCourseInfo;
 
 string gBroadcastMsg;
@@ -418,18 +419,19 @@ void exeCMD(string &package)
 			break;
 
 		case CMDPerson:
-			status = jm.parsePerson(js, gPerson);
+			status = jm.parsePerson(js, gPersonDump);
 			if(status == StatusOK)
 			{
-				msg = PIC_DIR + gPerson.picture.name;
-				creat_file(msg,gPerson.picture.data.c_str(),gPerson.picture.data.size());
-				//LOGE("%s，%s",gPerson.name.c_str(),gPerson.course.c_str());
+				msg = PIC_DIR + gPersonDump.picture.name;
+				creat_file(msg,gPersonDump.picture.data.c_str(),gPersonDump.picture.data.size());
+				gPersonDump.picture.data = "";
+				//LOGE("%s，%s",gPersonDump.name.c_str(),gPersonDump.course.c_str());
 
 			}
 			else if(status == StatusSet)
 			{
 
-				ack = jm.makePerson(gPerson, StatusOK);
+				ack = jm.makePerson(gPersonDump, StatusOK);
 				gSocket->write_(ack);
 			}
 			break;

@@ -81,87 +81,7 @@ void Finger::Enroll_Step3(unsigned int u_id)
   sendPackage(buf ,5);
 }
 
-/*******************************************************************************
-**注册指纹
-**输入三次指纹注册一个指纹模板
-**参数：UserID 指纹号
-*******************************************************************************/
-unsigned char Finger::Finger_Enroll(unsigned int u_id)
-{
-	bool ret = false;
 
-	LOGE("注册%d",u_id);
-
-//
-//	//////////////////////////////////////////////
-//	ack = -1;
-//	while(ret ==false)
-//	{
-//		ret = Enroll_Step1(u_id);
-//		LOGE("正在 第一步");
-//		Thread::sleep(1000);
-//	}
-//
-//	ret = false;
-//	while(ack == -1)
-//	{
-//		LOGE("ACK:%D",ack);
-//		Thread::sleep(1000);
-//	}
-//	if(ack == ACK_SUCCESS)
-//		LOGE("第一步完成");
-//	else
-//	{
-//		LOGE("第一步失败:%d",ack);
-//		return false;
-//	}
-//	//////////////////////////////////////////////
-//
-//
-//	ack = -1;
-//	while(ret ==false)
-//	{
-//		ret = Enroll_Step2(u_id);
-//		LOGE("正在 第2步");
-//		Thread::sleep(1000);
-//	}
-//
-//	ret = false;
-//	while(ack == -1)
-//	{
-//		LOGE("ACK:%D",ack);
-//		Thread::sleep(1000);
-//	}
-//	if(ack == ACK_SUCCESS)
-//		LOGE("第2步完成");
-//	else
-//	{
-//		LOGE("第2步失败:%d",ack);
-//		return false;
-//	}
-//	//////////////////////////////////////////////
-//	ack = -1;
-//
-//	while(ret ==false)
-//	{
-//		ret = Enroll_Step3(u_id);
-//		LOGE("正在 第3步");
-//		Thread::sleep(1000);
-//	}
-//	while(ack == -1)
-//	{
-//		LOGE("ACK:%D",ack);
-//		Thread::sleep(1000);
-//	}
-//	if(ack == ACK_SUCCESS)
-//		LOGE("第3步完成");
-//	else
-//	{
-//		LOGE("第3步失败:%d",ack);
-//		return false;
-//	}
-
-}
 void Finger::getFeatures()
 {
 	int ret;
@@ -233,6 +153,21 @@ void Finger::clear(void)
    sendPackage(buf,5);
 
 }
+void Finger::deleteIdFeatures(unsigned int id)//获取指定ID的指纹模板信息
+{
+	int ret = -1;
+	int i = 0;
+	unsigned char buf[8];
+
+	buf[i++] = CMD_DELETE;
+	buf[i++] = id>>8;
+	buf[i++] = id&0xff;
+	buf[i++] = 0;
+	buf[i++] = 0;
+
+	sendPackage(buf,5);
+}
+
 void Finger::getTimeout()
 {
 	int ret;

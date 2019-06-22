@@ -36,7 +36,7 @@ extern  long gKeyboardLastActionTime;
 
 extern doorState_t gDoorState;
 extern string gBroadcastMsg;
-extern Person_t gPerson;
+extern PersonDump_t gPersonDump;
 extern CourseInfo_t gCourseInfo;
 
 

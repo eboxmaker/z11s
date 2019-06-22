@@ -822,7 +822,7 @@ JsonStatus_t JsonCmdManager::parseAdSet(string &js,Advertisement &set)
 }
 
 
-string JsonCmdManager::makePerson(Person_t &person,JsonStatus_t status)
+string JsonCmdManager::makePerson(PersonDump_t &person,JsonStatus_t status)
 {
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDPerson);
@@ -851,7 +851,7 @@ string JsonCmdManager::makePerson(Person_t &person,JsonStatus_t status)
 
 	  return pack(temp);
 }
-JsonStatus_t JsonCmdManager::parsePerson(string &js,Person_t &person)
+JsonStatus_t JsonCmdManager::parsePerson(string &js,PersonDump_t &person)
 {
 	JsonStatus_t status;
 	Json::Reader reader;

@@ -71,15 +71,16 @@ public:
 	virtual ~Finger();
 
 	void getFeatures();//获取当前输入指纹的模板信息
+
 	void getFeatures(unsigned int id);//获取指定ID的指纹模板信息
 	void setIdFeatures(unsigned int id,unsigned char *buf);//上传从服务器获取的人员的模板信息，并存入指定区间（10-39）
 
 	void clear(void);
+	void deleteIdFeatures(unsigned int id);//获取指定ID的指纹模板信息
 
 	void Enroll_Step1(unsigned int u_id);
 	void Enroll_Step2(unsigned int u_id);
 	void Enroll_Step3(unsigned int u_id);
-	unsigned char Finger_Enroll(unsigned int u_id);
 	void getTimeout();
 	void setTimeout(unsigned char sec);
 	void sendPackage(unsigned char *ptr,unsigned char wLen);
@@ -98,8 +99,8 @@ private:
 	unsigned char genCheck(unsigned char wLen,unsigned char *ptr);
 
 private:
-	unsigned char rbuf[4096];
-	unsigned char tbuf[4096];
+	unsigned char rbuf[1024];
+	unsigned char tbuf[512];
 	unsigned char rxEnd ;              //接收返回信息结束标志
 	unsigned char rxLen ;             //接收返回信息长度
 	FingerState_t state;

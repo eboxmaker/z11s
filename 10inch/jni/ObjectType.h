@@ -55,11 +55,23 @@ typedef struct
 	string name;
 	string id;
 	int	   level;
+	int		finger_id;
 	stringList fingers;
 	Picture_t picture;
 
-}Person_t;
+}PersonDump_t;
 
+//
+typedef struct
+{
+	string 	name;
+	string 	id;
+	int	   	level;
+	int		finger_id;
+	string 	picture_name;
+
+}Person_t;
+typedef vector<Person_t> PersonList;
 
 typedef union
 {

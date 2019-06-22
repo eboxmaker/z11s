@@ -116,7 +116,7 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 			LOGE("获取指数据包%d",len);
 			if(Base64::Encode(data, len, out, 1024) == true)
 			{
-				Person_t person;
+				PersonDump_t person;
 				outstring = out;
 				LOGE("outstring :%s",outstring.c_str());
 				person.fingers.push_back(outstring);
@@ -167,11 +167,11 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 			gSocket->disableTriger();
 			mWindStatusNoticePtr->showWnd();
 			mTextStatusNoticePtr->setText("查询成功");
-			temp += gPerson.name;
+			temp += gPersonDump.name;
 			temp += "/";
-			temp += gPerson.id;
+			temp += gPersonDump.id;
 			temp += "/";
-			switch(gPerson.level)
+			switch(gPersonDump.level)
 			{
 			case 0:
 				temp += "管理员";
@@ -188,8 +188,8 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 			sleep(3);
 			mWindStatusNoticePtr->hideWnd();
 		}
-		for(int i = 0 ; i < gPerson.fingers.size();i++)
-			LOGE("len:%d,%s",gPerson.fingers[i].length(),gPerson.fingers[i].c_str());
+		for(int i = 0 ; i < gPersonDump.fingers.size();i++)
+			LOGE("len:%d,%s",gPersonDump.fingers[i].length(),gPersonDump.fingers[i].c_str());
 
 //		finger.getFeatures();
 //		LOGE("重新触发指纹");

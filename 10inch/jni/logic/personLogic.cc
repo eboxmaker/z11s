@@ -72,9 +72,9 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 			}
 			else if(Base64::Encode(data, len, out, 1024) == true)
 			{
-	//			gPerson.fingers.push_back(outstring);
-	//			for(int i = 0 ; i < gPerson.fingers.size();i++)
-	//				LOGE("len:%d,%s",gPerson.fingers[i].length(),gPerson.fingers[i].c_str());
+	//			gPersonDump.fingers.push_back(outstring);
+	//			for(int i = 0 ; i < gPersonDump.fingers.size();i++)
+	//				LOGE("len:%d,%s",gPersonDump.fingers[i].length(),gPersonDump.fingers[i].c_str());
 				mTextFingerStatePtr->setText("获取当前指纹成功");
 			}
 
@@ -96,9 +96,9 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 			id = ((data[0])<<8) + data[1];
 			if(Base64::Encode(&data[3], len - 3, out, 1024) == true)
 			{
-				gPerson.fingers.push_back(out);
-				for(int i = 0 ; i < gPerson.fingers.size();i++)
-					LOGE("len:%d,%s",gPerson.fingers[i].length(),gPerson.fingers[i].c_str());
+				gPersonDump.fingers.push_back(out);
+				for(int i = 0 ; i < gPersonDump.fingers.size();i++)
+					LOGE("len:%d,%s",gPersonDump.fingers[i].length(),gPersonDump.fingers[i].c_str());
 
 			}
 			sprintf(temp_buf,"获取%d号指纹成功",id);
@@ -210,10 +210,10 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 			gSocket->disableTriger();
 			mWindStatusNoticePtr->showWnd();
 			mTextStatusNoticePtr->setText("同步成功");
-			mTextPersonNamePtr->setText(gPerson.name);
-			mTextPersonIDPtr->setText(gPerson.id);
+			mTextPersonNamePtr->setText(gPersonDump.name);
+			mTextPersonIDPtr->setText(gPersonDump.id);
 			mBtnPicturePtr->setBackgroundPic(msg.c_str());
-			switch(gPerson.level)
+			switch(gPersonDump.level)
 			{
 			case 0:
 				mTextPersonLevelPtr->setText("管理员");
@@ -259,7 +259,7 @@ static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
 	PersonCallback = onNetWrokDataUpdate;
 	fingerCallback =onFingerOver;
-    gPerson.id = "";
+    gPersonDump.id = "";
 }
 
 /**
@@ -362,7 +362,7 @@ static bool onpersonActivityTouchEvent(const MotionEvent &ev) {
 static bool onButtonClick_BtnQuaryPerson(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnQuaryPerson !!!\n");
 	string temp = mEditPersonIDPtr->getText();
-//	mTextNamePtr->setText(gPerson[temp].name);
+//	mTextNamePtr->setText(gPersonDump[temp].name);
 	mWindStatusNoticePtr->showWnd();
 	if(temp == "")
 	{
@@ -377,7 +377,7 @@ static bool onButtonClick_BtnQuaryPerson(ZKButton *pButton) {
     	gSocket->updateTriger();
 
 
-    	static Person_t person;
+    	PersonDump_t person;
     	person.id = temp;
         string x;
         x = jm.makePerson(person, StatusRead);
@@ -391,12 +391,12 @@ static bool onButtonClick_BtnQuaryPerson(ZKButton *pButton) {
 
     finger.clear();
     fingerNum = 1;
-	gPerson.fingers.clear();
-	gPerson.id = "";
-	gPerson.name = "";
-	gPerson.level = 0;
-	mTextPersonNamePtr->setText(gPerson.name);
-	mTextPersonIDPtr->setText(gPerson.id);
+	gPersonDump.fingers.clear();
+	gPersonDump.id = "";
+	gPersonDump.name = "";
+	gPersonDump.level = 0;
+	mTextPersonNamePtr->setText(gPersonDump.name);
+	mTextPersonIDPtr->setText(gPersonDump.id);
 	mTextPersonLevelPtr->setText("");
 
 
@@ -420,7 +420,7 @@ static bool onButtonClick_Button1(ZKButton *pButton) {
 
 static bool onButtonClick_Button2(ZKButton *pButton) {
     //LOGD(" ButtonClick Button2 !!!\n");
-	if(gPerson.id == "")
+	if(gPersonDump.id == "")
 	{
 		mWindStatusNoticePtr->showWnd();
 		mTextStatusNoticePtr->setText("请先获取ID对应的人员");
@@ -487,7 +487,7 @@ static bool onButtonClick_BtnUpdateServer(ZKButton *pButton) {
 
     if(gSocket->connected())
     {
-    	string str = jm.makePerson(gPerson, StatusSet);
+    	string str = jm.makePerson(gPersonDump, StatusSet);
     	gSocket->write_(str);
     	gSocket->updateTriger();
         mWindStatusNoticePtr->showWnd();

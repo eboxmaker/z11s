@@ -109,8 +109,8 @@ public:
 	string makeAdSet(Advertisement &set,JsonStatus_t status);
 	JsonStatus_t parseAdSet(string &js,Advertisement &set);
 
-	string makePerson(Person_t &person,JsonStatus_t status);
-	JsonStatus_t parsePerson(string &js,Person_t &person);
+	string makePerson(PersonDump_t &person,JsonStatus_t status);
+	JsonStatus_t parsePerson(string &js,PersonDump_t &person);
 
 	string makeVersion(JsonStatus_t status);
 	JsonStatus_t parseVersion(string &js);
