@@ -103,7 +103,7 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 	int id;
 	switch(cmd)
 	{
-	case CMD_GET_CURRENT_FEATURE:
+/*	case CMD_GET_CURRENT_FEATURE:
 		is_requesting_finger = false;
 		if(cmdState == 0)
 		{
@@ -118,7 +118,7 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 			{
 				PersonDump_t person;
 				outstring = out;
-				LOGE("outstring :%s",outstring.c_str());
+//				LOGE("outstring :%s",outstring.c_str());
 				person.fingers.push_back(outstring);
 		    	person.id = "";
 		    	mWindStatusNoticePtr->showWnd();
@@ -143,6 +143,22 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 
 
 		}
+
+		break;
+		*/
+	case CMD_SEARCH:
+		id = (data[0]<<8) + (data[1]);
+
+		uint8_t id = (data[0]<<8) + (data[1]);
+		if(id == 0){
+			mTextStatusNoticePtr->setText("不存在");
+		}
+		else{
+			mTextStatusNoticePtr->setText("找到指纹");
+			mTextStatusNotice2Ptr->setText(id);
+		}
+    	mWindStatusNoticePtr->showWnd();
+
 
 		break;
 	default :

@@ -12,6 +12,8 @@
 #include <vector>
 
 typedef std::vector<std::string> stringList;
+typedef std::vector<int> IntList;
+typedef std::vector<uint16_t> uint16List;
 
 
 using namespace std;
@@ -49,29 +51,9 @@ typedef struct
 	Picture_t picture;
 }CourseInfo_t;
 
-//录入指纹时传递的信息
-typedef struct
-{
-	string name;
-	string id;
-	int	   level;
-	int		finger_id;
-	stringList fingers;
-	Picture_t picture;
 
-}PersonDump_t;
 
-//
-typedef struct
-{
-	string 	name;
-	string 	id;
-	int	   	level;
-	int		finger_id;
-	string 	picture_name;
 
-}Person_t;
-typedef vector<Person_t> PersonList;
 
 typedef union
 {

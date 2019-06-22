@@ -14,6 +14,7 @@
 #include "lib/fileOpt.h"
 #include "version.h"
 #include "alarm.h"
+#include "lib/finger.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,10 +46,20 @@ void onEasyUIDeinit(EasyUIContext *pContext) {
 }
 
 const char* onStartupApp(EasyUIContext *pContext) {
+	uint16_t value;
 
 	LoadParament();
 
 	//gSocket->setSocketListener(&gSocketListener);
+//	finger.getFeatures();
+//	sleep(2);
+//	if(finger.get_free(1,100,&value) == true)
+//		LOGE("free id%d\r\n",value);
+//	else
+//		LOGE("free id:err\r\n");
+//
+//	while(1);
+
 
 	pthread_t threadID = 1;
 	pthread_attr_t attr; 		// 线程属性
@@ -152,6 +163,9 @@ static void *MainLoop(void *lParam)
 
 
 	Thread::sleep(1000);
+
+
+
 
 	sPlayer.setPlayerMessageListener(&myAlarm);
 	sPlayer.setVolume(10,10);

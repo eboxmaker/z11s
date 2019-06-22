@@ -558,6 +558,32 @@ namespace socket
         {
 
         }
+
+        private void btnSendPerson_Click(object sender, EventArgs e)
+        {
+
+            string[] fingers = { "DggOR6EUFlvhKIzFgTibACE7l5cBQ5AXgQyjBMIcnYPiLqECAj+YQCJAD4EiRg0BgkYdLKIfhB2iAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXGg==",
+                                 "DhQWB6EYHsNBHpKGISeIxKEsHNchMZaYYUCOl8FAlkGhCCRFohsMBwImhBvCMBtB4jQjVwI5ImviAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXGg==",
+                                };
+            string resault = JsonManager.MakePerson("201800123", "张云峰", 0, fingers, "touxiang.jpg", JsonManager.StatusType.StatusSet);
+                string str = JsonManager.unPackage(resault);
+                byte[] b1 = Convert.FromBase64String(fingers[0]);
+                byte[] b2 = Convert.FromBase64String(fingers[1]);
+
+                string str1 = "";
+                for (int i = 0; i < b1.Length; i++) {
+                    str1 += b1[i].ToString();
+                    str1 += "\t";
+                    str1 += b2[i].ToString();
+                    str1 += "\r\n";
+
+                }
+
+
+                RichSend.Text = str1;
+            
+                server.SendAll(resault);
+        }
         
 
 

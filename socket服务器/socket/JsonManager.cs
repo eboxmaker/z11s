@@ -756,6 +756,7 @@ namespace MyJson
                 jo.Add("finger",fingers[i]);
                 ja.Add(jo);
             }
+            obj.Add("fingers", ja);
             obj.Add("status", (int)status);
 
             string jstring = JsonConvert.SerializeObject(obj);

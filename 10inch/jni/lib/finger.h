@@ -28,6 +28,7 @@ using namespace std;
 #define CMD_GET_CURRENT_FEATURE			0x23//超时时间
 #define CMD_GET_ID_FEATURE			0x31//超时时间
 #define CMD_SET_ID_FEATURE			0x41//超时时间
+#define CMD_GET_FREE				0x47//超时时间
 
 
 
@@ -39,6 +40,7 @@ using namespace std;
 #define ACK_USER_OCCUPIED   0x06    //此ID用户已存在
 #define ACK_USER_EXIST 		0x07 	//用户已存在
 #define ACK_TIMEOUT  		0x08	//采集超时
+#define ACK_SUSPEND  		0xFF	//
 typedef enum
 {
 	HEAD,
@@ -73,11 +75,14 @@ public:
 	void getFeatures();//获取当前输入指纹的模板信息
 
 	void getFeatures(unsigned int id);//获取指定ID的指纹模板信息
-	void setIdFeatures(unsigned int id,unsigned char *buf);//上传从服务器获取的人员的模板信息，并存入指定区间（10-39）
+	bool setIdFeatures(unsigned int id,unsigned char *buf);//上传从服务器获取的人员的模板信息，并存入指定区间（10-39）
 
 	void clear(void);
 	void deleteIdFeatures(unsigned int id);//获取指定ID的指纹模板信息
 
+	void search();
+
+	bool  get_free(uint16_t start,uint16_t end,uint16_t *freeid);
 	void Enroll_Step1(unsigned int u_id);
 	void Enroll_Step2(unsigned int u_id);
 	void Enroll_Step3(unsigned int u_id);
@@ -94,6 +99,9 @@ public:
 	int retState;
 	long timelast;
 	int dataLen;
+
+
+	uint16_t freeid;
 
 private:
 	unsigned char genCheck(unsigned char wLen,unsigned char *ptr);

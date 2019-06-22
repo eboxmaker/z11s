@@ -27,8 +27,7 @@ SocketClient* gSocket= new SocketClient();
 
 
 long gKeyboardLastActionTime = 0;
-
-PersonList gPersonAll;
+Person gPersonAll;
 PersonDump_t gPersonDump;
 CourseInfo_t gCourseInfo;
 
@@ -419,6 +418,7 @@ void exeCMD(string &package)
 			break;
 
 		case CMDPerson:
+			LOGD("收到person命令：");
 			status = jm.parsePerson(js, gPersonDump);
 			if(status == StatusOK)
 			{
@@ -430,7 +430,7 @@ void exeCMD(string &package)
 			}
 			else if(status == StatusSet)
 			{
-
+				gPersonAll.add(gPersonDump);
 				ack = jm.makePerson(gPersonDump, StatusOK);
 				gSocket->write_(ack);
 			}

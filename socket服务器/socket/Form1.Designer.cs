@@ -89,6 +89,7 @@
             this.btnAdRead = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
+            this.btnSendPerson = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnStartServer
@@ -136,7 +137,7 @@
             // 
             // btnSendMSG
             // 
-            this.btnSendMSG.Location = new System.Drawing.Point(605, 408);
+            this.btnSendMSG.Location = new System.Drawing.Point(605, 523);
             this.btnSendMSG.Name = "btnSendMSG";
             this.btnSendMSG.Size = new System.Drawing.Size(75, 23);
             this.btnSendMSG.TabIndex = 7;
@@ -146,7 +147,7 @@
             // 
             // RichSend
             // 
-            this.RichSend.Location = new System.Drawing.Point(139, 293);
+            this.RichSend.Location = new System.Drawing.Point(139, 408);
             this.RichSend.Name = "RichSend";
             this.RichSend.Size = new System.Drawing.Size(477, 109);
             this.RichSend.TabIndex = 8;
@@ -154,7 +155,7 @@
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(519, 239);
+            this.btnClear.Location = new System.Drawing.Point(519, 352);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(97, 23);
             this.btnClear.TabIndex = 9;
@@ -164,7 +165,7 @@
             // 
             // btnLoadFile
             // 
-            this.btnLoadFile.Location = new System.Drawing.Point(12, 281);
+            this.btnLoadFile.Location = new System.Drawing.Point(12, 396);
             this.btnLoadFile.Name = "btnLoadFile";
             this.btnLoadFile.Size = new System.Drawing.Size(75, 23);
             this.btnLoadFile.TabIndex = 10;
@@ -174,7 +175,7 @@
             // 
             // btnSaveFile
             // 
-            this.btnSaveFile.Location = new System.Drawing.Point(12, 371);
+            this.btnSaveFile.Location = new System.Drawing.Point(12, 486);
             this.btnSaveFile.Name = "btnSaveFile";
             this.btnSaveFile.Size = new System.Drawing.Size(75, 23);
             this.btnSaveFile.TabIndex = 11;
@@ -204,7 +205,7 @@
             // 
             // tbSendDataLength
             // 
-            this.tbSendDataLength.Location = new System.Drawing.Point(499, 410);
+            this.tbSendDataLength.Location = new System.Drawing.Point(499, 525);
             this.tbSendDataLength.Name = "tbSendDataLength";
             this.tbSendDataLength.Size = new System.Drawing.Size(100, 21);
             this.tbSendDataLength.TabIndex = 14;
@@ -231,7 +232,7 @@
             // 
             // btnLoadFile2
             // 
-            this.btnLoadFile2.Location = new System.Drawing.Point(11, 310);
+            this.btnLoadFile2.Location = new System.Drawing.Point(11, 425);
             this.btnLoadFile2.Name = "btnLoadFile2";
             this.btnLoadFile2.Size = new System.Drawing.Size(75, 23);
             this.btnLoadFile2.TabIndex = 17;
@@ -241,7 +242,7 @@
             // 
             // btnLoadFile3
             // 
-            this.btnLoadFile3.Location = new System.Drawing.Point(12, 339);
+            this.btnLoadFile3.Location = new System.Drawing.Point(12, 454);
             this.btnLoadFile3.Name = "btnLoadFile3";
             this.btnLoadFile3.Size = new System.Drawing.Size(75, 23);
             this.btnLoadFile3.TabIndex = 18;
@@ -251,7 +252,7 @@
             // 
             // btnBroadcast
             // 
-            this.btnBroadcast.Location = new System.Drawing.Point(626, 379);
+            this.btnBroadcast.Location = new System.Drawing.Point(636, 494);
             this.btnBroadcast.Name = "btnBroadcast";
             this.btnBroadcast.Size = new System.Drawing.Size(89, 23);
             this.btnBroadcast.TabIndex = 19;
@@ -261,7 +262,7 @@
             // 
             // btnCloseBroadcast
             // 
-            this.btnCloseBroadcast.Location = new System.Drawing.Point(721, 379);
+            this.btnCloseBroadcast.Location = new System.Drawing.Point(731, 494);
             this.btnCloseBroadcast.Name = "btnCloseBroadcast";
             this.btnCloseBroadcast.Size = new System.Drawing.Size(75, 23);
             this.btnCloseBroadcast.TabIndex = 20;
@@ -271,7 +272,7 @@
             // 
             // btnAdSet
             // 
-            this.btnAdSet.Location = new System.Drawing.Point(632, 296);
+            this.btnAdSet.Location = new System.Drawing.Point(642, 411);
             this.btnAdSet.Name = "btnAdSet";
             this.btnAdSet.Size = new System.Drawing.Size(75, 23);
             this.btnAdSet.TabIndex = 21;
@@ -282,7 +283,7 @@
             // cbAdEnable
             // 
             this.cbAdEnable.AutoSize = true;
-            this.cbAdEnable.Location = new System.Drawing.Point(724, 300);
+            this.cbAdEnable.Location = new System.Drawing.Point(734, 415);
             this.cbAdEnable.Name = "cbAdEnable";
             this.cbAdEnable.Size = new System.Drawing.Size(78, 16);
             this.cbAdEnable.TabIndex = 22;
@@ -292,7 +293,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(632, 334);
+            this.label1.Location = new System.Drawing.Point(642, 449);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(89, 12);
             this.label1.TabIndex = 23;
@@ -300,7 +301,7 @@
             // 
             // tbAdTime
             // 
-            this.tbAdTime.Location = new System.Drawing.Point(719, 325);
+            this.tbAdTime.Location = new System.Drawing.Point(729, 440);
             this.tbAdTime.Name = "tbAdTime";
             this.tbAdTime.Size = new System.Drawing.Size(100, 21);
             this.tbAdTime.TabIndex = 24;
@@ -308,7 +309,7 @@
             // 
             // btnModifyAdminPwd
             // 
-            this.btnModifyAdminPwd.Location = new System.Drawing.Point(804, 352);
+            this.btnModifyAdminPwd.Location = new System.Drawing.Point(814, 467);
             this.btnModifyAdminPwd.Name = "btnModifyAdminPwd";
             this.btnModifyAdminPwd.Size = new System.Drawing.Size(42, 23);
             this.btnModifyAdminPwd.TabIndex = 27;
@@ -318,7 +319,7 @@
             // 
             // tbAdminPwd
             // 
-            this.tbAdminPwd.Location = new System.Drawing.Point(630, 352);
+            this.tbAdminPwd.Location = new System.Drawing.Point(640, 467);
             this.tbAdminPwd.Name = "tbAdminPwd";
             this.tbAdminPwd.Size = new System.Drawing.Size(168, 21);
             this.tbAdminPwd.TabIndex = 28;
@@ -336,7 +337,7 @@
             // 
             // tbBroadcast
             // 
-            this.tbBroadcast.Location = new System.Drawing.Point(681, 408);
+            this.tbBroadcast.Location = new System.Drawing.Point(691, 523);
             this.tbBroadcast.Name = "tbBroadcast";
             this.tbBroadcast.Size = new System.Drawing.Size(301, 21);
             this.tbBroadcast.TabIndex = 30;
@@ -344,7 +345,7 @@
             // 
             // btnReadAdminPwd
             // 
-            this.btnReadAdminPwd.Location = new System.Drawing.Point(855, 352);
+            this.btnReadAdminPwd.Location = new System.Drawing.Point(865, 467);
             this.btnReadAdminPwd.Name = "btnReadAdminPwd";
             this.btnReadAdminPwd.Size = new System.Drawing.Size(74, 23);
             this.btnReadAdminPwd.TabIndex = 31;
@@ -487,7 +488,7 @@
             // 
             // btnReadBroadcast
             // 
-            this.btnReadBroadcast.Location = new System.Drawing.Point(817, 379);
+            this.btnReadBroadcast.Location = new System.Drawing.Point(827, 494);
             this.btnReadBroadcast.Name = "btnReadBroadcast";
             this.btnReadBroadcast.Size = new System.Drawing.Size(89, 23);
             this.btnReadBroadcast.TabIndex = 46;
@@ -515,7 +516,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(139, 235);
+            this.button1.Location = new System.Drawing.Point(139, 348);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 49;
@@ -525,14 +526,14 @@
             // 
             // tbAesTest
             // 
-            this.tbAesTest.Location = new System.Drawing.Point(139, 266);
+            this.tbAesTest.Location = new System.Drawing.Point(139, 379);
             this.tbAesTest.Name = "tbAesTest";
             this.tbAesTest.Size = new System.Drawing.Size(477, 21);
             this.tbAesTest.TabIndex = 50;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(220, 237);
+            this.button2.Location = new System.Drawing.Point(220, 350);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 51;
@@ -542,14 +543,14 @@
             // 
             // tbENcoderLen
             // 
-            this.tbENcoderLen.Location = new System.Drawing.Point(301, 239);
+            this.tbENcoderLen.Location = new System.Drawing.Point(301, 352);
             this.tbENcoderLen.Name = "tbENcoderLen";
             this.tbENcoderLen.Size = new System.Drawing.Size(64, 21);
             this.tbENcoderLen.TabIndex = 52;
             // 
             // btnGetKeyHex
             // 
-            this.btnGetKeyHex.Location = new System.Drawing.Point(371, 237);
+            this.btnGetKeyHex.Location = new System.Drawing.Point(371, 350);
             this.btnGetKeyHex.Name = "btnGetKeyHex";
             this.btnGetKeyHex.Size = new System.Drawing.Size(75, 23);
             this.btnGetKeyHex.TabIndex = 54;
@@ -559,7 +560,7 @@
             // 
             // btnGetIVHex
             // 
-            this.btnGetIVHex.Location = new System.Drawing.Point(452, 239);
+            this.btnGetIVHex.Location = new System.Drawing.Point(452, 352);
             this.btnGetIVHex.Name = "btnGetIVHex";
             this.btnGetIVHex.Size = new System.Drawing.Size(61, 23);
             this.btnGetIVHex.TabIndex = 53;
@@ -625,7 +626,7 @@
             // 
             // btnAdClear
             // 
-            this.btnAdClear.Location = new System.Drawing.Point(864, 293);
+            this.btnAdClear.Location = new System.Drawing.Point(874, 408);
             this.btnAdClear.Name = "btnAdClear";
             this.btnAdClear.Size = new System.Drawing.Size(75, 23);
             this.btnAdClear.TabIndex = 61;
@@ -635,7 +636,7 @@
             // 
             // btnAdRead
             // 
-            this.btnAdRead.Location = new System.Drawing.Point(865, 322);
+            this.btnAdRead.Location = new System.Drawing.Point(875, 437);
             this.btnAdRead.Name = "btnAdRead";
             this.btnAdRead.Size = new System.Drawing.Size(75, 23);
             this.btnAdRead.TabIndex = 62;
@@ -663,11 +664,22 @@
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
+            // btnSendPerson
+            // 
+            this.btnSendPerson.Location = new System.Drawing.Point(636, 297);
+            this.btnSendPerson.Name = "btnSendPerson";
+            this.btnSendPerson.Size = new System.Drawing.Size(74, 23);
+            this.btnSendPerson.TabIndex = 65;
+            this.btnSendPerson.Text = "下发一个人";
+            this.btnSendPerson.UseVisualStyleBackColor = true;
+            this.btnSendPerson.Click += new System.EventHandler(this.btnSendPerson_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(995, 436);
+            this.ClientSize = new System.Drawing.Size(995, 556);
+            this.Controls.Add(this.btnSendPerson);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.btnAdRead);
@@ -799,6 +811,7 @@
         private System.Windows.Forms.Button btnAdRead;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button btnSendPerson;
     }
 }
 

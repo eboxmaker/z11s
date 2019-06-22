@@ -867,9 +867,11 @@ JsonStatus_t JsonCmdManager::parsePerson(string &js,PersonDump_t &person)
 			Json::Value fingers = root["fingers"];
 			int fingers_size =  root["fingers"].size();
 			person.fingers.clear();
+			LOGD("fingers_size:%d",fingers_size);
 			for(int i = 0; i < fingers_size; i++)
 			{
 				person.fingers.push_back(fingers[i]["finger"].asString());
+				LOGD("finger:%s",person.fingers[i].c_str());
 			}
 
 

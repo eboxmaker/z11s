@@ -440,9 +440,9 @@ static bool onButtonClick_Button2(ZKButton *pButton) {
 			 finger.Enroll_Step1(u_id);
 			break;
 		case 1:
-		case 2:
-		case 3:
-		case 4:
+//		case 2:
+//		case 3:
+//		case 4:
 
 			 finger.Enroll_Step2(u_id);
 			LOGE("正在 第%d步",fingerInputState);

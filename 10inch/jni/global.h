@@ -12,6 +12,7 @@
 #include "lib/SocketClient.h"
 #include "player.h"
 #include "device.h"
+#include "person.h"
 
 
 using namespace std;
@@ -36,6 +37,9 @@ extern  long gKeyboardLastActionTime;
 
 extern doorState_t gDoorState;
 extern string gBroadcastMsg;
+
+
+extern Person gPersonAll;
 extern PersonDump_t gPersonDump;
 extern CourseInfo_t gCourseInfo;
 
