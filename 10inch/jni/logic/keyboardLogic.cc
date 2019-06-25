@@ -38,7 +38,6 @@
 */
 static string doorPwd;
 static doorState_t lastDoorState;
-bool is_requesting_finger;
 class LongClickListener : public ZKBase::ILongClickListener {
 
           virtual void onLongClick(ZKBase *pBase) {
@@ -101,6 +100,7 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 	string outstring;
 	string err ;
 	int id;
+	PersonInfo_t psInfo;
 	switch(cmd)
 	{
 /*	case CMD_GET_CURRENT_FEATURE:
@@ -148,14 +148,19 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 		*/
 	case CMD_SEARCH:
 		id = (data[0]<<8) + (data[1]);
-
-		uint8_t id = (data[0]<<8) + (data[1]);
 		if(id == 0){
 			mTextStatusNoticePtr->setText("不存在");
+			mTextStatusNotice2Ptr->setText(0);
 		}
 		else{
 			mTextStatusNoticePtr->setText("找到指纹");
-			mTextStatusNotice2Ptr->setText(id);
+			gPerson.get_person_by_finger_id(id, &psInfo);//(id, &psInfo);
+			mTextStatusNotice2Ptr->setText(psInfo.id);
+
+			string picFullName = PIC_DIR +  psInfo.picture_name;
+
+			LOGD("ID:%s,pic name:%s",psInfo.id.c_str(),psInfo.picture_name.c_str());
+			mBtnTecherPicturePtr->setBackgroundPic(picFullName.c_str());
 		}
     	mWindStatusNoticePtr->showWnd();
 
@@ -177,39 +182,39 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 
 	switch(cmd)
 	{
-	case CMDPerson:
-		if(status == StatusOK)
-		{
-			gSocket->disableTriger();
-			mWindStatusNoticePtr->showWnd();
-			mTextStatusNoticePtr->setText("查询成功");
-			temp += gPersonDump.name;
-			temp += "/";
-			temp += gPersonDump.id;
-			temp += "/";
-			switch(gPersonDump.level)
-			{
-			case 0:
-				temp += "管理员";
-				break;
-			case 1:
-				temp += "教师";
-				break;
-			case 2:
-				temp += "学生";
-				break;
-			}
-			mTextStatusNotice2Ptr->setText(temp.c_str());
-
-			sleep(3);
-			mWindStatusNoticePtr->hideWnd();
-		}
-		for(int i = 0 ; i < gPersonDump.fingers.size();i++)
-			LOGE("len:%d,%s",gPersonDump.fingers[i].length(),gPersonDump.fingers[i].c_str());
+//	case CMDPerson:
+//		if(status == StatusOK)
+//		{
+//			gSocket->disableTriger();
+//			mWindStatusNoticePtr->showWnd();
+//			mTextStatusNoticePtr->setText("查询成功");
+//			temp += gPersonAll.name;
+//			temp += "/";
+//			temp += gPersonAll.id;
+//			temp += "/";
+//			switch(gPersonAll.level)
+//			{
+//			case 0:
+//				temp += "管理员";
+//				break;
+//			case 1:
+//				temp += "教师";
+//				break;
+//			case 2:
+//				temp += "学生";
+//				break;
+//			}
+//			mTextStatusNotice2Ptr->setText(temp.c_str());
+//
+//			sleep(3);
+//			mWindStatusNoticePtr->hideWnd();
+//		}
+//		for(int i = 0 ; i < gPersonDump.fingers.size();i++)
+//			LOGE("len:%d,%s",gPersonDump.fingers[i].length(),gPersonDump.fingers[i].c_str());
 
 //		finger.getFeatures();
 //		LOGE("重新触发指纹");
-		break;
+//		break;
 	case CMDDelQRCode:
 
 	//	break;
@@ -350,7 +355,7 @@ static void onUI_show() {
     gKeyboardLastActionTime = time(NULL);
     gSocket->attachOnConnect(onNetConnect, 1);
     gSocket->attachOnDisconnect(onNetDisconnect, 1);
-    finger.getFeatures();
+    finger.search();
 
     if(gSocket->connected())
     {
@@ -481,10 +486,9 @@ static bool onUI_Timer(int id){
 		//dispMemUsage();
 		break;
 	case 1:
-		if(is_requesting_finger == false)
+		if(finger.is_on_search() == false)
 		{
-			is_requesting_finger = true;
-    		finger.getFeatures();
+    		finger.search();
     		LOGE("重新触发指纹");
 		}
 		break;

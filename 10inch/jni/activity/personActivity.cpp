@@ -4,6 +4,19 @@
 #include "personActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextFingerOnlineStatePtr;
+static ZKTextView* mTextview8Ptr;
+static ZKTextView* mTvConnectStatePtr;
+static ZKTextView* mTextview9Ptr;
+static ZKWindow* mWindStatePtr;
+static ZKTextView* mTextFingerTotalNumPtr;
+static ZKButton* mButton1Ptr;
+static ZKTextView* mTextview10Ptr;
+static ZKTextView* mTextFingerIDListPtr;
+static ZKTextView* mTextFingerNumPtr;
+static ZKTextView* mTextview7Ptr;
+static ZKButton* mBtnDeleteUserFingerPtr;
+static ZKButton* mBtnClearFinger1Ptr;
 static ZKTextView* mTextview5Ptr;
 static ZKEditText* mEditInstructionPtr;
 static ZKButton* mBtnPicturePtr;
@@ -65,6 +78,9 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_PERSON_Button1, onButtonClick_Button1,
+    ID_PERSON_BtnDeleteUserFinger, onButtonClick_BtnDeleteUserFinger,
+    ID_PERSON_BtnClearFinger1, onButtonClick_BtnClearFinger1,
     ID_PERSON_BtnPicture, onButtonClick_BtnPicture,
     ID_PERSON_BtnGetIDFeature, onButtonClick_BtnGetIDFeature,
     ID_PERSON_BtnReadCurrentFeature, onButtonClick_BtnReadCurrentFeature,
@@ -156,6 +172,19 @@ const char* personActivity::getAppName() const{
 //TAG:onCreate
 void personActivity::onCreate() {
 	Activity::onCreate();
+    mTextFingerOnlineStatePtr = (ZKTextView*)findControlByID(ID_PERSON_TextFingerOnlineState);
+    mTextview8Ptr = (ZKTextView*)findControlByID(ID_PERSON_Textview8);
+    mTvConnectStatePtr = (ZKTextView*)findControlByID(ID_PERSON_TvConnectState);
+    mTextview9Ptr = (ZKTextView*)findControlByID(ID_PERSON_Textview9);
+    mWindStatePtr = (ZKWindow*)findControlByID(ID_PERSON_WindState);
+    mTextFingerTotalNumPtr = (ZKTextView*)findControlByID(ID_PERSON_TextFingerTotalNum);
+    mButton1Ptr = (ZKButton*)findControlByID(ID_PERSON_Button1);
+    mTextview10Ptr = (ZKTextView*)findControlByID(ID_PERSON_Textview10);
+    mTextFingerIDListPtr = (ZKTextView*)findControlByID(ID_PERSON_TextFingerIDList);
+    mTextFingerNumPtr = (ZKTextView*)findControlByID(ID_PERSON_TextFingerNum);
+    mTextview7Ptr = (ZKTextView*)findControlByID(ID_PERSON_Textview7);
+    mBtnDeleteUserFingerPtr = (ZKButton*)findControlByID(ID_PERSON_BtnDeleteUserFinger);
+    mBtnClearFinger1Ptr = (ZKButton*)findControlByID(ID_PERSON_BtnClearFinger1);
     mTextview5Ptr = (ZKTextView*)findControlByID(ID_PERSON_Textview5);
     mEditInstructionPtr = (ZKEditText*)findControlByID(ID_PERSON_EditInstruction);if(mEditInstructionPtr!= NULL){mEditInstructionPtr->setTextChangeListener(this);}
     mBtnPicturePtr = (ZKButton*)findControlByID(ID_PERSON_BtnPicture);

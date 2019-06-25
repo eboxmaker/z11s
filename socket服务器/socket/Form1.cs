@@ -25,6 +25,24 @@ namespace socket
         int ServerPort = 6000;
         int IPNum = 0;
         bool serverOpenFlag = false;
+
+        string[] fingers = {
+                    "DQgSYgEKpV9hDBzMIRyPn2Evj51BOx0DgQ8gYAInhB+CKx+YojQeWYI+nxjCQJaEYg0QjCEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXGg==",
+                    "EgwT4CEPHF6BD4yg4RQfGuEXkd8BGQffwSUEH6EsIwCBLw9cgTOd16E+k9khCB7JIhMSiWIVm8eiFgsKAjWWw8I2kAVCQx5BogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXGg==",
+                    "DBQEHsEdkQXhJogGgQgMSQIKnMOiHhrsoiiQA0IvmlUiNBmrwjSiVEI3lJaCOaHqYgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXGg==",
+                    "CggJ3eESDUaBFZhDgRsEBwElDZpBPAYD4Qocw6IplIJCMqCVAjka7AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXGg==",
+                    "BwgFLGEXBtWBLg8p4S+EKsFAimkhFA9pgkMfqOIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXGg==",
+                    "CggUF+EPiRnBEY6DYSYY1yExH1ZhPiBAYQkKg8ItisLiOyGXwiiEGgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXGg==",
+                    "BggU0OETi+xBHZJTYTGEF4E+lFShDR7mwgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXGg==",
+                    "CwgIGAEfmWrhJKIn4SuXlME0m9PBOxQAARWSVcIakIBiHRgTYh2FGEI1BBiCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXGg==",
+                    "EAgL5GESDU4hFBrNgRgGaAEYl6VBLBpOoTCcZAEyIWNhNJglQToS5yEKm6PCDYQPYhojI6Ieh6eiHxqkgjKO6AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXGg==",
+                    "Dg8VTSEZBIQhJpEAoSgejuEooaahMYQZITmWLGE8i0JBF5GsQh2gpIIkktTiMxBAIjsPFoIIEWsBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXGg=="
+                    };
+
+
+        JsonManager.Person[] person = new JsonManager.Person[3];
+
+
         public Form1()
         {
             mainForm = this;
@@ -36,6 +54,30 @@ namespace socket
                 cbLocalIPList.Items.Add(str[i]);
             }
             cbLocalIPList.SelectedIndex = 0;
+            for (int i = 0; i < 3; i++ )
+            {
+                person[i].id = "20180920" + i.ToString("D2");
+                person[i].name = "USER" + i.ToString("D2");
+                person[i].level = i%3;
+                person[i].picture_name = "touxiang" + i.ToString() + ".jpg";
+            }
+            person[0].fingers = new string[3];
+            person[0].fingers[0] = fingers[0];
+            person[0].fingers[1] = fingers[1];
+            person[0].fingers[2] = fingers[2];
+
+            person[1].fingers = new string[2];
+            person[1].fingers[0] = fingers[3];
+            person[1].fingers[1] = fingers[4];
+
+            person[2].fingers = new string[5];
+            person[2].fingers[0] = fingers[5];
+            person[2].fingers[1] = fingers[6];
+            person[2].fingers[2] = fingers[7];
+            person[2].fingers[3] = fingers[8];
+            person[2].fingers[4] = fingers[9];
+
+
         }
 
         private void btnStartServer_Click(object sender, EventArgs e)
@@ -104,6 +146,8 @@ namespace socket
             }
             else
             {
+
+                
                 string resault;
                 string enjs = Encoding.UTF8.GetString(datagram);
 
@@ -225,19 +269,34 @@ namespace socket
                         break;
 
                     case JsonManager.CMDType.Person:
-                        string[] fingers = {"1111111111","wwwwwwwwwww","124e2qerfwf"};
+
+                        //if (status == JsonManager.StatusType.StatusRead)
+                        //{
+                        //    resault = JsonManager.MakePerson(person[0], JsonManager.StatusType.StatusOK);
+                        //    server.SendAll(resault);
+                        //}
+                        //if (status == JsonManager.StatusType.StatusSet)
+                        //{
+                        //    resault = JsonManager.MakePerson(person[0], JsonManager.StatusType.StatusOK);
+                        //    server.SendAll(resault);
+                        //}
+                        //break;
+                    case JsonManager.CMDType.Finger:
+                        string idtemp = JsonManager.parseFinger(js);
+                        int id_temp = Convert.ToInt32(idtemp);
+                        id_temp = id_temp % 10;
                         if (status == JsonManager.StatusType.StatusRead)
                         {
-                            resault = JsonManager.MakePerson("201800123", "张云峰", 0, fingers, "touxiang.jpg",JsonManager.StatusType.StatusOK);
+                            resault = JsonManager.MakeFinger(person[id_temp], JsonManager.StatusType.StatusOK);
                             server.SendAll(resault);
                         }
                         if (status == JsonManager.StatusType.StatusSet)
                         {
-                            resault = JsonManager.MakePerson("201800123", "张云峰", 0, fingers, "touxiang.jpg",JsonManager.StatusType.StatusOK);
+                            resault = JsonManager.MakeFinger(person[id_temp], JsonManager.StatusType.StatusOK);
                             server.SendAll(resault);
                         }
                         break;
-
+                        break;
                     case JsonManager.CMDType.CMDVersion:
 
 
@@ -561,28 +620,16 @@ namespace socket
 
         private void btnSendPerson_Click(object sender, EventArgs e)
         {
+            int id = Convert.ToInt16(tbPersonId.Text);
+            string resault = JsonManager.MakeFinger(person[id], JsonManager.StatusType.StatusSet);
+            server.SendAll(resault);
+        }
 
-            string[] fingers = { "DggOR6EUFlvhKIzFgTibACE7l5cBQ5AXgQyjBMIcnYPiLqECAj+YQCJAD4EiRg0BgkYdLKIfhB2iAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXGg==",
-                                 "DhQWB6EYHsNBHpKGISeIxKEsHNchMZaYYUCOl8FAlkGhCCRFohsMBwImhBvCMBtB4jQjVwI5ImviAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXGg==",
-                                };
-            string resault = JsonManager.MakePerson("201800123", "张云峰", 0, fingers, "touxiang.jpg", JsonManager.StatusType.StatusSet);
-                string str = JsonManager.unPackage(resault);
-                byte[] b1 = Convert.FromBase64String(fingers[0]);
-                byte[] b2 = Convert.FromBase64String(fingers[1]);
-
-                string str1 = "";
-                for (int i = 0; i < b1.Length; i++) {
-                    str1 += b1[i].ToString();
-                    str1 += "\t";
-                    str1 += b2[i].ToString();
-                    str1 += "\r\n";
-
-                }
-
-
-                RichSend.Text = str1;
-            
-                server.SendAll(resault);
+        private void btnSendPerson_Click_1(object sender, EventArgs e)
+        {
+            int id = Convert.ToInt16(tbPersonId.Text);
+            string resault = JsonManager.MakePerson(person[id], JsonManager.StatusType.StatusSet);
+            server.SendAll(resault);
         }
         
 

@@ -26,6 +26,20 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_PERSON_TextFingerOnlineState    50020
+#define ID_PERSON_Textview8    50019
+#define ID_PERSON_TvConnectState    50010
+#define ID_PERSON_Textview9    50018
+#define ID_PERSON_TextFingerState    50017
+#define ID_PERSON_WindState    110002
+#define ID_PERSON_TextFingerTotalNum    50016
+#define ID_PERSON_Button1    20012
+#define ID_PERSON_Textview10    50015
+#define ID_PERSON_TextFingerIDList    50014
+#define ID_PERSON_TextFingerNum    50013
+#define ID_PERSON_Textview7    50012
+#define ID_PERSON_BtnDeleteUserFinger    20004
+#define ID_PERSON_BtnClearFinger1    20011
 #define ID_PERSON_Textview5    50011
 #define ID_PERSON_EditInstruction    51002
 #define ID_PERSON_BtnPicture    20002
@@ -34,7 +48,6 @@
 #define ID_PERSON_BtnUpdateServer    20008
 #define ID_PERSON_BtnSetTimeout    20007
 #define ID_PERSON_BtnReadTimeout    20006
-#define ID_PERSON_TextFingerState    50010
 #define ID_PERSON_BtnClearFinger    20005
 #define ID_PERSON_TextPersonID    50005
 #define ID_PERSON_TextPersonLevel    50007

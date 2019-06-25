@@ -8,7 +8,7 @@
 #include "uart/Uart.h"
 #include "utils/log.h"
 #include "Finger.h"
-
+#include "lib/base64.h"
 using namespace std;
 
 
@@ -16,74 +16,120 @@ FingerNotify_t fingerCallback;
 
 void innerFingerNotify(unsigned char cmd,int cmdState,unsigned char *data, unsigned int len)
 {
+	uint16_t id = 0;
 //  for(int i = 0; i < len; i++)
 //	  LOGD("parse:0x%02x",data[i]);
+	finger.set_search_state(false);
+	finger.set_online(true);
 	switch(cmd)
 	{
 		case CMD_GET_FREE:
 			if(finger.ack == ACK_SUCCESS){
-				finger.freeid = (data[0]<<8) + (data[1]);
-				LOGD("========finger id ok:%d=%d=len:%d===",finger.ack,finger.freeid,len);
+				id = (data[0]<<8) + (data[1]);
+				LOGD("=找到空闲位置：%d",id);
 			}
-			else if(finger.ack == ACK_NOUSER)
-				LOGD("========finger id NO USER=====");
 			else{
-				LOGD("========finger id err:%d=%d=len:%d===",finger.ack,finger.freeid,len);
+				LOGD("=没有找到空闲位置：err:%d",finger.ack);
 
 			}
 			break;
 		case CMD_SET_ID_FEATURE:
 			if(finger.ack == ACK_SUCCESS){
-				LOGD("========finger 写入成功===",finger.ack);
+				LOGD("=设置ID Fearturs成功===");
 			}
 
 			else{
-				LOGD("========finger 写入失败===",finger.ack);
+				LOGD("=设置ID Fearturs失败：%d===",finger.ack);
 
 			}
 			break;
 		case CMD_GET_CURRENT_FEATURE:
 			if(finger.ack == ACK_SUCCESS){
-				LOGD("========获取当前指纹成功===",finger.ack);
+				LOGD("=获取当前指纹成功===",finger.ack);
 			}
 
 			else{
-				LOGD("========获取当前指纹失败===",finger.ack);
+				LOGD("=获取当前指纹失败===",finger.ack);
 
 			}
 			break;
 		case CMD_SEARCH:
 
-			uint8_t id = (data[0]<<8) + (data[1]);
+			id = (data[0]<<8) + (data[1]);
 			if(id == 0)
-				LOGD("========没有找到指纹===");
+				LOGD("=没有找到指纹===");
 			else
-				LOGD("========找到对应指纹：%d===",id);
-
-			finger.search();
+				LOGD("=找到对应指纹：%d===",id);
 			break;
+
+//		case CMD_SEARCH_FEATURE:
+//			id = (data[0]<<8) + (data[1]);
+//			if(id == 0)
+//				LOGD("=上传指纹匹配：失败===");
+//			else
+//				LOGD("=上传指纹匹配：成功：%d===",id);
+//			break;
 	}
 }
 
 Finger::Finger() :
 		ack(-1),
-		exeState(exeFree),
 		state(HEAD),
 		cmdState(0),
 		counter(0){
 	// TODO 自动生成的构造函数存根
 	fingerCallback = NULL;
+	on_search_state = false;
+	online_state = false;
+	check_online_async();
 }
 
 Finger::~Finger() {
 	// TODO 自动生成的析构函数存根
 }
+
+bool Finger::add_featurs_sync(uint16_t *id/*返回ID*/,string &features/*指纹数据*/)
+{
+	string out = "";
+
+	Base64::Decode(features, &out);
+
+	*id = search_features(out);
+	if(*id){
+		LOGD("指纹已存在:%d",*id);
+		return true;
+	}
+	else{
+		if(get_free(1, 150, id) == true){
+//				LOGD("id：%d",id);
+
+			if(finger.set_id_features(*id, out) == true)
+			{
+				LOGD("添加指纹成功");
+				return true;
+			}
+			else{
+				LOGD("添加指纹失败");
+				return false;
+			}
+		}
+		else
+		{
+			LOGD("没有在指纹模块中找到合适得位置");
+			return false;
+		}
+	}
+	return false;
+
+}
+
+
 /*******************************************************************************
 **注册指纹
 **输入两次指纹注册一个指纹模板
 **参数：UserID 指纹号
 *******************************************************************************/
-void Finger::Enroll_Step1(unsigned int u_id)
+void Finger::roll_step1(unsigned int u_id)
 {
   unsigned char buf[8];
 
@@ -93,7 +139,7 @@ void Finger::Enroll_Step1(unsigned int u_id)
   *(buf+3) = 1;
   *(buf+4) = 0x00;
 
-  sendPackage( buf ,5);
+  send_package( buf ,5);
 }
 
 /*******************************************************************************
@@ -101,7 +147,7 @@ void Finger::Enroll_Step1(unsigned int u_id)
 **输入两次指纹注册一个指纹模板
 **参数：UserID 指纹号
 *******************************************************************************/
-void Finger::Enroll_Step2(unsigned int u_id)
+void Finger::roll_step2(unsigned int u_id)
 {
   unsigned char buf[8];
 
@@ -111,7 +157,7 @@ void Finger::Enroll_Step2(unsigned int u_id)
   *(buf+3) = 1;
   *(buf+4) = 0x00;
 
-   sendPackage(buf ,5);
+   send_package(buf ,5);
 }
 
 /*******************************************************************************
@@ -119,7 +165,7 @@ void Finger::Enroll_Step2(unsigned int u_id)
 **输入三次指纹注册一个指纹模板
 **参数：UserID 指纹号
 *******************************************************************************/
-void Finger::Enroll_Step3(unsigned int u_id)
+void Finger::roll_step3(unsigned int u_id)
 {
   unsigned char buf[8];
 
@@ -129,11 +175,11 @@ void Finger::Enroll_Step3(unsigned int u_id)
   *(buf+3) = 1;
   *(buf+4) = 0x00;
 
-  sendPackage(buf ,5);
+  send_package(buf ,5);
 }
 
 
-void Finger::getFeatures()
+void Finger::get_features_async()
 {
 	int ret;
 	unsigned char buf[8];
@@ -144,25 +190,63 @@ void Finger::getFeatures()
 	buf[i++] = 0;
 	buf[i++] = 0;
 
-	sendPackage(buf,5);
+	send_package(buf,5);
 
 }
 //获取指定ID的指纹模板信息
-void Finger::getFeatures(unsigned int id)
+void Finger::get_id_features_async(uint16_t id)
 {
 	unsigned char buf[8];
 	int i = 0;
+	ack = ACK_SUSPEND;
 	buf[i++] = CMD_GET_ID_FEATURE;
 	buf[i++] = id>>8;
 	buf[i++] = id&0xff;
 	buf[i++] = 0;
 	buf[i++] = 0;
-	sendPackage(buf,5);
+	send_package(buf,5);
+
+}
+//获取指定ID的指纹模板信息
+bool Finger::get_id_features(uint16_t id,unsigned char *features)
+{
+	unsigned char buf[8];
+	int i = 0;
+	ack = ACK_SUSPEND;
+	buf[i++] = CMD_GET_ID_FEATURE;
+	buf[i++] = id>>8;
+	buf[i++] = id&0xff;
+	buf[i++] = 0;
+	buf[i++] = 0;
+	send_package(buf,5);
+
+	while((ack != ACK_SUSPEND) || (cmdState != 1)){
+		Thread::sleep(10);
+		if(counter++ > 300){
+//			LOGD("RETURN TIMEOUT:%d",ack);
+			return false;
+		}
+	}
+	if(ack == ACK_SUCCESS){
+		for(int i = 0; i < 193;i++)
+			features[i] = rbuf[i+4];
+		LOGD("获取%d号指纹成功",id);
+		return true;
+	}
+	else{
+//		LOGD("RETURN FALSE CODE:%D",ack);
+		return false;
+	}
 }
 
+bool Finger::set_id_features(uint16_t id,string &features)
+{
+
+	set_id_features(id,(const unsigned char *)features.c_str());
+}
 
 //上传从服务器获取的人员的模板信息，并存入指定区间（10-39）
-bool Finger::setIdFeatures(unsigned int id,unsigned char *sbuf)
+bool Finger::set_id_features(uint16_t id,const unsigned char *features)
 {
 	unsigned char buf[256];
 	ack = ACK_SUSPEND;
@@ -173,28 +257,27 @@ bool Finger::setIdFeatures(unsigned int id,unsigned char *sbuf)
 	buf[i++] = len&0xff;
 	buf[i++] = 0;
 	buf[i++] = 0;
-	sendPackage(buf,5) ;
+	send_package(buf,5) ;
 
 
 	i = 0;
 	buf[i++] = id>>8;
 	buf[i++] = id&0xff;
-	buf[i++] = 0;
+	buf[i++] = 1;
 	for(int j = 0; j < 193; j++)
 	{
-		buf[i++] = sbuf[j];
+		buf[i++] = features[j];
 	}
-	 sendPackage(buf,196);
+	 send_package(buf,196);
 
 	while(ack == ACK_SUSPEND){
-		Thread::sleep(100);
-		if(counter++ > 100){
+		Thread::sleep(10);
+		if(counter++ > 300){
 //			LOGD("RETURN TIMEOUT:%d",ack);
 			return false;
 		}
 	}
 	if(ack == ACK_SUCCESS){
-		search();
 //		LOGD("RETURN TRUE");
 		return true;
 	}
@@ -202,6 +285,7 @@ bool Finger::setIdFeatures(unsigned int id,unsigned char *sbuf)
 //		LOGD("RETURN FALSE CODE:%D",ack);
 		return false;
 	}
+	return false;
 }
 
 /*******************************************************************************
@@ -209,7 +293,7 @@ bool Finger::setIdFeatures(unsigned int id,unsigned char *sbuf)
 **参数：
 **返回：无
 *******************************************************************************/
-void Finger::clear(void)
+void Finger::clear_async(void)
 {
 	int ret = -1;
   unsigned char buf[8];
@@ -220,23 +304,107 @@ void Finger::clear(void)
   *(buf+3) = 0x00;
   *(buf+4) = 0x00;
 
-   sendPackage(buf,5);
+   send_package(buf,5);
 
 }
-void Finger::deleteIdFeatures(unsigned int id)//获取指定ID的指纹模板信息
+bool Finger::delete_id_features(uint16_t id)//获取指定ID的指纹模板信息
 {
 	int ret = -1;
 	int i = 0;
 	unsigned char buf[8];
-
+	ack = ACK_SUSPEND;
 	buf[i++] = CMD_DELETE;
 	buf[i++] = id>>8;
 	buf[i++] = id&0xff;
 	buf[i++] = 0;
 	buf[i++] = 0;
 
-	sendPackage(buf,i);
+	send_package(buf,i);
+
+
+	while(ack == ACK_SUSPEND){
+		Thread::sleep(10);
+		if(counter++ > 300){
+//			LOGD("RETURN TIMEOUT:%d",ack);
+			return false;
+		}
+	}
+	if(ack == ACK_SUCCESS){
+//		LOGD("RETURN TRUE");
+		return true;
+	}
+	else{
+//		LOGD("RETURN FALSE CODE:%D",ack);
+		return false;
+	}
+	return false;
 }
+void Finger::check_online_async(){
+	uint16_t num = 0;
+	int i = 0;
+	unsigned char buf[8];
+	ack = ACK_SUSPEND;
+	buf[i++] = CMD_GET_SERIAL;
+	buf[i++] = 0;
+	buf[i++] = 0;
+	buf[i++] = 0;
+	buf[i++] = 0;
+
+	send_package(buf,i);
+	online_state = false;
+}
+
+
+void Finger::get_total_num_async()
+{
+	uint16_t num = 0;
+	int i = 0;
+	unsigned char buf[8];
+	ack = ACK_SUSPEND;
+	buf[i++] = CMD_USERNUMB;
+	buf[i++] = 0;
+	buf[i++] = 0;
+	buf[i++] = 0;
+	buf[i++] = 0;
+
+	send_package(buf,i);
+}
+
+uint16_t Finger::get_total_num()
+{
+	uint16_t num = 0;
+	int i = 0;
+	unsigned char buf[8];
+	ack = ACK_SUSPEND;
+	buf[i++] = CMD_USERNUMB;
+	buf[i++] = 0;
+	buf[i++] = 0;
+	buf[i++] = 0;
+	buf[i++] = 0;
+
+	send_package(buf,i);
+
+
+	while(ack == ACK_SUSPEND){
+		Thread::sleep(10);
+		if(counter++ > 300){
+//			LOGD("RETURN TIMEOUT:%d",ack);
+			return 0;
+		}
+	}
+	if(ack == ACK_SUCCESS){
+		num = (rbuf[2]<<8) + (rbuf[3]);
+//		LOGD("RETURN TRUE");
+		return num;
+	}
+	else{
+//		LOGD("RETURN FALSE CODE:%D",ack);
+		return 0;
+	}
+	return 0;
+}
+
+
 void Finger::search()
 {
 	int i = 0;
@@ -248,24 +416,83 @@ void Finger::search()
 	buf[i++] = 0;
 	buf[i++] = 0;
 
-	sendPackage(buf,i);
+	send_package(buf,i);
 }
+uint16_t Finger::search_features(const unsigned char *features){
+	unsigned char buf[256];
+	ack = ACK_SUSPEND;
+	int i = 0;
+	uint16_t len = 196;
+	uint8_t id;
+	buf[i++] = CMD_SEARCH_FEATURE;
+	buf[i++] = len>>8;
+	buf[i++] = len&0xff;
+	buf[i++] = 0;
+	buf[i++] = 0;
+	send_package(buf,5) ;
 
+
+	i = 0;
+	buf[i++] = 0;
+	buf[i++] = 0;
+	buf[i++] = 0;
+	for(int j = 0; j < len - 3; j++)
+	{
+		buf[i++] = features[j];
+	}
+	 send_package(buf,len);
+
+	while(ack == ACK_SUSPEND){
+		Thread::sleep(10);
+		if(counter++ > 300){
+//			LOGD("searchFeatures RETURN TIMEOUT:%s",err_to_string(ack).c_str());
+			return 0;
+		}
+	}
+	if(ack == ACK_SUCCESS){
+		id = (rbuf[2]<<8) + (rbuf[3]);
+//		LOGD("searchFeatures true");
+		return id;
+	}
+	else{
+//		LOGD("searchFeatures false CODE:%s",err_to_string(ack).c_str());
+		return 0;
+	}
+	return 0;
+}
+uint16_t Finger::search_features(string &features){
+	if(features.size() != 193){
+		LOGE("特征数据有误");
+		return 0;
+	}
+	return search_features(features.c_str());
+}
+uint16_t Finger::search_features_base64(string &Base64FeatureString)
+{
+	string out = "";
+	Base64::Decode(Base64FeatureString, &out);
+	return search_features(out);
+
+}
 bool  Finger::get_free(uint16_t start,uint16_t end,uint16_t *freeid)
 {
-	Thread::sleep(1000);
 
 	int counter = 0;
 	ack = ACK_SUSPEND;
 	uint8_t date_len = 4;
 	unsigned char buf[20];
 	int i = 0;
+	if(start == 0) start = 1;
+	if(start >= MAX_USERNUM) start = MAX_USERNUM;
+	if(end < start) end = start;
+	if(end >= MAX_USERNUM) end = MAX_USERNUM;
+
 	buf[i++] = CMD_GET_FREE;
 	buf[i++] = date_len>>8;
 	buf[i++] = date_len&0xff;
 	buf[i++] = 0;
 	buf[i++] = 0;
-	sendPackage(buf,i) ;
+	send_package(buf,i) ;
 
 	i = 0;
 	buf[i++] = start>>8;
@@ -273,16 +500,16 @@ bool  Finger::get_free(uint16_t start,uint16_t end,uint16_t *freeid)
 	buf[i++] = end>>8;
 	buf[i++] = end&0xff;
 
-	sendPackage(buf,i);
+	send_package(buf,i);
 	while(ack == ACK_SUSPEND){
-		Thread::sleep(100);
-		if(counter++ > 10){
+		Thread::sleep(10);
+		if(counter++ > 300){
 //			LOGD("RETURN TIMEOUT:%d",ack);
 			return false;
 		}
 	}
 	if(ack == ACK_SUCCESS){
-		*freeid = this->freeid;
+		*freeid = (rbuf[2]<<8) + (rbuf[3]);
 //		LOGD("RETURN TRUE");
 		return true;
 	}
@@ -292,7 +519,7 @@ bool  Finger::get_free(uint16_t start,uint16_t end,uint16_t *freeid)
 	}
 }
 
-void Finger::getTimeout()
+void Finger::get_timeout()
 {
 	int ret;
 	unsigned char buf[8];
@@ -303,9 +530,10 @@ void Finger::getTimeout()
 	*(buf+3) = 0x01;
 	*(buf+4) = 0x00;
 
-	sendPackage(buf,5);
+	send_package(buf,5);
+
 }
-void Finger::setTimeout(unsigned char sec)
+void Finger::set_timeout(unsigned char sec)
 {
 	int ret;
 	unsigned char buf[8];
@@ -315,7 +543,7 @@ void Finger::setTimeout(unsigned char sec)
 	*(buf+2) = sec;
 	*(buf+3) = 0x00;
 	*(buf+4) = 0x00;
-	sendPackage(buf,5);
+	send_package(buf,5);
 }
 
 /*******************************************************************************
@@ -334,32 +562,8 @@ unsigned char Finger::genCheck(unsigned char wLen,unsigned char *ptr)
 	return temp;
 }
 
-/*******************************************************************************
-**功能: 发送控制指纹芯片指令
-**参数: wLen 数据长度
-        cpPara 发送的数据
-**返回：void
-*******************************************************************************/
-void Finger::sendPackage(unsigned char *ptr,unsigned char wLen)
-{
-  unsigned int i=0,len=0;
 
-
-  tbuf[0] = DATA_START;//指令包
-  for(i = 0; i < wLen; i++)      // data in packet
-  {
-	  tbuf[1+i] = *(ptr+i);
-  }
-  tbuf[wLen + 1] = genCheck(wLen, ptr);         //Generate checkout data
-  tbuf[wLen + 2] = DATA_END;
-  len = wLen + 3;
-  uart2.send(tbuf,len);
-//  for(int i = 0; i < len; i++)
-//	  LOGD("tx%d:0x%02x",i,tbuf[i]);
-  LOGD("发送一帧数据");
-}
-
-string Finger::errToString(int err)
+string Finger::err_to_string(int err)
 {
 	string errStr;
 	switch(err)
@@ -395,9 +599,56 @@ string Finger::errToString(int err)
 	return errStr;
 
 }
-int Finger::parseHead(char ch)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*******************************************************************************
+**功能: 发送控制指纹芯片指令
+**参数: wLen 数据长度
+        cpPara 发送的数据
+**返回：void
+*******************************************************************************/
+void Finger::send_package(unsigned char *ptr,unsigned char wLen)
 {
-	static bool isHaveDate = false;
+  unsigned int i=0,len=0;
+
+
+  tbuf[0] = DATA_START;//指令包
+  for(i = 0; i < wLen; i++)      // data in packet
+  {
+	  tbuf[1+i] = *(ptr+i);
+  }
+  tbuf[wLen + 1] = genCheck(wLen, ptr);         //Generate checkout data
+  tbuf[wLen + 2] = DATA_END;
+  len = wLen + 3;
+  uart2.send(tbuf,len);
+//  for(int i = 0; i < len; i++)
+//	  LOGD("tx%d:0x%02x",i,tbuf[i]);
+//  LOGD("发送一帧数据");
+  if(tbuf[1] != CMD_SEARCH)
+	  on_search_state = false;
+  else
+  {
+	  LOGD("发送对比指令");
+	  on_search_state = true;
+  }
+}
+int Finger::parse_head(char ch)
+{
 
 	switch(state)
 	{
@@ -438,12 +689,13 @@ int Finger::parseHead(char ch)
 					cmd = rbuf[1];
 					ack = rbuf[4];
 
+					innerFingerNotify(cmd,cmdState,&rbuf[2],2);
+
 					if(fingerCallback != NULL)
 						fingerCallback(cmd,cmdState,&rbuf[2],2);
 
-					innerFingerNotify(cmd,cmdState,&rbuf[2],2);
 
-					LOGD("finger parse head ok\n");
+//					LOGD("finger parse head ok\n");
 					if(cmd == CMD_GET_CURRENT_FEATURE || cmd == CMD_GET_ID_FEATURE)
 					{
 						if(rbuf[4] == ACK_SUCCESS || rbuf[4] == ACK_TIMEOUT)
@@ -478,10 +730,9 @@ int Finger::parseHead(char ch)
 	return retState;
 
 }
-int Finger::parseDate(char ch)
+int Finger::parse_date(char ch)
 {
 
-	static bool isHaveDate = false;
 
 	switch(state)
 	{
@@ -516,13 +767,14 @@ int Finger::parseDate(char ch)
 				unsigned int temp = genCheck(counter - 3,&rbuf[1]);
 				if(temp == check)
 				{
+					innerFingerNotify(cmd,cmdState,&rbuf[1],dataLen);
+
 					if(fingerCallback != NULL)
 						fingerCallback(cmd,cmdState,&rbuf[1],dataLen);
 
-					innerFingerNotify(cmd,cmdState,&rbuf[1],dataLen);
 
 					cmdState = 0;
-					LOGD("finger parse data ok\n");
+//					LOGD("finger parse data ok\n");
 					retState = 0;
 				}
 				else
@@ -553,14 +805,14 @@ int Finger::parseDate(char ch)
 }
 void Finger::parser(char ch)
 {
-	LOGD("rx event %D:%d(%d):%x\r\n",counter,state,cmdState,ch);
+//	LOGD("rx event %D:%d(%d):%x\r\n",counter,state,cmdState,ch);
 	switch(cmdState)
 	{
 		case 0:
-			retState = parseHead(ch);
+			retState = parse_head(ch);
 			break;
 		case 1:
-			retState = parseDate(ch);
+			retState = parse_date(ch);
 			break;
 		default:
 			LOGD("异常错误");

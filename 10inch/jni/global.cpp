@@ -27,8 +27,8 @@ SocketClient* gSocket= new SocketClient();
 
 
 long gKeyboardLastActionTime = 0;
-Person gPersonAll;
-PersonDump_t gPersonDump;
+Person gPerson;
+PersonAll_t gPersonAll;
 CourseInfo_t gCourseInfo;
 
 string gBroadcastMsg;
@@ -418,22 +418,52 @@ void exeCMD(string &package)
 			break;
 
 		case CMDPerson:
-			LOGD("收到person命令：");
-			status = jm.parsePerson(js, gPersonDump);
+//			LOGD("收到person命令：");
+			status = jm.parsePerson(js, gPersonAll);
 			if(status == StatusOK)
 			{
-				msg = PIC_DIR + gPersonDump.picture.name;
-				creat_file(msg,gPersonDump.picture.data.c_str(),gPersonDump.picture.data.size());
-				gPersonDump.picture.data = "";
+				msg = PIC_DIR + gPersonAll.picture.name;
+				creat_file(msg,gPersonAll.picture.data.c_str(),gPersonAll.picture.data.size());
+				gPersonAll.picture.data = "";
 				//LOGE("%s，%s",gPersonDump.name.c_str(),gPersonDump.course.c_str());
 
 			}
 			else if(status == StatusSet)
 			{
-				gPersonAll.add(gPersonDump);
-				ack = jm.makePerson(gPersonDump, StatusOK);
+				gPerson.add(gPersonAll);
+				msg = PIC_DIR + gPersonAll.picture.name;
+				creat_file(msg,gPersonAll.picture.data.c_str(),gPersonAll.picture.data.size());
+				gPersonAll.picture.data = "";
+
+				ack = jm.makePerson(gPersonAll, StatusOK);
 				gSocket->write_(ack);
 			}
+			break;
+		case CMDFinger:
+			LOGD("收到Finger");
+			status = jm.parseFinger(js, gPersonAll);
+			if(status == StatusOK)
+			{
+				uint16_t id;
+				msg = PIC_DIR + gPersonAll.picture.name;
+				creat_file(msg,gPersonAll.picture.data.c_str(),gPersonAll.picture.data.size());
+				gPersonAll.picture.data = "";
+				for(int i = 0; i < gPersonAll.fingers.size(); i++)
+				{
+					if(finger.add_featurs_sync(&id, gPersonAll.fingers[i]))
+						LOGD("添加临时成功");
+					else
+						LOGD("添加临时失败");
+				}
+//				gPerson.add(gPersonAll);
+				//LOGE("%s，%s",gPersonDump.name.c_str(),gPersonDump.course.c_str());
+
+			}
+//			else if(status == StatusSet)
+//			{
+//				ack = jm.makeFinger(gPersonDump, StatusOK);
+//				gSocket->write_(ack);
+//			}
 			break;
 		case CMDVersion:
 			status = jm.parseVersion(js);

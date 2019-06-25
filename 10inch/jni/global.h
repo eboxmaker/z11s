@@ -39,8 +39,8 @@ extern doorState_t gDoorState;
 extern string gBroadcastMsg;
 
 
-extern Person gPersonAll;
-extern PersonDump_t gPersonDump;
+extern Person gPerson;
+extern PersonAll_t gPersonAll;
 extern CourseInfo_t gCourseInfo;
 
 

@@ -41,68 +41,88 @@
  * */
 
 static int fingerInputState = 0;
-static int fingerNum = 1;
+static uint16_t fingerNum = 1;
 static string para_err ;
 static int para_len;
+static PersonAll_t tPersonTrans;
+static PersonInfo_t tPersonInfo;
+static bool update_person_flag = false;
+static void update_person_sync()
+{
+	string id_list = "";
+	uint16_t id = 0;
+	char buf[6];
+	for(int i = 0; i < tPersonTrans.fingers.size();i++)
+	{
+		id = finger.search_features_base64(tPersonTrans.fingers[i]);
+		sprintf(buf,"%d",id);
+		id_list += buf;
+		id_list += ",";
+		tPersonInfo.finger_id.push_back(id);
+	}
+	mTextFingerIDListPtr->setText(id_list);
+	mTextFingerNumPtr->setText((uint8_t)tPersonTrans.fingers.size());
+	mTextFingerTotalNumPtr->setText(finger.get_total_num());
 
+}
 static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, unsigned int len)
 {
 	char temp_buf[1024];
 	char out[1024];
 	int id;
 
-//	for(int i = 0; i < len ; i++)
-//		LOGD("RX %D:%X",i,data[i]);
 	switch(cmd)
 	{
-	case CMD_GET_CURRENT_FEATURE:
-		if(cmdState == 0)
-		{
-			para_len = ((data[0])<<8) + data[1];
-			para_err = finger.errToString(data[2]);
-			LOGE("获取ID指纹执行状态%s,len:%d",para_err.c_str(),para_len);
-			mTextFingerStatePtr->setText(para_err.c_str());
-		}
-		else if(cmdState == 1)
-		{
-			LOGE("获取指纹特征长度：%d",len);
-			if(len == 0)
-			{
-				mTextFingerStatePtr->setText("获取失败:" + para_err);
-			}
-			else if(Base64::Encode(data, len, out, 1024) == true)
-			{
-	//			gPersonDump.fingers.push_back(outstring);
-	//			for(int i = 0 ; i < gPersonDump.fingers.size();i++)
-	//				LOGE("len:%d,%s",gPersonDump.fingers[i].length(),gPersonDump.fingers[i].c_str());
-				mTextFingerStatePtr->setText("获取当前指纹成功");
-			}
+//	case CMD_GET_CURRENT_FEATURE:
+//		if(cmdState == 0)
+//		{
+//			para_len = ((data[0])<<8) + data[1];
+//			para_err = finger.errToString(data[2]);
+//			LOGE("获取ID指纹执行状态%s,len:%d",para_err.c_str(),para_len);
+//			mTextFingerStatePtr->setText(para_err.c_str());
+//		}
+//		else if(cmdState == 1)
+//		{
+//			LOGE("获取指纹特征长度：%d",len);
+//			if(len == 0)
+//			{
+//				mTextFingerStatePtr->setText("获取失败:" + para_err);
+//			}
+//			else if(Base64::Encode(data, len, out, 1024) == true)
+//			{
+//	//			gPersonDump.fingers.push_back(outstring);
+//	//			for(int i = 0 ; i < gPersonDump.fingers.size();i++)
+//	//				LOGE("len:%d,%s",gPersonDump.fingers[i].length(),gPersonDump.fingers[i].c_str());
+//				mTextFingerStatePtr->setText("获取当前指纹成功");
+//			}
+//
+//		}
+//
+//
+//		break;
 
-		}
-
-
-		break;
 
 	case CMD_GET_ID_FEATURE://包含前三个字节为用户号和权限
 		if(cmdState == 0)
 		{
 			para_len = ((data[0])<<8) + data[1];
-			para_err = finger.errToString(data[2]);
+			para_err = finger.err_to_string(data[2]);
 			LOGE("获取ID指纹执行状态%s,len:%d",para_err.c_str(),para_len);
 			mTextFingerStatePtr->setText(para_err.c_str());
 		}
 		else if(cmdState == 1)
 		{
+
 			id = ((data[0])<<8) + data[1];
 			if(Base64::Encode(&data[3], len - 3, out, 1024) == true)
 			{
-				gPersonDump.fingers.push_back(out);
-				for(int i = 0 ; i < gPersonDump.fingers.size();i++)
-					LOGE("len:%d,%s",gPersonDump.fingers[i].length(),gPersonDump.fingers[i].c_str());
-
+				tPersonTrans.fingers.push_back(out);
+				for(int i = 0 ; i < tPersonTrans.fingers.size();i++)
+					LOGE("len:%d,%s",tPersonTrans.fingers[i].length(),tPersonTrans.fingers[i].c_str());
 			}
-			sprintf(temp_buf,"获取%d号指纹成功",id);
+			sprintf(temp_buf,"录入用户第%d个指纹成功",tPersonTrans.fingers.size());
 			mTextFingerStatePtr->setText(temp_buf);
+			update_person_flag = true;
 
 		}
 		break;
@@ -112,8 +132,9 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 		break;
 
 
+
 	case CMD_TIMEOUT:
-		para_err += finger.errToString(finger.ack);
+		para_err += finger.err_to_string(finger.ack);
 		if(finger.ack == ACK_SUCCESS)
 		{
 			int time = ((data[0])<<8) + data[1];
@@ -126,7 +147,7 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 		}
 		break;
 	case CMD_CLEAR:
-		para_err += finger.errToString(finger.ack);
+		para_err += finger.err_to_string(finger.ack);
 		if(finger.ack == ACK_SUCCESS)
 		{
 			fingerInputState = 0;
@@ -136,9 +157,11 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 		{
 			mTextFingerStatePtr->setText(para_err);
 		}
+		mTextFingerTotalNumPtr->setText(finger.get_total_num());
+
 		break;
 	case CMD_ENROLL1:
-		para_err = finger.errToString(finger.ack);
+		para_err = finger.err_to_string(finger.ack);
 		if(finger.ack == ACK_SUCCESS)
 		{
 			fingerInputState++;
@@ -156,7 +179,7 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 
 
 	case CMD_ENROLL2:
-		para_err = finger.errToString(finger.ack);
+		para_err = finger.err_to_string(finger.ack);
 		if(finger.ack == ACK_SUCCESS)
 		{
 			fingerInputState++;
@@ -173,7 +196,7 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 
 
 	case CMD_ENROLL3:
-		para_err = finger.errToString(finger.ack);
+		para_err = finger.err_to_string(finger.ack);
 		if(finger.ack == ACK_SUCCESS)
 		{
 			fingerInputState = 0;
@@ -181,9 +204,8 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 			mTextFingerStatePtr->setText("指纹录入完成");
 //			mWindStatusNoticePtr->showWnd();
 //	        mTextStatusNoticePtr->setText("继续录入");
-			finger.getFeatures(fingerNum);
+			finger.get_id_features_async(fingerNum);
 
-			fingerNum++;//录入一个指纹成功
 
 		}
 		else
@@ -201,19 +223,32 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 {
 	//LOGE("%s",msg.c_str());
 
+
 	switch(cmd)
 	{
 
-	case CMDPerson:
+	case CMDFinger:
 		if(status == StatusOK)
 		{
+			string id_list = "";
+			uint16_t id = 0;
+			char buf[6]={0};
+
+			tPersonTrans = gPersonAll;
+
+			tPersonInfo.id = tPersonTrans.id;
+			tPersonInfo.name = tPersonTrans.name;
+			tPersonInfo.level = tPersonTrans.level;
+			tPersonInfo.picture_name = tPersonTrans.picture.name;
+			tPersonInfo.finger_id.clear();
+
 			gSocket->disableTriger();
 			mWindStatusNoticePtr->showWnd();
 			mTextStatusNoticePtr->setText("同步成功");
-			mTextPersonNamePtr->setText(gPersonDump.name);
-			mTextPersonIDPtr->setText(gPersonDump.id);
+			mTextPersonNamePtr->setText(tPersonTrans.name);
+			mTextPersonIDPtr->setText(tPersonTrans.id);
 			mBtnPicturePtr->setBackgroundPic(msg.c_str());
-			switch(gPersonDump.level)
+			switch(tPersonTrans.level)
 			{
 			case 0:
 				mTextPersonLevelPtr->setText("管理员");
@@ -225,6 +260,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 				mTextPersonLevelPtr->setText("学生");
 				break;
 			}
+			update_person_sync();
 			sleep(1);
 			mWindStatusNoticePtr->hideWnd();
 		}
@@ -247,7 +283,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	//{0,  6000}, //定时器id=0, 时间间隔6秒
+	{0,  1000}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
 //	{10,  GO_HOME_TIME},
 };
@@ -259,7 +295,7 @@ static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
 	PersonCallback = onNetWrokDataUpdate;
 	fingerCallback =onFingerOver;
-    gPersonDump.id = "";
+    gPersonAll.id = "";
 }
 
 /**
@@ -277,6 +313,13 @@ static void onUI_intent(const Intent *intentPtr) {
 static void onUI_show() {
 	mWindStatusNoticePtr->hideWnd();
     EASYUICONTEXT->showStatusBar();
+
+    if(gSocket->connected())
+    	mTvConnectStatePtr->setText("已连接");
+    else
+    	mTvConnectStatePtr->setText("未连接");
+
+    finger.check_online_async();
 
     string instruction;
     instruction = "\
@@ -326,6 +369,27 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  */
 static bool onUI_Timer(int id){
 	switch (id) {
+	case 0:
+	    if(finger.is_online())
+	    	mTextFingerOnlineStatePtr->setText("已连接");
+	    else{
+	    	mTextFingerOnlineStatePtr->setText("未连接");
+	    }
+
+	    if(gSocket->connected()){
+	    	mTvConnectStatePtr->setText("已连接");
+	    }
+	    else{
+	    	mTvConnectStatePtr->setText("未连接");
+	    }
+
+	    if(update_person_flag == true)
+	    {
+	    	update_person_sync();
+	    	update_person_flag = false;
+	    }
+	    break;
+
 //	case 10:
 //		EASYUICONTEXT->goHome();
 //		isShowKeyboard = true;
@@ -377,10 +441,12 @@ static bool onButtonClick_BtnQuaryPerson(ZKButton *pButton) {
     	gSocket->updateTriger();
 
 
-    	PersonDump_t person;
-    	person.id = temp;
+        tPersonTrans.fingers.clear();
+        tPersonTrans.name = "";
+        tPersonTrans.level = 0;
+        tPersonTrans.id = temp;
         string x;
-        x = jm.makePerson(person, StatusRead);
+        x = jm.makeFinger(tPersonTrans, StatusRead);
         gSocket->write_(x);
     }
     else
@@ -389,15 +455,10 @@ static bool onButtonClick_BtnQuaryPerson(ZKButton *pButton) {
         mTextStatusNotice2Ptr->setText("无法连接服务器");
     }
 
-    finger.clear();
-    fingerNum = 1;
-	gPersonDump.fingers.clear();
-	gPersonDump.id = "";
-	gPersonDump.name = "";
-	gPersonDump.level = 0;
-	mTextPersonNamePtr->setText(gPersonDump.name);
-	mTextPersonIDPtr->setText(gPersonDump.id);
+	mTextPersonNamePtr->setText(gPersonAll.name);
+	mTextPersonIDPtr->setText(gPersonAll.id);
 	mTextPersonLevelPtr->setText("");
+
 
 
     return false;
@@ -413,14 +474,11 @@ static void onEditTextChanged_EditPersonID(const std::string &text) {
     //LOGD(" onEditTextChanged_ EditPersonID %s !!!\n", text.c_str());
 }
 
-static bool onButtonClick_Button1(ZKButton *pButton) {
-    //LOGD(" ButtonClick Button1 !!!\n");
-    return false;
-}
+
 
 static bool onButtonClick_Button2(ZKButton *pButton) {
     //LOGD(" ButtonClick Button2 !!!\n");
-	if(gPersonDump.id == "")
+	if(gPersonAll.id == "")
 	{
 		mWindStatusNoticePtr->showWnd();
 		mTextStatusNoticePtr->setText("请先获取ID对应的人员");
@@ -430,27 +488,36 @@ static bool onButtonClick_Button2(ZKButton *pButton) {
 	bool ret = false;
 	string err;
 	string temp = mEditPersonIDPtr->getText();
-	int u_id = fingerNum;
+
+
 	mTextFingerStatePtr->setText("请放手指。。。");
 		LOGE("--正在 第%d步",fingerInputState);
 	switch(fingerInputState)
 	{
 		case 0:
-			LOGE("正在 第%d步",fingerInputState);
-			 finger.Enroll_Step1(u_id);
+		    if(finger.get_free(1, 150, &fingerNum) == true){
+
+				LOGE("找到空闲指纹ID：%d",fingerNum);
+				LOGE("正在 第%d步",fingerInputState);
+				 finger.roll_step1(fingerNum);
+		    }
+		    else{
+		    	fingerInputState = 0;
+		    }
+
 			break;
 		case 1:
 //		case 2:
 //		case 3:
 //		case 4:
 
-			 finger.Enroll_Step2(u_id);
+			 finger.roll_step2(fingerNum);
 			LOGE("正在 第%d步",fingerInputState);
 			Thread::sleep(100);
 			break;
 		default:
 
-				finger.Enroll_Step3(u_id);
+				finger.roll_step3(fingerNum);
 				LOGE("正在 第%d步",fingerInputState);
 				Thread::sleep(100);
 
@@ -461,33 +528,41 @@ static bool onButtonClick_Button2(ZKButton *pButton) {
     return false;
 }
 
-static bool onButtonClick_BtnFingerPic(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnFingerPic !!!\n");
-    return false;
-}
-static bool onButtonClick_BtnClearFinger(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnClearFinger !!!\n");
-	int ret;
-	finger.clear();
+static bool onButtonClick_BtnDeleteUserFinger(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnDeleteUserFinger !!!\n");
 
-    return false;
+	for(int i = 0; i < tPersonInfo.finger_id.size(); i++){
+		if(finger.delete_id_features(tPersonInfo.finger_id[i]) == true)
+			LOGD("删除成功");
+		else
+			LOGD("删除失败");
+	}
+	tPersonTrans.fingers.clear();
+	tPersonInfo.finger_id.clear();
+
+	mTextFingerTotalNumPtr->setText(finger.get_total_num());
+	mTextFingerIDListPtr->setText("");
+	mTextFingerNumPtr->setText((uint8_t)tPersonTrans.fingers.size());
+
+	return false;
 }
-static bool onButtonClick_BtnReadTimeout(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnReadTimeout !!!\n");
-	finger.getTimeout();
-    return false;
-}
-static bool onButtonClick_BtnSetTimeout(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnSetTimeout !!!\n");
-	finger.setTimeout(0);
-    return false;
-}
+
 static bool onButtonClick_BtnUpdateServer(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnUpdateServer !!!\n");
 
+    if(gPerson.is_exist(tPersonTrans) == false)
+    {
+    	for(int i = 0; i < tPersonInfo.finger_id.size(); i++){
+    		if(finger.delete_id_features(tPersonInfo.finger_id[i]) == true)
+    			LOGD("删除成功");
+    		else
+    			LOGD("删除失败");
+    	}
+    }
+
     if(gSocket->connected())
     {
-    	string str = jm.makePerson(gPersonDump, StatusSet);
+    	string str = jm.makePerson(tPersonTrans, StatusSet);
     	gSocket->write_(str);
     	gSocket->updateTriger();
         mWindStatusNoticePtr->showWnd();
@@ -501,23 +576,52 @@ static bool onButtonClick_BtnUpdateServer(ZKButton *pButton) {
         mTextStatusNotice2Ptr->setText("无法同步服务器设置");
         mTextStatusNotice2Ptr->setText("");
     }
+
     return false;
 }
 static bool onButtonClick_BtnReadCurrentFeature(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnReadCurrentFeature !!!\n");
-	finger.getFeatures();
-	mTextFingerStatePtr->setText("请放手指。。。");
     return false;
 }
-static bool onButtonClick_BtnGetIDFeature(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnGetIDFeature !!!\n");
-	finger.getFeatures(1);
-    return false;
-}
+
 static bool onButtonClick_BtnPicture(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnPicture !!!\n");
     return false;
 }
 static void onEditTextChanged_EditInstruction(const std::string &text) {
     //LOGD(" onEditTextChanged_ EditInstruction %s !!!\n", text.c_str());
+}
+
+
+static bool onButtonClick_BtnClearFinger1(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnClearFinger1 !!!\n");
+	finger.clear_async();
+    return false;
+}
+
+static bool onButtonClick_BtnClearFinger(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnClearFinger !!!\n");
+    return false;
+}
+
+static bool onButtonClick_BtnReadTimeout(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnReadTimeout !!!\n");
+    return false;
+}
+
+static bool onButtonClick_BtnSetTimeout(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnSetTimeout !!!\n");
+    return false;
+}
+
+static bool onButtonClick_BtnGetIDFeature(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnGetIDFeature !!!\n");
+    return false;
+}
+
+
+static bool onButtonClick_Button1(ZKButton *pButton) {
+    //LOGD(" ButtonClick Button1 !!!\n");
+	mTextFingerTotalNumPtr->setText(finger.get_total_num());
+    return false;
 }

@@ -113,6 +113,7 @@ typedef enum
 	CMDSuperPic,
 
 	CMDPerson,
+	CMDFinger,
 
 
 	CMDVersion,

@@ -12,7 +12,7 @@
 
 using namespace std;
 
-
+#define MAX_USERNUM		150//共计150枚指纹
 #define DATA_START			0xf5//数据包开始
 #define DATA_END			0xf5//数据包结束
 
@@ -26,9 +26,11 @@ using namespace std;
 #define CMD_SEARCH  		0x0c//1:N比对
 #define CMD_TIMEOUT			0x2E//超时时间
 #define CMD_GET_CURRENT_FEATURE			0x23//超时时间
-#define CMD_GET_ID_FEATURE			0x31//超时时间
-#define CMD_SET_ID_FEATURE			0x41//超时时间
-#define CMD_GET_FREE				0x47//超时时间
+#define CMD_GET_ID_FEATURE			0x31//下载DSP模块数据库内指定用户特征值
+#define CMD_SET_ID_FEATURE			0x41//上传特征值并按指定用户号存入DSP模块数据库
+#define CMD_SEARCH_FEATURE			0x43//上传指纹特征值与DSP模块数据库指纹比对1：N
+#define CMD_GET_FREE				0x47//获取特定区间第一个空闲位置
+#define CMD_GET_SERIAL				0x2A//取DSP模块内部序列号,也用于检测设备是否在线
 
 
 
@@ -72,54 +74,69 @@ public:
 	Finger();
 	virtual ~Finger();
 
-	void getFeatures();//获取当前输入指纹的模板信息
+	//添加一个指纹，返回添加成功与否
+	bool add_featurs_sync(uint16_t *id/*返回ID*/,string &features/*指纹数据*/);
 
-	void getFeatures(unsigned int id);//获取指定ID的指纹模板信息
-	bool setIdFeatures(unsigned int id,unsigned char *buf);//上传从服务器获取的人员的模板信息，并存入指定区间（10-39）
+	void get_features_async();//获取当前输入指纹的模板信息
 
-	void clear(void);
-	void deleteIdFeatures(unsigned int id);//获取指定ID的指纹模板信息
+	void get_id_features_async(uint16_t id);//获取指定ID的指纹模板信息,异步模式
+	bool get_id_features(uint16_t id,unsigned char *features);//获取指定ID的指纹模板信息，同步等待模式
 
+	bool set_id_features(uint16_t id,const unsigned char *features);
+	bool set_id_features(uint16_t id,string &features);
+
+	void clear_async(void);
+	bool delete_id_features(uint16_t id);//获取指定ID的指纹模板信息
+
+	void	 get_total_num_async();
+	uint16_t get_total_num();
 	void search();
 
-	bool  get_free(uint16_t start,uint16_t end,uint16_t *freeid);
-	void Enroll_Step1(unsigned int u_id);
-	void Enroll_Step2(unsigned int u_id);
-	void Enroll_Step3(unsigned int u_id);
-	void getTimeout();
-	void setTimeout(unsigned char sec);
-	void sendPackage(unsigned char *ptr,unsigned char wLen);
-	void rx_event(char ch);
+	uint16_t search_features(const unsigned char *features);
+	uint16_t search_features(string &features);
+	uint16_t search_features_base64(string &Base64FeatureString);
 
-	int parseHead(char ch);
-	int parseDate(char ch);
+	bool  get_free(uint16_t start,uint16_t end,uint16_t *freeid);
+	void roll_step1(unsigned int u_id);
+	void roll_step2(unsigned int u_id);
+	void roll_step3(unsigned int u_id);
+	void get_timeout();
+	void set_timeout(unsigned char sec);
+
+
+	string err_to_string(int err);
+	bool is_on_search(){return on_search_state;};
+	void set_search_state(bool state){on_search_state = state;};
+
+	void check_online_async();
+	bool is_online(){return online_state;};
+	void set_online(bool state){online_state = state;};
+
 	void parser(char ch);
-	string errToString(int err);
+
 	int ack;
 	int retState;
 	long timelast;
 	int dataLen;
 
-
-	uint16_t freeid;
-
 private:
 	unsigned char genCheck(unsigned char wLen,unsigned char *ptr);
 
 private:
-	unsigned char rbuf[1024];
-	unsigned char tbuf[512];
-	unsigned char rxEnd ;              //接收返回信息结束标志
-	unsigned char rxLen ;             //接收返回信息长度
+	unsigned char rbuf[256];
+	unsigned char tbuf[256];
 	FingerState_t state;
+	int cmdState;
 	unsigned char cmd;
 	unsigned char check;
-	int cmdState;
 	unsigned int counter;
-	exeState_t exeState;
-	long lastCmdTime;
-	bool is_requesting_finger;
+	bool on_search_state;
+	bool online_state;
 
+	void send_package(unsigned char *ptr,unsigned char wLen);
+
+	int parse_head(char ch);
+	int parse_date(char ch);
 
 };
 extern Finger finger;

@@ -822,7 +822,7 @@ JsonStatus_t JsonCmdManager::parseAdSet(string &js,Advertisement &set)
 }
 
 
-string JsonCmdManager::makePerson(PersonDump_t &person,JsonStatus_t status)
+string JsonCmdManager::makePerson(PersonAll_t &person,JsonStatus_t status)
 {
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDPerson);
@@ -851,7 +851,7 @@ string JsonCmdManager::makePerson(PersonDump_t &person,JsonStatus_t status)
 
 	  return pack(temp);
 }
-JsonStatus_t JsonCmdManager::parsePerson(string &js,PersonDump_t &person)
+JsonStatus_t JsonCmdManager::parsePerson(string &js,PersonAll_t &person)
 {
 	JsonStatus_t status;
 	Json::Reader reader;
@@ -867,11 +867,10 @@ JsonStatus_t JsonCmdManager::parsePerson(string &js,PersonDump_t &person)
 			Json::Value fingers = root["fingers"];
 			int fingers_size =  root["fingers"].size();
 			person.fingers.clear();
-			LOGD("fingers_size:%d",fingers_size);
 			for(int i = 0; i < fingers_size; i++)
 			{
 				person.fingers.push_back(fingers[i]["finger"].asString());
-				LOGD("finger:%s",person.fingers[i].c_str());
+//				LOGD("finger:%s",person.fingers[i].c_str());
 			}
 
 
@@ -898,7 +897,63 @@ JsonStatus_t JsonCmdManager::parsePerson(string &js,PersonDump_t &person)
 
 	  return status;
 }
+string JsonCmdManager::makeFinger(PersonAll_t &person,JsonStatus_t status)
+{
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDFinger);
+	  root["id"] = Json::Value(person.id);
+	  root["status"] = Json::Value(status);
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
 
+	  return pack(temp);
+}
+JsonStatus_t JsonCmdManager::parseFinger(string &js,PersonAll_t &person)
+{
+	JsonStatus_t status;
+	Json::Reader reader;
+	Json::Value root;
+	if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	{
+		status = root["status"].asInt();
+		if(status == StatusOK || status == StatusSet)
+		{
+			person.id = root["id"].asString();
+			person.name = root["name"].asString();
+			person.level = root["level"].asInt();
+			Json::Value fingers = root["fingers"];
+			int fingers_size =  root["fingers"].size();
+			person.fingers.clear();
+			for(int i = 0; i < fingers_size; i++)
+			{
+				person.fingers.push_back(fingers[i]["finger"].asString());
+//				LOGD("finger:%s",person.fingers[i].c_str());
+			}
+
+
+			person.picture.name = root["pic.name"].asString();  // 访问节点，upload_id = "UP000000"
+			person.picture.data = root["pic.data"].asString();    // 访问节点，code = 100
+			person.picture.datalen = root["pic.datalen"].asLargestUInt();
+
+
+			if(person.picture.datalen != person.picture.data.length())
+			{
+				LOGE("头像长度不匹配");
+				return StatusErr;
+			}
+			string picBuf;
+			picBuf = person.picture.data;
+			person.picture.data = "";
+			if(Base64::Decode(picBuf,&person.picture.data))
+			{
+
+			}
+		}
+
+	}
+
+	  return status;
+}
 string JsonCmdManager::makeVersion(JsonStatus_t status)
 {
 	  Json::Value root;

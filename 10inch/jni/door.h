@@ -10,7 +10,7 @@
 #include "enum_def.h"
 namespace std {
 
-	typedef enum {HighLock,HighOpen}LockLogic_t;
+	typedef enum {HighLock,HighUnlock}LockLogic_t;
 	//门锁状态结构体
 	typedef enum
 	{

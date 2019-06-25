@@ -47,13 +47,23 @@ namespace MyJson
             SuperPic,
 
             Person,
+            Finger,
 
             CMDVersion,
             CMDUpdate,
             CMDReboot,
 
             CMDErr,
-    }//同
+    }
+    public struct Person
+    {
+        internal string id;
+        internal string name;
+        internal int level;
+        internal string[] fingers;
+        internal string picture_name;
+    };
+        //同
     public enum StatusType  //枚举类型，体会xml注释的样子
     {
         StatusSet = 0,
@@ -764,8 +774,109 @@ namespace MyJson
             string str = Package(jstring);
             return str;
 
+        }
 
+        public static string MakePerson(Person ps, StatusType status)
+        {
+            JObject obj = new JObject();
 
+            string picname = Path.GetFileName(ps.picture_name);
+            string data = FileToBase64(ps.picture_name);
+
+            var ja = new JArray();
+
+            obj.Add("cmd", (int)CMDType.Person);
+            obj.Add("id", ps.id);
+            obj.Add("name", ps.name);
+            obj.Add("level", ps.level);
+            obj.Add("pic.name", ps.picture_name);
+            obj.Add("pic.data", data);
+            obj.Add("pic.datalen", data.Length);
+
+            for (int i = 0; i < ps.fingers.Length; i++)
+            {
+                JObject jo = new JObject();
+                jo.Add("finger", ps.fingers[i]);
+                ja.Add(jo);
+            }
+            obj.Add("fingers", ja);
+            obj.Add("status", (int)status);
+
+            string jstring = JsonConvert.SerializeObject(obj);
+
+            string str = Package(jstring);
+            return str;
+        }
+        public static string MakeFinger(string id, string name, int level, string[] fingers, string FilePath, StatusType status)
+        {
+            JObject obj = new JObject();
+
+            string picname = Path.GetFileName(FilePath);
+            string data = FileToBase64(FilePath);
+
+            var ja = new JArray();
+
+            obj.Add("cmd", (int)CMDType.Finger);
+            obj.Add("id", id);
+            obj.Add("name", name);
+            obj.Add("level", level);
+            obj.Add("pic.name", picname);
+            obj.Add("pic.data", data);
+            obj.Add("pic.datalen", data.Length);
+
+            for (int i = 0; i < fingers.Length; i++)
+            {
+                JObject jo = new JObject();
+                jo.Add("finger", fingers[i]);
+                ja.Add(jo);
+            }
+            obj.Add("fingers", ja);
+            obj.Add("status", (int)status);
+
+            string jstring = JsonConvert.SerializeObject(obj);
+
+            string str = Package(jstring);
+            return str;
+        }
+
+        public static string MakeFinger(Person ps, StatusType status)
+        {
+            JObject obj = new JObject();
+
+            string picname = Path.GetFileName(ps.picture_name);
+            string data = FileToBase64(ps.picture_name);
+
+            var ja = new JArray();
+
+            obj.Add("cmd", (int)CMDType.Finger);
+            obj.Add("id", ps.id);
+            obj.Add("name", ps.name);
+            obj.Add("level", ps.level);
+            obj.Add("pic.name", ps.picture_name);
+            obj.Add("pic.data", data);
+            obj.Add("pic.datalen", data.Length);
+
+            for (int i = 0; i < ps.fingers.Length; i++)
+            {
+                JObject jo = new JObject();
+                jo.Add("finger", ps.fingers[i]);
+                ja.Add(jo);
+            }
+            obj.Add("fingers", ja);
+            obj.Add("status", (int)status);
+
+            string jstring = JsonConvert.SerializeObject(obj);
+
+            string str = Package(jstring);
+            return str;
+        }
+
+        public static string parseFinger(string js)
+        {
+            JObject jo = (JObject)JsonConvert.DeserializeObject(js);
+            string idstr = jo["id"].ToString();
+            //int id = Convert.ToInt32(idstr);
+            return idstr;
         }
         public static string MakeVersion(StatusType status)
         {

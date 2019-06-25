@@ -159,7 +159,7 @@ static void *MainLoop(void *lParam)
 
     int len = 0;
 	int counter = 0;
-	int reconnect_counter = 0;
+	int reconnect_counter = 4;
 
 
 	Thread::sleep(1000);
