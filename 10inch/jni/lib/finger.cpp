@@ -147,7 +147,7 @@ void Finger::roll_step1(unsigned int u_id)
 **输入两次指纹注册一个指纹模板
 **参数：UserID 指纹号
 *******************************************************************************/
-void Finger::roll_step2(unsigned int u_id)
+void Finger::roll_step2_async(unsigned int u_id)
 {
   unsigned char buf[8];
 
@@ -165,7 +165,7 @@ void Finger::roll_step2(unsigned int u_id)
 **输入三次指纹注册一个指纹模板
 **参数：UserID 指纹号
 *******************************************************************************/
-void Finger::roll_step3(unsigned int u_id)
+void Finger::roll_step3_async(unsigned int u_id)
 {
   unsigned char buf[8];
 
@@ -445,17 +445,17 @@ uint16_t Finger::search_features(const unsigned char *features){
 	while(ack == ACK_SUSPEND){
 		Thread::sleep(10);
 		if(counter++ > 300){
-//			LOGD("searchFeatures RETURN TIMEOUT:%s",err_to_string(ack).c_str());
+			LOGD("searchFeatures RETURN TIMEOUT:%s",err_to_string(ack).c_str());
 			return 0;
 		}
 	}
 	if(ack == ACK_SUCCESS){
 		id = (rbuf[2]<<8) + (rbuf[3]);
-//		LOGD("searchFeatures true");
+		LOGD("searchFeatures true");
 		return id;
 	}
 	else{
-//		LOGD("searchFeatures false CODE:%s",err_to_string(ack).c_str());
+		LOGD("searchFeatures false CODE:%s",err_to_string(ack).c_str());
 		return 0;
 	}
 	return 0;
@@ -519,7 +519,7 @@ bool  Finger::get_free(uint16_t start,uint16_t end,uint16_t *freeid)
 	}
 }
 
-void Finger::get_timeout()
+void Finger::get_timeout_async()
 {
 	int ret;
 	unsigned char buf[8];
@@ -533,7 +533,7 @@ void Finger::get_timeout()
 	send_package(buf,5);
 
 }
-void Finger::set_timeout(unsigned char sec)
+void Finger::set_timeout_async(unsigned char sec)
 {
 	int ret;
 	unsigned char buf[8];
@@ -638,7 +638,7 @@ void Finger::send_package(unsigned char *ptr,unsigned char wLen)
   uart2.send(tbuf,len);
 //  for(int i = 0; i < len; i++)
 //	  LOGD("tx%d:0x%02x",i,tbuf[i]);
-//  LOGD("发送一帧数据");
+  LOGD("发送一帧数据");
   if(tbuf[1] != CMD_SEARCH)
 	  on_search_state = false;
   else
