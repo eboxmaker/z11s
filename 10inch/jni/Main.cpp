@@ -128,14 +128,14 @@ static void reconncet()
 }
 static void timeoutLoop()
 {
-	if(	gSocket->trigerTime != -1)
+	if(	gSocket->triggerTime != -1)
 	{
 		//LOGO("开启超时检测触发");
-		if(time(NULL) - gSocket->trigerTime >= gSocket->trigerTimeout)
+		if(time(NULL) - gSocket->triggerTime >= gSocket->trigerTimeout)
 		{
 			//LOGO("已经触发");
 			exeCMD("trigerTimeout");
-			gSocket->trigerTime = -1;
+			gSocket->triggerTime = -1;
 		}
 	}
 }
@@ -152,6 +152,9 @@ static void heartbeatLoop()
 		counter = 0;
 	}
 }
+#include "include/utils/GpioHelper.h"
+
+static bool test;
 static void *MainLoop(void *lParam)
 {
     //pthread_mutex_init(&mutex,NULL);
@@ -194,7 +197,7 @@ static void *MainLoop(void *lParam)
 		}
 
 		myAlarm.loop();
-
+		door.loop();
 
 		Thread::sleep(1000);
 

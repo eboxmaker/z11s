@@ -26,11 +26,16 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
-#define ID_KEYBOARD_Textview7    50042
+#define ID_KEYBOARD_TextNoExitNotic2    50021
+#define ID_KEYBOARD_TextNoExitNotic1    50020
+#define ID_KEYBOARD_WinNoExit    110005
+#define ID_KEYBOARD_TextFingerOnlineState    50019
+#define ID_KEYBOARD_Textview10    50018
+#define ID_KEYBOARD_TextLockState    50017
+#define ID_KEYBOARD_Textview9    50016
 #define ID_KEYBOARD_Textview5    50041
 #define ID_KEYBOARD_BtnUnLock    20027
 #define ID_KEYBOARD_BtnLock    20026
-#define ID_KEYBOARD_BtnLockState    20025
 #define ID_KEYBOARD_Textview1    50040
 #define ID_KEYBOARD_WindAdminDoor    110006
 #define ID_KEYBOARD_BtnTecherPicture    20017

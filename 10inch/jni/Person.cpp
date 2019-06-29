@@ -133,6 +133,18 @@ int  Person::update_list(PersonAll_t &person)
 {
 
 }
+bool Person::update_person(PersonInfo_t &person){
+	for(int i = 0; i < list.size(); i++)
+	{
+		if(person.id == list[i].id){
+			list[i] = person;
+			LOGD("更新人员列表成功:%s,指纹数量：%d",person.id.c_str(),list[i].finger_id.size());
+			return true;
+		}
+	}
+	LOGD("更新人员列表失败:%s",person.id.c_str());
+	return false;
+}
 
 
 

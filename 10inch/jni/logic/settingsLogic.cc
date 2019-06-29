@@ -104,7 +104,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 	switch(cmd)
 	{
 	case CMDSetHeartbeat:
-	case CMDLocalPwd:
+	case CMDLocalPassword:
 	case CMDSyncDateTime:
 	case CMDAdSet:
 	case CMDOrgName:

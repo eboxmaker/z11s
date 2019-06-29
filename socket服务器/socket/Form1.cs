@@ -147,7 +147,7 @@ namespace socket
             else
             {
 
-                
+                string id;
                 string resault;
                 string enjs = Encoding.UTF8.GetString(datagram);
 
@@ -162,14 +162,15 @@ namespace socket
                     case JsonManager.CMDType.Heartbeat:
                         JsonManager.ParseCMDHeartbeat(js);
                          resault = JsonManager.MakeCMDHeartbeat(JsonManager.StatusType.StatusOK);
-                         server.SendAll(resault);
+                         server.Send(sender,resault);
+                        // server.SendAll(resault);
                         break;
                     case JsonManager.CMDType.SetHeartbeat:
                         if(status == JsonManager.StatusType.StatusSet)
                         {
                             resault = JsonManager.MakeSetHeartbeat(0, JsonManager.StatusType.StatusOK);
 
-                            server.SendAll(resault);
+                            server.Send(sender, resault);
                         }
                         break;
                     case JsonManager.CMDType.DoorPwd: 
@@ -179,15 +180,38 @@ namespace socket
                             if (pwd == "123456")
                             {
                                 resault = JsonManager.MakeCMDDoorPwd(pwd, JsonManager.StatusType.StatusOK);
-                                server.SendAll(resault);
+                                server.Send(sender, resault);
                                 btnOpen.PerformClick();
                             }
                             else
                             {
                                 resault = JsonManager.MakeCMDDoorPwd(pwd, JsonManager.StatusType.StatusErr);
-                                server.SendAll(resault);
+                                server.Send(sender, resault);
                                 btnCloseLock.PerformClick();
                             }
+                        }
+
+                        break;
+                    case JsonManager.CMDType.FingerKey:
+                        id = JsonManager.ParseFingerKey(js);
+                        if(status == JsonManager.StatusType.StatusSet)
+                        {
+                            resault = JsonManager.MakeCMDFingerKey(JsonManager.StatusType.StatusOK);
+                            server.Send(sender, resault);
+                        }
+                        break;
+                    case JsonManager.CMDType.DoorCtr:
+                        if (status == JsonManager.StatusType.StatusOK)
+                        {
+
+                        }
+                        break;
+
+                    case JsonManager.CMDType.DoorState:
+                        string doorState = JsonManager.ParseCMDDoorState(js);
+                        if (status == JsonManager.StatusType.StatusOK)
+                        {
+
                         }
 
                         break;
@@ -195,23 +219,23 @@ namespace socket
                         if (status == JsonManager.StatusType.StatusSet)
                         {
                             resault = JsonManager.MakeAdminPwd("set ok",JsonManager.StatusType.StatusOK);
-                            server.SendAll(resault);
+                            server.Send(sender, resault);
                         }
 
                         break;
                     case JsonManager.CMDType.Confirm:
-                        string id = "";
+                         id = "";
                         JsonManager.StatusConfirmType cStatus = JsonManager.GetJsonStatusConfirm(js,ref id);
 
                         if (cStatus == JsonManager.StatusConfirmType.StatusReqDev2Ser)
                         {
                             resault = JsonManager.MakeConfirm(id,JsonManager.StatusConfirmType.StatusParaSer2Dev);
-                            server.SendAll(resault);
+                            server.Send(sender, resault);
                         }
                         if(cStatus ==  JsonManager.StatusConfirmType.StatusAckDev2Ser)
                         {
                             resault = JsonManager.MakeConfirm(id,JsonManager.StatusConfirmType.StatusOKSer2Dev);
-                            server.SendAll(resault);
+                            server.Send(sender, resault);
                         }
 
                         break;
@@ -219,7 +243,7 @@ namespace socket
                         if (status == JsonManager.StatusType.StatusSet)
                         {
                             resault = JsonManager.MakeCMDSyncDateTime(JsonManager.StatusType.StatusOK);
-                            server.SendAll(resault);
+                            server.Send(sender, resault);
                         }
 
                         break;
@@ -227,7 +251,7 @@ namespace socket
                         if (status == JsonManager.StatusType.StatusRead)
                         {
                             resault = JsonManager.MakePlan(JsonManager.StatusType.StatusOK);
-                            server.SendAll(resault);
+                            server.Send(sender, resault);
                         }
 
                         break;
@@ -238,7 +262,7 @@ namespace socket
                             int time = Convert.ToInt16(tbAdTime.Text);
 
                             resault = JsonManager.MakeAdSet(enable, time, JsonManager.StatusType.StatusOK);
-                            server.SendAll(resault);
+                            server.Send(sender, resault);
                         }
                         break;
                     case JsonManager.CMDType.OrgName:
@@ -246,7 +270,7 @@ namespace socket
                         if (status == JsonManager.StatusType.StatusSet)
                         {
                             resault = JsonManager.MakeOrgName(org, JsonManager.StatusType.StatusOK);
-                            server.SendAll(resault);
+                            server.Send(sender, resault);
                         }
 
                         break;
@@ -255,7 +279,7 @@ namespace socket
                         if (status == JsonManager.StatusType.StatusSet)
                         {
                             resault = JsonManager.MakeDevName(name, JsonManager.StatusType.StatusOK);
-                            server.SendAll(resault);
+                            server.Send(sender, resault);
                         }
 
                         break;
@@ -263,7 +287,7 @@ namespace socket
                         if (status == JsonManager.StatusType.StatusSet)
                         {
                             resault = JsonManager.MakeDevID(JsonManager.StatusType.StatusOK);
-                            server.SendAll(resault);
+                            server.Send(sender, resault);
                         }
 
                         break;
@@ -273,29 +297,43 @@ namespace socket
                         //if (status == JsonManager.StatusType.StatusRead)
                         //{
                         //    resault = JsonManager.MakePerson(person[0], JsonManager.StatusType.StatusOK);
-                        //    server.SendAll(resault);
+                        //server.Send(sender, resault);
                         //}
                         //if (status == JsonManager.StatusType.StatusSet)
                         //{
                         //    resault = JsonManager.MakePerson(person[0], JsonManager.StatusType.StatusOK);
-                        //    server.SendAll(resault);
+                        //server.Send(sender, resault);
                         //}
                         //break;
-                    case JsonManager.CMDType.Finger:
-                        string idtemp = JsonManager.parseFinger(js);
+                    case JsonManager.CMDType.FingerGet:
+                        string idtemp = JsonManager.parseFingerGet(js);
                         int id_temp = Convert.ToInt32(idtemp);
                         id_temp = id_temp % 10;
                         if (status == JsonManager.StatusType.StatusRead)
                         {
-                            resault = JsonManager.MakeFinger(person[id_temp], JsonManager.StatusType.StatusOK);
-                            server.SendAll(resault);
+                            resault = JsonManager.MakeFingerGet(person[id_temp], JsonManager.StatusType.StatusOK);
+                            server.Send(sender, resault);
                         }
                         if (status == JsonManager.StatusType.StatusSet)
                         {
-                            resault = JsonManager.MakeFinger(person[id_temp], JsonManager.StatusType.StatusOK);
-                            server.SendAll(resault);
+                            resault = JsonManager.MakeFingerGet(person[id_temp], JsonManager.StatusType.StatusOK);
+                            server.Send(sender, resault);
                         }
                         break;
+                    case JsonManager.CMDType.FingerSet:
+                        string idtemp2 = JsonManager.parseFingerSet(js);
+                        int id_temp2 = Convert.ToInt32(idtemp2);
+                        id_temp2 = id_temp2 % 10;
+                        if (status == JsonManager.StatusType.StatusRead)
+                        {
+                            resault = JsonManager.MakeFingerSet(person[id_temp2], JsonManager.StatusType.StatusOK);
+                            server.Send(sender, resault);
+                        }
+                        if (status == JsonManager.StatusType.StatusSet)
+                        {
+                            resault = JsonManager.MakeFingerSet(person[id_temp2], JsonManager.StatusType.StatusOK);
+                            server.Send(sender, resault);
+                        }
                         break;
                     case JsonManager.CMDType.CMDVersion:
 
@@ -307,7 +345,7 @@ namespace socket
                         if (status == JsonManager.StatusType.StatusRead)
                         {
                             resault = JsonManager.MakeUpdate(tbDownLoadUrl.Text, Convert.ToInt32(tbDownLoadPort.Text), JsonManager.StatusType.StatusOK);
-                            server.SendAll(resault);
+                            server.Send(sender, resault);
                         }
 
 
@@ -401,19 +439,19 @@ namespace socket
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            string jstr = JsonManager.MakeCMDDoor1("unlock",JsonManager.StatusType.StatusSet);
+            string jstr = JsonManager.MakeCMDDoorCtr("unlock", JsonManager.StatusType.StatusSet);
             server.SendAll(jstr);
 
         }
 
         private void btnCloseLock_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.MakeCMDDoor1("lock", JsonManager.StatusType.StatusSet);
+            string str = JsonManager.MakeCMDDoorCtr("lock", JsonManager.StatusType.StatusSet);
             server.SendAll(str);
         }
         private void btnReadDoorState_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.MakeCMDDoor1("lock", JsonManager.StatusType.StatusRead);
+            string str = JsonManager.MakeCMDDoorState( JsonManager.StatusType.StatusRead);
             server.SendAll(str);
         }
 
@@ -620,9 +658,9 @@ namespace socket
 
         private void btnSendPerson_Click(object sender, EventArgs e)
         {
-            int id = Convert.ToInt16(tbPersonId.Text);
-            string resault = JsonManager.MakeFinger(person[id], JsonManager.StatusType.StatusSet);
-            server.SendAll(resault);
+            //int id = Convert.ToInt16(tbPersonId.Text);
+            //string resault = JsonManager.MakeFingerGet(person[id], JsonManager.StatusType.StatusSet);
+            //server.SendAll(resault);
         }
 
         private void btnSendPerson_Click_1(object sender, EventArgs e)

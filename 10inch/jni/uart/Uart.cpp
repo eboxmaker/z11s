@@ -107,6 +107,7 @@ bool MyUart::threadLoop() {
 		// 可能上一次解析后有残留数据，需要拼接起来
 		int readNum = read(mUartID, mDataBufPtr , UART_DATA_BUF_LEN);
 
+
 		if (readNum > 0) {
 			for(int i = 0 ; i < readNum;i++)
 			{

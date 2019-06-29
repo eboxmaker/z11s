@@ -60,7 +60,7 @@ public:
 	void setSocketListener(ISocketListener *pListener) {
 		mSocketListener = pListener;
 	}
-	long  trigerTime;
+	long  triggerTime;
 	int trigerTimeout;
 	bool conncetState;
 	enum {

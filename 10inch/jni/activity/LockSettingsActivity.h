@@ -26,8 +26,11 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
-#define ID_LOCKSETTINGS_Textview5    50005
-#define ID_LOCKSETTINGS_Textview4    50004
+#define ID_LOCKSETTINGS_SubItem3    20002
+#define ID_LOCKSETTINGS_Textview7    50007
+#define ID_LOCKSETTINGS_BtnDoorState    20006
+#define ID_LOCKSETTINGS_ListFeed2Logic    80004
+#define ID_LOCKSETTINGS_Textview6    50006
 #define ID_LOCKSETTINGS_SubItemAlarmType    20003
 #define ID_LOCKSETTINGS_ListAlarm    80003
 #define ID_LOCKSETTINGS_Textview3    50003

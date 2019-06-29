@@ -35,7 +35,7 @@ typedef struct
 typedef struct
 {
 	string name;
-	long datalen;
+	long dataLength;
 	string data;
 }Picture_t;
 
@@ -94,9 +94,11 @@ typedef enum
 	CMDDevID,
 	CMDConfirm,
 	CMDSyncDateTime,
-	CMDLocalPwd,
-	CMDDoorPwd,
-	CMDDoorCtr,
+	CMDLocalPassword,
+	CMDFingerKey,
+	CMDDoorPassword,
+	CMDDoorControl,
+	CMDDoorState,
 	CMDCourseInfo,
 	CMDPlan,
 	CMDBroadcast,
@@ -110,10 +112,10 @@ typedef enum
 	CMDAdClear,//清空广告,
 	CMDAdSet,
 
-	CMDSuperPic,
 
 	CMDPerson,
-	CMDFinger,
+	CMDFingerGet,
+	CMDFingerSet,
 
 
 	CMDVersion,

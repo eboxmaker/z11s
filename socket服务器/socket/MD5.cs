@@ -14,7 +14,7 @@ namespace Weiz.TaskManager.Common
             {
                 using (MD5CryptoServiceProvider md5Hasher = new MD5CryptoServiceProvider())
                 {
-                    byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(str));
+                    byte[] data = md5Hasher.ComputeHash(Encoding.UTF8.GetBytes(str));
                     StringBuilder sBuilder = new StringBuilder();
                     for (int i = 0; i < data.Length; i++)
                     {

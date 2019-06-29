@@ -35,7 +35,6 @@ extern long gLastHelloTime;
 extern  long gKeyboardLastActionTime;
 
 
-extern doorState_t gDoorState;
 extern string gBroadcastMsg;
 
 

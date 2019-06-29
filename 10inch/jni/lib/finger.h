@@ -9,6 +9,8 @@
 #define JNI_FINGER_H_
 
 #include <iostream>
+#include <vector>
+#include "system/Thread.h"
 
 using namespace std;
 
@@ -69,7 +71,8 @@ typedef void (*FingerNotify_t)(unsigned char ,int ,unsigned char *, unsigned int
 
 extern FingerNotify_t fingerCallback;
 
-class Finger {
+class Finger : public Thread
+{
 public:
 	Finger();
 	virtual ~Finger();
@@ -90,34 +93,50 @@ public:
 
 	void	 get_total_num_async();
 	uint16_t get_total_num();
-	void search();
+	void search_async();
 
 	uint16_t search_features(const unsigned char *features);
 	uint16_t search_features(string &features);
 	uint16_t search_features_base64(string &Base64FeatureString);
 
 	bool  get_free(uint16_t start,uint16_t end,uint16_t *freeid);
-	void roll_step1(unsigned int u_id);
-	void roll_step2(unsigned int u_id);
-	void roll_step3(unsigned int u_id);
-	void get_timeout();
-	void set_timeout(unsigned char sec);
+	void roll_step1_async(unsigned int u_id);
+	void roll_step2_async(unsigned int u_id);
+	void roll_step3_async(unsigned int u_id);
+	void get_timeout_async();
+	void set_timeout_async(unsigned char sec);
 
 
 	string err_to_string(int err);
-	bool is_on_search(){return on_search_state;};
+	bool is_on_search(){
+
+
+		return on_search_state;
+
+	};
 	void set_search_state(bool state){on_search_state = state;};
 
+
+	bool get_busy(){return busy;};
+	void set_busy(bool state){ busy = state;};
+
 	void check_online_async();
+	bool check_online_sync();
 	bool is_online(){return online_state;};
 	void set_online(bool state){online_state = state;};
 
 	void parser(char ch);
 
+
+
 	int ack;
 	int retState;
 	long timelast;
 	int dataLen;
+
+protected:
+	virtual bool readyToRun();
+	virtual bool threadLoop();
 
 private:
 	unsigned char genCheck(unsigned char wLen,unsigned char *ptr);
@@ -132,13 +151,18 @@ private:
 	unsigned int counter;
 	bool on_search_state;
 	bool online_state;
+	bool busy;
 
+	void wait_busy();
 	void send_package(unsigned char *ptr,unsigned char wLen);
 
 	int parse_head(char ch);
 	int parse_date(char ch);
+	mutable Mutex mLock1;
 
 };
+
+
 extern Finger finger;
 
 

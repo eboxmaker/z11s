@@ -21,7 +21,6 @@
 
 bool isShowKeyboard = true;
 
-doorState_t gDoorState = Lock;
 
 SocketClient* gSocket= new SocketClient();
 
@@ -200,7 +199,7 @@ void exeCMD(string &package)
 				gSocket->write_(ack);
 			}
 			break;
-		case CMDLocalPwd:
+		case CMDLocalPassword:
 			status = jm.parseLocalPwd(js,msg);
 			if(status == StatusSet)
 			{
@@ -216,6 +215,52 @@ void exeCMD(string &package)
 				ack = jm.makeLocalPwd(msg,StatusOK);
 				gSocket->write_(ack);
 			}
+			break;
+		case CMDFingerKey:
+			status = jm.parseFingerKey(js);
+			if(status == StatusOK)
+			{
+
+			}
+			break;
+		case CMDDoorControl:
+			DoorLockState_t tempDoorLockState;
+			status = jm.parseDoorCtr(js,tempDoorLockState);
+			if(status == StatusSet )
+			{
+				if(tempDoorLockState == Unlock)
+				{
+					msg = "exe unlock";
+					door.set_lock(Unlock);
+				}
+				else
+				{
+					msg = "exe lock";
+					door.set_lock(Lock);
+				}
+//				tempDoorLockState = door.get_lock_state();;
+				ack = jm.makeDoorCtr(tempDoorLockState, StatusOK);
+				gSocket->write_(ack);
+			}
+//			else if(status == StatusRead)
+//			{
+//				tempDoorLockState = door.get_lock_state();
+//				ack = jm.makeDoorCtr(tempDoorLockState, StatusOK);
+//				gSocket->write_(ack);
+//			}
+			//应该触发一个定时器，两秒之后返回该值
+
+			break;
+		case CMDDoorState:
+			DoorState_t tempDoorState;
+			status = jm.parseDoorState(js);
+			if(status == StatusRead)
+			{
+				tempDoorState = door.get_state();
+				ack = jm.makeDoorState(tempDoorState, StatusOK);
+				gSocket->write_(ack);
+			}
+
 			break;
 		case CMDQRCode:
 			status = jm.parseFile(js,QR_DIR,msg,dataout);
@@ -309,42 +354,7 @@ void exeCMD(string &package)
 			}
 			break;
 
-		case CMDSuperPic:
-//			status = jm.parseFile(js,AD_DIR,msg);
-//			if(status == StatusSet || status == StatusRead)
-//			{
-//				ack = jm.makePicAck(msg,StatusOK);
-//				gSocket->write_(ack);
-//			}
-//			updateAdFileList(gAdSet.list);
-//			LOGE("接收到图片!%d:%s\n",status,msg.c_str());
-			break;
-		case CMDDoorCtr:
-			doorState_t tempDoorState;
-			status = jm.parseDoorCtr(js,tempDoorState);
-			if(status == StatusSet )
-			{
-				gDoorState = tempDoorState;
-				if(gDoorState == UnLock)
-				{
-					msg = "unlock";
-					door.set(UnLock);
-				}
-				else
-				{
-					msg = "lock";
-					door.set(Lock);
-				}
-			}else if(status == StatusRead)
-			{
-				tempDoorState = door.get();
-				LOGD("door：%d",tempDoorState);
-			}
-			//应该触发一个定时器，两秒之后返回该值
-			ack = jm.makeDoorCtr(tempDoorState, StatusOK);
-			gSocket->write_(ack);
-			break;
-		case CMDDoorPwd:
+		case CMDDoorPassword:
 			status = jm.parseDoorPwd(js, msg);
 			//下位机不存储开门密码
 //			if(status == StatusSet)
@@ -420,6 +430,8 @@ void exeCMD(string &package)
 		case CMDPerson:
 //			LOGD("收到person命令：");
 			status = jm.parsePerson(js, gPersonAll);
+			if(keyboardCallback != NULL)
+				keyboardCallback(cmd,status,msg);
 			if(status == StatusOK)
 			{
 				msg = PIC_DIR + gPersonAll.picture.name;
@@ -439,9 +451,9 @@ void exeCMD(string &package)
 				gSocket->write_(ack);
 			}
 			break;
-		case CMDFinger:
-			LOGD("收到Finger");
-			status = jm.parseFinger(js, gPersonAll);
+		case CMDFingerGet:
+			LOGD("收到FingerGet");
+			status = jm.parseFingerGet(js, gPersonAll);
 			if(status == StatusOK)
 			{
 				uint16_t id;
@@ -455,15 +467,15 @@ void exeCMD(string &package)
 					else
 						LOGD("添加临时失败");
 				}
-//				gPerson.add(gPersonAll);
-				//LOGE("%s，%s",gPersonDump.name.c_str(),gPersonDump.course.c_str());
+			}
+			break;
+		case CMDFingerSet:
+			LOGD("收到FingerSet");
+			status = jm.parseFingerSet(js, gPersonAll);
+			if(status == StatusOK)
+			{
 
 			}
-//			else if(status == StatusSet)
-//			{
-//				ack = jm.makeFinger(gPersonDump, StatusOK);
-//				gSocket->write_(ack);
-//			}
 			break;
 		case CMDVersion:
 			status = jm.parseVersion(js);
@@ -515,7 +527,7 @@ void exeCMD(string &package)
 		}
 		if(networkTestCallback != NULL)
 			networkTestCallback(cmd,status,msg);
-		if(keyboardCallback != NULL)
+		if(keyboardCallback != NULL && cmd != CMDPerson)//person 命令提前触发了
 			keyboardCallback(cmd,status,msg);
 		if(settingsCallback != NULL)
 			settingsCallback(cmd,status,msg);

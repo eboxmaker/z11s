@@ -45,14 +45,17 @@ typedef struct {
 } LockData_t;
 
 static LockData_t ListLockStr[] = {
-		{"高电平锁门",false},
-		{"高电平开门",false}
+	{"高电平锁门",false},
+	{"高电平开门",false}
 };
 static LockData_t ListFeed1Data[] = {
-	{"高电平锁门",false},
+	{"高电平上锁",false},
+	{"高电平解锁",false},
+};
+static LockData_t ListFeed2Data[] = {
+	{"高电平关门",false},
 	{"高电平开门",false},
 };
-
 /**
  * 注册定时器
  * 填充数组用于注册定时器
@@ -86,19 +89,32 @@ static void onUI_intent(const Intent *intentPtr) {
  */
 static void onUI_show() {
     EASYUICONTEXT->showStatusBar();
-    ListLockStr[door.LockLogic].bOn = true;
-    ListFeed1Data[door.Feed1Logic].bOn = true;
+    ListLockStr[door.get_lock_ctr_logic()].bOn = true;
+    ListFeed1Data[door.get_lock_logic()].bOn = true;
+    ListFeed2Data[door.get_door_logic()].bOn = true;
 
-	if(door.get() == UnLock)
+	if(door.get_lock_state() == Unlock)
 	{
 		mBtnLockStatePtr->setBackgroundPic("kai.png");
-		mBtnLockStatePtr->setText("开");
+		mBtnLockStatePtr->setText("解锁");
 	}
 	else
 	{
 		mBtnLockStatePtr->setBackgroundPic("guan.png");
-		mBtnLockStatePtr->setText("关 ");
+		mBtnLockStatePtr->setText("上锁 ");
 	}
+
+	if(door.get_door_state() == Open)
+	{
+		mBtnDoorStatePtr->setBackgroundPic("kai.png");
+		mBtnDoorStatePtr->setText("开");
+	}
+	else
+	{
+		mBtnDoorStatePtr->setBackgroundPic("guan.png");
+		mBtnDoorStatePtr->setText("关 ");
+	}
+
 	editEnable = false;
 	mBtnEnablePtr->setText("不允许编辑锁选项");
 
@@ -143,17 +159,30 @@ static bool onUI_Timer(int id){
 	switch (id) {
 	case 0:
 
-		if(door.get() == UnLock)
+		if(door.get_lock_state() == Unlock)
 		{
 			mBtnLockStatePtr->setBackgroundPic("kai.png");
-			mBtnLockStatePtr->setText("开");
+			mBtnLockStatePtr->setText("解锁");
 		}
 		else
 		{
 			mBtnLockStatePtr->setBackgroundPic("guan.png");
-			mBtnLockStatePtr->setText("关 ");
+			mBtnLockStatePtr->setText("上锁 ");
+		}
+
+
+		if(door.get_door_state() == Open)
+		{
+			mBtnDoorStatePtr->setBackgroundPic("kai.png");
+			mBtnDoorStatePtr->setText("开");
+		}
+		else
+		{
+			mBtnDoorStatePtr->setBackgroundPic("guan.png");
+			mBtnDoorStatePtr->setText("关 ");
 		}
 	    break;
+
 //	case 10:
 //		EASYUICONTEXT->goHome();
 //		isShowKeyboard = true;
@@ -211,17 +240,11 @@ static void onListItemClick_ListLockLogic(ZKListView *pListView, int index, int 
         	ListLockStr[i].bOn = false;
         }
         ListLockStr[index].bOn = true;
-        door.LockLogic = index;
-
-        StoragePreferences::putInt("door.LockLogic", door.LockLogic);
+        door.set_lock_ctr_logic(index);
 
     }
 
 }
-
-
-
-
 
 
 
@@ -246,27 +269,66 @@ static void onListItemClick_ListFeed1Logic(ZKListView *pListView, int index, int
 			ListFeed1Data[i].bOn = false;
 		}
 		ListFeed1Data[index].bOn = true;
-		door.Feed1Logic = index;
-        StoragePreferences::putInt("door.Feed1Logic", door.Feed1Logic);
+		door.set_lock_logic(index);
+	}
+}
 
+static int getListItemCount_ListFeed2Logic(const ZKListView *pListView) {
+    //LOGD("getListItemCount_ListFeed2Logic !\n");
+    return getArraySize(ListFeed2Data);
+}
+
+static void obtainListItemData_ListFeed2Logic(ZKListView *pListView,ZKListView::ZKListItem *pListItem, int index) {
+    //LOGD(" obtainListItemData_ ListFeed2Logic  !!!\n");
+	ZKListView::ZKListSubItem* psubButton = pListItem->findSubItemByID(ID_LOCKSETTINGS_SubItem3);
+	pListItem->setText(ListFeed2Data[index].mainText);
+	psubButton->setSelected(ListFeed2Data[index].bOn);
+}
+
+static void onListItemClick_ListFeed2Logic(ZKListView *pListView, int index, int id) {
+    //LOGD(" onListItemClick_ ListFeed2Logic  !!!\n");
+    if(editEnable)
+    {
+    	for(int i = 0; i <  getArraySize(ListFeed2Data); i++ )
+		{
+			ListFeed2Data[i].bOn = false;
+		}
+		ListFeed2Data[index].bOn = true;
+		door.set_door_logic(index);
 	}
 }
 
 
+
 static bool onButtonClick_BtnUnLock(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnUnLock !!!\n");
-	door.set(UnLock);
-	if(door.get() == UnLock)
+	door.set_lock(Unlock);
+	if(door.get_lock_state() == Unlock)
 	{
 		mBtnLockStatePtr->setBackgroundPic("kai.png");
-		mBtnLockStatePtr->setText("开");
+		mBtnLockStatePtr->setText("解锁");
 	}
 	else
 	{
 		mBtnLockStatePtr->setBackgroundPic("guan.png");
-		mBtnLockStatePtr->setText("关 ");
+		mBtnLockStatePtr->setText("上锁 ");
 	}
-	return false;}
+
+	if(door.get_door_state() == Open)
+	{
+		mBtnDoorStatePtr->setBackgroundPic("kai.png");
+		mBtnDoorStatePtr->setText("开");
+	}
+	else
+	{
+		mBtnDoorStatePtr->setBackgroundPic("guan.png");
+		mBtnDoorStatePtr->setText("关 ");
+	}
+
+
+	return false;
+
+}
 
 static bool onButtonClick_BtnLockState(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnLockState !!!\n");
@@ -275,17 +337,29 @@ static bool onButtonClick_BtnLockState(ZKButton *pButton) {
 
 static bool onButtonClick_BtnLock(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnLock !!!\n");
-	door.set(Lock);
-	if(door.get() == UnLock)
+	door.set_lock(Lock);
+	if(door.get_lock_state() == Unlock)
 	{
 		mBtnLockStatePtr->setBackgroundPic("kai.png");
-		mBtnLockStatePtr->setText("开");
+		mBtnLockStatePtr->setText("解锁");
 	}
 	else
 	{
 		mBtnLockStatePtr->setBackgroundPic("guan.png");
-		mBtnLockStatePtr->setText("关 ");
+		mBtnLockStatePtr->setText("上锁 ");
 	}
+
+	if(door.get_door_state() == Open)
+	{
+		mBtnDoorStatePtr->setBackgroundPic("kai.png");
+		mBtnDoorStatePtr->setText("开");
+	}
+	else
+	{
+		mBtnDoorStatePtr->setBackgroundPic("guan.png");
+		mBtnDoorStatePtr->setText("关 ");
+	}
+
     return false;
 }
 static bool onButtonClick_Button1(ZKButton *pButton) {
@@ -330,4 +404,9 @@ static void obtainListItemData_ListAlarm(ZKListView *pListView,ZKListView::ZKLis
 
 static void onListItemClick_ListAlarm(ZKListView *pListView, int index, int id) {
     //LOGD(" onListItemClick_ ListAlarm  !!!\n");
+}
+
+static bool onButtonClick_BtnDoorState(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnDoorState !!!\n");
+    return false;
 }

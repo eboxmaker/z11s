@@ -8,9 +8,11 @@
 #ifndef _UTILS_GPIO_HELPER_H_
 #define _UTILS_GPIO_HELPER_H_
 
-#define GPIO_PIN_B_02		"B_02"
-#define GPIO_PIN_B_03		"B_03"
-#define GPIO_PIN_E_20		"E_20"
+#define GPIO_PIN_B_02		"B_02"//IO1
+#define GPIO_PIN_B_03		"B_03"//IO2
+#define GPIO_PIN_B_06		"B_06"//SCL
+#define GPIO_PIN_B_07		"B_07"//SDA
+#define GPIO_PIN_E_20		"E_20"//IO3
 
 /**
  * @brief GPIO操作帮助类

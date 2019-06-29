@@ -58,7 +58,7 @@ protected:
         string err = http.Download(url, port, fullName);
         result = err;
         if (err.empty()) {
-        	LOGD("下载成功:%s",err.c_str());
+//        	LOGD("下载成功:%s",err.c_str());
             if(downloadEvent != NULL)
             {
             	downloadEvent(err);

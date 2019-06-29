@@ -50,6 +50,7 @@ public:
 	uint16_t get_total_fingers();
 	uint16_t get_total_persons();
 	bool is_exist(PersonAll_t &person);
+	bool update_person(PersonInfo_t &person);
 
 private:
 

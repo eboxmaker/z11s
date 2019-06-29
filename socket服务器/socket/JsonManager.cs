@@ -29,8 +29,10 @@ namespace MyJson
             Confirm,
             SyncDateTime,
             AdminPwd,
+            FingerKey,
 	        DoorPwd,
-	        DoorCtr,
+            DoorCtr,
+            DoorState,
             CourseInfo,
             Plan,
             Broadcast, 
@@ -44,10 +46,10 @@ namespace MyJson
             AdClear,
             AdSet,
 
-            SuperPic,
 
             Person,
-            Finger,
+            FingerGet,
+            FingerSet,
 
             CMDVersion,
             CMDUpdate,
@@ -307,8 +309,7 @@ namespace MyJson
             obj.Add("course", "编译原理");
             obj.Add("pic.name", FilePath);
             obj.Add("pic.data", data);
-            obj.Add("pic.datalen", data.Length);
-            obj.Add("pic.type", "bas64");
+            obj.Add("pic.dataLength", data.Length);
             obj.Add("status", (int)StatusType.StatusSet);
             string jstring = JsonConvert.SerializeObject(obj);
             string str = Package(jstring);
@@ -353,9 +354,7 @@ namespace MyJson
 
             string enstr = AESEncrypt.Encrypt(jstr, key);
 
-            byte[] data = Encoding.UTF8.GetBytes(enstr);
-            string md5 = ComMD5.GetMd5Str(enstr);
-
+            string md5 = ComMD5.GetMd5Str(jstr);
             JObject obj = new JObject();
             obj.Add("sign", md5);
             obj.Add("data", enstr);
@@ -373,19 +372,20 @@ namespace MyJson
                 obj = (JObject)JsonConvert.DeserializeObject(jstr);
                 md5 = obj["sign"].ToString();
                 string data = obj["data"].ToString();
-                string checkMD5 = ComMD5.GetMd5Str(data);
+                js = AESEncrypt.Decrypt(data, key);
+                string checkMD5 = ComMD5.GetMd5Str(js);
                 if (md5 == checkMD5)
                 {
-                    js = AESEncrypt.Decrypt(data, key);
-               }
-                //else
-                //    js = "";
+                    return js;
+                }
+                else
+                    js = "";
             }
             catch
             {
 
             }
-            return js;  
+            return js;
         }
         public static CMDType GetJsonCMD(string jstr)
         {
@@ -472,15 +472,31 @@ namespace MyJson
             string str = Package(jstring);
             return str;
         }
-        public static string MakeCMDDoor1(string isLock,StatusType status)
+        public static string MakeCMDDoorCtr(string isLock,StatusType status)
         {
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.DoorCtr);
-            obj.Add("door", isLock);
+            obj.Add("doorCtr", isLock);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
             string str = Package(jstring);
             return str;
+        }
+
+        public static string MakeCMDDoorState(StatusType status)
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.DoorState);
+            obj.Add("status", (int)status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            string str = Package(jstring);
+            return str;
+        }
+        public static string ParseCMDDoorState(string js)
+        {
+            JObject jo = (JObject)JsonConvert.DeserializeObject(js);
+            string doorState = jo["doorState"].ToString();
+            return doorState;
         }
         public static string MakeDoorPwd(string pwd,StatusType status)
         {
@@ -498,6 +514,12 @@ namespace MyJson
             string pwd = jo["pwd"].ToString();
             return pwd;
         }
+        public static string ParseFingerKey(string js)
+        {
+            JObject jo = (JObject)JsonConvert.DeserializeObject(js);
+            string id = jo["id"].ToString();
+            return id;
+        }
         public static string MakeCMDDoorPwd(string pwd,StatusType status)
         {
             JObject obj = new JObject();
@@ -508,7 +530,15 @@ namespace MyJson
             string str = Package(jstring);
             return str;
         }
-
+        public static string MakeCMDFingerKey(StatusType status)
+        {
+            JObject obj = new JObject();
+            obj.Add("cmd", (int)CMDType.FingerKey);
+            obj.Add("status", (int)status);
+            string jstring = JsonConvert.SerializeObject(obj);
+            string str = Package(jstring);
+            return str;
+        }
 
         public static string ParseSyncDateTime(string js)
         {
@@ -640,7 +670,7 @@ namespace MyJson
                 obj.Add("name", "软三");
                 obj.Add("id", id);
                 obj.Add("heartbeatInterval", 5);
-                obj.Add("dateTime", dateTime);
+                //obj.Add("dateTime", dateTime);
 
             }
             if(status == StatusConfirmType.StatusOKSer2Dev)
@@ -649,7 +679,7 @@ namespace MyJson
                 obj.Add("name", "软三");
                 obj.Add("id", "3832001749591935784");
                 obj.Add("heartbeatInterval", 5);
-                obj.Add("dateTime", dateTime);
+                //obj.Add("dateTime", dateTime);
             }
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
@@ -758,7 +788,7 @@ namespace MyJson
             obj.Add("level", level);
             obj.Add("pic.name", picname);
             obj.Add("pic.data", data);
-            obj.Add("pic.datalen", data.Length);
+            obj.Add("pic.dataLength", data.Length);
 
             for (int i = 0; i < fingers.Length; i++)
             {
@@ -791,7 +821,7 @@ namespace MyJson
             obj.Add("level", ps.level);
             obj.Add("pic.name", ps.picture_name);
             obj.Add("pic.data", data);
-            obj.Add("pic.datalen", data.Length);
+            obj.Add("pic.dataLength", data.Length);
 
             for (int i = 0; i < ps.fingers.Length; i++)
             {
@@ -816,13 +846,13 @@ namespace MyJson
 
             var ja = new JArray();
 
-            obj.Add("cmd", (int)CMDType.Finger);
+            obj.Add("cmd", (int)CMDType.FingerGet);
             obj.Add("id", id);
             obj.Add("name", name);
             obj.Add("level", level);
             obj.Add("pic.name", picname);
             obj.Add("pic.data", data);
-            obj.Add("pic.datalen", data.Length);
+            obj.Add("pic.dataLength", data.Length);
 
             for (int i = 0; i < fingers.Length; i++)
             {
@@ -839,7 +869,7 @@ namespace MyJson
             return str;
         }
 
-        public static string MakeFinger(Person ps, StatusType status)
+        public static string MakeFingerGet(Person ps, StatusType status)
         {
             JObject obj = new JObject();
 
@@ -848,13 +878,13 @@ namespace MyJson
 
             var ja = new JArray();
 
-            obj.Add("cmd", (int)CMDType.Finger);
+            obj.Add("cmd", (int)CMDType.FingerGet);
             obj.Add("id", ps.id);
             obj.Add("name", ps.name);
             obj.Add("level", ps.level);
             obj.Add("pic.name", ps.picture_name);
             obj.Add("pic.data", data);
-            obj.Add("pic.datalen", data.Length);
+            obj.Add("pic.dataLength", data.Length);
 
             for (int i = 0; i < ps.fingers.Length; i++)
             {
@@ -871,7 +901,46 @@ namespace MyJson
             return str;
         }
 
-        public static string parseFinger(string js)
+        public static string MakeFingerSet(Person ps, StatusType status)
+        {
+            JObject obj = new JObject();
+
+            string picname = Path.GetFileName(ps.picture_name);
+            string data = FileToBase64(ps.picture_name);
+
+            var ja = new JArray();
+
+            obj.Add("cmd", (int)CMDType.FingerSet);
+            obj.Add("id", ps.id);
+            obj.Add("name", ps.name);
+            obj.Add("level", ps.level);
+            obj.Add("pic.name", ps.picture_name);
+            obj.Add("pic.data", data);
+            obj.Add("pic.dataLength", data.Length);
+
+            for (int i = 0; i < ps.fingers.Length; i++)
+            {
+                JObject jo = new JObject();
+                jo.Add("finger", ps.fingers[i]);
+                ja.Add(jo);
+            }
+            obj.Add("fingers", ja);
+            obj.Add("status", (int)status);
+
+            string jstring = JsonConvert.SerializeObject(obj);
+
+            string str = Package(jstring);
+            return str;
+        }
+
+        public static string parseFingerGet(string js)
+        {
+            JObject jo = (JObject)JsonConvert.DeserializeObject(js);
+            string idstr = jo["id"].ToString();
+            //int id = Convert.ToInt32(idstr);
+            return idstr;
+        }
+        public static string parseFingerSet(string js)
         {
             JObject jo = (JObject)JsonConvert.DeserializeObject(js);
             string idstr = jo["id"].ToString();

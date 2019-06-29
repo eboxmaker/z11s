@@ -26,6 +26,8 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_PERSON_BtnRollStep    20003
+#define ID_PERSON_BtnGetTotalFingerNum    20012
 #define ID_PERSON_TextFingerOnlineState    50020
 #define ID_PERSON_Textview8    50019
 #define ID_PERSON_TvConnectState    50010
@@ -33,7 +35,6 @@
 #define ID_PERSON_TextFingerState    50017
 #define ID_PERSON_WindState    110002
 #define ID_PERSON_TextFingerTotalNum    50016
-#define ID_PERSON_Button1    20012
 #define ID_PERSON_Textview10    50015
 #define ID_PERSON_TextFingerIDList    50014
 #define ID_PERSON_TextFingerNum    50013
@@ -43,12 +44,7 @@
 #define ID_PERSON_Textview5    50011
 #define ID_PERSON_EditInstruction    51002
 #define ID_PERSON_BtnPicture    20002
-#define ID_PERSON_BtnGetIDFeature    20010
-#define ID_PERSON_BtnReadCurrentFeature    20009
 #define ID_PERSON_BtnUpdateServer    20008
-#define ID_PERSON_BtnSetTimeout    20007
-#define ID_PERSON_BtnReadTimeout    20006
-#define ID_PERSON_BtnClearFinger    20005
 #define ID_PERSON_TextPersonID    50005
 #define ID_PERSON_TextPersonLevel    50007
 #define ID_PERSON_TextPersonName    50003
@@ -56,7 +52,6 @@
 #define ID_PERSON_TextStatusNotice    50009
 #define ID_PERSON_WindStatusNotice    110003
 #define ID_PERSON_Textview6    50008
-#define ID_PERSON_Button2    20003
 #define ID_PERSON_Textview4    50006
 #define ID_PERSON_Textview3    50004
 #define ID_PERSON_EditPersonID    51001

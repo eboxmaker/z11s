@@ -6,6 +6,7 @@
 #include "lib/base64.h"
 #include "door.h"
 #include "lib/finger.h"
+#include "httpdownload.h"
 
 /*
 *此文件由GUI工具生成
@@ -36,8 +37,12 @@
 *
 * 在Eclipse编辑器中  使用 “alt + /”  快捷键可以打开智能提示
 */
-static string doorPwd;
-static doorState_t lastDoorState;
+static string doorPassword;
+static PersonInfo_t lastPersonInfo;
+static PersonInfo_t nowPersonInfo;
+static long last_trans_time = 0;
+static bool is_on_download_finger = false;
+static long last_download_finger_time = 0;
 class LongClickListener : public ZKBase::ILongClickListener {
 
           virtual void onLongClick(ZKBase *pBase) {
@@ -47,41 +52,19 @@ class LongClickListener : public ZKBase::ILongClickListener {
                  char buf[128] = {0};
                  snprintf(buf, sizeof(buf), "长按事件触发次数 %d", ++count);
                  //每次触发长按事件，修改按键的文字
-             	doorPwd = doorPwd.substr(0, doorPwd.length() - 1);
-             	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+             	doorPassword = doorPassword.substr(0, doorPassword.length() - 1);
+             	mEditTextDoorPasswordPtr->setText(doorPassword.c_str());
           }
  };
 
 static LongClickListener longButtonClickListener;
 
 static string QRCodeFullName = "/mnt/extsd/qr/qr.jpg";
+static void updateDoorState();
+static void updateUI_time();
+static void updateCourseInfo();
+static void onDownloadEvent(string &msg);
 
-static void updateUI_time() {
-	char timeStr[20];
-	struct tm *t = TimeHelper::getDateTime();
-
-	sprintf(timeStr, "%02d:%02d:%02d", t->tm_hour,t->tm_min,t->tm_sec);
-	mTextTimePtr->setText(timeStr); // 注意修改控件名称
-
-	sprintf(timeStr, "%d年%02d月%02d日", 1900 + t->tm_year, t->tm_mon + 1, t->tm_mday);
-	mTextDatePtr->setText(timeStr); // 注意修改控件名称
-
-	static const char *day[] = { "日", "一", "二", "三", "四", "五", "六" };
-	sprintf(timeStr, "星期%s", day[t->tm_wday]);
-	mTextWeekPtr->setText(timeStr); // 注意修改控件名称
-}
-static void updateCourseInfo()
-{
-	string picFullName = PIC_DIR +  gCourseInfo.picture.name;
-	mTextTecherNamePtr->setText(gCourseInfo.name);
-	mTextClassPtr->setText(gCourseInfo.class_);
-	mTextNumPtr->setText(gCourseInfo.num);
-	mTextCoursePtr->setText(gCourseInfo.course);
-	mBtnTecherPicturePtr->setBackgroundPic(picFullName.c_str());
-	if(gSocket->connected())
-		mBtnQRCodePtr->setBackgroundPic(QRCodeFullName.c_str());
-
-}
 static void onNetConnect()
 {
 	mBtnQRCodePtr->setBackgroundPic(QRCodeFullName.c_str());
@@ -96,71 +79,48 @@ void static onNetDisconnect()
 
 static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, unsigned int len)
 {
-	char out[1024];
-	string outstring;
-	string err ;
-	int id;
-	PersonInfo_t psInfo;
+	string ack ;
+	int finger_id;
 	switch(cmd)
 	{
-/*	case CMD_GET_CURRENT_FEATURE:
-		is_requesting_finger = false;
-		if(cmdState == 0)
+	case CMD_GET_SERIAL:
+		if(finger.is_online() == false)
 		{
-			int value = ((data[0])<<8) + data[1];
-
-			LOGE("获取指纹执行状态%d",value);
+			mTextFingerOnlineStatePtr->setText("未连接");
 		}
-		else if(cmdState == 1)
 		{
-			LOGE("获取指数据包%d",len);
-			if(Base64::Encode(data, len, out, 1024) == true)
+			mTextFingerOnlineStatePtr->setText("已连接");
+		}
+//		LOGD("检查在线完成");
+		break;
+	case CMD_SEARCH:
+		finger_id = (data[0]<<8) + (data[1]);
+		if(finger_id == 0){
+			mTextStatusNoticePtr->setText("指纹匹配失败");
+			mTextStatusNotice2Ptr->setText("");
+		}
+		else{
+			if(gPerson.get_person_by_finger_id(finger_id, &nowPersonInfo) == true)
 			{
-				PersonDump_t person;
-				outstring = out;
-//				LOGE("outstring :%s",outstring.c_str());
-				person.fingers.push_back(outstring);
-		    	person.id = "";
-		    	mWindStatusNoticePtr->showWnd();
-		    	if(gSocket->connected())
-		    	{
-			        string x;
-			        x = jm.makePerson(person, StatusRead);
-			        gSocket->write_(x);
-		    		mTextStatusNoticePtr->setText("指纹验证中");
-		    		mTextStatusNotice2Ptr->setText("");
-		    		gSocket->updateTriger();
-		    	}
-		    	else
-		    	{
-		    		mTextStatusNoticePtr->setText("网络中断");
-		    		mTextStatusNotice2Ptr->setText("请输入管理员密码");
-
-		    	}
-
-//
+				mTextStatusNoticePtr->setText(nowPersonInfo.name);
+				mTextStatusNotice2Ptr->setText(nowPersonInfo.id);
+				if((time(NULL) - last_trans_time > 10) || (lastPersonInfo.id  != nowPersonInfo.id))
+				{
+					ack = jm.makeFingerKey(nowPersonInfo, StatusSet);
+					gSocket->write_(ack);
+				}
+			}
+			else
+			{
+				mTextStatusNoticePtr->setText("匹配到残留指纹");
+				mTextStatusNotice2Ptr->setText("请联系管理员");
 			}
 
 
-		}
+//			string picFullName = PIC_DIR +  psInfo.picture_name;
 
-		break;
-		*/
-	case CMD_SEARCH:
-		id = (data[0]<<8) + (data[1]);
-		if(id == 0){
-			mTextStatusNoticePtr->setText("不存在");
-			mTextStatusNotice2Ptr->setText(0);
-		}
-		else{
-			mTextStatusNoticePtr->setText("找到指纹");
-			gPerson.get_person_by_finger_id(id, &psInfo);//(id, &psInfo);
-			mTextStatusNotice2Ptr->setText(psInfo.id);
-
-			string picFullName = PIC_DIR +  psInfo.picture_name;
-
-			LOGD("ID:%s,pic name:%s",psInfo.id.c_str(),psInfo.picture_name.c_str());
-			mBtnTecherPicturePtr->setBackgroundPic(picFullName.c_str());
+//			LOGD("ID:%s,pic name:%s",psInfo.id.c_str(),psInfo.picture_name.c_str());
+//			mBtnTecherPicturePtr->setBackgroundPic(picFullName.c_str());
 		}
     	mWindStatusNoticePtr->showWnd();
 
@@ -182,39 +142,6 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 
 	switch(cmd)
 	{
-//	case CMDPerson:
-//		if(status == StatusOK)
-//		{
-//			gSocket->disableTriger();
-//			mWindStatusNoticePtr->showWnd();
-//			mTextStatusNoticePtr->setText("查询成功");
-//			temp += gPersonAll.name;
-//			temp += "/";
-//			temp += gPersonAll.id;
-//			temp += "/";
-//			switch(gPersonAll.level)
-//			{
-//			case 0:
-//				temp += "管理员";
-//				break;
-//			case 1:
-//				temp += "教师";
-//				break;
-//			case 2:
-//				temp += "学生";
-//				break;
-//			}
-//			mTextStatusNotice2Ptr->setText(temp.c_str());
-//
-//			sleep(3);
-//			mWindStatusNoticePtr->hideWnd();
-//		}
-//		for(int i = 0 ; i < gPersonDump.fingers.size();i++)
-//			LOGE("len:%d,%s",gPersonDump.fingers[i].length(),gPersonDump.fingers[i].c_str());
-
-//		finger.getFeatures();
-//		LOGE("重新触发指纹");
-//		break;
 	case CMDDelQRCode:
 
 	//	break;
@@ -222,54 +149,42 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		QRCodeFullName = msg;
 		mBtnQRCodePtr->setBackgroundPic(msg.c_str());
 		break;
-	case CMDLocalPwd:
+	case CMDLocalPassword:
 		if(status == StatusSet)
 		{
 			mWindStatusNoticePtr->showWnd();
 			mTextStatusNoticePtr->setText("管理员密码已经更新");
+			mTextStatusNoticePtr->setText("");
 		}
 		break;
-	case CMDDoorPwd:
+	case CMDDoorPassword:
 		if(status == StatusOK)
 		{
 			gSocket->disableTriger();
 			mWindStatusNoticePtr->showWnd();
 			mTextStatusNoticePtr->setText("密码正确");
+			mTextStatusNotice2Ptr->setText("");
 		}
 		else if(status == StatusErr)
 		{
 			gSocket->disableTriger();
 			mWindStatusNoticePtr->showWnd();
 			mTextStatusNoticePtr->setText("密码错误");
+			mTextStatusNotice2Ptr->setText("");
+
 		}
 		break;
-	case CMDDoorCtr:
+	case CMDFingerKey:
+		LOGD("指纹权限验证成功");
+		lastPersonInfo = nowPersonInfo;
+		last_trans_time = time(NULL);
+		break;
+	case CMDDoorControl:
 		if(status == StatusSet)
 		{
-			mWindStatusNoticePtr->showWnd();
-			if(msg == "unlock")
-			{
-				mTextStatusNoticePtr->setText("门正在打开");
-			}
-			else
-			{
-				mTextStatusNoticePtr->setText("门正在关闭");
-			}
-			sleep(2);
-			if(door.get() == UnLock)
-			{
-				mTextStatusNoticePtr->setText("门状态：开");
-				mTextDoorStatePtr->setText("开");
-			}
-			else
-			{
-				mTextStatusNoticePtr->setText("门状态：关");
-				mTextDoorStatePtr->setText("关");
-			}
+			updateDoorState();
 		}
-
 		break;
-
 	case CMDCourseInfo:
 		if(status == StatusSet)
 		{
@@ -296,6 +211,21 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		mTextBroadcastPtr->setText(gBroadcastMsg);
 
 		break;
+	case CMDPerson:
+
+		is_on_download_finger = true;
+		last_download_finger_time = time(NULL);
+
+		mWinNoExitPtr->showWnd();
+		mTextNoExitNotic1Ptr->setText("更新人员信息");
+		mTextNoExitNotic2Ptr->setText("请等待");
+
+		break;
+	case CMDUpdate:
+		mWinNoExitPtr->showWnd();
+		mTextNoExitNotic1Ptr->setText("系统更新中。。。");
+		mTextNoExitNotic2Ptr->setText("请等待");
+		break;
 	case 255:
 		mWindStatusNoticePtr->showWnd();
 		mTextStatusNoticePtr->setText("服务器响应超时");
@@ -316,7 +246,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 	{0,  1000}, //定时器id=0, 时间间隔6秒
-	{1,  5000},
+	{1,  10000},
 };
 
 /**
@@ -345,17 +275,20 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
-	LOGO("显示:key");
-	EASYUICONTEXT->hideStatusBar();
+//	LOGO("显示:key");
+    finger.check_online_async();
+
+    EASYUICONTEXT->hideStatusBar();
 	mWindStatusNoticePtr->hideWnd();
+	mWinNoExitPtr->hideWnd();
 	mWinPwdAdminPtr->hideWnd();
 	mWindAdminDoorPtr->hideWnd();
-	lastDoorState = gDoorState;
-	doorPwd.clear();
+	doorPassword.clear();
     gKeyboardLastActionTime = time(NULL);
     gSocket->attachOnConnect(onNetConnect, 1);
     gSocket->attachOnDisconnect(onNetDisconnect, 1);
-    finger.search();
+	downloadEvent = onDownloadEvent;
+
 
     if(gSocket->connected())
     {
@@ -388,6 +321,8 @@ static void onUI_show() {
 	updateUI_time();
 
 	updateCourseInfo();
+	updateDoorState();
+    finger.search_async();
 }
 
 /*
@@ -409,7 +344,8 @@ static void onUI_quit() {
 	mBtnBackPtr->setLongClickListener(NULL);
     gSocket->deattachOnConnect(1);
     gSocket->deattachOnDisconnect(1);
-	LOGO("注销:key");
+	downloadEvent = NULL;
+	//	LOGO("注销:key");
 
 
 }
@@ -470,27 +406,58 @@ static void adLoop()
 static bool onUI_Timer(int id){
 	switch (id) {
 	case 0:
-		if(door.get() == UnLock)
+		updateDoorState();
+		updateUI_time();
+		adLoop();
+//	    if(finger.is_online())
+//	    	mTextFingerStatePtr->setText("已连接");
+//	    else{
+//	    	mTextFingerStatePtr->setText("未连接");
+//	    }
+
+//		if(finger.is_on_search() == false)
+//		{
+//			finger.wait_busy();
+//    		finger.search_async();
+//    		LOGE("重新触发指纹");
+//		}
+		if(is_on_download_finger == false)
 		{
-			mBtnLockStatePtr->setBackgroundPic("kai.png");
-			mBtnLockStatePtr->setText("开");
+
+			if(finger.is_on_search() == false)
+			{
+//				LOGD("开启指纹检测");
+				finger.search_async();
+			}
 		}
 		else
 		{
-			mBtnLockStatePtr->setBackgroundPic("guan.png");
-			mBtnLockStatePtr->setText("关 ");
+			if(time(NULL) - last_download_finger_time > 3)
+			{
+				is_on_download_finger = false;
+				mWinNoExitPtr->hideWnd();
+			}
+			else
+			{
+			}
+
 		}
 
-		updateUI_time();
-		adLoop();
-		//dispMemUsage();
 		break;
 	case 1:
-		if(finger.is_on_search() == false)
+
+		if(is_on_download_finger == false)
 		{
-    		finger.search();
-    		LOGE("重新触发指纹");
+			if(finger.get_busy() == false){
+//				LOGD("检测在线状态");
+				finger.check_online_async();
+			}
+			else
+			{
+
+			}
 		}
+
 		break;
 	default:
 			break;
@@ -525,69 +492,69 @@ static bool onkeyboardActivityTouchEvent(const MotionEvent &ev) {
 
 static bool onButtonClick_Btn0(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn0 !!!\n");
-	doorPwd.append("0");
-	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+	doorPassword.append("0");
+	mEditTextDoorPasswordPtr->setText(doorPassword.c_str());
 
     return false;
 }
 static bool onButtonClick_Btn1(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn1 !!!\n");
-	doorPwd.append("1");
-	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+	doorPassword.append("1");
+	mEditTextDoorPasswordPtr->setText(doorPassword.c_str());
 	return false;
 }
 
 static bool onButtonClick_Btn2(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn2 !!!\n");
-	doorPwd.append("2");
-	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+	doorPassword.append("2");
+	mEditTextDoorPasswordPtr->setText(doorPassword.c_str());
    return false;
 }
 
 static bool onButtonClick_Btn3(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn3 !!!\n");
-	doorPwd.append("3");
-	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+	doorPassword.append("3");
+	mEditTextDoorPasswordPtr->setText(doorPassword.c_str());
 
     return false;
 }
 
 static bool onButtonClick_Btn4(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn4 !!!\n");
-	doorPwd.append("4");
-	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+	doorPassword.append("4");
+	mEditTextDoorPasswordPtr->setText(doorPassword.c_str());
 
     return false;
 }
 
 static bool onButtonClick_Btn5(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn5 !!!\n");
-	doorPwd.append("5");
-	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+	doorPassword.append("5");
+	mEditTextDoorPasswordPtr->setText(doorPassword.c_str());
 
     return false;
 }
 
 static bool onButtonClick_Btn6(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn6 !!!\n");
-	doorPwd.append("6");
-	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+	doorPassword.append("6");
+	mEditTextDoorPasswordPtr->setText(doorPassword.c_str());
 
   return false;
 }
 
 static bool onButtonClick_Btn7(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn7 !!!\n");
-	doorPwd.append("7");
-	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+	doorPassword.append("7");
+	mEditTextDoorPasswordPtr->setText(doorPassword.c_str());
 
     return false;
 }
 
 static bool onButtonClick_Btn8(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn8 !!!\n");
-	doorPwd.append("8");
-	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+	doorPassword.append("8");
+	mEditTextDoorPasswordPtr->setText(doorPassword.c_str());
 
     return false;
 }
@@ -595,8 +562,8 @@ static bool onButtonClick_Btn8(ZKButton *pButton) {
 
 static bool onButtonClick_Btn9(ZKButton *pButton) {
     //LOGD(" ButtonClick Btn9 !!!\n");
-	doorPwd.append("9");
-	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+	doorPassword.append("9");
+	mEditTextDoorPasswordPtr->setText(doorPassword.c_str());
 
     return false;
 }
@@ -605,16 +572,16 @@ static bool onButtonClick_Btn9(ZKButton *pButton) {
 static bool onButtonClick_BtnOK(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnOK !!!\n");
 
-	if(doorPwd == "3302389")
+	if(doorPassword == "3302389")
 	{
 		EASYUICONTEXT->openActivity("mainActivity");
 		return false;
 	}
 	if(gSocket->connected())
 	{
-		if(doorPwd != "")
+		if(doorPassword != "")
 		{
-			string  str = jm.makeDoorPwd(doorPwd, StatusSet);
+			string  str = jm.makeDoorPwd(doorPassword, StatusSet);
 			mWindStatusNoticePtr->showWnd();
 			gSocket->write_(str);
 			mTextStatusNoticePtr->setText("密码验证中");
@@ -626,7 +593,7 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 			mTextStatusNoticePtr->setText("请输入密码");
 		}
 	}
-	else if(doorPwd == dev.get_pwdLocal())
+	else if(doorPassword == dev.get_pwdLocal())
 	{
 		mWindAdminDoorPtr->showWnd();
 	}
@@ -636,16 +603,16 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 		mTextStatusNoticePtr->setText("网络中断");
 		mTextStatusNotice2Ptr->setText("请输入管理员密码");
 	}
-	doorPwd.clear();
-	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+	doorPassword.clear();
+	mEditTextDoorPasswordPtr->setText(doorPassword.c_str());
 
     return false;
 }
 
 static bool onButtonClick_BtnBack(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnBackUp !!!\n");
-	doorPwd = doorPwd.substr(0, doorPwd.length() - 1);
-	mEditTextDoorPasswordPtr->setText(doorPwd.c_str());
+	doorPassword = doorPassword.substr(0, doorPassword.length() - 1);
+	mEditTextDoorPasswordPtr->setText(doorPassword.c_str());
 
     return false;
 }
@@ -713,7 +680,8 @@ static bool onButtonClick_BtnBackMain2(ZKButton *pButton) {
 	//WindInAdminPwd->showWnd();
 	mWinPwdAdminPtr->showWnd();
 
-	return false;}
+	return false;
+}
 
 static bool onButtonClick_BtnPlan(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnPlan !!!\n");
@@ -779,17 +747,8 @@ static bool onButtonClick_BtnLockState(ZKButton *pButton) {
 static bool onButtonClick_BtnLock(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnLock !!!\n");
 
-	door.set(Lock);
-	if(door.get() == UnLock)
-	{
-		mBtnLockStatePtr->setBackgroundPic("kai.png");
-		mBtnLockStatePtr->setText("开");
-	}
-	else
-	{
-		mBtnLockStatePtr->setBackgroundPic("guan.png");
-		mBtnLockStatePtr->setText("关 ");
-	}
+	door.set_lock(Lock);
+
     return false;
 }
 
@@ -797,16 +756,85 @@ static bool onButtonClick_BtnUnLock(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnUnLock !!!\n");
     //LOGD(" ButtonClick BtnUnLock !!!\n");
 
-	door.set(UnLock);
-	if(door.get() == UnLock)
+	door.set_lock(Unlock);
+	return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+static void updateDoorState()
+{
+	if(door.get_lock_state() == Unlock)
 	{
-		mBtnLockStatePtr->setBackgroundPic("kai.png");
-		mBtnLockStatePtr->setText("开");
+		mTextLockStatePtr->setText("解锁");
+//		mBtnLockStatePtr->setText("解锁");
+//		mBtnLockStatePtr->setBackgroundPic("kai.png");
 	}
 	else
 	{
-		mBtnLockStatePtr->setBackgroundPic("guan.png");
-		mBtnLockStatePtr->setText("关 ");
+		mTextLockStatePtr->setText("上锁");
+//		mBtnLockStatePtr->setText("上锁");
+//		mBtnLockStatePtr->setBackgroundPic("guan.png");
 	}
-	return false;
+
+
+	if(door.get_door_state() == Open)
+	{
+		mTextDoorStatePtr->setText("开");
+	}
+	else
+	{
+		mTextDoorStatePtr->setText("关");
+
+	}
+
+
+}
+static void updateUI_time() {
+	char timeStr[20];
+	struct tm *t = TimeHelper::getDateTime();
+
+	sprintf(timeStr, "%02d:%02d:%02d", t->tm_hour,t->tm_min,t->tm_sec);
+	mTextTimePtr->setText(timeStr); // 注意修改控件名称
+
+	sprintf(timeStr, "%d年%02d月%02d日", 1900 + t->tm_year, t->tm_mon + 1, t->tm_mday);
+	mTextDatePtr->setText(timeStr); // 注意修改控件名称
+
+	static const char *day[] = { "日", "一", "二", "三", "四", "五", "六" };
+	sprintf(timeStr, "星期%s", day[t->tm_wday]);
+	mTextWeekPtr->setText(timeStr); // 注意修改控件名称
+}
+static void updateCourseInfo()
+{
+	string picFullName = PIC_DIR +  gCourseInfo.picture.name;
+	mTextTecherNamePtr->setText(gCourseInfo.name);
+	mTextClassPtr->setText(gCourseInfo.class_);
+	mTextNumPtr->setText(gCourseInfo.num);
+	mTextCoursePtr->setText(gCourseInfo.course);
+	mBtnTecherPicturePtr->setBackgroundPic(picFullName.c_str());
+	if(gSocket->connected())
+		mBtnQRCodePtr->setBackgroundPic(QRCodeFullName.c_str());
+
+}
+static void onDownloadEvent(string &msg)
+{
+	mWinNoExitPtr->showWnd();
+	mTextNoExitNotic1Ptr->setText("");
+	if(msg.empty())
+	{
+		mTextNoExitNotic2Ptr->setText("下载成功");
+	}
+	else
+	{
+		mTextNoExitNotic2Ptr->setText("下载失败");
+		mTextStatusNotice2Ptr->setText(msg);
+	}
 }

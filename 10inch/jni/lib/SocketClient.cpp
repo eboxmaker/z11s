@@ -41,7 +41,7 @@ SocketClient::SocketClient() :
 	conncetState(false),
 	mClientSocket(-1),
 	trigerTimeout(5),
-	trigerTime(-1),
+	triggerTime(-1),
 	maxCallbackNum(5),
 	mode(SocketClient::CmdMode)
 {
@@ -234,11 +234,11 @@ void SocketClient::write_(char *msg,size_t length)
 
 void SocketClient::updateTriger()
 {
-	trigerTime = time(NULL);
+	triggerTime = time(NULL);
 }
 void SocketClient::disableTriger()
 {
-	trigerTime = -1;
+	triggerTime = -1;
 }
 //char SocketClient::read_()
 //{

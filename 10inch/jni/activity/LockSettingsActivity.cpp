@@ -4,8 +4,10 @@
 #include "LockSettingsActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
-static ZKTextView* mTextview5Ptr;
-static ZKTextView* mTextview4Ptr;
+static ZKTextView* mTextview7Ptr;
+static ZKButton* mBtnDoorStatePtr;
+static ZKListView* mListFeed2LogicPtr;
+static ZKTextView* mTextview6Ptr;
 static ZKListView* mListAlarmPtr;
 static ZKTextView* mTextview3Ptr;
 static ZKButton* mBtnEnablePtr;
@@ -55,6 +57,7 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_LOCKSETTINGS_BtnDoorState, onButtonClick_BtnDoorState,
     ID_LOCKSETTINGS_BtnEnable, onButtonClick_BtnEnable,
     ID_LOCKSETTINGS_Button1, onButtonClick_Button1,
     ID_LOCKSETTINGS_BtnLock, onButtonClick_BtnLock,
@@ -85,6 +88,7 @@ typedef struct {
 }S_ListViewFunctionsCallback;
 /*TAG:ListViewFunctionsCallback*/
 static S_ListViewFunctionsCallback SListViewFunctionsCallbackTab[] = {
+    ID_LOCKSETTINGS_ListFeed2Logic, getListItemCount_ListFeed2Logic, obtainListItemData_ListFeed2Logic, onListItemClick_ListFeed2Logic,
     ID_LOCKSETTINGS_ListAlarm, getListItemCount_ListAlarm, obtainListItemData_ListAlarm, onListItemClick_ListAlarm,
     ID_LOCKSETTINGS_ListFeed1Logic, getListItemCount_ListFeed1Logic, obtainListItemData_ListFeed1Logic, onListItemClick_ListFeed1Logic,
     ID_LOCKSETTINGS_ListLockLogic, getListItemCount_ListLockLogic, obtainListItemData_ListLockLogic, onListItemClick_ListLockLogic,
@@ -143,8 +147,10 @@ const char* LockSettingsActivity::getAppName() const{
 //TAG:onCreate
 void LockSettingsActivity::onCreate() {
 	Activity::onCreate();
-    mTextview5Ptr = (ZKTextView*)findControlByID(ID_LOCKSETTINGS_Textview5);
-    mTextview4Ptr = (ZKTextView*)findControlByID(ID_LOCKSETTINGS_Textview4);
+    mTextview7Ptr = (ZKTextView*)findControlByID(ID_LOCKSETTINGS_Textview7);
+    mBtnDoorStatePtr = (ZKButton*)findControlByID(ID_LOCKSETTINGS_BtnDoorState);
+    mListFeed2LogicPtr = (ZKListView*)findControlByID(ID_LOCKSETTINGS_ListFeed2Logic);if(mListFeed2LogicPtr!= NULL){mListFeed2LogicPtr->setListAdapter(this);mListFeed2LogicPtr->setItemClickListener(this);}
+    mTextview6Ptr = (ZKTextView*)findControlByID(ID_LOCKSETTINGS_Textview6);
     mListAlarmPtr = (ZKListView*)findControlByID(ID_LOCKSETTINGS_ListAlarm);if(mListAlarmPtr!= NULL){mListAlarmPtr->setListAdapter(this);mListAlarmPtr->setItemClickListener(this);}
     mTextview3Ptr = (ZKTextView*)findControlByID(ID_LOCKSETTINGS_Textview3);
     mBtnEnablePtr = (ZKButton*)findControlByID(ID_LOCKSETTINGS_BtnEnable);

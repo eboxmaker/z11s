@@ -153,7 +153,9 @@ namespace AES
             ICryptoTransform cTransform = rDel.CreateDecryptor();
             byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
 
-            return UTF8Encoding.UTF8.GetString(resultArray);
+            string js =  UTF8Encoding.UTF8.GetString(resultArray);
+            js = js.Replace("\0","");
+            return js;
         }
 
 
