@@ -118,7 +118,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		}
 		else if(status == StatusOK)
 		{
-			gSocket->disableTriger();
+			gSocket->disableTrigger();
 			mTextStatusNoticePtr->setText("服务器同步成功");
 			updateDisp();
 		}
@@ -134,7 +134,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		}
 		else if(status == StatusOK)
 		{
-			gSocket->disableTriger();
+			gSocket->disableTrigger();
 			mTextStatusNoticePtr->setText("获得更新路径成功");
 			updateDisp();
 		}

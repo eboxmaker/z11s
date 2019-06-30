@@ -505,7 +505,7 @@ namespace MyJson
         {
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.DoorPwd);
-            obj.Add("pwd", pwd);
+            obj.Add("password", pwd);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
             string str = Package(jstring);
@@ -514,7 +514,7 @@ namespace MyJson
         public static string ParseDoorPwd(string js)
         {
             JObject jo = (JObject)JsonConvert.DeserializeObject(js);
-            string pwd = jo["pwd"].ToString();
+            string pwd = jo["password"].ToString();
             return pwd;
         }
         public static string ParseFingerKey(string js)
@@ -527,7 +527,7 @@ namespace MyJson
         {
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.DoorPwd);
-            obj.Add("pwd", pwd);
+            obj.Add("password", pwd);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
             string str = Package(jstring);

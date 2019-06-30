@@ -236,7 +236,7 @@ void SocketClient::updateTriger()
 {
 	triggerTime = time(NULL);
 }
-void SocketClient::disableTriger()
+void SocketClient::disableTrigger()
 {
 	triggerTime = -1;
 }

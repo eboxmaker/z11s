@@ -249,7 +249,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 
 			tPersonTrans = gPersonTrans;
 
-			gSocket->disableTriger();
+			gSocket->disableTrigger();
 			mWindStatusNoticePtr->showWnd();
 			mTextStatusNoticePtr->setText("同步成功");
 			mTextPersonNamePtr->setText(tPersonTrans.name);
@@ -291,7 +291,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
     			LOGD("不需要删除");
 				gPerson.update_one_person(tPersonInfo);
 			}
-			gSocket->disableTriger();
+			gSocket->disableTrigger();
 			mWindStatusNoticePtr->showWnd();
 			mTextStatusNoticePtr->setText("同步成功");
 			finger.get_total_num_async();

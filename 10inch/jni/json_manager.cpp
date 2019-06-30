@@ -142,6 +142,10 @@ bool JsonCmdManager::unPack(string& package,string& js)
 	  else
 	  {
 		  LOGE("md5错误");
+		  LOGE("src md5：%s",md5str.c_str());
+		  LOGE("src data：%s",data.c_str());
+		  LOGE("un md5:%s",checkMD5.c_str());
+		  LOGE("un data:%s(len:%d,size:%d)",js.c_str(),js.length(),js.size());
 		  return false;
 	  }
 	  return false;
@@ -419,7 +423,7 @@ string  JsonCmdManager::makeDoorPwd(string &pwd,JsonStatus_t status)
 
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDDoorPassword);
-	  root["pwd"] = Json::Value(pwd);
+	  root["password"] = Json::Value(pwd);
 	  root["status"] = Json::Value((int)status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
@@ -435,7 +439,7 @@ JsonStatus_t  JsonCmdManager::parseDoorPwd(string &js,string &pwd)
 	  {
 
 		  status = (JsonStatus_t)root["status"].asInt();
-		  pwd =  root["pwd"].asString();
+		  pwd =  root["password"].asString();
 	  }
 
 	  return status;

@@ -4,6 +4,7 @@
 #include "keyboardActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKWindow* mWindDoorControlPtr;
 static ZKTextView* mTextNoExitNotic2Ptr;
 static ZKTextView* mTextNoExitNotic1Ptr;
 static ZKWindow* mWinNoExitPtr;
@@ -15,7 +16,6 @@ static ZKTextView* mTextview5Ptr;
 static ZKButton* mBtnUnLockPtr;
 static ZKButton* mBtnLockPtr;
 static ZKTextView* mTextview1Ptr;
-static ZKWindow* mWindAdminDoorPtr;
 static ZKButton* mBtnTecherPicturePtr;
 static ZKTextView* mTextCoursePtr;
 static ZKTextView* mTextClassPtr;
@@ -209,6 +209,7 @@ const char* keyboardActivity::getAppName() const{
 //TAG:onCreate
 void keyboardActivity::onCreate() {
 	Activity::onCreate();
+    mWindDoorControlPtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindDoorControl);
     mTextNoExitNotic2Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextNoExitNotic2);
     mTextNoExitNotic1Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextNoExitNotic1);
     mWinNoExitPtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WinNoExit);
@@ -220,7 +221,6 @@ void keyboardActivity::onCreate() {
     mBtnUnLockPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnUnLock);
     mBtnLockPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnLock);
     mTextview1Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview1);
-    mWindAdminDoorPtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindAdminDoor);
     mBtnTecherPicturePtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnTecherPicture);
     mTextCoursePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextCourse);
     mTextClassPtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextClass);

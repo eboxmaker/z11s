@@ -209,13 +209,11 @@ namespace socket
                             {
                                 resault = JsonManager.MakeCMDDoorPwd(pwd, JsonManager.StatusType.StatusOK);
                                 server.Send(sender, resault);
-                                btnOpen.PerformClick();
                             }
                             else
                             {
                                 resault = JsonManager.MakeCMDDoorPwd(pwd, JsonManager.StatusType.StatusErr);
                                 server.Send(sender, resault);
-                                btnCloseLock.PerformClick();
                             }
                         }
 
@@ -225,6 +223,9 @@ namespace socket
                         if(status == JsonManager.StatusType.StatusSet)
                         {
                             resault = JsonManager.MakeCMDFingerKey(JsonManager.StatusType.StatusOK);
+                            server.Send(sender, resault);
+
+                            resault = JsonManager.MakeCMDDoorCtr("unlock", JsonManager.StatusType.StatusSet);
                             server.Send(sender, resault);
                         }
                         break;

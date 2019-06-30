@@ -25,7 +25,7 @@ public:
 	bool connected();
 
 	void updateTriger();
-	void disableTriger();
+	void disableTrigger();
 
 
 	void write_(std::string &msg);

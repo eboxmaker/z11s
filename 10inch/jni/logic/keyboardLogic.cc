@@ -160,14 +160,15 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 	case CMDDoorPassword:
 		if(status == StatusOK)
 		{
-			gSocket->disableTriger();
-			mWindStatusNoticePtr->showWnd();
-			mTextStatusNoticePtr->setText("密码正确");
-			mTextStatusNotice2Ptr->setText("");
+			gSocket->disableTrigger();
+			mWindStatusNoticePtr->hideWnd();
+//			mTextStatusNoticePtr->setText("密码正确");
+//			mTextStatusNotice2Ptr->setText("");
+			mWindDoorControlPtr->showWnd();
 		}
 		else if(status == StatusErr)
 		{
-			gSocket->disableTriger();
+			gSocket->disableTrigger();
 			mWindStatusNoticePtr->showWnd();
 			mTextStatusNoticePtr->setText("密码错误");
 			mTextStatusNotice2Ptr->setText("");
@@ -196,7 +197,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		if(status == StatusOK)
 		{
 //			LOGE("tirger :%d",gSocket->trigerTime);
-				gSocket->disableTriger();
+				gSocket->disableTrigger();
 		}
 		break;
 	case CMDBroadcast:
@@ -282,7 +283,7 @@ static void onUI_show() {
 	mWindStatusNoticePtr->hideWnd();
 	mWinNoExitPtr->hideWnd();
 	mWinPwdAdminPtr->hideWnd();
-	mWindAdminDoorPtr->hideWnd();
+	mWindDoorControlPtr->hideWnd();
 	doorPassword.clear();
     gKeyboardLastActionTime = time(NULL);
     gSocket->attachOnConnect(onNetConnect, 1);
@@ -442,8 +443,6 @@ static bool onUI_Timer(int id){
 			}
 
 		}
-
-		LOGD("btn:%D",door.get_door_btn());
 		break;
 	case 1:
 
@@ -597,7 +596,7 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 	}
 	else if(doorPassword == dev.get_pwdLocal())
 	{
-		mWindAdminDoorPtr->showWnd();
+		mWindDoorControlPtr->showWnd();
 	}
 	else
 	{

@@ -616,7 +616,7 @@
             this.tbDownLoadUrl.Name = "tbDownLoadUrl";
             this.tbDownLoadUrl.Size = new System.Drawing.Size(216, 21);
             this.tbDownLoadUrl.TabIndex = 59;
-            this.tbDownLoadUrl.Text = "192.168.1.100/download/update.img";
+            this.tbDownLoadUrl.Text = "10.176.2.176/download/update.img";
             // 
             // tbDownLoadPort
             // 

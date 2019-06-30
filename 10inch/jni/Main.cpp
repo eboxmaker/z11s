@@ -99,13 +99,15 @@ static void  *HighSpeedThread(void *lParam)
 	bool last_state = door.get_door_btn();
 	bool now_state = door.get_door_btn();
 	long last_open_time = time(NULL);
-	DoorLockState_t last_lock_state  = door.get_lock_ctr_state();;
+	DoorLockState_t last_lock_state  = door.get_lock_ctr_state();
+	bool changed = false;
 	while(1)
 	{
 		now_state = door.get_door_btn();
 		if(last_state != now_state)
 		{
 			last_state = now_state;
+			changed = true;
 			if(now_state == false)
 			{
 				last_lock_state = door.get_lock_ctr_state();
@@ -114,9 +116,11 @@ static void  *HighSpeedThread(void *lParam)
 				LOGD("触发按键事件");
 			}
 		}
-		if(time(NULL) - last_open_time > 3)
+		if(time(NULL) - last_open_time > 3 && changed == true)
 		{
+			changed = false;
 			door.set_lock_ctr(last_lock_state);
+			LOGD("关闭门锁");
 		}
 		Thread::sleep(100);
 	}
