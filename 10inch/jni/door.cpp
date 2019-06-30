@@ -14,7 +14,7 @@ namespace std {
 #define  IO_LOCK_CTR 	GPIO_PIN_B_02
 #define  IO_LOCK_FEED 	GPIO_PIN_B_03
 #define  IO_DOOR_FEED 	GPIO_PIN_B_07
-
+#define  IO_DOOR_BTN	GPIO_PIN_E_20
 
 Door::Door() {
 	// TODO 自动生成的构造函数存根
@@ -42,9 +42,10 @@ void Door::loop()
 	}
 }
 
-void Door::set_lock(DoorLockState_t state)
+void Door::set_lock_ctr(DoorLockState_t state)
 {
 	if(state == Lock){
+		io_lock_ctr_state = Lock;
 		if(LockCtrLogic == HighLock)
 			GpioHelper::output(IO_LOCK_CTR, 1);
 		else
@@ -52,12 +53,17 @@ void Door::set_lock(DoorLockState_t state)
 	}
 	else
 	{
+		io_lock_ctr_state = Unlock;
 		if(LockCtrLogic == HighLock)
 			GpioHelper::output(IO_LOCK_CTR, 0);
 		else
 			GpioHelper::output(IO_LOCK_CTR, 1);
 	}
 
+}
+DoorLockState_t Door::get_lock_ctr_state()
+{
+	return io_lock_ctr_state;
 }
 
 DoorLockState_t Door::get_lock_state()
@@ -156,6 +162,10 @@ DoorState_t Door::get_state()
 	}
 	return state;
 
+}
+bool Door::get_door_btn()
+{
+	return  GpioHelper::input(IO_DOOR_BTN);
 }
 
 

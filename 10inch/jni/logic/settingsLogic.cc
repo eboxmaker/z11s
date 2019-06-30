@@ -223,7 +223,7 @@ static void onUI_show() {
  */
 static void onUI_hide() {
 	EASYUICONTEXT->hideStatusBar();
-	LOGD("隐藏settings");
+//	LOGD("隐藏settings");
 }
 
 /*
@@ -232,7 +232,7 @@ static void onUI_hide() {
 static void onUI_quit() {
 	settingsCallback = NULL;
 	downloadEvent = NULL;
-	LOGD("注销settings");
+//	LOGD("注销settings");
 
 }
 
@@ -469,7 +469,7 @@ static bool onButtonClick_BtnDownload(ZKButton *pButton) {
     {
     	HttpInfo_t info;
 
-    	string str = jm.makeUpdate(info,  StatusRead);
+    	string str = jm.makeUpdate(info,  StatusGet);
 		gSocket->write_(str);
     	gSocket->updateTriger();
         mWindStatusNoticePtr->showWnd();

@@ -115,17 +115,20 @@ public:
 	string 			makeAdSet(Advertisement &set,JsonStatus_t status);
 	JsonStatus_t 	parseAdSet(string &js,Advertisement &set);
 
-	string 			makePerson(PersonAll_t &person,JsonStatus_t status);
-	JsonStatus_t 	parsePerson(string &js,PersonAll_t &person);
+	string 			makePerson(PersonTrans_t &person,JsonStatus_t status);
+	JsonStatus_t 	parsePerson(string &js,PersonTrans_t &person);
 
-	string 			makePersonRead(PersonAll_t &person,JsonStatus_t status);
-	JsonStatus_t 	parsePersonRead(string &js,PersonAll_t &person);
+	string 			makePersonGetByLevel(int level, int num, JsonStatus_t status);
+	JsonStatus_t 	parsePersonGetByLevel(string &js, int *level, int *num);
 
-	string 			makeFingerGet(PersonAll_t &person,JsonStatus_t status);
-	JsonStatus_t 	parseFingerGet(string &js,PersonAll_t &person);
+	string 			makePersonRead(PersonTrans_t &person,JsonStatus_t status);
+	JsonStatus_t 	parsePersonRead(string &js,PersonTrans_t &person);
 
-	string 			makeFingerSet(PersonAll_t &person,JsonStatus_t status);
-	JsonStatus_t 	parseFingerSet(string &js,PersonAll_t &person);
+	string 			makeFingerGet(PersonTrans_t &person,JsonStatus_t status);
+	JsonStatus_t 	parseFingerGet(string &js,PersonTrans_t &person);
+
+	string 			makeFingerSet(PersonTrans_t &person,JsonStatus_t status);
+	JsonStatus_t 	parseFingerSet(string &js,PersonTrans_t &person);
 
 	string 			makeVersion(JsonStatus_t status);
 	JsonStatus_t 	parseVersion(string &js);

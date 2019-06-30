@@ -39,7 +39,7 @@ extern string gBroadcastMsg;
 
 
 extern Person gPerson;
-extern PersonAll_t gPersonAll;
+extern PersonTrans_t gPersonTrans;
 extern CourseInfo_t gCourseInfo;
 
 

@@ -23,7 +23,7 @@ typedef struct
 	stringList fingers;
 	Picture_t picture;
 
-}PersonAll_t;
+}PersonTrans_t;
 //
 typedef struct
 {
@@ -42,19 +42,22 @@ public:
 	Person();
 	virtual ~Person();
 
-	void add(PersonAll_t &person);
+	void add(PersonTrans_t &person);
 	void delete_uid(string id);
 	bool get_person_by_uid(string id,PersonInfo_t *person);
 	bool get_person_by_finger_id(uint16_t id,PersonInfo_t *person);
 	stringList get_features(string id);
 	uint16_t get_total_fingers();
 	uint16_t get_total_persons();
-	bool is_exist(PersonAll_t &person);
-	bool update_person(PersonInfo_t &person);
+	bool is_exist(PersonTrans_t &person);
+	bool update_one_person(PersonInfo_t &person);
+
+	int size();
+	int size(int level);
 
 private:
 
-	int  update_list(PersonAll_t &person);
+	int  update_list(PersonTrans_t &person);
 	PersonList list;
 
 };

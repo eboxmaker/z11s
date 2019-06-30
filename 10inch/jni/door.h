@@ -51,17 +51,26 @@ class Door {
 public:
 	Door();
 	virtual ~Door();
-	void set_lock(DoorLockState_t state);
+
+	void set_lock_ctr(DoorLockState_t state);
+
+
+	DoorLockState_t get_lock_ctr_state();
 	DoorLockState_t get_lock_state();
 	DoorDoorState_t get_door_state();
-	DoorState_t	get_state();
 
-	void	set_lock_ctr_logic(LockLogic_t logic);
-	void	set_lock_logic(LockLogic_t logic);
-	void	set_door_logic(DoorLogic_t logic);
+	DoorState_t		get_state();
+
+
+
+	void			set_lock_ctr_logic(LockLogic_t logic);
+	void			set_lock_logic(LockLogic_t logic);
+	void			set_door_logic(DoorLogic_t logic);
 	LockLogic_t 	get_lock_ctr_logic(){return LockCtrLogic;};
 	LockLogic_t 	get_lock_logic(){return Feed1Logic;};
 	DoorLogic_t 	get_door_logic(){return Feed2Logic;};
+
+	bool 	get_door_btn();
 
 	void 	loop();
 private:
@@ -75,6 +84,8 @@ private:
 	DoorState_t state;
 
 	DoorState_t last_state;
+
+	DoorLockState_t io_lock_ctr_state;
 };
 extern Door door;
 

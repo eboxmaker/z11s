@@ -69,7 +69,7 @@ typedef union
 typedef enum
 {
 	StatusSet = 0,
-	StatusRead ,
+	StatusGet ,
 	StatusOK,
 	StatusErr
 }JsonStatus_t;
@@ -87,6 +87,10 @@ typedef enum
 //命令列表
 typedef enum
 {
+	CMDUpdate,
+	CMDReboot,
+	CMDVersion,
+
 	CMDHeartbeat,
 	CMDSetHeartbeat,
 	CMDOrgName,
@@ -114,13 +118,12 @@ typedef enum
 
 
 	CMDPerson,
+	CMDPersonByLevel,
+
 	CMDFingerGet,
 	CMDFingerSet,
 
 
-	CMDVersion,
-	CMDUpdate,
-	CMDReboot,
 
     CMDErr,
 

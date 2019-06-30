@@ -73,14 +73,14 @@ string JsonCmdManager::pack(string& data)
 	MD5 md5(data);
 
 	str = aes->encrypt(data);
-	LOGE("data:%s",data.c_str());
+//	LOGE("data:%s",data.c_str());
 
 	Json::Value root;
 	root["sign"] = Json::Value(md5.toStr());
 	root["data"] = Json::Value(str);
 	Json::FastWriter fw;
 	string temp =  fw.write(root);
-	LOGE("pack:%s",temp.c_str());
+//	LOGE("pack:%s",temp.c_str());
 	return temp;
 
 }
@@ -115,8 +115,8 @@ bool JsonCmdManager::unPack(string& package,string& js)
 	  {
 		  md5str = root["sign"].asString();
 		  data = root["data"].asString();
-		  LOGE("src md5：%s",md5str.c_str());
-		  LOGE("src data：%s",data.c_str());
+//		  LOGE("src md5：%s",md5str.c_str());
+//		  LOGE("src data：%s",data.c_str());
 
 	  }
 	  else
@@ -130,12 +130,12 @@ bool JsonCmdManager::unPack(string& package,string& js)
 	  MD5 md5(js);
 	  string checkMD5 = md5.toStr();
 
-	  LOGE("un md5:%s",checkMD5.c_str());
-	  LOGE("un data:%s(len:%d,size:%d)",js.c_str(),js.length(),js.size());
+//	  LOGE("un md5:%s",checkMD5.c_str());
+//	  LOGE("un data:%s(len:%d,size:%d)",js.c_str(),js.length(),js.size());
 
 	  if(checkMD5 == md5str)
 	  {
-		  LOGE("解密：%s",js.c_str());
+//		  LOGE("解密：%s",js.c_str());
 		  return true;
 		  //LOGE("md5正确");
 	  }
@@ -900,7 +900,7 @@ JsonStatus_t JsonCmdManager::parseAdSet(string &js,Advertisement &set)
 }
 
 
-string JsonCmdManager::makePerson(PersonAll_t &person,JsonStatus_t status)
+string JsonCmdManager::makePerson(PersonTrans_t &person,JsonStatus_t status)
 {
 	  PersonInfo_t tempPerson;
 	  Json::Value root;
@@ -921,7 +921,7 @@ string JsonCmdManager::makePerson(PersonAll_t &person,JsonStatus_t status)
 
 	  return pack(temp);
 }
-JsonStatus_t JsonCmdManager::parsePerson(string &js,PersonAll_t &person)
+JsonStatus_t JsonCmdManager::parsePerson(string &js,PersonTrans_t &person)
 {
 	  JsonStatus_t status = StatusErr;
 	Json::Reader reader;
@@ -967,7 +967,39 @@ JsonStatus_t JsonCmdManager::parsePerson(string &js,PersonAll_t &person)
 
 	  return status;
 }
-string JsonCmdManager::makeFingerGet(PersonAll_t &person,JsonStatus_t status)
+
+string JsonCmdManager::makePersonGetByLevel(int level, int num, JsonStatus_t status)
+{
+	  PersonInfo_t tempPerson;
+	  Json::Value root;
+	  if(level < -1 || level > 10)
+		  level = -1;
+	  root["cmd"] = Json::Value(CMDPersonByLevel);
+	  root["level"] = Json::Value(level);
+	  root["num"] = Json::Value(num);
+	  root["status"] = Json::Value(status);
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return pack(temp);
+}
+JsonStatus_t JsonCmdManager::parsePersonGetByLevel(string &js, int *level, int *num)
+{
+	JsonStatus_t status = StatusErr;
+	Json::Reader reader;
+	Json::Value root;
+	if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	{
+		status = (JsonStatus_t)root["status"].asInt();
+		if(status == StatusOK || status == StatusSet)
+		{
+			*num = root["num"].asInt();
+			*level = root["level"].asInt();
+		}
+	}
+	return status;
+}
+
+string JsonCmdManager::makeFingerGet(PersonTrans_t &person,JsonStatus_t status)
 {
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDFingerGet);
@@ -978,7 +1010,7 @@ string JsonCmdManager::makeFingerGet(PersonAll_t &person,JsonStatus_t status)
 
 	  return pack(temp);
 }
-JsonStatus_t JsonCmdManager::parseFingerGet(string &js,PersonAll_t &person)
+JsonStatus_t JsonCmdManager::parseFingerGet(string &js,PersonTrans_t &person)
 {
 	  JsonStatus_t status = StatusErr;
 	Json::Reader reader;
@@ -1025,7 +1057,7 @@ JsonStatus_t JsonCmdManager::parseFingerGet(string &js,PersonAll_t &person)
 	  return status;
 }
 
-string JsonCmdManager::makeFingerSet(PersonAll_t &person,JsonStatus_t status)
+string JsonCmdManager::makeFingerSet(PersonTrans_t &person,JsonStatus_t status)
 {
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDFingerSet);
@@ -1054,7 +1086,7 @@ string JsonCmdManager::makeFingerSet(PersonAll_t &person,JsonStatus_t status)
 
 	  return pack(temp);
 }
-JsonStatus_t JsonCmdManager::parseFingerSet(string &js,PersonAll_t &person)
+JsonStatus_t JsonCmdManager::parseFingerSet(string &js,PersonTrans_t &person)
 {
 	JsonStatus_t status = StatusErr;
 	Json::Reader reader;

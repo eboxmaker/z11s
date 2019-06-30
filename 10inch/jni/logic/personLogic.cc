@@ -44,7 +44,7 @@ static int fingerInputState = 0;
 static uint16_t fingerNum = 1;
 static string para_err ;
 static int para_len;
-static PersonAll_t tPersonTrans;
+static PersonTrans_t tPersonTrans;
 static PersonInfo_t tPersonInfo;
 static bool update_person_flag = false;
 
@@ -247,7 +247,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 			uint16_t id = 0;
 			char buf[6]={0};
 
-			tPersonTrans = gPersonAll;
+			tPersonTrans = gPersonTrans;
 
 			gSocket->disableTriger();
 			mWindStatusNoticePtr->showWnd();
@@ -289,7 +289,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 			else
 			{
     			LOGD("不需要删除");
-				gPerson.update_person(tPersonInfo);
+				gPerson.update_one_person(tPersonInfo);
 			}
 			gSocket->disableTriger();
 			mWindStatusNoticePtr->showWnd();
@@ -328,7 +328,7 @@ static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
 	PersonCallback = onNetWrokDataUpdate;
 	fingerCallback =onFingerOver;
-    gPersonAll.id = "";
+    gPersonTrans.id = "";
 }
 
 /**
@@ -397,7 +397,7 @@ static void onUI_quit() {
 	else
 	{
 		LOGD("不需要删除");
-		gPerson.update_person(tPersonInfo);
+		gPerson.update_one_person(tPersonInfo);
 	}
 	clear_temp_person();
 
@@ -511,7 +511,7 @@ static bool onButtonClick_BtnQuaryPerson(ZKButton *pButton) {
     	else
     	{
     		LOGD("不需要删除");
-    		gPerson.update_person(tPersonInfo);
+    		gPerson.update_one_person(tPersonInfo);
     	}
     	clear_temp_person();
 
@@ -524,7 +524,7 @@ static bool onButtonClick_BtnQuaryPerson(ZKButton *pButton) {
         tPersonTrans.fingers.clear();
         tPersonTrans.id = temp;
         string x;
-        x = jm.makeFingerGet(tPersonTrans, StatusRead);
+        x = jm.makeFingerGet(tPersonTrans, StatusGet);
         gSocket->write_(x);
     }
     else
@@ -533,8 +533,8 @@ static bool onButtonClick_BtnQuaryPerson(ZKButton *pButton) {
         mTextStatusNotice2Ptr->setText("无法连接服务器");
     }
 
-	mTextPersonNamePtr->setText(gPersonAll.name);
-	mTextPersonIDPtr->setText(gPersonAll.id);
+	mTextPersonNamePtr->setText(gPersonTrans.name);
+	mTextPersonIDPtr->setText(gPersonTrans.id);
 	mTextPersonLevelPtr->setText("");
 
 
@@ -549,7 +549,7 @@ static bool onButtonClick_BtnQuaryPerson(ZKButton *pButton) {
 
 static bool onButtonClick_BtnRollStep(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnRollStep !!!\n");
-	if(gPersonAll.id == "")
+	if(gPersonTrans.id == "")
 	{
 		mWindStatusNoticePtr->showWnd();
 		mTextStatusNoticePtr->setText("请先获取ID对应的人员");
@@ -677,3 +677,9 @@ static void onEditTextChanged_EditPersonID(const std::string &text) {
 }
 
 
+static bool onButtonClick_BtnGetPersonResident(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnGetPersonResident !!!\n");
+	string js = jm.makePersonGetByLevel(0, 0, StatusGet);
+	gSocket->write_(js);
+    return false;
+}

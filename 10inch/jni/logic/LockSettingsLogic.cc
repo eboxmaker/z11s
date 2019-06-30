@@ -302,7 +302,7 @@ static void onListItemClick_ListFeed2Logic(ZKListView *pListView, int index, int
 
 static bool onButtonClick_BtnUnLock(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnUnLock !!!\n");
-	door.set_lock(Unlock);
+	door.set_lock_ctr(Unlock);
 	if(door.get_lock_state() == Unlock)
 	{
 		mBtnLockStatePtr->setBackgroundPic("kai.png");
@@ -337,7 +337,7 @@ static bool onButtonClick_BtnLockState(ZKButton *pButton) {
 
 static bool onButtonClick_BtnLock(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnLock !!!\n");
-	door.set_lock(Lock);
+	door.set_lock_ctr(Lock);
 	if(door.get_lock_state() == Unlock)
 	{
 		mBtnLockStatePtr->setBackgroundPic("kai.png");

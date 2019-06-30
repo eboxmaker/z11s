@@ -21,6 +21,10 @@ namespace MyJson
 
     public enum CMDType  //枚举类型，体会xml注释的样子
     {
+        CMDUpdate,
+        CMDReboot,
+        CMDVersion,
+
         	Heartbeat,
 	        SetHeartbeat,
             OrgName,
@@ -48,12 +52,11 @@ namespace MyJson
 
 
             Person,
+            PersonGetByLevel,
             FingerGet,
             FingerSet,
 
-            CMDVersion,
-            CMDUpdate,
-            CMDReboot,
+
 
             CMDErr,
     }
@@ -69,7 +72,7 @@ namespace MyJson
     public enum StatusType  //枚举类型，体会xml注释的样子
     {
         StatusSet = 0,
-        StatusRead,
+        StatusGet,
         StatusOK,
         StatusErr
     }
@@ -836,6 +839,30 @@ namespace MyJson
 
             string str = Package(jstring);
             return str;
+        }
+
+        public static string MakePersonGetByLevel(int level, int num, StatusType status)
+        {
+            JObject obj = new JObject();
+
+            obj.Add("cmd", (int)CMDType.PersonGetByLevel);
+            obj.Add("level", level);
+            obj.Add("num", num);
+            obj.Add("status", (int)status);
+
+            string jstring = JsonConvert.SerializeObject(obj);
+
+            string str = Package(jstring);
+            return str;
+        }
+
+        public static void ParsePersonGetByLevel(string js,ref int level, ref int num)
+        {
+            JObject jo = (JObject)JsonConvert.DeserializeObject(js);
+            level = Convert.ToInt16(jo["level"].ToString());
+            string str = jo["num"].ToString();
+            num = Convert.ToInt16(str);
+            return ;
         }
         public static string MakeFinger(string id, string name, int level, string[] fingers, string FilePath, StatusType status)
         {

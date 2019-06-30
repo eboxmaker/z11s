@@ -443,12 +443,14 @@ static bool onUI_Timer(int id){
 
 		}
 
+		LOGD("btn:%D",door.get_door_btn());
 		break;
 	case 1:
 
 		if(is_on_download_finger == false)
 		{
 			if(finger.get_busy() == false){
+				mTextFingerOnlineStatePtr->setText("未连接");
 //				LOGD("检测在线状态");
 				finger.check_online_async();
 			}
@@ -689,7 +691,7 @@ static bool onButtonClick_BtnPlan(ZKButton *pButton) {
 	{
 		mWindStatusNoticePtr->showWnd();
 		mTextStatusNoticePtr->setText("正在获取课程表");
-		string str = jm.makePlan(StatusRead);
+		string str = jm.makePlan(StatusGet);
 		gSocket->write_(str);
 
 	    gSocket->updateTriger();
@@ -747,7 +749,7 @@ static bool onButtonClick_BtnLockState(ZKButton *pButton) {
 static bool onButtonClick_BtnLock(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnLock !!!\n");
 
-	door.set_lock(Lock);
+	door.set_lock_ctr(Lock);
 
     return false;
 }
@@ -756,7 +758,7 @@ static bool onButtonClick_BtnUnLock(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnUnLock !!!\n");
     //LOGD(" ButtonClick BtnUnLock !!!\n");
 
-	door.set_lock(Unlock);
+	door.set_lock_ctr(Unlock);
 	return false;
 }
 
@@ -834,7 +836,9 @@ static void onDownloadEvent(string &msg)
 	}
 	else
 	{
-		mTextNoExitNotic2Ptr->setText("下载失败");
-		mTextStatusNotice2Ptr->setText(msg);
+		mTextNoExitNotic1Ptr->setText("下载失败");
+		mTextNoExitNotic2Ptr->setText(msg);
+		sleep(2);
+		mWinNoExitPtr->hideWnd();
 	}
 }

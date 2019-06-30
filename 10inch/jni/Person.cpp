@@ -8,7 +8,7 @@
 #include "Person.h"
 
 namespace std {
-void copyPersonAllToPersonInfo(PersonAll_t &p1, PersonInfo_t *p2)
+void copyPersonAllToPersonInfo(PersonTrans_t &p1, PersonInfo_t *p2)
 {
 	p2->id = p1.id;
 	p2->name = p1.name;
@@ -27,7 +27,7 @@ Person::~Person() {
 
 
 
-void Person::add(PersonAll_t &person){
+void Person::add(PersonTrans_t &person){
 //		LOGD("执行添加person,finger size:%d",person.fingers.size());
 	PersonInfo_t temp;
 	temp.id = person.id;
@@ -116,7 +116,7 @@ stringList Person::get_features(string id)
 	}
 }
 
-bool Person::is_exist(PersonAll_t &person)
+bool Person::is_exist(PersonTrans_t &person)
 {
 	vector<PersonInfo_t>::iterator it = list.begin();
     while((it) != list.end()){
@@ -129,11 +129,11 @@ bool Person::is_exist(PersonAll_t &person)
     }
     return false;
 }
-int  Person::update_list(PersonAll_t &person)
+int  Person::update_list(PersonTrans_t &person)
 {
 
 }
-bool Person::update_person(PersonInfo_t &person){
+bool Person::update_one_person(PersonInfo_t &person){
 	for(int i = 0; i < list.size(); i++)
 	{
 		if(person.id == list[i].id){
@@ -145,7 +145,22 @@ bool Person::update_person(PersonInfo_t &person){
 	LOGD("更新人员列表失败:%s",person.id.c_str());
 	return false;
 }
-
+int Person::size()
+{
+	return list.size();
+}
+int Person::size(int level)
+{
+	int counter = 0;
+	for(int i = 0; i < list.size(); i++)
+	{
+		if(list[i].level == level)
+		{
+			counter++;
+		}
+	}
+	return counter;
+}
 
 
 

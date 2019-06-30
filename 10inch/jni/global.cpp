@@ -27,7 +27,7 @@ SocketClient* gSocket= new SocketClient();
 
 long gKeyboardLastActionTime = 0;
 Person gPerson;
-PersonAll_t gPersonAll;
+PersonTrans_t gPersonTrans;
 CourseInfo_t gCourseInfo;
 
 string gBroadcastMsg;
@@ -66,7 +66,9 @@ void exeCMD(string &package)
 	msg = "";
 	char msgBuf[50];
 	string js;
-	if(package == "trigerTimeout")
+	int level;
+	int num;
+	if(package == "triggerTimeout")
 	{
 		//LOGE("发出超时通知");
 		if(networkTestCallback != NULL)
@@ -94,7 +96,7 @@ void exeCMD(string &package)
 		{
 		case CMDHeartbeat:
 			status = jm.parseHeartbeat(js,msg);
-			if(status == StatusSet || status == StatusRead)
+			if(status == StatusSet || status == StatusGet)
 			{
 				ack = jm.makeHeartbeat(StatusOK);
 				gSocket->write_(ack);
@@ -110,7 +112,7 @@ void exeCMD(string &package)
 				ack = jm.makeSetHeartbeat(dev.get_heartbeatInterval(), StatusOK);
 				gSocket->write_(ack);
 			}
-			if(status == StatusRead)
+			if(status == StatusGet)
 			{
 				ack = jm.makeSetHeartbeat(dev.get_heartbeatInterval(), StatusOK);
 				gSocket->write_(ack);
@@ -163,7 +165,7 @@ void exeCMD(string &package)
 				ack = jm.makeOrgName(msg, StatusOK);
 				gSocket->write_(ack);
 			}
-			else if(status == StatusRead)
+			else if(status == StatusGet)
 			{
 				msg = dev.get_organization();
 
@@ -182,7 +184,7 @@ void exeCMD(string &package)
 				ack = jm.makeDevName(msg, StatusOK);
 				gSocket->write_(ack);
 			}
-			else if(status == StatusRead)
+			else if(status == StatusGet)
 			{
 				msg = dev.get_name();
 
@@ -192,7 +194,7 @@ void exeCMD(string &package)
 			break;
 		case CMDDevID:
 			status = jm.parseDevID(js);
-			if(status == StatusSet || status == StatusRead)
+			if(status == StatusSet || status == StatusGet)
 			{
 				//LOGE("回复:%s",gDevID.c_str());
 				ack = jm.makeDevID(dev.id, StatusOK);
@@ -208,7 +210,7 @@ void exeCMD(string &package)
 				ack = jm.makeLocalPwd(msg,StatusOK);
 				gSocket->write_(ack);
 			}
-			else if(status == StatusRead)
+			else if(status == StatusGet)
 			{
 				msg = dev.get_pwdLocal();
 
@@ -231,12 +233,12 @@ void exeCMD(string &package)
 				if(tempDoorLockState == Unlock)
 				{
 					msg = "exe unlock";
-					door.set_lock(Unlock);
+					door.set_lock_ctr(Unlock);
 				}
 				else
 				{
 					msg = "exe lock";
-					door.set_lock(Lock);
+					door.set_lock_ctr(Lock);
 				}
 //				tempDoorLockState = door.get_lock_state();;
 				ack = jm.makeDoorCtr(tempDoorLockState, StatusOK);
@@ -254,7 +256,7 @@ void exeCMD(string &package)
 		case CMDDoorState:
 			DoorState_t tempDoorState;
 			status = jm.parseDoorState(js);
-			if(status == StatusRead)
+			if(status == StatusGet)
 			{
 				tempDoorState = door.get_state();
 				ack = jm.makeDoorState(tempDoorState, StatusOK);
@@ -265,7 +267,7 @@ void exeCMD(string &package)
 		case CMDQRCode:
 			status = jm.parseFile(js,QR_DIR,msg,dataout);
 			ack = jm.makeQRCodeAck(msg,StatusErr);
-			if(status == StatusSet || status == StatusRead)
+			if(status == StatusSet || status == StatusGet)
 			{
 				if(creat_file(msg,dataout.c_str(),dataout.size()))
 					ack = jm.makeQRCodeAck(msg,StatusOK);
@@ -275,7 +277,7 @@ void exeCMD(string &package)
 			break;
 		case CMDDelQRCode:
 			status = jm.parseDeleteFile(js,QR_DIR,fileName,msg);
-			if(status == StatusSet || status == StatusRead)
+			if(status == StatusSet || status == StatusGet)
 			{
 				rm_file(msg);
 				ack = jm.makeDeleteFile(msg,StatusOK);
@@ -290,7 +292,7 @@ void exeCMD(string &package)
 		case CMDAdAdd:
 			status = jm.parseAdAdd(js,msg);
 
-			if(status == StatusSet || status == StatusRead)
+			if(status == StatusSet || status == StatusGet)
 			{
 				if(gAdv.add(js))
 				{
@@ -307,7 +309,7 @@ void exeCMD(string &package)
 			break;
 		case CMDAdRead:
 			status = jm.parseAdRead(js);
-			if(status == StatusSet || status == StatusRead)
+			if(status == StatusSet || status == StatusGet)
 			{
 
 				ack = jm.makeAdRead(gAdv,StatusOK);
@@ -317,7 +319,7 @@ void exeCMD(string &package)
 			break;
 		case CMDAdDel:
 			status = jm.parseAdDelet(js,fileName);
-			if(status == StatusSet || status == StatusRead)
+			if(status == StatusSet || status == StatusGet)
 			{
 				gAdv.remove(fileName);
 				ack = jm.makeDeleteFile(fileName,StatusOK);
@@ -330,7 +332,7 @@ void exeCMD(string &package)
 			break;
 		case CMDAdClear:
 			status = jm.parseAdClear(js);//(js,AD_DIR,fileName,msg);
-			if(status == StatusSet || status == StatusRead)
+			if(status == StatusSet || status == StatusGet)
 			{
 				gAdv.clear();
 				ack = jm.makeAdClear(StatusOK);
@@ -372,7 +374,7 @@ void exeCMD(string &package)
 				ack = jm.makeSyncDateTime(msg, StatusOK);
 				gSocket->write_(ack);
 			}
-			else if(status == StatusRead)
+			else if(status == StatusGet)
 			{
 
 			}
@@ -401,7 +403,7 @@ void exeCMD(string &package)
 			{
 				gBroadcastMsg = msg;
 			}
-			else if(status == StatusRead)
+			else if(status == StatusGet)
 			{
 
 			}
@@ -429,40 +431,55 @@ void exeCMD(string &package)
 
 		case CMDPerson:
 //			LOGD("收到person命令：");
-			status = jm.parsePerson(js, gPersonAll);
+			status = jm.parsePerson(js, gPersonTrans);
 			if(keyboardCallback != NULL)
 				keyboardCallback(cmd,status,msg);
 			if(status == StatusOK)
 			{
-				msg = PIC_DIR + gPersonAll.picture.name;
-				creat_file(msg,gPersonAll.picture.data.c_str(),gPersonAll.picture.data.size());
-				gPersonAll.picture.data = "";
+				msg = PIC_DIR + gPersonTrans.picture.name;
+				creat_file(msg,gPersonTrans.picture.data.c_str(),gPersonTrans.picture.data.size());
+				gPersonTrans.picture.data = "";
 				//LOGE("%s，%s",gPersonDump.name.c_str(),gPersonDump.course.c_str());
 
 			}
 			else if(status == StatusSet)
 			{
-				gPerson.add(gPersonAll);
-				msg = PIC_DIR + gPersonAll.picture.name;
-				creat_file(msg,gPersonAll.picture.data.c_str(),gPersonAll.picture.data.size());
-				gPersonAll.picture.data = "";
+				gPerson.add(gPersonTrans);
+				msg = PIC_DIR + gPersonTrans.picture.name;
+				creat_file(msg,gPersonTrans.picture.data.c_str(),gPersonTrans.picture.data.size());
+				gPersonTrans.picture.data = "";
 
-				ack = jm.makePerson(gPersonAll, StatusOK);
+				ack = jm.makePerson(gPersonTrans, StatusOK);
+				gSocket->write_(ack);
+			}
+			break;
+
+		case CMDPersonByLevel:
+			status = jm.parsePersonGetByLevel(js,&level,&num);
+			LOGD("收到接收人员命令：level：%d，num：%d",level,num);
+			if(status == StatusOK)
+			{
+
+			}
+			else if(status == StatusSet || status == StatusGet)
+			{
+				int num = gPerson.size(level);
+				ack = jm.makePersonGetByLevel(level,num,StatusOK);
 				gSocket->write_(ack);
 			}
 			break;
 		case CMDFingerGet:
 			LOGD("收到FingerGet");
-			status = jm.parseFingerGet(js, gPersonAll);
+			status = jm.parseFingerGet(js, gPersonTrans);
 			if(status == StatusOK)
 			{
 				uint16_t id;
-				msg = PIC_DIR + gPersonAll.picture.name;
-				creat_file(msg,gPersonAll.picture.data.c_str(),gPersonAll.picture.data.size());
-				gPersonAll.picture.data = "";
-				for(int i = 0; i < gPersonAll.fingers.size(); i++)
+				msg = PIC_DIR + gPersonTrans.picture.name;
+				creat_file(msg,gPersonTrans.picture.data.c_str(),gPersonTrans.picture.data.size());
+				gPersonTrans.picture.data = "";
+				for(int i = 0; i < gPersonTrans.fingers.size(); i++)
 				{
-					if(finger.add_featurs_sync(&id, gPersonAll.fingers[i]))
+					if(finger.add_featurs_sync(&id, gPersonTrans.fingers[i]))
 						LOGD("添加临时成功");
 					else
 						LOGD("添加临时失败");
@@ -471,7 +488,7 @@ void exeCMD(string &package)
 			break;
 		case CMDFingerSet:
 			LOGD("收到FingerSet");
-			status = jm.parseFingerSet(js, gPersonAll);
+			status = jm.parseFingerSet(js, gPersonTrans);
 			if(status == StatusOK)
 			{
 
@@ -479,7 +496,7 @@ void exeCMD(string &package)
 			break;
 		case CMDVersion:
 			status = jm.parseVersion(js);
-			if(status == StatusRead)
+			if(status == StatusGet)
 			{
 				ack = jm.makeVersion(StatusOK);
 				gSocket->write_(ack);
