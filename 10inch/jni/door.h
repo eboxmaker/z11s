@@ -8,6 +8,8 @@
 #ifndef JNI_DOOR_H_
 #define JNI_DOOR_H_
 #include "enum_def.h"
+#include "system/Thread.h"
+
 namespace std {
 
 typedef enum {HighLock,HighUnlock}LockLogic_t;
@@ -47,7 +49,8 @@ typedef enum {HighClose,HighOpen}DoorLogic_t;
 	}DoorStateRaw_t;
 
 
-class Door {
+class Door :public Thread
+{
 public:
 	Door();
 	virtual ~Door();
@@ -73,6 +76,10 @@ public:
 	bool 	get_door_btn();
 
 	void 	loop();
+
+protected:
+	virtual bool readyToRun();
+	virtual bool threadLoop();
 private:
 	DoorStateRaw_t get_raw();
 	LockLogic_t LockCtrLogic;

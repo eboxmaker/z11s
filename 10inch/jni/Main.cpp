@@ -23,7 +23,6 @@ extern "C" {
 
 
 static void *MainLoop(void *lParam);
-static void *HighSpeedThread(void *lParam);
 static void LoadParament()
 {
 
@@ -77,53 +76,7 @@ const char* onStartupApp(EasyUIContext *pContext) {
 		LOGD("create socket thread ok\n");
 	}
 
-	pthread_t threadID2 ;
-	pthread_attr_t attr2; 		// 线程属性
-	pthread_attr_init(&attr2);  	// 初始化线程属性
-	pthread_attr_setdetachstate(&attr2, PTHREAD_CREATE_DETACHED);      // 设置线程属性
-	int ret2 = pthread_create(&threadID2, &attr2, HighSpeedThread, (void *)0);
-	pthread_attr_destroy(&attr2);
-	if (ret2 || !threadID) {
-		LOGD("create socket thread error\n");
-	}
-	else
-	{
-
-		LOGD("create socket thread ok\n");
-	}
 	return "mainActivity";
-}
-
-static void  *HighSpeedThread(void *lParam)
-{
-	bool last_state = door.get_door_btn();
-	bool now_state = door.get_door_btn();
-	long last_open_time = time(NULL);
-	DoorLockState_t last_lock_state  = door.get_lock_ctr_state();
-	bool changed = false;
-	while(1)
-	{
-		now_state = door.get_door_btn();
-		if(last_state != now_state)
-		{
-			last_state = now_state;
-			changed = true;
-			if(now_state == false)
-			{
-				last_lock_state = door.get_lock_ctr_state();
-				door.set_lock_ctr(Unlock);
-				last_open_time = time(NULL);
-				LOGD("触发按键事件");
-			}
-		}
-		if(time(NULL) - last_open_time > 3 && changed == true)
-		{
-			changed = false;
-			door.set_lock_ctr(last_lock_state);
-			LOGD("关闭门锁");
-		}
-		Thread::sleep(100);
-	}
 }
 
 static void reconncet()

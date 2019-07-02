@@ -430,7 +430,7 @@ static bool onUI_Timer(int id){
 //	    }
 
 
-		if(finger.check_online_sync() == false)
+		if(finger.is_online() == false)
 		{
 			mTextFingerOnlineStatePtr->setText("未连接");
 		}

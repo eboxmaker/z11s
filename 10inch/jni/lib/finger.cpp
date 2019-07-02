@@ -810,8 +810,8 @@ void Finger::send_package(unsigned char *ptr,unsigned char wLen)
   tbuf[wLen + 2] = DATA_END;
   len = wLen + 3;
   uart2.send(tbuf,len);
-//  for(int i = 0; i < len; i++)
-//	  LOGD("tx%d:0x%02x",i,tbuf[i]);
+  for(int i = 0; i < len; i++)
+	  LOGD("tx%d:0x%02x",i,tbuf[i]);
 //  LOGD("发送一帧数据");
   if(tbuf[1] == CMD_SEARCH){
 	  //	  LOGD("发送对比指令");
