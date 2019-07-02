@@ -75,7 +75,8 @@ public:
 
 	bool 	get_door_btn();
 
-	void 	loop();
+	void 	state_loop();
+	void 	lock_ctr_loop();
 
 protected:
 	virtual bool readyToRun();
@@ -88,11 +89,16 @@ private:
 
 	DoorLockState_t lock_state;
 	DoorDoorState_t door_state;
-	DoorState_t state;
 
-	DoorState_t last_state;
+	DoorLockState_t lock_ctr_state;
+	DoorLockState_t last_lock_ctr_state;
 
-	DoorLockState_t io_lock_ctr_state;
+
+
+
+	long last_lock_ctr_open_time;
+
+
 };
 extern Door door;
 

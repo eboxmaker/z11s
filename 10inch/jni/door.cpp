@@ -22,7 +22,10 @@ Door::Door() {
 	Feed1Logic = StoragePreferences::getInt("door.Feed1Logic",HighLock);
 	Feed2Logic = StoragePreferences::getInt("door.Feed2Logic",HighClose);
 
-	last_state = LockClose;
+	last_lock_ctr_state  =  lock_ctr_state  = get_lock_ctr_state();
+	door_state = get_door_state();
+	lock_state = get_lock_state();
+	last_lock_ctr_open_time = time(NULL);
 
 	run("door");
 
@@ -39,37 +42,32 @@ bool Door::readyToRun()
 }
 bool Door::threadLoop()
 {
-	bool last_state = door.get_door_btn();
-	bool now_state = door.get_door_btn();
-	long last_open_time = time(NULL);
-	DoorLockState_t last_lock_state  = door.get_lock_ctr_state();
-	bool changed = false;
+
 	while(1)
 	{
-		now_state = door.get_door_btn();
-		if(last_state != now_state)
+		if(last_lock_ctr_state != lock_ctr_state)
 		{
-			last_state = now_state;
-			changed = true;
-			if(now_state == false)
+			LOGD("ctr:%d,%d",lock_ctr_state,last_lock_ctr_state);
+
+			if(time(NULL) - last_lock_ctr_open_time > 5)
 			{
-				last_lock_state = door.get_lock_ctr_state();
-				door.set_lock_ctr(Unlock);
-				last_open_time = time(NULL);
-				LOGD("触发按键事件");
+				door.set_lock_ctr(Lock);
+				last_lock_ctr_state = lock_ctr_state;
+				LOGD("关闭门锁");
 			}
+
 		}
-		if(time(NULL) - last_open_time > 3 && changed == true)
-		{
-			changed = false;
-			door.set_lock_ctr(last_lock_state);
-			LOGD("关闭门锁");
-		}
+
+		lock_ctr_loop();
+		state_loop();
 		Thread::sleep(100);
 	}
 }
-void Door::loop()
+void Door::state_loop()
 {
+	static DoorState_t state = get_state();
+	static DoorState_t last_state = get_state();;
+
 	state = get_state();
 	if(state != last_state)
 	{
@@ -79,11 +77,28 @@ void Door::loop()
 		gSocket->write_(ack);
 	}
 }
+void Door::lock_ctr_loop()
+{
+	static bool last_btn_state = door.get_door_btn();
+	static bool now_btn_state = door.get_door_btn();
+
+	now_btn_state = door.get_door_btn();
+	if(last_btn_state != now_btn_state)
+	{
+		last_btn_state = now_btn_state;
+		if(now_btn_state == false)
+		{
+			door.set_lock_ctr(Unlock);
+			LOGD("触发按键事件");
+		}
+	}
+
+}
 
 void Door::set_lock_ctr(DoorLockState_t state)
 {
 	if(state == Lock){
-		io_lock_ctr_state = Lock;
+		lock_ctr_state = Lock;
 		if(LockCtrLogic == HighLock)
 			GpioHelper::output(IO_LOCK_CTR, 1);
 		else
@@ -91,17 +106,19 @@ void Door::set_lock_ctr(DoorLockState_t state)
 	}
 	else
 	{
-		io_lock_ctr_state = Unlock;
+		lock_ctr_state = Unlock;
+		last_lock_ctr_open_time = time(NULL);
 		if(LockCtrLogic == HighLock)
 			GpioHelper::output(IO_LOCK_CTR, 0);
 		else
 			GpioHelper::output(IO_LOCK_CTR, 1);
 	}
+	LOGD("set lock ctr:%d,%d",lock_ctr_state,last_lock_ctr_state);
 
 }
 DoorLockState_t Door::get_lock_ctr_state()
 {
-	return io_lock_ctr_state;
+	return lock_ctr_state;
 }
 
 DoorLockState_t Door::get_lock_state()
@@ -156,6 +173,7 @@ DoorStateRaw_t Door::get_raw()
 DoorState_t Door::get_state()
 {
 	DoorStateRaw_t raw;
+	DoorState_t state;
 
 	raw = get_raw();
 

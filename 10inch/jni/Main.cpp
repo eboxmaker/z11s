@@ -198,7 +198,6 @@ static void *MainLoop(void *lParam)
 		}
 
 		myAlarm.loop();
-		door.loop();
 
 		Thread::sleep(1000);
 
