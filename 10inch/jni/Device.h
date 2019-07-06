@@ -72,7 +72,7 @@ public:
 
 	void set_organization(string str){
 		StoragePreferences::putString("dev.organization", str);
-		para.organization = StoragePreferences::getString("dev.organization", "NULL");
+		para.organization = StoragePreferences::getString("dev.organization", "none");
 	}
 	string get_organization(){
 		return para.organization;
@@ -81,7 +81,7 @@ public:
 	void set_name(string str)
 	{
 		StoragePreferences::putString("dev.name", str);
-		para.name = StoragePreferences::getString("dev.name", "NULL");;
+		para.name = StoragePreferences::getString("dev.name", "none");;
 
 	}
 	string& get_name(){
@@ -118,9 +118,9 @@ public:
 	void set_heartbeatInterval(int value){
 		if(value < 3) value = 3;
 		if(value > 10)value = 10;
-		StoragePreferences::putInt("dev.heartbeatInterval", para.heartbeatInterval);
+		StoragePreferences::putInt("dev.heartbeatInterval", value);
 		para.heartbeatInterval = StoragePreferences::getInt("dev.heartbeatInterval", 5);
-
+		LOGD("heart set:%d,get:%d ",value,para.heartbeatInterval);
 	};
 	int get_heartbeatInterval(){
 		return para.heartbeatInterval;

@@ -87,28 +87,31 @@ typedef enum
 //命令列表
 typedef enum
 {
-	CMDUpdate,
-	CMDReboot,
-	CMDVersion,
+	CMDUpdate,//更新终端系统
+	CMDReboot,//重启终端
+	CMDVersion,//查询终端的版本
+	CMDDevID,//设备ID
+	CMDRegister,//设备认证
 
-	CMDHeartbeat,
-	CMDSetHeartbeat,
-	CMDOrgName,
-	CMDDevName,
-	CMDDevID,
-	CMDConfirm,
-	CMDSyncDateTime,
-	CMDLocalPassword,
-	CMDFingerKey,
-	CMDDoorPassword,
-	CMDDoorControl,
-	CMDDoorState,
-	CMDCourseInfo,
-	CMDPlan,
-	CMDBroadcast,
+	CMDHeartbeat,//心跳
+	CMDSetHeartbeat,//心跳间隔时间 s
+	CMDOrgName,//组织名称
+	CMDDevName,//设备名称
 
-	CMDQRCode,
-	CMDDelQRCode,
+	CMDSyncDateTime,//同步时间
+	CMDLocalPassword,//本地密码
+
+	CMDFingerKey,//指纹密码
+	CMDDoorPassword,//动态开门密码
+	CMDDoorLockControl,//门控制命令
+	CMDDoorState,//门状态
+
+	CMDCourseInfo,//课程信息
+	CMDPlan,//计划（课程表）
+	CMDBroadcast,//广播
+
+	CMDQRCode,//二维码
+	CMDDelQRCode,//删除二维码
 
 	CMDAdAdd,//CMDAdvertisement,
 	CMDAdRead,//CMDAdvertisement,
@@ -117,8 +120,8 @@ typedef enum
 	CMDAdSet,
 
 
-	CMDPerson,
-	CMDPersonByLevel,
+	CMDPerson,//开机时服务器向终端发送的人员列表
+	CMDPersonByLevel,//
 
 	CMDFingerGet,
 	CMDFingerSet,
@@ -126,6 +129,7 @@ typedef enum
 
 
     CMDErr,
+    CMDTimeout = 255,
 
 }JsonCmd_t;
 

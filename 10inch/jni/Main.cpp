@@ -92,7 +92,8 @@ static void reconncet()
 	{
 //		LOGO("连接服务器成功!\n");
 		LOGO("正在注册。。。");
-		string js = jm.makeConfirm(dev, StatusReqDev2Ser);
+		string js;
+		js = jm.makeRegister(dev, StatusReqDev2Ser);
 		gSocket->write_(js);
 
 		while(dev.confirmState == false )
@@ -126,19 +127,7 @@ static void reconncet()
 
 	}
 }
-static void timeoutLoop()
-{
-	if(	gSocket->triggerTime != -1)
-	{
-		//LOGO("开启超时检测触发");
-		if(time(NULL) - gSocket->triggerTime >= gSocket->trigerTimeout)
-		{
-			//LOGO("已经触发");
-			exeCMD("triggerTimeout");
-			gSocket->triggerTime = -1;
-		}
-	}
-}
+
 //心跳轮训
 static void heartbeatLoop()
 {
@@ -189,8 +178,6 @@ static void *MainLoop(void *lParam)
 			}
 			//心跳轮训
 			heartbeatLoop();
-			//服务器响应时间计数循环
-			timeoutLoop();
 		}
 		else
 		{

@@ -180,7 +180,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		lastPersonInfo = nowPersonInfo;
 		last_trans_time = time(NULL);
 		break;
-	case CMDDoorControl:
+	case CMDDoorLockControl:
 		if(status == StatusSet)
 		{
 			updateDoorState();
@@ -227,7 +227,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		mTextNoExitNotic1Ptr->setText("系统更新中。。。");
 		mTextNoExitNotic2Ptr->setText("请等待");
 		break;
-	case 255:
+	case CMDTimeout:
 		mWindStatusNoticePtr->showWnd();
 		mTextStatusNoticePtr->setText("服务器响应超时");
 		mTextStatusNotice2Ptr->setText("");

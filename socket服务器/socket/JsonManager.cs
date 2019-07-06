@@ -24,19 +24,21 @@ namespace MyJson
         CMDUpdate,
         CMDReboot,
         CMDVersion,
-
+        DevID,
+        Register,
         	Heartbeat,
 	        SetHeartbeat,
             OrgName,
             DevName,
-            DevID,
-            Confirm,
+
             SyncDateTime,
             AdminPwd,
+
             FingerKey,
 	        DoorPwd,
             DoorCtr,
             DoorState,
+
             CourseInfo,
             Plan,
             Broadcast, 
@@ -53,9 +55,9 @@ namespace MyJson
 
             Person,
             PersonGetByLevel,
+
             FingerGet,
             FingerSet,
-
 
 
             CMDErr,
@@ -356,7 +358,6 @@ namespace MyJson
         {
 
             string enstr = AESEncrypt.Encrypt(jstr, key);
-
             string md5 = ComMD5.GetMd5Str(jstr);
             JObject obj = new JObject();
             obj.Add("sign", md5);
@@ -666,7 +667,7 @@ namespace MyJson
             string dateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
             JObject obj = new JObject();
-            obj.Add("cmd", (int)CMDType.Confirm);
+            obj.Add("cmd", (int)CMDType.Register);
             if(status == StatusConfirmType.StatusParaSer2Dev)
             {
                 obj.Add("organization", "北华航天工业学院");
@@ -822,9 +823,7 @@ namespace MyJson
             obj.Add("id", ps.id);
             obj.Add("name", ps.name);
             obj.Add("level", ps.level);
-            obj.Add("pic.name", ps.picture_name);
-            obj.Add("pic.data", data);
-            obj.Add("pic.dataLength", data.Length);
+
 
             for (int i = 0; i < ps.fingers.Length; i++)
             {
@@ -833,6 +832,9 @@ namespace MyJson
                 ja.Add(jo);
             }
             obj.Add("fingers", ja);
+            obj.Add("pic_name", ps.picture_name);
+            obj.Add("pic_data", data);
+            obj.Add("pic_dataLength", data.Length);    
             obj.Add("status", (int)status);
 
             string jstring = JsonConvert.SerializeObject(obj);
@@ -909,9 +911,6 @@ namespace MyJson
             obj.Add("id", ps.id);
             obj.Add("name", ps.name);
             obj.Add("level", ps.level);
-            obj.Add("pic.name", ps.picture_name);
-            obj.Add("pic.data", data);
-            obj.Add("pic.dataLength", data.Length);
 
             for (int i = 0; i < ps.fingers.Length; i++)
             {
@@ -921,6 +920,9 @@ namespace MyJson
             }
             obj.Add("fingers", ja);
             obj.Add("status", (int)status);
+            obj.Add("pic_name", ps.picture_name);
+            obj.Add("pic_data", data);
+            obj.Add("pic_dataLength", data.Length);
 
             string jstring = JsonConvert.SerializeObject(obj);
 

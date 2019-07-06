@@ -23,7 +23,7 @@ bool Plan::add(PlanRow_t &_row)
 {
 	if(_size < _maxSize)
 	{
-		row[_size].uint = _row.uint;
+		row[_size].unit = _row.unit;
 		row[_size].startTime = _row.startTime;
 		row[_size].endTime = _row.endTime;
 		row[_size].teacher = _row.teacher;

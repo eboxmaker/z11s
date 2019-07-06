@@ -252,7 +252,7 @@ namespace socket
                         }
 
                         break;
-                    case JsonManager.CMDType.Confirm:
+                    case JsonManager.CMDType.Register:
                          id = "";
                         JsonManager.StatusConfirmType cStatus = JsonManager.GetJsonStatusConfirm(js,ref id);
 

@@ -40,7 +40,7 @@ static void* socketThreadRx(void *lParam) {
 SocketClient::SocketClient() :
 	conncetState(false),
 	mClientSocket(-1),
-	trigerTimeout(5),
+	triggerTimeout(5),
 	triggerTime(-1),
 	maxCallbackNum(5),
 	mode(SocketClient::CmdMode)
@@ -160,7 +160,7 @@ bool SocketClient::connected()
 
 	if(conncetState == true)
 	{
-		if(time(NULL) - lastHeartbeatTime > dev.get_heartbeatInterval()*3)
+		if(time(NULL) - lastHeartbeatTime > dev.get_heartbeatInterval()*30000)
 			conncetState = false;
 		else
 			conncetState = true;
@@ -329,6 +329,17 @@ void SocketClient::asCmd()
 		msg_counter = 0;
 		memset(msg_buf,0,msg_counter);
 		state = 0;
+//		LOGE("等待数据：length:%d,errno:%d(%s)",length,errno,strerror(errno));
+		if(	triggerTime != -1)
+		{
+			//LOGO("开启超时检测触发");
+			if(time(NULL) - triggerTime >= triggerTimeout)
+			{
+				//LOGO("已经触发");
+				exeCMD("triggerTimeout");
+				gSocket->triggerTime = -1;
+			}
+		}
 	}
 }
 void SocketClient::asFile()

@@ -191,7 +191,7 @@ static void obtainListItemData_List(ZKListView *pListView,ZKListView::ZKListItem
 	ZKListView::ZKListSubItem* psub3Text = pListItem->findSubItemByID(ID_PLAN_SubItemClass);
 	ZKListView::ZKListSubItem* psub4Text = pListItem->findSubItemByID(ID_PLAN_SubItemCourse);
 
-	pListItem->setText(gPlan.row[index].uint);
+	pListItem->setText(gPlan.row[index].unit);
 	psub1Text->setText(gPlan.row[index].startTime + "-" + gPlan.row[index].endTime);
 	psub2Text->setText(gPlan.row[index].teacher);
 	psub3Text->setText(gPlan.row[index].class_);

@@ -61,7 +61,7 @@ public:
 		mSocketListener = pListener;
 	}
 	long  triggerTime;
-	int trigerTimeout;
+	int triggerTimeout;
 	bool conncetState;
 	enum {
 		CmdMode,

@@ -67,14 +67,14 @@ static void updateDisp()
 	string serverIP;
 	int serverPort;
 
-    serverIP = StoragePreferences::getString("dev.serverIP", "192.168.1.1");
-    serverPort = StoragePreferences::getInt("dev.serverPort", 6000);
-    org = StoragePreferences::getString("dev.organization","none");
-	name = StoragePreferences::getString("dev.name","none");
-	interval = StoragePreferences::getInt("dev.heartbeatInterval", 5);
+    serverIP = dev.get_serverIP();//   StoragePreferences::getString("dev.serverIP", "192.168.1.1");
+    serverPort = dev.get_serverPort();// StoragePreferences::getInt("dev.serverPort", 6000);
+    org = dev.get_organization();// StoragePreferences::getString("dev.organization","none");
+	name =dev.get_name();// StoragePreferences::getString("dev.name","none");
+	interval =dev.get_heartbeatInterval();// StoragePreferences::getInt("dev.heartbeatInterval", 5);
 
 
-    mEditTextServerIPPtr->setText(serverIP.c_str());
+    mEditTextServerIPPtr->setText(serverIP);
     mEditTextServerPortPtr->setText(serverPort);
     mEditOrgNamePtr->setText(org);
 	mEditDevNamePtr->setText(name);
@@ -144,7 +144,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 	case CMDAdClear:
 		mEditAdNumPtr->setText(gAdv.getNum());
 		break;
-	case 255:
+	case CMDTimeout:
 		mWindStatusNoticePtr->showWnd();
 		mTextStatusNoticePtr->setText("服务器超时!!!");
 		mTextStatusNotice2Ptr->setText("");
@@ -310,9 +310,7 @@ static bool onsettingsActivityTouchEvent(const MotionEvent &ev) {
 }
 
 
-FILE *myfile;
-char str[4096000];
-uint32_t len;
+
 
 static bool onButtonClick_BtnSetLanguage(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnSetLanguage !!!\n");
@@ -553,7 +551,7 @@ static bool onButtonClick_BtnOrgNameSet(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnNameSet !!!\n");
 	string organization;
 	organization = mEditOrgNamePtr->getText();
-    StoragePreferences::putString("dev.organization", organization);
+	dev.set_organization(organization);
     if(gSocket->connected())
     {
         mWindStatusNoticePtr->showWnd();
@@ -562,6 +560,7 @@ static bool onButtonClick_BtnOrgNameSet(ZKButton *pButton) {
 
     	gSocket->updateTriger();
     	string msg;
+    	organization = dev.get_organization();
     	msg = jm.makeOrgName(organization, StatusSet);
 		gSocket->write_(msg);
     }
@@ -652,6 +651,7 @@ static bool onButtonClick_BtnSetHeartbeat(ZKButton *pButton) {
         mTextStatusNoticePtr->setText("设置成功");
         mTextStatusNotice2Ptr->setText("无法同步设置服务器");
     }
+    mEditHeartbeatPtr->setText(dev.get_heartbeatInterval());
     return false;
 }
 static void onEditTextChanged_EditHeartbeat(const std::string &text) {

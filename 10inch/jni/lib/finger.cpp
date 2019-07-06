@@ -763,7 +763,7 @@ bool Finger::threadLoop()
 			busy_counter++;
 			if(busy_counter >= 2)
 			{
-				LOGD("Finger set busy false");
+//				LOGD("Finger set busy false");
 				busy = false;
 				busy_counter = 0;
 			}

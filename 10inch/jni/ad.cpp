@@ -45,6 +45,8 @@ void Advertisement::set_enable_temp(bool state){
 void Advertisement::set_enable(bool state){
     StoragePreferences::putBool("gAdv.enable", state);
     enable = StoragePreferences::getBool("gAdv.enable", false);
+	LOGD("设置广告使能:设置%d,生效%d",state,enable);
+
 }
 
 bool Advertisement::get_enable(){
@@ -57,6 +59,8 @@ void Advertisement::set_idleTime(int time){
 
 	StoragePreferences::putInt("gAdv.idleTime",time);
     idleTime = StoragePreferences::getInt("gAdv.idleTime", 30);
+	LOGD("设置空闲%ds时间后进入广告(生效：%d)",time,idleTime);
+
 }
 int Advertisement::get_idleTime(){
 	return idleTime;
@@ -96,6 +100,7 @@ bool Advertisement::add(string js)
 		return false;
 	}
 	ret =  dbAdv.recodeResult(fileName, displayTime);
+	LOGD("添加广告：%s，displayTime：%d",fileName.c_str(),displayTime);
 
 
 	updateList(dbList);
@@ -107,7 +112,7 @@ void Advertisement::remove(string fileName)
 	string fileFullName = AD_DIR + fileName;
 	dbAdv.remove(fileName);
 	rm_file(fileFullName);
-
+	LOGD("删除广告：%s",fileName.c_str());
 	updateList(dbList);
 	//updateFileList();
 }
@@ -124,6 +129,8 @@ void Advertisement::clear()
 	dbAdv.clear();
 	int err = system(cmd.c_str());
 	updateList(dbList);
+	LOGD("清除广告");
+
 
 }
 

@@ -15,7 +15,7 @@ class Plan {
 public:
 	typedef struct
 	{
-		string uint;
+		string unit;
 		string startTime;
 		string endTime;
 		string teacher;

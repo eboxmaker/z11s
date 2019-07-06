@@ -58,10 +58,12 @@ void exeCMD(string &package)
 	string ack ;
 	DevicePara_t tempDevPara;
 
+	int fingers_size = 0;
 
 	int counter =0;
 	bool ret = false;
-	int status = -1;
+	JsonStatus_t status = StatusErr;
+	JsonCmd_t cmd = CMDErr;
 	int cStatus = -1;
 	msg = "";
 	char msgBuf[50];
@@ -72,15 +74,15 @@ void exeCMD(string &package)
 	{
 		//LOGE("发出超时通知");
 		if(networkTestCallback != NULL)
-			networkTestCallback(255,StatusErr,msg);
+			networkTestCallback(CMDTimeout,status,msg);
 		if(keyboardCallback != NULL)
-			keyboardCallback(255,StatusErr,msg);
+			keyboardCallback(CMDTimeout,status,msg);
 		if(settingsCallback != NULL)
-			settingsCallback(255,StatusErr,msg);
+			settingsCallback(CMDTimeout,status,msg);
 		if(AdvertisementCallback != NULL)
-			AdvertisementCallback(255,StatusErr,msg);
+			AdvertisementCallback(CMDTimeout,status,msg);
 		if(PersonCallback != NULL)
-			PersonCallback(255,StatusErr,msg);
+			PersonCallback(CMDTimeout,status,msg);
 		return;
 	}
 	else
@@ -90,11 +92,12 @@ void exeCMD(string &package)
 	if(ret == true)
 	{
 
-		JsonCmd_t cmd = getJsonCMD(js);
-		//LOGE("CMD:%d",cmd);
+		cmd = getJsonCMD(js);
+//		LOGE("CMD:%d",cmd);
 		switch(cmd)
 		{
 		case CMDHeartbeat:
+//			LOGE("CMDHeartbeat:%d",cmd);
 			status = jm.parseHeartbeat(js,msg);
 			if(status == StatusSet || status == StatusGet)
 			{
@@ -118,8 +121,8 @@ void exeCMD(string &package)
 				gSocket->write_(ack);
 			}
 			break;
-		case CMDConfirm:
-			cStatus = jm.parseConfirm(js,tempDevPara,msg);
+		case CMDRegister:
+			cStatus = jm.parseRegister(js,tempDevPara,msg);
 			//LOGE("%s",js.c_str());
 			if(cStatus == StatusParaSer2Dev)
 			{
@@ -133,7 +136,7 @@ void exeCMD(string &package)
 					dev.set_name(tempDevPara.name);
 
 
-				    ack = jm.makeConfirm(dev,StatusAckDev2Ser );
+				    ack = jm.makeRegister(dev,StatusAckDev2Ser );
 					gSocket->write_(ack);
 					//LOGE("回复:%s:%s",dev.organization.c_str(),dev.name.c_str());
 
@@ -171,6 +174,10 @@ void exeCMD(string &package)
 
 				ack = jm.makeOrgName(msg, StatusOK);
 				gSocket->write_(ack);
+			} else if(status == StatusOK)
+			{
+				dev.set_organization(msg);
+
 			}
 			break;
 		case CMDDevName:
@@ -225,19 +232,19 @@ void exeCMD(string &package)
 
 			}
 			break;
-		case CMDDoorControl:
+		case CMDDoorLockControl:
 			DoorLockState_t tempDoorLockState;
 			status = jm.parseDoorCtr(js,tempDoorLockState);
 			if(status == StatusSet )
 			{
 				if(tempDoorLockState == Unlock)
 				{
-					msg = "exe unlock";
+					msg = "unlock";
 					door.set_lock_ctr(Unlock);
 				}
 				else
 				{
-					msg = "exe lock";
+					msg = "lock";
 					door.set_lock_ctr(Lock);
 				}
 //				tempDoorLockState = door.get_lock_state();;
@@ -305,7 +312,6 @@ void exeCMD(string &package)
 			}
 
 			gSocket->write_(ack);
-			LOGE("接收到图片!%d:%s\n",status,msg.c_str());
 			break;
 		case CMDAdRead:
 			status = jm.parseAdRead(js);
@@ -474,6 +480,7 @@ void exeCMD(string &package)
 			if(status == StatusOK)
 			{
 				uint16_t id;
+//				gPersonTrans.picture.name += ".jpg";
 				msg = PIC_DIR + gPersonTrans.picture.name;
 				creat_file(msg,gPersonTrans.picture.data.c_str(),gPersonTrans.picture.data.size());
 				gPersonTrans.picture.data = "";
@@ -488,10 +495,10 @@ void exeCMD(string &package)
 			break;
 		case CMDFingerSet:
 			LOGD("收到FingerSet");
-			status = jm.parseFingerSet(js, gPersonTrans);
+			status = jm.parseFingerSet(js,&fingers_size);
 			if(status == StatusOK)
 			{
-
+				LOGD("服务器回复指纹数量：%d",fingers_size);
 			}
 			break;
 		case CMDVersion:
