@@ -120,7 +120,8 @@ typedef enum
 	CMDAdSet,
 
 
-	CMDPerson,//开机时服务器向终端发送的人员列表
+	CMDPersonAdd,//开机时服务器向终端发送的人员列表,上课前向设备发送开门的教师
+	CMDPersonDel,//删除某几个人，服务器发送一个id 列比，本地删除这些人
 	CMDPersonByLevel,//
 
 	CMDFingerGet,

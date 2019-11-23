@@ -92,6 +92,7 @@
             this.btnSendPersonTemp = new System.Windows.Forms.Button();
             this.btnSendPerson = new System.Windows.Forms.Button();
             this.tbPersonId = new System.Windows.Forms.TextBox();
+            this.button5 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnStartServer
@@ -694,11 +695,22 @@
             this.tbPersonId.TabIndex = 67;
             this.tbPersonId.Text = "1";
             // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(796, 326);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(74, 23);
+            this.button5.TabIndex = 68;
+            this.button5.Text = "删除固定人";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(995, 556);
+            this.Controls.Add(this.button5);
             this.Controls.Add(this.tbPersonId);
             this.Controls.Add(this.btnSendPerson);
             this.Controls.Add(this.btnSendPersonTemp);
@@ -836,6 +848,7 @@
         private System.Windows.Forms.Button btnSendPersonTemp;
         private System.Windows.Forms.Button btnSendPerson;
         private System.Windows.Forms.TextBox tbPersonId;
+        private System.Windows.Forms.Button button5;
     }
 }
 

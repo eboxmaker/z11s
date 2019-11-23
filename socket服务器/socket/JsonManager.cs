@@ -54,6 +54,7 @@ namespace MyJson
 
 
             Person,
+            PersonDel,
             PersonGetByLevel,
 
             FingerGet,
@@ -480,7 +481,7 @@ namespace MyJson
         {
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.DoorCtr);
-            obj.Add("doorCtr", isLock);
+            obj.Add("doorControl", isLock);
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
             string str = Package(jstring);
@@ -842,7 +843,28 @@ namespace MyJson
             string str = Package(jstring);
             return str;
         }
+        public static string MakePersonDel(string id,StatusType status)
+        {
+            JObject obj = new JObject();
 
+
+            var ja = new JArray();
+
+            obj.Add("cmd", (int)CMDType.PersonDel);
+
+                JObject jo = new JObject();
+                jo.Add("id", id);
+                ja.Add(jo);
+            
+            obj.Add("ids", ja);
+
+            obj.Add("status", (int)status);
+
+            string jstring = JsonConvert.SerializeObject(obj);
+
+            string str = Package(jstring);
+            return str;
+        }
         public static string MakePersonGetByLevel(int level, int num, StatusType status)
         {
             JObject obj = new JObject();

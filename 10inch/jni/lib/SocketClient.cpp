@@ -300,7 +300,7 @@ void SocketClient::asCmd()
 					msg_buf[msg_counter + 1] = '\0';
 					if(ParseJsonString(msg_buf) == true)
 					{
-						//LOGE("解析完成,size:%dbytes",msg_counter);
+						LOGD("解析完成,size:%dbytes",msg_counter);
 						exeCMD(msg_buf);
 					}
 					else//解析失败。顶层使用加密。数据中不会出现额外的{}；

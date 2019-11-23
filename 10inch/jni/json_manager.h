@@ -115,8 +115,11 @@ public:
 	string 			makeAdSet(Advertisement &set,JsonStatus_t status);
 	JsonStatus_t 	parseAdSet(string &js,Advertisement &set);
 
-	string 			makePerson(PersonTrans_t &person,JsonStatus_t status);
-	JsonStatus_t 	parsePerson(string &js,PersonTrans_t &person);
+	string 			makePersonAdd(PersonTrans_t &person,JsonStatus_t status);
+	JsonStatus_t 	parsePersonAdd(string &js,PersonTrans_t &person);
+
+	string 			makePersonDel(JsonStatus_t status);
+	JsonStatus_t 	parsePersonDel(string &js);
 
 	string 			makePersonGetByLevel(int level, int num, JsonStatus_t status);
 	JsonStatus_t 	parsePersonGetByLevel(string &js, int *level, int *num);

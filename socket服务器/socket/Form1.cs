@@ -62,7 +62,7 @@ namespace socket
             cbLocalIPList.SelectedIndex = 0;
             for (int i = 0; i < totalPersonNum; i++)
             {
-                person[i].id = "20180920" + i.ToString("D2");
+                person[i].id =  i.ToString();
                 person[i].name = "USER" + i.ToString("D2");
                 if (i < 2)
                 {
@@ -755,6 +755,13 @@ namespace socket
             int id = Convert.ToInt16(tbPersonId.Text);
             string resault = JsonManager.MakePerson(person[id], JsonManager.StatusType.StatusSet);
             server.SendAll(resault);
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+             int id = Convert.ToInt16(tbPersonId.Text);
+             string resault = JsonManager.MakePersonDel(tbPersonId.Text, JsonManager.StatusType.StatusSet);
+            server.SendAll(resault);           
         }
         
 

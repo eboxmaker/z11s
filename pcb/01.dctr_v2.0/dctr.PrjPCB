@@ -52,23 +52,6 @@ ClassGenCCAutoEnabled=1
 ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 
-[Document3]
-DocumentPath=dctr_v1.5.pcbDoc
-AnnotationEnabled=1
-AnnotateStartValue=1
-AnnotationIndexControlEnabled=0
-AnnotateSuffix=
-AnnotateScope=All
-AnnotateOrder=-1
-DoLibraryUpdate=1
-DoDatabaseUpdate=1
-ClassGenCCAutoEnabled=1
-ClassGenCCAutoRoomEnabled=1
-ClassGenNCAutoScope=None
-
-[GeneratedDocument1]
-DocumentPath=Project Outputs for dctr\Design Rule Check - dctr_v1.html
-
 [OutputGroup1]
 Name=Netlist Outputs
 Description=

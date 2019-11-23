@@ -93,7 +93,7 @@ void exeCMD(string &package)
 	{
 
 		cmd = getJsonCMD(js);
-//		LOGE("CMD:%d",cmd);
+		LOGE("CMD:%d",cmd);
 		switch(cmd)
 		{
 		case CMDHeartbeat:
@@ -435,9 +435,9 @@ void exeCMD(string &package)
 
 			break;
 
-		case CMDPerson:
+		case CMDPersonAdd:
 //			LOGD("收到person命令：");
-			status = jm.parsePerson(js, gPersonTrans);
+			status = jm.parsePersonAdd(js, gPersonTrans);
 			if(keyboardCallback != NULL)
 				keyboardCallback(cmd,status,msg);
 			if(status == StatusOK)
@@ -455,7 +455,18 @@ void exeCMD(string &package)
 				creat_file(msg,gPersonTrans.picture.data.c_str(),gPersonTrans.picture.data.size());
 				gPersonTrans.picture.data = "";
 
-				ack = jm.makePerson(gPersonTrans, StatusOK);
+				ack = jm.makePersonAdd(gPersonTrans, StatusOK);
+				gSocket->write_(ack);
+			}
+			break;
+
+		case CMDPersonDel:
+			LOGD("收到personDel命令：");
+			LOGD("数据：%s",js.c_str());
+			status = jm.parsePersonDel(js);
+			if(status == StatusOK || status == StatusSet)
+			{
+				ack = jm.makePersonDel(status);
 				gSocket->write_(ack);
 			}
 			break;
@@ -551,7 +562,7 @@ void exeCMD(string &package)
 		}
 		if(networkTestCallback != NULL)
 			networkTestCallback(cmd,status,msg);
-		if(keyboardCallback != NULL && cmd != CMDPerson)//person 命令提前触发了
+		if(keyboardCallback != NULL && cmd != CMDPersonAdd)//person 命令提前触发了
 			keyboardCallback(cmd,status,msg);
 		if(settingsCallback != NULL)
 			settingsCallback(cmd,status,msg);

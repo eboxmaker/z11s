@@ -912,11 +912,11 @@ JsonStatus_t JsonCmdManager::parseAdSet(string &js,Advertisement &set)
 }
 
 
-string JsonCmdManager::makePerson(PersonTrans_t &person,JsonStatus_t status)
+string JsonCmdManager::makePersonAdd(PersonTrans_t &person,JsonStatus_t status)
 {
 	  PersonInfo_t tempPerson;
 	  Json::Value root;
-	  root["cmd"] = Json::Value(CMDPerson);
+	  root["cmd"] = Json::Value(CMDPersonAdd);
 	  root["id"] = Json::Value(person.id);
 
 	  root["name"] = Json::Value(person.name);
@@ -933,7 +933,7 @@ string JsonCmdManager::makePerson(PersonTrans_t &person,JsonStatus_t status)
 
 	  return pack(temp);
 }
-JsonStatus_t JsonCmdManager::parsePerson(string &js,PersonTrans_t &person)
+JsonStatus_t JsonCmdManager::parsePersonAdd(string &js,PersonTrans_t &person)
 {
 	  JsonStatus_t status = StatusErr;
 	Json::Reader reader;
@@ -976,10 +976,40 @@ JsonStatus_t JsonCmdManager::parsePerson(string &js,PersonTrans_t &person)
 		}
 
 	}
-
 	  return status;
 }
+string JsonCmdManager::makePersonDel(JsonStatus_t status)
+{
+	  Json::Value root;
+	  root["cmd"] = Json::Value(CMDPersonDel);
+	  root["status"] = Json::Value(status);
+	  Json::FastWriter fw;
+	  string temp =  fw.write(root);
+	  return pack(temp);
+}
+JsonStatus_t JsonCmdManager::parsePersonDel(string &js)
+{
+	JsonStatus_t status = StatusErr;
+	Json::Reader reader;
+	Json::Value root;
 
+	if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	{
+		status = (JsonStatus_t)root["status"].asInt();
+		if(status == StatusOK || status == StatusSet)
+		{
+			Json::Value ids = root["ids"];
+			int ids_size =  root["ids"].size();
+			for(int i = 0; i < ids_size; i++)
+			{
+				gPerson.delete_uid(ids[i]["id"].asString());
+			}
+
+		}
+
+	}
+
+}
 string JsonCmdManager::makePersonGetByLevel(int level, int num, JsonStatus_t status)
 {
 	  PersonInfo_t tempPerson;

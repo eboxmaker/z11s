@@ -212,7 +212,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		mTextBroadcastPtr->setText(gBroadcastMsg);
 
 		break;
-	case CMDPerson:
+	case CMDPersonAdd:
 
 		is_on_download_finger = true;
 		last_download_finger_time = time(NULL);

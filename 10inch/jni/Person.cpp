@@ -63,6 +63,20 @@ void Person::add(PersonTrans_t &person){
 void Person::delete_uid(string id){
 
 	vector<PersonInfo_t>::iterator it = list.begin();
+
+	for(int i = 0; i < list.size(); i++)
+	{
+		if(list[i].id == id)
+		{
+			for(int j = 0; j < list[j].finger_id.size(); j++)
+			{
+				finger.delete_id_features(list[i].finger_id[j]);
+				LOGD("删除%s的指纹%d成功",list[i].id.c_str(),list[i].finger_id[j]);
+			}
+			break;
+		}
+	}
+
     while((it) != list.end()){
     	if((*it).id == id){
     		list.erase(it);
