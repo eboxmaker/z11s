@@ -53,6 +53,7 @@ static void update_person_info_sync()//更新人员得指纹信息
 {
 	string id_list = "";
 	uint16_t id = 0;
+	uint8_t finger_size = 0;
 	char buf[6];
 	tPersonInfo.id = tPersonTrans.id;
 	tPersonInfo.name = tPersonTrans.name;
@@ -61,14 +62,18 @@ static void update_person_info_sync()//更新人员得指纹信息
 	tPersonInfo.finger_id.clear();
 	for(int i = 0; i < tPersonTrans.fingers.size();i++)
 	{
-		id = finger.search_features_base64(tPersonTrans.fingers[i]);
-		sprintf(buf,"%d",id);
-		id_list += buf;
-		id_list += ",";
-		tPersonInfo.finger_id.push_back(id);
+		if(tPersonTrans.fingers[i] != "")
+		{
+			id = finger.search_features_base64(tPersonTrans.fingers[i]);
+			sprintf(buf,"%d",id);
+			id_list += buf;
+			id_list += ",";
+			tPersonInfo.finger_id.push_back(id);
+			finger_size++;
+		}
 	}
 	mTextFingerIDListPtr->setText(id_list);
-	mTextFingerNumPtr->setText((uint8_t)tPersonTrans.fingers.size());
+	mTextFingerNumPtr->setText((uint8_t)finger_size);
 	mTextFingerTotalNumPtr->setText(finger.get_total_num());
 
 }
@@ -248,7 +253,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 			char buf[6]={0};
 
 			tPersonTrans = gPersonTrans;
-
+			gPersonTrans.fingers.clear();
 			gSocket->disableTrigger();
 			mWindStatusNoticePtr->showWnd();
 			mTextStatusNoticePtr->setText("同步成功");

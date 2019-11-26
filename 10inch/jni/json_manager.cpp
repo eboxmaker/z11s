@@ -1129,6 +1129,7 @@ JsonStatus_t JsonCmdManager::parseFingerGet(string &js,PersonTrans_t &person)
 string JsonCmdManager::makeFingerSet(PersonTrans_t &person,JsonStatus_t status)
 {
 	  Json::Value root;
+	  Json::Value fingers;
 	  root["cmd"] = Json::Value(CMDFingerSet);
 	  root["id"] = Json::Value(person.id);
 
@@ -1139,7 +1140,6 @@ string JsonCmdManager::makeFingerSet(PersonTrans_t &person,JsonStatus_t status)
 
 	  if(person.fingers.size() > 0)
 	  {
-		  Json::Value fingers;
 		  Json::Value finger;
 		  for(int i = 0; i < person.fingers.size(); i++)
 		  {
@@ -1148,11 +1148,15 @@ string JsonCmdManager::makeFingerSet(PersonTrans_t &person,JsonStatus_t status)
 		  }
 		  root["fingers"] = Json::Value(fingers);
 	  }
+	  else
+	  {
+		  root["fingers"] = Json::Value(fingers);
+	  }
 
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
-
+	  LOGD("%s",temp.c_str());
 	  return pack(temp);
 }
 JsonStatus_t JsonCmdManager::parseFingerSet(string &js,int *fingers_size)

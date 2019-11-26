@@ -139,11 +139,19 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 {
 	//LOGE("%s",msg.c_str());
 	string temp ;
+    string title;
 
 	switch(cmd)
 	{
+	case CMDDevName:
+	case CMDOrgName:
+	case CMDRegister:
+	    title = dev.get_organization();
+	    title += " | ";
+	    title += dev.get_name();
+	    mTextTitlePtr->setText(title.c_str());
+		break;
 	case CMDDelQRCode:
-
 	//	break;
 	case CMDQRCode:
 		QRCodeFullName = msg;
@@ -190,7 +198,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		if(status == StatusSet)
 		{
 			updateCourseInfo();
-			//LOGE("MSG:%s",msg.c_str());
+			LOGE("更新课程表:%s",msg.c_str());
 		}
 		break;
 	case CMDPlan://不需要执行
@@ -201,14 +209,6 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		}
 		break;
 	case CMDBroadcast:
-//		if(gBroadcastMsg != "")
-//		{
-//			mWindBroadcastPtr->showWnd();
-//		}
-//		else
-//		{
-//			mWindBroadcastPtr->hideWnd();
-//		}
 		mTextBroadcastPtr->setText(gBroadcastMsg);
 
 		break;

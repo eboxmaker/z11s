@@ -105,6 +105,11 @@ bool Finger::add_featurs_sync(uint16_t *id/*返回ID*/,string &features/*指纹�
 {
 	string out = "";
 
+	if(features ==  "" )
+	{
+		LOGD("收到空指纹，不添加");
+		return false;
+	}
 	Base64::Decode(features, &out);
 
 	*id = search_features(out);
