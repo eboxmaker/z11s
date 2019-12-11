@@ -140,7 +140,7 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 	}
 	hearbeatUpdate();
 
-	return true;
+	return conncetState;
 }
 bool SocketClient::connected()
 {
@@ -160,7 +160,7 @@ bool SocketClient::connected()
 
 	if(conncetState == true)
 	{
-		if(time(NULL) - lastHeartbeatTime > dev.get_heartbeatInterval()*30000)
+		if(time(NULL) - lastHeartbeatTime > dev.get_heartbeatInterval()*3)
 			conncetState = false;
 		else
 			conncetState = true;
@@ -430,7 +430,8 @@ void SocketClient::threadLoop() {
 
     while (1)
 	{
-		asCmd();
+    	if(connected() == true)
+    		asCmd();
 /*
     	switch(this->mode )
     	{

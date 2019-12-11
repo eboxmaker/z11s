@@ -746,4 +746,11 @@ static bool onButtonClick_BtnStop(ZKButton *pButton) {
 	sIsPlayOK = false;
 	return false;
 }
+#include <sys/reboot.h>
 
+static bool onButtonClick_BtnRebot(ZKButton *pButton) {
+    //LOGD(" ButtonClick BtnRebot !!!\n");
+	Thread::sleep(2000);
+    reboot(RB_AUTOBOOT);
+    return false;
+}

@@ -167,7 +167,7 @@ static void *MainLoop(void *lParam)
 		if(dev.get_enable())
 		{
 			//断线检测
-			if(!gSocket->connected())
+			if(gSocket->connected() == false)
 			{
 				if(reconnect_counter > 5)
 				{
@@ -185,7 +185,6 @@ static void *MainLoop(void *lParam)
 		}
 
 		myAlarm.loop();
-
 		Thread::sleep(1000);
 
 	}

@@ -26,6 +26,7 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_SETTINGS_BtnRebot    20020
 #define ID_SETTINGS_BtnDevEnable    20019
 #define ID_SETTINGS_Textview15    50023
 #define ID_SETTINGS_BtnStop    20018

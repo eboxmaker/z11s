@@ -4,6 +4,7 @@
 #include "settingsActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKButton* mBtnRebotPtr;
 static ZKButton* mBtnDevEnablePtr;
 static ZKTextView* mTextview15Ptr;
 static ZKButton* mBtnStopPtr;
@@ -101,6 +102,7 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_SETTINGS_BtnRebot, onButtonClick_BtnRebot,
     ID_SETTINGS_BtnDevEnable, onButtonClick_BtnDevEnable,
     ID_SETTINGS_BtnStop, onButtonClick_BtnStop,
     ID_SETTINGS_ButtonVolumeTest, onButtonClick_ButtonVolumeTest,
@@ -213,6 +215,7 @@ const char* settingsActivity::getAppName() const{
 //TAG:onCreate
 void settingsActivity::onCreate() {
 	Activity::onCreate();
+    mBtnRebotPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnRebot);
     mBtnDevEnablePtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnDevEnable);
     mTextview15Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview15);
     mBtnStopPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnStop);
