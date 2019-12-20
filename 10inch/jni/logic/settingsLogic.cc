@@ -210,8 +210,6 @@ static void onUI_show() {
 	//
 	mSeekbarLightPtr->setProgress(BRIGHTNESSHELPER->getBrightness());
 	mTextLightPtr->setText(BRIGHTNESSHELPER->getBrightness());
-	mSeekbarVolumePtr->setProgress(dev.get_volume());
-	mTextVolumePtr->setText(dev.get_volume());
 
 //	mSeekbarMemUsagePtr->setProgress(gMemUsage);
 //	sprintf(temp,"%0.1f%%",gMemUsage);
@@ -283,8 +281,6 @@ static bool onUI_Timer(int id){
 
 		mSeekbarLightPtr->setProgress(BRIGHTNESSHELPER->getBrightness());
 		mTextLightPtr->setText(BRIGHTNESSHELPER->getBrightness());
-		mSeekbarVolumePtr->setProgress(dev.get_volume());
-		mTextVolumePtr->setText(dev.get_volume());
 //	case 10:
 //		EASYUICONTEXT->goHome();
 //		isShowKeyboard = true;
@@ -718,28 +714,8 @@ static bool onButtonClick_BtnUnLock(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnUnLock !!!\n");
     return false;
 }
-static void onProgressChanged_SeekbarVolume(ZKSeekBar *pSeekBar, int progress) {
-    //LOGD(" ProgressChanged SeekbarVolume %d !!!\n", progress);
-	sPlayer.setVolume((float) progress / 10, (float) progress / 10);
-	mTextVolumePtr->setText(progress);
-	dev.set_volume(progress);//
-}
-static bool onButtonClick_ButtonVolumeTest(ZKButton *pButton) {
-    //LOGD(" ButtonClick ButtonVolumeTest !!!\n");
 
-	sPlayer.setVolume((float)dev.get_volume()/10,(float)dev.get_volume()/10);
-	if (!sIsPlayOK) {
-		LOGD(" OK !!!\n");
-		sPlayer.play("/mnt/extsd/test.mp3");
 
-	} else {
-		sPlayer.resume();
-		LOGD(" failed !!!\n");
-	}
-	sPlayer.setVolume((float)dev.get_volume()/10,(float)dev.get_volume()/10);
-
-	return false;
-}
 static bool onButtonClick_BtnStop(ZKButton *pButton) {
     //LOGD(" ButtonClick BtnStop !!!\n");
 	sPlayer.stop();

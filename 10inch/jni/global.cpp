@@ -521,9 +521,11 @@ void exeCMD(string &package)
 			}
 			break;
 		case CMDUpdate:
+			LOGD("json:%s",js.c_str());
 			status = jm.parseUpdate(js,info);
 			if(status == StatusSet)
 			{
+				LOGD("URL:%s;PORT:%d",info.url.c_str(),info.port);
 			    string filename = info.url.substr(info.url.find_last_of('/') + 1);
 				msg = filename;
 			    if(downloadThread.isRunning())

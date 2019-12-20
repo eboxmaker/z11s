@@ -99,7 +99,7 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
-    EASYUICONTEXT->showStatusBar();
+    EASYUICONTEXT->hideStatusBar();
     string title;
     title = dev.get_organization();
     title += " | ";
@@ -112,8 +112,7 @@ static void onUI_show() {
  * 当界面隐藏时触发
  */
 static void onUI_hide() {
-    EASYUICONTEXT->hideStatusBar();
-LOGD("隐藏 plan");
+	LOGD("隐藏 plan");
 }
 
 /*
@@ -202,4 +201,9 @@ static void obtainListItemData_List(ZKListView *pListView,ZKListView::ZKListItem
 
 static void onListItemClick_List(ZKListView *pListView, int index, int id) {
     //LOGD(" onListItemClick_ List  !!!\n");
+}
+static bool onButtonClick_go_back(ZKButton *pButton) {
+    //LOGD(" ButtonClick go_back !!!\n");
+	EASYUICONTEXT->goBack();
+    return false;
 }

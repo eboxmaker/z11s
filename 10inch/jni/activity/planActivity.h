@@ -26,6 +26,10 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_PLAN_go_back    20003
+#define ID_PLAN_Digitalclock1    93001
+#define ID_PLAN_TextWeek    50007
+#define ID_PLAN_TextDate    50009
 #define ID_PLAN_SubItemCourse    20004
 #define ID_PLAN_SubItemClass    20005
 #define ID_PLAN_SubItemTeacher    20002

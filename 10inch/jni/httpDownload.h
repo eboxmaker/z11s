@@ -46,7 +46,7 @@ protected:
         //这里修改为真实服务IPhttp://127.0.0.1
         string cmd = "mkdir " + path;
         system(cmd.c_str());
-        if(name == "update.img")
+        if(name == "update.img" || name == "boot_logo.JPG")
         {
             char buf[]="3";
             string autouFileFullName = path + "/zkautoupgrade";
@@ -63,7 +63,7 @@ protected:
             {
             	downloadEvent(err);
             }
-            if(name == "update.img")
+            if(name == "update.img" || name == "boot_logo.JPG")
             {
                 Thread::sleep(1000);//显示下载成功
     		    dev.set_enable_temp(false);

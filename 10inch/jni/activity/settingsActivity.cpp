@@ -7,11 +7,6 @@
 static ZKButton* mBtnRebotPtr;
 static ZKButton* mBtnDevEnablePtr;
 static ZKTextView* mTextview15Ptr;
-static ZKButton* mBtnStopPtr;
-static ZKButton* mButtonVolumeTestPtr;
-static ZKTextView* mTextVolumePtr;
-static ZKSeekBar* mSeekbarVolumePtr;
-static ZKTextView* mTextview11Ptr;
 static ZKWindow* mWindAdSetPtr;
 static ZKWindow* mWindLocalPwdPtr;
 static ZKButton* mBtnLocalPwdPtr;
@@ -104,8 +99,6 @@ typedef struct {
 static S_ButtonCallback sButtonCallbackTab[] = {
     ID_SETTINGS_BtnRebot, onButtonClick_BtnRebot,
     ID_SETTINGS_BtnDevEnable, onButtonClick_BtnDevEnable,
-    ID_SETTINGS_BtnStop, onButtonClick_BtnStop,
-    ID_SETTINGS_ButtonVolumeTest, onButtonClick_ButtonVolumeTest,
     ID_SETTINGS_BtnLocalPwd, onButtonClick_BtnLocalPwd,
     ID_SETTINGS_BtnDownload, onButtonClick_BtnDownload,
     ID_SETTINGS_BtnOrgNameSet, onButtonClick_BtnOrgNameSet,
@@ -133,7 +126,6 @@ typedef struct {
 }S_ZKSeekBarCallback;
 /*TAG:SeekBarCallbackTab*/
 static S_ZKSeekBarCallback SZKSeekBarCallbackTab[] = {
-    ID_SETTINGS_SeekbarVolume, onProgressChanged_SeekbarVolume,
     ID_SETTINGS_SeekbarLight, onProgressChanged_SeekbarLight,
     ID_SETTINGS_SeekbarMemUsage, onProgressChanged_SeekbarMemUsage,
 };
@@ -218,11 +210,6 @@ void settingsActivity::onCreate() {
     mBtnRebotPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnRebot);
     mBtnDevEnablePtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnDevEnable);
     mTextview15Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview15);
-    mBtnStopPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnStop);
-    mButtonVolumeTestPtr = (ZKButton*)findControlByID(ID_SETTINGS_ButtonVolumeTest);
-    mTextVolumePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextVolume);
-    mSeekbarVolumePtr = (ZKSeekBar*)findControlByID(ID_SETTINGS_SeekbarVolume);if(mSeekbarVolumePtr!= NULL){mSeekbarVolumePtr->setSeekBarChangeListener(this);}
-    mTextview11Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview11);
     mWindAdSetPtr = (ZKWindow*)findControlByID(ID_SETTINGS_WindAdSet);
     mWindLocalPwdPtr = (ZKWindow*)findControlByID(ID_SETTINGS_WindLocalPwd);
     mBtnLocalPwdPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnLocalPwd);

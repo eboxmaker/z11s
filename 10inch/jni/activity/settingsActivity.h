@@ -29,11 +29,6 @@
 #define ID_SETTINGS_BtnRebot    20020
 #define ID_SETTINGS_BtnDevEnable    20019
 #define ID_SETTINGS_Textview15    50023
-#define ID_SETTINGS_BtnStop    20018
-#define ID_SETTINGS_ButtonVolumeTest    20016
-#define ID_SETTINGS_TextVolume    50025
-#define ID_SETTINGS_SeekbarVolume    91002
-#define ID_SETTINGS_Textview11    50009
 #define ID_SETTINGS_WindAdSet    110002
 #define ID_SETTINGS_WindLocalPwd    110001
 #define ID_SETTINGS_BtnLocalPwd    20005

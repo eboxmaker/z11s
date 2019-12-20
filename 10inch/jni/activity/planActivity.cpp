@@ -4,6 +4,10 @@
 #include "planActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKButton* mgo_backPtr;
+static ZKDigitalClock* mDigitalclock1Ptr;
+static ZKTextView* mTextWeekPtr;
+static ZKTextView* mTextDatePtr;
 static ZKTextView* mTextTitlePtr;
 static ZKTextView* mTextview5Ptr;
 static ZKTextView* mTextview4Ptr;
@@ -48,6 +52,7 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_PLAN_go_back, onButtonClick_go_back,
 };
 /***************/
 
@@ -129,6 +134,10 @@ const char* planActivity::getAppName() const{
 //TAG:onCreate
 void planActivity::onCreate() {
 	Activity::onCreate();
+    mgo_backPtr = (ZKButton*)findControlByID(ID_PLAN_go_back);
+    mDigitalclock1Ptr = (ZKDigitalClock*)findControlByID(ID_PLAN_Digitalclock1);
+    mTextWeekPtr = (ZKTextView*)findControlByID(ID_PLAN_TextWeek);
+    mTextDatePtr = (ZKTextView*)findControlByID(ID_PLAN_TextDate);
     mTextTitlePtr = (ZKTextView*)findControlByID(ID_PLAN_TextTitle);
     mTextview5Ptr = (ZKTextView*)findControlByID(ID_PLAN_Textview5);
     mTextview4Ptr = (ZKTextView*)findControlByID(ID_PLAN_Textview4);
