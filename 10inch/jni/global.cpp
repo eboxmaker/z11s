@@ -64,7 +64,6 @@ void exeCMD(string &package)
 	bool ret = false;
 	JsonStatus_t status = StatusErr;
 	JsonCmd_t cmd = CMDErr;
-	int cStatus = -1;
 	msg = "";
 	char msgBuf[50];
 	string js;
@@ -93,7 +92,7 @@ void exeCMD(string &package)
 	{
 
 		cmd = getJsonCMD(js);
-		LOGE("CMD:%d",cmd);
+		LOGD("CMD:%s",jsoncmd_to_str(cmd).c_str());
 		switch(cmd)
 		{
 		case CMDHeartbeat:
@@ -122,9 +121,9 @@ void exeCMD(string &package)
 			}
 			break;
 		case CMDRegister:
-			cStatus = jm.parseRegister(js,tempDevPara,msg);
-			//LOGE("%s",js.c_str());
-			if(cStatus == StatusParaSer2Dev)
+			LOGD("解析注册回复包：%s",js.c_str());
+			status = jm.parseRegister(js,tempDevPara,msg);
+			if(status == StatusOK)
 			{
 				if(tempDevPara.id == dev.id)
 				{
@@ -134,29 +133,20 @@ void exeCMD(string &package)
 					dev.set_heartbeatInterval(tempDevPara.heartbeatInterval);
 					dev.set_organization(tempDevPara.organization);
 					dev.set_name(tempDevPara.name);
+					dev.confirmState = true;
 
-
-				    ack = jm.makeRegister(dev,StatusAckDev2Ser );
-					gSocket->write_(ack);
-					//LOGE("回复:%s:%s",dev.organization.c_str(),dev.name.c_str());
-
+//				    ack = jm.makeRegister(dev,StatusAckDev2Ser );
+//					gSocket->write_(ack);
+					LOGD("注册成功:%s:%s",dev.get_organization().c_str(),dev.get_name().c_str());
 				}
 				else
 				{
-					dev.confirmState = StatusErrSer2Dev;
+					dev.confirmState = false;
 					LOGE("服务器匹配设备ID错误！");
-
 				}
 
 			}
-			else if(cStatus == StatusOKSer2Dev)
-			{
-				dev.confirmState = true;
-			}
-			else
-			{
 
-			}
 			break;
 		case CMDOrgName:
 			status = jm.parseOrgName(js,msg);
@@ -274,13 +264,15 @@ void exeCMD(string &package)
 		case CMDQRCode:
 			status = jm.parseFile(js,QR_DIR,msg,dataout);
 			ack = jm.makeQRCodeAck(msg,StatusErr);
+			msg = (char*)QR_DIR;
+			msg +=(char*)"qr.jpg";//无论什么名字都转换为qr.jpg
 			if(status == StatusSet || status == StatusGet)
 			{
 				if(creat_file(msg,dataout.c_str(),dataout.size()))
 					ack = jm.makeQRCodeAck(msg,StatusOK);
 			}
 			gSocket->write_(ack);
-			LOGE("接收到二维码!%d:%s\n",status,msg.c_str());
+			LOGD("======接收到二维码======%d:%s\n",status,msg.c_str());
 			break;
 		case CMDDelQRCode:
 			status = jm.parseDeleteFile(js,QR_DIR,fileName,msg);
@@ -420,7 +412,12 @@ void exeCMD(string &package)
 
 		case CMDCourseInfo:
 			LOGE("CMD:CMDCourseInfo");
+//			if(gCourseInfo.picture.name == "") gCourseInfo.picture.name = "picture.jpg";
+//			msg = PIC_DIR + gCourseInfo.picture.name;
+//			rm_file(msg);//删除老的头像文件
+//			Thread::sleep(1000);
 			status = jm.parseCourseInfo(js, gCourseInfo);
+			gCourseInfo.picture.name = "courseInfo.jpg";
 			if(status == StatusSet)
 			{
 				msg = PIC_DIR + gCourseInfo.picture.name;
@@ -440,20 +437,21 @@ void exeCMD(string &package)
 			status = jm.parsePersonAdd(js, gPersonTrans);
 			if(keyboardCallback != NULL)
 				keyboardCallback(cmd,status,msg);
-			if(status == StatusOK)
-			{
-				msg = PIC_DIR + gPersonTrans.picture.name;
-				creat_file(msg,gPersonTrans.picture.data.c_str(),gPersonTrans.picture.data.size());
-				gPersonTrans.picture.data = "";
-				//LOGE("%s，%s",gPersonDump.name.c_str(),gPersonDump.course.c_str());
-
-			}
-			else if(status == StatusSet)
+//			if(status == StatusOK)
+//			{
+//				msg = PIC_DIR + gPersonTrans.picture.name;
+//				creat_file(msg,gPersonTrans.picture.data.c_str(),gPersonTrans.picture.data.size());
+//				gPersonTrans.picture.data = "";
+//				//LOGE("%s，%s",gPersonDump.name.c_str(),gPersonDump.course.c_str());
+//
+//			}
+//			else
+			if(status == StatusSet)
 			{
 				gPerson.add(gPersonTrans);
-				msg = PIC_DIR + gPersonTrans.picture.name;
-				creat_file(msg,gPersonTrans.picture.data.c_str(),gPersonTrans.picture.data.size());
-				gPersonTrans.picture.data = "";
+//				msg = PIC_DIR + gPersonTrans.picture.name;
+//				creat_file(msg,gPersonTrans.picture.data.c_str(),gPersonTrans.picture.data.size());
+//				gPersonTrans.picture.data = "";
 
 				ack = jm.makePersonAdd(gPersonTrans, StatusOK);
 				gSocket->write_(ack);
@@ -491,16 +489,18 @@ void exeCMD(string &package)
 			if(status == StatusOK)
 			{
 				uint16_t id;
-//				gPersonTrans.picture.name += ".jpg";
+				gPersonTrans.picture.name = "fingerPicture.jpg";
 				msg = PIC_DIR + gPersonTrans.picture.name;
 				creat_file(msg,gPersonTrans.picture.data.c_str(),gPersonTrans.picture.data.size());
 				gPersonTrans.picture.data = "";
 				for(int i = 0; i < gPersonTrans.fingers.size(); i++)
 				{
-					if(finger.add_featurs_sync(&id, gPersonTrans.fingers[i]))
+					if(finger.add_featurs_sync(&id, gPersonTrans.fingers[i])){
 						LOGD("添加临时成功");
-					else
+					}
+					else{
 						LOGD("添加临时失败");
+					}
 				}
 			}
 			break;
@@ -562,6 +562,7 @@ void exeCMD(string &package)
 		default:
 			break;
 		}
+	    LOGD("命令解析器：cmd:%s,Status:%s",jsoncmd_to_str(cmd).c_str(), jsoncmdstatus_to_str(status).c_str());
 		if(networkTestCallback != NULL)
 			networkTestCallback(cmd,status,msg);
 		if(keyboardCallback != NULL && cmd != CMDPersonAdd)//person 命令提前触发了
@@ -575,4 +576,66 @@ void exeCMD(string &package)
 
 	}
 }
+string cmd_table[] = {
+"CMDUpdate",//更新终端系统
+"CMDReboot",//重启终端
+"CMDVersion",//查询终端的版本
+"CMDDevID",//设备ID
+"CMDRegister",//设备认证
 
+"CMDHeartbeat",//心跳
+"CMDSetHeartbeat",//心跳间隔时间 s
+"CMDOrgName",//组织名称
+"CMDDevName",//设备名称
+
+"CMDSyncDateTime",//同步时间
+"CMDLocalPassword",//本地密码
+
+"CMDFingerKey",//指纹密码
+"CMDDoorPassword",//动态开门密码
+"CMDDoorLockControl",//门控制命令
+"CMDDoorState",//门状态
+
+"CMDCourseInfo",//课程信息
+"CMDPlan",//计划（课程表）
+"CMDBroadcast",//广播
+
+"CMDQRCode",//二维码
+"CMDDelQRCode",//删除二维码
+
+"CMDAdAdd",//CMDAdvertisement,
+"CMDAdRead",//CMDAdvertisement,
+"CMDAdDel",//CMDAdvertisement,
+"CMDAdClear",//清空广告,
+"CMDAdSet",
+
+
+"CMDPersonAdd",//开机时服务器向终端发送的人员列表,上课前向设备发送开门的教师
+"CMDPersonDel",//删除某几个人，服务器发送一个id 列比，本地删除这些人
+"CMDPersonByLevel",//
+
+"CMDFingerGet",
+"CMDFingerSet",
+
+
+
+"CMDErr",
+"CMDTimeout",
+};
+
+string json_status_table[] =
+{
+"StatusSet",
+"StatusGet" ,
+"StatusOK",
+"StatusErr"
+};
+
+std::string jsoncmd_to_str(JsonCmd_t cmd)
+{
+	return cmd_table[cmd];
+}
+std::string jsoncmdstatus_to_str(JsonStatus_t status)
+{
+	return json_status_table[status];
+}

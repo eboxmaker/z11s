@@ -75,14 +75,7 @@ typedef enum
 }JsonStatus_t;
 
 //注册过程传输状态枚举类型
-typedef enum
-{
-	StatusReqDev2Ser = 0,
-	StatusParaSer2Dev ,
-	StatusAckDev2Ser,
-	StatusOKSer2Dev,
-	StatusErrSer2Dev,
-}JsonConfirmStatus_t;
+
 
 //命令列表
 typedef enum
@@ -134,7 +127,8 @@ typedef enum
 
 }JsonCmd_t;
 
-
+std::string jsoncmd_to_str(JsonCmd_t cmd);
+std::string jsoncmdstatus_to_str(JsonStatus_t cmd);
 typedef void (*myNotify_t)(JsonCmd_t,JsonStatus_t, string &);
 typedef void (*dlNotify_t)(string &msg);
 

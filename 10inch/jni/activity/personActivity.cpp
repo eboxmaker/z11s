@@ -4,7 +4,6 @@
 #include "personActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
-static ZKButton* mBtnGetPersonResidentPtr;
 static ZKButton* mBtnRollStepPtr;
 static ZKButton* mBtnGetTotalFingerNumPtr;
 static ZKTextView* mTextFingerOnlineStatePtr;
@@ -74,7 +73,6 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
-    ID_PERSON_BtnGetPersonResident, onButtonClick_BtnGetPersonResident,
     ID_PERSON_BtnRollStep, onButtonClick_BtnRollStep,
     ID_PERSON_BtnGetTotalFingerNum, onButtonClick_BtnGetTotalFingerNum,
     ID_PERSON_BtnDeleteUserFinger, onButtonClick_BtnDeleteUserFinger,
@@ -164,7 +162,6 @@ const char* personActivity::getAppName() const{
 //TAG:onCreate
 void personActivity::onCreate() {
 	Activity::onCreate();
-    mBtnGetPersonResidentPtr = (ZKButton*)findControlByID(ID_PERSON_BtnGetPersonResident);
     mBtnRollStepPtr = (ZKButton*)findControlByID(ID_PERSON_BtnRollStep);
     mBtnGetTotalFingerNumPtr = (ZKButton*)findControlByID(ID_PERSON_BtnGetTotalFingerNum);
     mTextFingerOnlineStatePtr = (ZKTextView*)findControlByID(ID_PERSON_TextFingerOnlineState);

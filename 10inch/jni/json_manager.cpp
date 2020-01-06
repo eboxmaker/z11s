@@ -103,20 +103,71 @@ string JsonCmdManager::pack(string& data)
 //	return temp;
 //
 //}
+char md5_buffer[1024*1024];
+
+void printAll(string &str)
+{
+  memset(md5_buffer,0,1024*1024);
+  memcpy(md5_buffer,str.c_str(),str.size());
+  int len = str.size();
+  int counter = 0;
+  int rb = 0;
+  int remain = 0;
+  LOGD("完整字符串");
+  while(1){
+	  remain = len - counter;
+	  if(remain >= 512)
+		  rb = 512;
+	  else
+		  rb = remain;
+
+	  char buf[1024] = {0};
+	  memset(buf,0,1024);
+	  memcpy(buf,&md5_buffer[counter],rb);
+	  LOGD("%s",buf);
+	  counter += rb;
+	  if(counter >= len){
+		  break;
+	  }
+  }
+  LOGD("字符串长度：%d,%d",counter,str.size());
+
+
+
+}
 bool JsonCmdManager::unPack(string& package,string& js)
 {
-	  Json::Reader reader;
+	Json::Features features;
+
+	features.strictRoot_ = true;
+
+	Json::Reader reader(features);
 
 	  Json::Value root;
 	  string data;
 	  string md5str;
+	  string temp_js = "";
 	  js = "";
+
 	  if (reader.parse(package, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  md5str = root["sign"].asString();
-		  data = root["data"].asString();
-//		  LOGE("src md5：%s",md5str.c_str());
-//		  LOGE("src data：%s",data.c_str());
+		  if(root.isMember("sign"))
+			  md5str = root["sign"].asString();
+		  else{
+			  LOGE("不存在sign");
+			  return false;
+		  }
+
+		  if(root.isMember("data"))
+			  data = root["data"].asString();
+		  else{
+			  LOGE("不存在data");
+			  return false;
+
+		  }
+//		  LOGD("json md5：%s",md5str.c_str());
+//		  LOGD("json data：%s",data.c_str());
+//		  LOGD("原文:%s",package.c_str());
 
 	  }
 	  else
@@ -124,28 +175,34 @@ bool JsonCmdManager::unPack(string& package,string& js)
 		  LOGE("帧错误");
 		  return false;
 	  }
-	  js = aes->decrypt(data);
+	  temp_js = aes->decrypt(data);
 
+	  uint16_t index = temp_js.find_last_of('}', 0);
+	  js = temp_js.substr(0,index);
+//	  printAll(js);
 
 	  MD5 md5(js);
 	  string checkMD5 = md5.toStr();
 
-//	  LOGE("un md5:%s",checkMD5.c_str());
-//	  LOGE("un data:%s(len:%d,size:%d)",js.c_str(),js.length(),js.size());
 
 	  if(checkMD5 == md5str)
 	  {
-//		  LOGE("解密：%s",js.c_str());
+//		  LOGD("解密：%s",js.c_str());
 		  return true;
-		  //LOGE("md5正确");
+		  //LOGD("md5正确");
 	  }
 	  else
 	  {
-		  LOGE("md5错误");
-		  LOGE("src md5：%s",md5str.c_str());
-		  LOGE("src data：%s",data.c_str());
-		  LOGE("un md5:%s",checkMD5.c_str());
-		  LOGE("un data:%s(len:%d,size:%d)",js.c_str(),js.length(),js.size());
+		  LOGE("MD5错误:%s",package.c_str());
+		  LOGE("原文md5：%s",md5str.c_str());
+		  LOGE("原始长度:%d)",data.length());
+		  LOGE("原文数据：%s",data.c_str());
+
+		  LOGE("本地计算MD5:%s",checkMD5.c_str());
+		  LOGE("解密后:长度:%d,size:%d)",js.length(),js.size());
+		  printAll(js);
+
+
 		  return false;
 	  }
 	  return false;
@@ -179,7 +236,7 @@ string JsonCmdManager::makeHeartbeat(JsonStatus_t status)
 	sysinfo(&systemInfo);
     memUsage = (1 - ((float)systemInfo.freeram/(float)systemInfo.totalram))*100;
     sprintf(tempbuf,"%0.1f%%(%0.1fM/%0.1fM)",memUsage,\
-   		 systemInfo.freeram/1024.0/1024.0,\
+    		(systemInfo.totalram - systemInfo.freeram)/1024.0/1024.0,\
 			 systemInfo.totalram/1024.0/1024.0);
 
 	  Json::Value root;
@@ -194,12 +251,10 @@ JsonStatus_t JsonCmdManager::parseHeartbeat(string &js, string &msg)
 {
 	  Json::Reader reader;
 	  Json::Value root;
-
 	  JsonStatus_t status = StatusErr;
 
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-
 		  msg = root["value"].asString();
 		  status = (JsonStatus_t)root["status"].asInt();
 	  }
@@ -320,35 +375,36 @@ JsonStatus_t JsonCmdManager::parseDevName(string &js,string &name)
 }
 
 
-string JsonCmdManager::makeRegister(Device &pDev,JsonConfirmStatus_t status)
+string JsonCmdManager::makeRegister(Device &pDev,JsonStatus_t status)
 {
 
 	  Json::Value root;
 	  root["cmd"] = Json::Value(CMDRegister);
 	  root["id"] = Json::Value(pDev.get_id());
 	  root["version"] = Json::Value(pDev.get_version());
-	  if(status == StatusAckDev2Ser)
-	  {
-		  root["organization"] = Json::Value(pDev.get_organization());
-		  root["name"] = Json::Value(pDev.get_name());
-		  root["interval"] = Json::Value(pDev.get_heartbeatInterval());
-	  }
+//	  if(status == StatusAckDev2Ser)
+//	  {
+//		  root["organization"] = Json::Value(pDev.get_organization());
+//		  root["name"] = Json::Value(pDev.get_name());
+//		  root["interval"] = Json::Value(pDev.get_heartbeatInterval());
+//	  }
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
+	  LOGD("注册包：%s",temp.c_str());
 	  return pack(temp);
 
 }
-JsonConfirmStatus_t JsonCmdManager::parseRegister(string &js,DevicePara_t &para,string &timeString)
+JsonStatus_t JsonCmdManager::parseRegister(string &js,DevicePara_t &para,string &timeString)
 {
 	  Json::Reader reader;
 
 	  Json::Value root;
-	  JsonConfirmStatus_t status = StatusErrSer2Dev;
+	  JsonStatus_t status = StatusErr;
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  status = (JsonConfirmStatus_t)root["status"].asInt();
-		  if(status == StatusParaSer2Dev)
+		  status = (JsonStatus_t)root["status"].asInt();
+		  if(status == StatusOK)
 		  {
 			  para.heartbeatInterval = root["heartbeatInterval"].asInt();
 			  para.organization = root["organization"].asString();
@@ -562,8 +618,8 @@ string  JsonCmdManager::makeCourseInfo(CourseInfo_t &info,JsonStatus_t status)
 	  root["class"] = Json::Value(info.class_);
 	  root["num"] = Json::Value(info.num);
 	  root["course"] = Json::Value(info.course);
-	  root["picture.name"] = Json::Value(info.picture.name);
-	  root["picture.dataLength"] = Json::Value((int)info.picture.dataLength);
+	  root["picture_name"] = Json::Value(info.picture.name);
+	  root["picture_dataLength"] = Json::Value((int)info.picture.dataLength);
 
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
@@ -586,14 +642,14 @@ JsonStatus_t  JsonCmdManager::parseCourseInfo(string &js,CourseInfo_t &info)
 			info.course = root["course"].asString();
 
 
-			info.picture.name = root["pic.name"].asString();  // 访问节点，upload_id = "UP000000"
-			LOGD("info->pic_name:%s",info.picture.name.c_str());
+			info.picture.name = root["picture_name"].asString();  // 访问节点，upload_id = "UP000000"
+			LOGD("info->picture_name:%s",info.picture.name.c_str());
 
-			info.picture.data = root["pic.data"].asString();    // 访问节点，code = 100
-			LOGD("info->pic_data:%s",info.picture.data.c_str());
+			info.picture.data = root["picture_data"].asString();    // 访问节点，code = 100
+			LOGD("info->picture_data:%s",info.picture.data.c_str());
 
-			info.picture.dataLength = root["pic.dataLength"].asLargestUInt();
-			LOGD("info->pic_dataLength:%d",info.picture.dataLength);
+			info.picture.dataLength = root["picture_dataLength"].asLargestUInt();
+			LOGD("info->picture_dataLength:%d",info.picture.dataLength);
 
 
 
@@ -946,33 +1002,34 @@ JsonStatus_t JsonCmdManager::parsePersonAdd(string &js,PersonTrans_t &person)
 			person.id = root["id"].asString();
 			person.name = root["name"].asString();
 			person.level = root["level"].asInt();
+			LOGD("FingerGet->id:%s,name:%s",person.id.c_str(),person.name.c_str());
 			Json::Value fingers = root["fingers"];
 			int fingers_size =  root["fingers"].size();
 			person.fingers.clear();
 			for(int i = 0; i < fingers_size; i++)
 			{
 				person.fingers.push_back(fingers[i]["finger"].asString());
-//				LOGD("finger:%s",person.fingers[i].c_str());
+				LOGD("finger:%s",person.fingers[i].c_str());
 			}
 
 
-			person.picture.name = root["pic_name"].asString();  // 访问节点，upload_id = "UP000000"
-			person.picture.data = root["pic_data"].asString();    // 访问节点，code = 100
-			person.picture.dataLength = root["pic_dataLength"].asLargestUInt();
-
-
-			if(person.picture.dataLength != person.picture.data.length())
-			{
-				LOGE("头像长度不匹配");
-				return StatusErr;
-			}
-			string picBuf;
-			picBuf = person.picture.data;
-			person.picture.data = "";
-			if(Base64::Decode(picBuf,&person.picture.data))
-			{
-
-			}
+//			person.picture.name = root["picture_name"].asString();  // 访问节点，upload_id = "UP000000"
+//			person.picture.data = root["picture_data"].asString();    // 访问节点，code = 100
+//			person.picture.dataLength = root["picture_dataLength"].asLargestUInt();
+//
+//
+//			if(person.picture.dataLength != person.picture.data.length())
+//			{
+//				LOGE("头像长度不匹配");
+//				return StatusErr;
+//			}
+//			string picBuf;
+//			picBuf = person.picture.data;
+//			person.picture.data = "";
+//			if(Base64::Decode(picBuf,&person.picture.data))
+//			{
+//
+//			}
 		}
 
 	}
@@ -1067,16 +1124,23 @@ JsonStatus_t JsonCmdManager::parseFingerGet(string &js,PersonTrans_t &person)
 			person.id = root["id"].asString();
 			person.name = root["name"].asString();
 			person.level = root["level"].asInt();
-			LOGD("FingerGet->id,name,level:OK");
+			LOGD("FingerGet->id:%s,name:%s",person.id.c_str(),person.name.c_str());
 			int fingers_size =  root["fingers"].size();
 			if(fingers_size > 0 )
 			{
 				Json::Value fingers = root["fingers"];
+				string temp ;
 				person.fingers.clear();
 				for(int i = 0; i < fingers_size; i++)
 				{
-					person.fingers.push_back(fingers[i]["finger"].asString());
-					LOGD("finger:%s",person.fingers[i].c_str());
+					temp = fingers[i]["finger"].asString();
+					if(temp != ""){
+						person.fingers.push_back(fingers[i]["finger"].asString());
+						LOGD("finger:%s",person.fingers[i].c_str());
+					}
+					else{
+						LOGD("jm收到空指纹：直接删除");
+					}
 				}
 				LOGD("FingerGet->fingers:OK;%d个指纹",person.fingers.size());
 			}else
@@ -1086,14 +1150,14 @@ JsonStatus_t JsonCmdManager::parseFingerGet(string &js,PersonTrans_t &person)
 			}
 
 
-			person.picture.name = root["pic_name"].asString();
-			LOGD("FingerGet->pic_name:%s",person.picture.name.c_str());
+			person.picture.name = root["picture_name"].asString();
+			LOGD("FingerGet->picture_name:%s",person.picture.name.c_str());
 
-			person.picture.dataLength = (long)root["pic_dataLength"].asLargestUInt();
-			LOGD("FingerGet->pic_dataLength:%d",person.picture.dataLength);
+			person.picture.dataLength = (long)root["picture_dataLength"].asLargestUInt();
+			LOGD("FingerGet->picture_dataLength:%d",person.picture.dataLength);
 
-			person.picture.data = root["pic_data"].asString();
-			LOGD("FingerGet->pic_data:%s",person.picture.data.c_str());
+			person.picture.data = root["picture_data"].asString();
+			LOGD("FingerGet->picture_data:%s",person.picture.data.c_str());
 
 
 			if(person.picture.dataLength != person.picture.data.length())

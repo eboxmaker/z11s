@@ -1,6 +1,7 @@
 #pragma once
 #include "uart/ProtocolSender.h"
 #include "json_manager.h"
+#include "utils/TimeHelper.h"
 
 /*
 *此文件由GUI工具生成
@@ -48,6 +49,19 @@
 //		{"第4单元","08:00-09:45","陈婷","B19123\nB19124","嵌入式基础教学"},
 //		{"第5单元","08:00-09:45","陈婷","B19123\nB19124","嵌入式基础教学"},
 //};
+
+static void updateUI_time() {
+	char timeStr[20];
+	struct tm *t = TimeHelper::getDateTime();
+
+	sprintf(timeStr, "%d年%02d月%02d日", 1900 + t->tm_year, t->tm_mon + 1, t->tm_mday);
+	mTextDatePtr->setText(timeStr); // 注意修改控件名称
+
+
+	static const char *day[] = { "日", "一", "二", "三", "四", "五", "六" };
+	sprintf(timeStr, "星期%s", day[t->tm_wday]);
+	mTextWeekPtr->setText(timeStr); // 注意修改控件名称
+}
 static void clearPlanText()
 {
 
@@ -72,7 +86,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	//{0,  10000}, //定时器id=0, 时间间隔6秒
+	{0,  1000}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
 //	{10,  GO_HOME_TIME},
 };
@@ -99,6 +113,7 @@ static void onUI_intent(const Intent *intentPtr) {
  * 当界面显示时触发
  */
 static void onUI_show() {
+	updateUI_time();
     EASYUICONTEXT->hideStatusBar();
     string title;
     title = dev.get_organization();
@@ -143,6 +158,8 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  */
 static bool onUI_Timer(int id){
 	switch (id) {
+	case 0:
+		updateUI_time();break;
 //	case 10:
 //		EASYUICONTEXT->goHome();
 //		isShowKeyboard = true;

@@ -93,7 +93,7 @@ static void reconncet()
 //		LOGO("连接服务器成功!\n");
 		LOGO("正在注册。。。");
 		string js;
-		js = jm.makeRegister(dev, StatusReqDev2Ser);
+		js = jm.makeRegister(dev, StatusSet);
 		gSocket->write_(js);
 
 		while(dev.confirmState == false )
@@ -113,7 +113,7 @@ static void reconncet()
 		}
 		else
 		{
-			LOGO("注册成功!!!\n");
+			LOGD("注册成功!!!\n");
 			gSocket->conncetState = true;
 		}
 

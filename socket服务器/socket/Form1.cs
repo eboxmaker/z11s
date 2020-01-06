@@ -254,25 +254,19 @@ namespace socket
                         break;
                     case JsonManager.CMDType.Register:
                          id = "";
-                        JsonManager.StatusConfirmType cStatus = JsonManager.GetJsonStatusConfirm(js,ref id);
+                        JsonManager.StatusType cStatus = JsonManager.GetJsonStatusConfirm(js,ref id);
 
-                        if (cStatus == JsonManager.StatusConfirmType.StatusReqDev2Ser)
+                        if (cStatus == JsonManager.StatusType.StatusSet)
                         {
-                            resault = JsonManager.MakeConfirm(id,JsonManager.StatusConfirmType.StatusParaSer2Dev);
+                            resault = JsonManager.MakeConfirm(id,JsonManager.StatusType.StatusOK);
                             server.Send(sender, resault);
                         }
-                        if(cStatus ==  JsonManager.StatusConfirmType.StatusAckDev2Ser)
-                        {
-                            resault = JsonManager.MakeConfirm(id,JsonManager.StatusConfirmType.StatusOKSer2Dev);
-                            server.Send(sender, resault);
-
-                            for (int i = 0; i < totalPersonNum; i++)
-                            {
-                                resault = JsonManager.MakePerson(person[i], JsonManager.StatusType.StatusSet);
-                                server.Send(sender, resault);
-                            }
-                        }
-
+   
+                        //for (int i = 0; i < totalPersonNum; i++)
+                        //{
+                        //    resault = JsonManager.MakePerson(person[i], JsonManager.StatusType.StatusSet);
+                        //    server.Send(sender, resault);
+                        //}
                         break;
                     case JsonManager.CMDType.SyncDateTime:
                         if (status == JsonManager.StatusType.StatusSet)
@@ -511,11 +505,14 @@ namespace socket
         private void btnLoadQR_Click(object sender, EventArgs e)
         {
             string str = JsonManager.PackageFileToJsonString("qr.jpg", (int)JsonManager.CMDType.QRCode);
+            server.SendAll(str);
+
             RichSend.Text = str;
         }
         private void btnLoadQR2_Click(object sender, EventArgs e)
         {
-            string str = JsonManager.PackageFileToJsonString("qr.jpg", (int)JsonManager.CMDType.QRCode);
+            string str = JsonManager.PackageFileToJsonString("qr1.jpg", (int)JsonManager.CMDType.QRCode);
+            server.SendAll(str);
             RichSend.Text = str;
         }
 
@@ -680,6 +677,9 @@ namespace socket
             string str = JsonManager.MakeCourseInfoString("touxiang.jpg");
             server.SendAll(str);
 
+            str = JsonManager.MakeCourseInfoString("touxiang1.jpg");
+            server.SendAll(str);
+
         }
 
         private void btnReadVersion_Click(object sender, EventArgs e)
@@ -699,16 +699,16 @@ namespace socket
             string str = JsonManager.MakeUpdate(tbDownLoadUrl.Text,Convert.ToInt32(tbDownLoadPort.Text),JsonManager.StatusType.StatusSet);
             server.SendAll(str);
 
-             FileStream fs = File.OpenRead("1.jpg");
-             if (fs != null)
-             {
-                 int len = (int)fs.Length;
-                 byte[] byteArray = new byte[len];
-                 int ReadedLength = fs.Read(byteArray, 0, len);
-                 server.SendAll(byteArray);
-                 tbSendDataLength.Text = len.ToString();
+             //FileStream fs = File.OpenRead("1.jpg");
+             //if (fs != null)
+             //{
+             //    int len = (int)fs.Length;
+             //    byte[] byteArray = new byte[len];
+             //    int ReadedLength = fs.Read(byteArray, 0, len);
+             //    server.SendAll(byteArray);
+             //    tbSendDataLength.Text = len.ToString();
 
-             }
+             //}
         }
 
         private void btnAdClear_Click(object sender, EventArgs e)

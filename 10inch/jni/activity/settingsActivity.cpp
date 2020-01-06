@@ -4,6 +4,8 @@
 #include "settingsActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextVersionDatePtr;
+static ZKTextView* mTextview11Ptr;
 static ZKButton* mBtnRebotPtr;
 static ZKButton* mBtnDevEnablePtr;
 static ZKTextView* mTextview15Ptr;
@@ -207,6 +209,8 @@ const char* settingsActivity::getAppName() const{
 //TAG:onCreate
 void settingsActivity::onCreate() {
 	Activity::onCreate();
+    mTextVersionDatePtr = (ZKTextView*)findControlByID(ID_SETTINGS_TextVersionDate);
+    mTextview11Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview11);
     mBtnRebotPtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnRebot);
     mBtnDevEnablePtr = (ZKButton*)findControlByID(ID_SETTINGS_BtnDevEnable);
     mTextview15Ptr = (ZKTextView*)findControlByID(ID_SETTINGS_Textview15);

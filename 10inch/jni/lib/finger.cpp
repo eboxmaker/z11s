@@ -787,7 +787,8 @@ void Finger::wait_busy()
 	while(busy == true){
 		Thread::sleep(10);
 		if(timeoutCounter++ > 50){
-			LOGD("超时！！！");
+			LOGD("指纹模块响应超时！！！");
+			fingerCallback(0XFF,0XFF,"",0);//超时触发回调函数，自定义0XFF
 			return ;
 		}
 	}

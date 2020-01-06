@@ -79,8 +79,6 @@ static void updateDisp()
     mEditOrgNamePtr->setText(org);
 	mEditDevNamePtr->setText(name);
 	mEditHeartbeatPtr->setText(interval);
-	mTextVersionPtr->setText(dev.version);
-	mTextIDPtr->setText(dev.id);
 
 }
 static void onDownloadEvent(string &msg)
@@ -193,6 +191,10 @@ static void onUI_show() {
     EASYUICONTEXT->showStatusBar();
     mWindLocalPwdPtr->hideWnd();
     mWindAdSetPtr->hideWnd();
+
+	mTextVersionPtr->setText(dev.version);
+	mTextIDPtr->setText(dev.id);
+	mTextVersionDatePtr->setText(VERSION_DATE);
     updateDisp();
 
 	if(dev.get_enable() == true)
@@ -262,7 +264,7 @@ static bool onUI_Timer(int id){
 	     char temp[30];
 	     memUsage = (1 - ((float)systemInfo.freeram/(float)systemInfo.totalram))*100;
 	     sprintf(temp,"%0.1f%%(%0.1fM/%0.1fM)",memUsage,\
-	    		 systemInfo.freeram/1024.0/1024.0,\
+	    		 (systemInfo.totalram - systemInfo.freeram)/1024.0/1024.0,\
 				 systemInfo.totalram/1024.0/1024.0);
 	     mSeekbarMemUsagePtr->setProgress(memUsage);
 	     mTextMemUsagePtr->setText(temp);

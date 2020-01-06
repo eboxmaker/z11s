@@ -69,7 +69,6 @@ static void onNetConnect()
 {
 	mBtnQRCodePtr->setBackgroundPic(QRCodeFullName.c_str());
 	mTvConnectStatePtr->setText("已连接");
-
 }
 void static onNetDisconnect()
 {
@@ -83,6 +82,10 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 	int finger_id;
 	switch(cmd)
 	{
+	case 0XFF:
+		mTextFingerOnlineStatePtr->setText("未连接");
+		LOGD("指纹触发器：未连接");
+		break;
 	case CMD_GET_SERIAL:
 		if(finger.is_online() == false)
 		{
@@ -140,7 +143,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 	//LOGE("%s",msg.c_str());
 	string temp ;
     string title;
-
+    LOGD("主页面触发器：cmd:%s,Status:%s",jsoncmd_to_str(cmd).c_str(), jsoncmdstatus_to_str(status).c_str());
 	switch(cmd)
 	{
 	case CMDDevName:
@@ -198,7 +201,7 @@ static void onNetWrokDataUpdate(JsonCmd_t cmd, JsonStatus_t status, string &msg)
 		if(status == StatusSet)
 		{
 			updateCourseInfo();
-			LOGE("更新课程表:%s",msg.c_str());
+			LOGE("更新课程信息:%s",msg.c_str());
 		}
 		break;
 	case CMDPlan://不需要执行
@@ -277,6 +280,8 @@ static void onUI_intent(const Intent *intentPtr) {
  */
 static void onUI_show() {
 //	LOGO("显示:key");
+    keyboardCallback = onNetWrokDataUpdate;
+
     finger.check_online_async();
 
     EASYUICONTEXT->hideStatusBar();
@@ -330,6 +335,8 @@ static void onUI_show() {
  * 当界面隐藏时触发
  */
 static void onUI_hide() {
+    keyboardCallback = NULL;
+
 	EASYUICONTEXT->hideStatusBar();
 	LOGO("隐藏:key");
 
@@ -449,7 +456,7 @@ static bool onUI_Timer(int id){
 		if(is_on_download_finger == false)
 		{
 			if(finger.get_busy() == false){
-				mTextFingerOnlineStatePtr->setText("未连接");
+//				mTextFingerOnlineStatePtr->setText("未连接");
 //				LOGD("检测在线状态");
 				finger.check_online_async();
 			}
@@ -821,8 +828,7 @@ static void updateCourseInfo()
 	mTextNumPtr->setText(gCourseInfo.num);
 	mTextCoursePtr->setText(gCourseInfo.course);
 	mBtnTecherPicturePtr->setBackgroundPic(picFullName.c_str());
-	if(gSocket->connected())
-		mBtnQRCodePtr->setBackgroundPic(QRCodeFullName.c_str());
+
 
 }
 static void onDownloadEvent(string &msg)

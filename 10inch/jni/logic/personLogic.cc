@@ -518,6 +518,7 @@ static bool onButtonClick_BtnQuaryPerson(ZKButton *pButton) {
     		LOGD("不需要删除");
     		gPerson.update_one_person(tPersonInfo);
     	}
+		mTextFingerStatePtr->setText("等待指令。。。");
     	clear_temp_person();
 
         mTextStatusNoticePtr->setText("正在查询。。。");
@@ -682,9 +683,9 @@ static void onEditTextChanged_EditPersonID(const std::string &text) {
 }
 
 
-static bool onButtonClick_BtnGetPersonResident(ZKButton *pButton) {
-    //LOGD(" ButtonClick BtnGetPersonResident !!!\n");
-	string js = jm.makePersonGetByLevel(0, 0, StatusGet);
-	gSocket->write_(js);
-    return false;
-}
+//static bool onButtonClick_BtnGetPersonResident(ZKButton *pButton) {
+//    //LOGD(" ButtonClick BtnGetPersonResident !!!\n");
+//	string js = jm.makePersonGetByLevel(0, 0, StatusGet);
+//	gSocket->write_(js);
+//    return false;
+//}

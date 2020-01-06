@@ -58,7 +58,41 @@ SocketClient::~SocketClient() {
 	disconnect();
 }
 
+void SocketClient::set_net_buff()
+{
+    socklen_t optlen;    /* 选项值长度 */
+    int err = -1;/* 返回值 */
+    int snd_size = 0;/* 发送缓冲区大小 */
+    int rcv_size = 0;/* 接收缓冲区大小 */
 
+	snd_size = 4*1024*1024; /* 发送缓冲区大小为8K */
+	optlen = sizeof(snd_size);
+	err = setsockopt(mClientSocket, SOL_SOCKET, SO_SNDBUF, &snd_size, optlen);
+	if(err<0){
+		LOGD("设置发送缓冲区大小错误\n");
+	}
+
+	rcv_size = 4*1024*1024; /* 接收缓冲区大小为8K */
+	 optlen = sizeof(rcv_size);
+	 err = setsockopt(mClientSocket,SOL_SOCKET,SO_RCVBUF, (char *)&rcv_size, optlen);
+	 if(err<0){
+		 LOGD("设置接收缓冲区大小错误\n");
+	 }
+	optlen = sizeof(snd_size);
+	err = getsockopt(mClientSocket, SOL_SOCKET, SO_SNDBUF,&snd_size, &optlen);
+	if(err<0){
+	LOGD("=================获取发送缓冲区大小错误\n==========");
+	}
+
+	optlen = sizeof(rcv_size);
+	err = getsockopt(mClientSocket, SOL_SOCKET, SO_RCVBUF, &rcv_size, &optlen);
+	if(err<0){
+	LOGD("获取接收缓冲区大小错误\n");
+	}
+	LOGD(" 发送缓冲区原始大小为: %d 字节\n",snd_size);
+	LOGD(" 接收缓冲区原始大小为: %d 字节\n",rcv_size);
+	LOGD("===========================");
+}
 
 bool SocketClient::connect(char *ip, uint16_t port) {
 
@@ -74,6 +108,27 @@ bool SocketClient::connect(char *ip, uint16_t port) {
 	// 创建用于internet的流协议(TCP)socket,用clientSocket代表客户机socket
 	mClientSocket = socket(AF_INET, SOCK_STREAM, 0);
 
+//    socklen_t optlen;    /* 选项值长度 */
+//    int err = -1;/* 返回值 */
+//    int s = -1;/* socket描述符 */
+//    int snd_size = 0;/* 发送缓冲区大小 */
+//    int rcv_size = 0;/* 接收缓冲区大小 */
+//
+//    optlen = sizeof(snd_size);
+//	err = getsockopt(mClientSocket, SOL_SOCKET, SO_SNDBUF,&snd_size, &optlen);
+//	if(err<0){
+//		LOGD("=================获取发送缓冲区大小错误\n==========");
+//	}
+//
+//	optlen = sizeof(rcv_size);
+//	err = getsockopt(s, SOL_SOCKET, SO_RCVBUF, &rcv_size, &optlen);
+//	if(err<0){
+//		LOGD("获取接收缓冲区大小错误\n");
+//	}
+//	LOGD(" 发送缓冲区原始大小为: %d 字节\n",snd_size);
+//	LOGD(" 接收缓冲区原始大小为: %d 字节\n",rcv_size);
+//	LOGD("===========================");
+	set_net_buff();
 	LOGE("Create Socket clientSocket: %d\n", mClientSocket);
 	if (mClientSocket < 0) {
 		LOGE("Create Socket Failed!\n");

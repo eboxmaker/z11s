@@ -131,8 +131,10 @@ int rm_file(std::string &file_name)
     }
     if(S_ISREG(st.st_mode))
     {
-        if(unlink(file_path.c_str()) == -1)
+//        if(unlink(file_path.c_str()) == -1)
+        if(remove(file_path.c_str()) == -1)
         {
+        	LOGD("删除文件错误：%s",file_path.c_str());
             return -1;
         }
     }
@@ -147,6 +149,8 @@ int rm_file(std::string &file_name)
             return -1;
         }
     }
+	LOGD("删除文件成：%s",file_path.c_str());
+
     return 0;
 }
 
@@ -165,13 +169,15 @@ bool creat_file(string &fullName,const char *data,size_t size)
 	}
 	else
 	{
-		LOGE("打开文件错误");
+		LOGE("打开文件错误:%s",fullName.c_str());
 		return false;
 	}
 	if (fclose(fp) != 0) {
 		LOGE("关闭文件错误");
 		return false;
 	}
+	LOGE("创建文件成功:%s",fullName.c_str());
+
 	return true;
 }
 unsigned long get_file_size(const char *path)

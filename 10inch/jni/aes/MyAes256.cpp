@@ -114,8 +114,8 @@ string  AesEncryptor::encrypt(uint8_t* key, uint8_t* in,uint32_t length)
 string  AesEncryptor::decrypt(string strMessage)
 {
     int nLength = strMessage.length() / 2;
-    unsigned char* pBuffer = new unsigned char[nLength];
-    memset(pBuffer, '\0', nLength);
+    unsigned char* pBuffer = new unsigned char[nLength+10];//防止缓冲区溢出
+    memset(pBuffer, '\0', nLength+10);
     //LOGE("需解密字符串(%d)：%s",strMessage.length(),strMessage.c_str());
     Hex2Byte(strMessage.c_str(), strMessage.length(), pBuffer);
 

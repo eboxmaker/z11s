@@ -23,6 +23,7 @@ public:
 	bool connect(char *ip, uint16_t port);
 	bool disconnect();
 	bool connected();
+	void set_net_buff();
 
 	void updateTriger();
 	void disableTrigger();

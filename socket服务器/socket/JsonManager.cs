@@ -79,14 +79,7 @@ namespace MyJson
         StatusOK,
         StatusErr
     }
-    public enum StatusConfirmType  //枚举类型，体会xml注释的样子
-    {
-        StatusReqDev2Ser = 0,
-        StatusParaSer2Dev,
-        StatusAckDev2Ser,
-        StatusOKSer2Dev,
-        StatusErr,
-    }
+
 
         //同
        // public JObject jo;
@@ -313,9 +306,9 @@ namespace MyJson
             obj.Add("class", "B12345");
             obj.Add("num", "40");
             obj.Add("course", "编译原理");
-            obj.Add("pic.name", FilePath);
-            obj.Add("pic.data", data);
-            obj.Add("pic.dataLength", data.Length);
+            obj.Add("picture_name", FilePath);
+            obj.Add("picture_data", data);
+            obj.Add("picture_dataLength", data.Length);
             obj.Add("status", (int)StatusType.StatusSet);
             string jstring = JsonConvert.SerializeObject(obj);
             string str = Package(jstring);
@@ -427,14 +420,14 @@ namespace MyJson
             }
             return status;
         }
-        public static StatusConfirmType GetJsonStatusConfirm(string jstr,ref string id)
+        public static StatusType GetJsonStatusConfirm(string jstr,ref string id)
         {
             JObject obj = new JObject();
-            StatusConfirmType status = StatusConfirmType.StatusErr;
+            StatusType status = StatusType.StatusErr;
             try
             {
                 obj = (JObject)JsonConvert.DeserializeObject(jstr);
-                status = (StatusConfirmType)Convert.ToInt16(obj["status"].ToString());
+                status = (StatusType)Convert.ToInt16(obj["status"].ToString());
                 id = obj["id"].ToString();
 
             }
@@ -663,28 +656,20 @@ namespace MyJson
             return str;
         }
 
-        public static string MakeConfirm(string id,StatusConfirmType status)
+        public static string MakeConfirm(string id,StatusType status)
         {
             string dateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
             JObject obj = new JObject();
             obj.Add("cmd", (int)CMDType.Register);
-            if(status == StatusConfirmType.StatusParaSer2Dev)
+            if (status == StatusType.StatusOK)
             {
                 obj.Add("organization", "北华航天工业学院");
                 obj.Add("name", "软三");
                 obj.Add("id", id);
                 obj.Add("heartbeatInterval", 5);
-                //obj.Add("dateTime", dateTime);
+                obj.Add("dateTime", dateTime);
 
-            }
-            if(status == StatusConfirmType.StatusOKSer2Dev)
-            {
-                obj.Add("organization", "北华航天工业学院");
-                obj.Add("name", "软三");
-                obj.Add("id", "3832001749591935784");
-                obj.Add("heartbeatInterval", 5);
-                //obj.Add("dateTime", dateTime);
             }
             obj.Add("status", (int)status);
             string jstring = JsonConvert.SerializeObject(obj);
@@ -791,9 +776,9 @@ namespace MyJson
             obj.Add("id",id);
             obj.Add("name", name);
             obj.Add("level", level);
-            obj.Add("pic.name", picname);
-            obj.Add("pic.data", data);
-            obj.Add("pic.dataLength", data.Length);
+            obj.Add("picture_name", picname);
+            obj.Add("picture_data", data);
+            obj.Add("picture_dataLength", data.Length);
 
             for (int i = 0; i < fingers.Length; i++)
             {
@@ -833,9 +818,9 @@ namespace MyJson
                 ja.Add(jo);
             }
             obj.Add("fingers", ja);
-            obj.Add("pic_name", ps.picture_name);
-            obj.Add("pic_data", data);
-            obj.Add("pic_dataLength", data.Length);    
+            obj.Add("picture_name", ps.picture_name);
+            obj.Add("picture_data", data);
+            obj.Add("picture_dataLength", data.Length);    
             obj.Add("status", (int)status);
 
             string jstring = JsonConvert.SerializeObject(obj);
@@ -901,9 +886,9 @@ namespace MyJson
             obj.Add("id", id);
             obj.Add("name", name);
             obj.Add("level", level);
-            obj.Add("pic.name", picname);
-            obj.Add("pic.data", data);
-            obj.Add("pic.dataLength", data.Length);
+            obj.Add("picture_name", picname);
+            obj.Add("picture_data", data);
+            obj.Add("picture_dataLength", data.Length);
 
             for (int i = 0; i < fingers.Length; i++)
             {
@@ -942,9 +927,9 @@ namespace MyJson
             }
             obj.Add("fingers", ja);
             obj.Add("status", (int)status);
-            obj.Add("pic_name", ps.picture_name);
-            obj.Add("pic_data", data);
-            obj.Add("pic_dataLength", data.Length);
+            obj.Add("picture_name", ps.picture_name);
+            obj.Add("picture_data", data);
+            obj.Add("picture_dataLength", data.Length);
 
             string jstring = JsonConvert.SerializeObject(obj);
 
@@ -965,9 +950,9 @@ namespace MyJson
             obj.Add("id", ps.id);
             obj.Add("name", ps.name);
             obj.Add("level", ps.level);
-            obj.Add("pic.name", ps.picture_name);
-            obj.Add("pic.data", data);
-            obj.Add("pic.dataLength", data.Length);
+            obj.Add("picture_name", ps.picture_name);
+            obj.Add("picture_data", data);
+            obj.Add("picture_dataLength", data.Length);
 
             for (int i = 0; i < ps.fingers.Length; i++)
             {

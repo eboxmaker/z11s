@@ -26,7 +26,6 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
-#define ID_PERSON_BtnGetPersonResident    20005
 #define ID_PERSON_BtnRollStep    20003
 #define ID_PERSON_BtnGetTotalFingerNum    20012
 #define ID_PERSON_TextFingerOnlineState    50020
