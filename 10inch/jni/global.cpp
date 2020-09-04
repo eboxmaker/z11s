@@ -411,7 +411,7 @@ void exeCMD(string &package)
 
 
 		case CMDCourseInfo:
-			LOGE("CMD:CMDCourseInfo");
+			LOGD("CMD:CMDCourseInfo");
 //			if(gCourseInfo.picture.name == "") gCourseInfo.picture.name = "picture.jpg";
 //			msg = PIC_DIR + gCourseInfo.picture.name;
 //			rm_file(msg);//删除老的头像文件
@@ -425,6 +425,7 @@ void exeCMD(string &package)
 				{
 					ack = jm.makeCourseInfo(gCourseInfo,StatusOK);
 					gSocket->write_(ack);
+					LOGD("CMD:CMDCourseInfo=%s",ack.c_str());
 				}
 			}
 			//LOGE("CMD:CMDCourseInfo:s=%d",status);

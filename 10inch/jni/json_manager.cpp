@@ -255,8 +255,15 @@ JsonStatus_t JsonCmdManager::parseHeartbeat(string &js, string &msg)
 
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  msg = root["value"].asString();
-		  status = (JsonStatus_t)root["status"].asInt();
+		  if(root.isMember("value")){
+			  if(root["value"].type() == Json::stringValue)
+				  msg = root["value"].asString();
+		  }
+		  if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+		  }
+
 	  }
 
 	  return status;
@@ -281,9 +288,14 @@ JsonStatus_t JsonCmdManager::parseSetHeartbeat(string &js, int &interval)
 
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-
-		  interval = root["heartbeatInterval"].asInt();
-		  status = (JsonStatus_t)root["status"].asInt();
+		  if(root.isMember("heartbeatInterval")){
+			  if(root["heartbeatInterval"].type() == Json::intValue)
+				  interval = root["heartbeatInterval"].asInt();
+		  }
+		  if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+		  }
 	  }
 
 	  return status;
@@ -310,7 +322,10 @@ JsonStatus_t JsonCmdManager::parseDevID(string &js)
 	  JsonStatus_t status = StatusErr;
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  status = (JsonStatus_t)root["status"].asInt();
+		  if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+		  }
 	  }
 
 	  return status;
@@ -335,10 +350,17 @@ JsonStatus_t JsonCmdManager::parseOrgName(string &js,string &org)
 	  JsonStatus_t status = StatusErr;
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  status = (JsonStatus_t)root["status"].asInt();
+		  if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+		  }
 		  if(status == StatusSet)
 		  {
-			  org = root["organization"].asString();
+			  if(root.isMember("organization")){
+				  if(root["organization"].type() == Json::stringValue)
+					 org = root["organization"].asString();
+			  }
+
 		  }
 	  }
 
@@ -364,7 +386,10 @@ JsonStatus_t JsonCmdManager::parseDevName(string &js,string &name)
 	  JsonStatus_t status = StatusErr;
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  status = (JsonStatus_t)root["status"].asInt();
+		  if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+		  }
 		  if(status == StatusSet)
 		  {
 			  name = root["name"].asString();
@@ -403,10 +428,12 @@ JsonStatus_t JsonCmdManager::parseRegister(string &js,DevicePara_t &para,string 
 	  JsonStatus_t status = StatusErr;
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  status = (JsonStatus_t)root["status"].asInt();
+		  if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+		  }
 		  if(status == StatusOK)
 		  {
-			  para.heartbeatInterval = root["heartbeatInterval"].asInt();
 			  para.organization = root["organization"].asString();
 			  para.name = root["name"].asString();
 			  para.id = root["id"].asString();
@@ -436,7 +463,10 @@ JsonStatus_t JsonCmdManager::parseSyncDateTime(string &js,string &msg)
 	  JsonStatus_t status = StatusErr;
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  status = (JsonStatus_t)root["status"].asInt();
+		  if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+		  }
 		  msg = root["dateTime"].asString();
 	  }
 
@@ -462,7 +492,10 @@ JsonStatus_t JsonCmdManager::parseLocalPwd(string &js,string &pwd)
 	  JsonStatus_t status = StatusErr;
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  status = (JsonStatus_t)root["status"].asInt();
+		  if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+		  }
 		  if(status == StatusSet)
 		  {
 			  pwd = root["password"].asString();
@@ -493,7 +526,10 @@ JsonStatus_t  JsonCmdManager::parseDoorPwd(string &js,string &pwd)
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
 
-		  status = (JsonStatus_t)root["status"].asInt();
+		  if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+		  }
 		  pwd =  root["password"].asString();
 	  }
 
@@ -526,7 +562,10 @@ JsonStatus_t JsonCmdManager::parseFingerKey(string &js)
 	  string str;
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  status = (JsonStatus_t)root["status"].asInt();
+		  if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+		  }
 	  }
 
 	  return status;
@@ -558,7 +597,10 @@ JsonStatus_t JsonCmdManager::parseDoorCtr(string &js,DoorLockState_t &door)
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
 
-		  status = (JsonStatus_t)root["status"].asInt();
+		  if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+		  }
 		  str = root["doorControl"].asString();
 
 		  if(str == "unlock")
@@ -602,14 +644,16 @@ JsonStatus_t JsonCmdManager::parseDoorState(string &js)
 
 	  JsonStatus_t status = StatusErr;
 	  string str;
-	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
-	  {
-
-		  status = (JsonStatus_t)root["status"].asInt();
+	  if (reader.parse(js, root)){  // reader将Json字符串解析到root，root将包含Json里所有子元素
+		  if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+		  }
 	  }
 
 	  return status;
 }
+
 string  JsonCmdManager::makeCourseInfo(CourseInfo_t &info,JsonStatus_t status)
 {
 	  Json::Value root;
@@ -624,16 +668,20 @@ string  JsonCmdManager::makeCourseInfo(CourseInfo_t &info,JsonStatus_t status)
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
+	  LOGD("CMD:CMDCourseInfo=%s",temp.c_str());
 	  return pack(temp);
 }
 JsonStatus_t  JsonCmdManager::parseCourseInfo(string &js,CourseInfo_t &info)
 {
-	  JsonStatus_t status = StatusErr;
+	JsonStatus_t status = StatusErr;
 	Json::Reader reader;
 	Json::Value root;
 	if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	{
-		status = (JsonStatus_t)root["status"].asInt();
+		if(root.isMember("status")){
+		  if(root["status"].type() == Json::intValue)
+			  status = (JsonStatus_t)root["status"].asInt();
+		}
 		if(status == StatusSet )
 		{
 			info.name = root["name"].asString();
@@ -688,7 +736,11 @@ JsonStatus_t JsonCmdManager::parsePlan(string &js, Plan &plan)
 	Json::Value root;
 	if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	{
-		status = (JsonStatus_t)root["status"].asInt();
+		if(root.isMember("status")){
+		  if(root["status"].type() == Json::intValue)
+			  status = (JsonStatus_t)root["status"].asInt();
+		}
+
 		Json::Value course = root["plan"];
 		int course_size =  root["plan"].size();
 		if(status == StatusOK || status == StatusSet)
@@ -733,7 +785,10 @@ JsonStatus_t JsonCmdManager::parseBroadcast(string &js,string &msg)
 
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  status = (JsonStatus_t)root["status"].asInt();
+			if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+			}
 		  msg = root["data"].asString();
 	  }
 
@@ -819,8 +874,11 @@ JsonStatus_t JsonCmdManager::parseAdAdd(string js,string &fileName){
 
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  fileName = root["name"].asString();
-		  return  (JsonStatus_t)root["status"].asInt();
+			if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+			}
+			return  (JsonStatus_t)root["status"].asInt();
 	  }
 	  return StatusErr;
 }
@@ -833,7 +891,12 @@ JsonStatus_t JsonCmdManager::parseAdRead(string js)
 
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  return  (JsonStatus_t)root["status"].asInt();
+			if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+			}
+
+		  return  status;
 	  }
 	  return StatusErr;
 }
@@ -845,7 +908,10 @@ JsonStatus_t JsonCmdManager::parseAdDelet(string js, string &fileName)
 	  JsonStatus_t status = StatusErr;
 
 	if (reader.parse(js, root)){  // reader将Json字符串解析到root，root将包含Json里所有子元素
-		status = (JsonStatus_t)root["status"].asInt();
+		if(root.isMember("status")){
+		  if(root["status"].type() == Json::intValue)
+			  status = (JsonStatus_t)root["status"].asInt();
+		}
 		if(status == StatusSet)	{
 			fileName = root["name"].asString();  // 访问节点，upload_id = "UP000000"
 		}
@@ -863,7 +929,10 @@ JsonStatus_t JsonCmdManager::parseAdClear(string &js){
 	  std::string val_str;
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  status = (JsonStatus_t)root["status"].asInt();
+			if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+			}
 	  }
 
 	  return status;
@@ -950,7 +1019,10 @@ JsonStatus_t JsonCmdManager::parseAdSet(string &js,Advertisement &set)
 	  std::string val_str;
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  status = (JsonStatus_t)root["status"].asInt();
+			if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+			}
 		  if(status == StatusOK)
 		  {
 		  }
@@ -996,7 +1068,10 @@ JsonStatus_t JsonCmdManager::parsePersonAdd(string &js,PersonTrans_t &person)
 	Json::Value root;
 	if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	{
-		status = (JsonStatus_t)root["status"].asInt();
+		if(root.isMember("status")){
+		  if(root["status"].type() == Json::intValue)
+			  status = (JsonStatus_t)root["status"].asInt();
+		}
 		if(status == StatusOK || status == StatusSet)
 		{
 			person.id = root["id"].asString();
@@ -1052,7 +1127,10 @@ JsonStatus_t JsonCmdManager::parsePersonDel(string &js)
 
 	if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	{
-		status = (JsonStatus_t)root["status"].asInt();
+		if(root.isMember("status")){
+		  if(root["status"].type() == Json::intValue)
+			  status = (JsonStatus_t)root["status"].asInt();
+		}
 		if(status == StatusOK || status == StatusSet)
 		{
 			Json::Value ids = root["ids"];
@@ -1088,7 +1166,10 @@ JsonStatus_t JsonCmdManager::parsePersonGetByLevel(string &js, int *level, int *
 	Json::Value root;
 	if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	{
-		status = (JsonStatus_t)root["status"].asInt();
+		if(root.isMember("status")){
+		  if(root["status"].type() == Json::intValue)
+			  status = (JsonStatus_t)root["status"].asInt();
+		}
 		if(status == StatusOK || status == StatusSet)
 		{
 			*num = root["num"].asInt();
@@ -1118,7 +1199,10 @@ JsonStatus_t JsonCmdManager::parseFingerGet(string &js,PersonTrans_t &person)
 	if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	{
 		LOGD("解析成功:FingerGet");
-		status = (JsonStatus_t)root["status"].asInt();
+		if(root.isMember("status")){
+		  if(root["status"].type() == Json::intValue)
+			  status = (JsonStatus_t)root["status"].asInt();
+		}
 		if(status == StatusOK || status == StatusSet)
 		{
 			person.id = root["id"].asString();
@@ -1230,7 +1314,10 @@ JsonStatus_t JsonCmdManager::parseFingerSet(string &js,int *fingers_size)
 	Json::Value root;
 	if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	{
-		status = (JsonStatus_t)root["status"].asInt();
+		if(root.isMember("status")){
+		  if(root["status"].type() == Json::intValue)
+			  status = (JsonStatus_t)root["status"].asInt();
+		}
 		*fingers_size =(long)root["fingersSize"].asInt();
 	}
 
@@ -1254,7 +1341,10 @@ JsonStatus_t JsonCmdManager::parseVersion(string &js)
 	  JsonStatus_t status = StatusErr;
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  status = (JsonStatus_t)root["status"].asInt();
+			if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+			}
 	  }
 
 	  return status;
@@ -1269,6 +1359,7 @@ string JsonCmdManager::makeUpdate(HttpInfo_t &info, JsonStatus_t status)
 	  root["status"] = Json::Value(status);
 	  Json::FastWriter fw;
 	  string temp =  fw.write(root);
+	  LOGD("更新系统：%s",temp.c_str());
 	  return pack(temp);
 }
 JsonStatus_t JsonCmdManager::parseUpdate(string &js,HttpInfo_t &info)
@@ -1279,7 +1370,10 @@ JsonStatus_t JsonCmdManager::parseUpdate(string &js,HttpInfo_t &info)
 	  JsonStatus_t status = StatusErr;
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  status = (JsonStatus_t)root["status"].asInt();
+			if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+			}
 		  if(status == StatusSet || status == StatusOK)
 		  {
 			  info.url = root["url"].asString();
@@ -1307,7 +1401,10 @@ JsonStatus_t JsonCmdManager::parseReboot(string &js)
 	  JsonStatus_t status = StatusErr;
 	  if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	  {
-		  status = (JsonStatus_t)root["status"].asInt();
+			if(root.isMember("status")){
+			  if(root["status"].type() == Json::intValue)
+				  status = (JsonStatus_t)root["status"].asInt();
+			}
 	  }
 
 	  return status;
@@ -1336,32 +1433,6 @@ string JsonCmdManager::getID()
 
 
 
-int ParseJsonFromString()
-
-{
-
-  const char* str = "{\"uploadid\": \"UP000000\",\"code\": 100,\"msg\": \"\",\"files\": \"\"}";
-
-
-
-  Json::Reader reader;
-
-  Json::Value root;
-  std::string upload_id;
-
-  if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
-
-  {
-
-     upload_id = root["uploadid"].asString();  // 访问节点，upload_id = "UP000000"
-
-    int code = root["code"].asInt();    // 访问节点，code = 100
-
-  }
-
-  return 0;
-
-}
 /*
 //定义文件指针
 FILE *openfile(uint32_t *len)

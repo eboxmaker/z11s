@@ -803,8 +803,6 @@ static void updateDoorState()
 		mTextDoorStatePtr->setText("关");
 
 	}
-
-
 }
 static void updateUI_time() {
 	char timeStr[20];
@@ -828,8 +826,6 @@ static void updateCourseInfo()
 	mTextNumPtr->setText(gCourseInfo.num);
 	mTextCoursePtr->setText(gCourseInfo.course);
 	mBtnTecherPicturePtr->setBackgroundPic(picFullName.c_str());
-
-
 }
 static void onDownloadEvent(string &msg)
 {

@@ -65,14 +65,14 @@ void SocketClient::set_net_buff()
     int snd_size = 0;/* 发送缓冲区大小 */
     int rcv_size = 0;/* 接收缓冲区大小 */
 
-	snd_size = 4*1024*1024; /* 发送缓冲区大小为8K */
+	snd_size = 64*1024; /* 发送缓冲区大小为8K */
 	optlen = sizeof(snd_size);
 	err = setsockopt(mClientSocket, SOL_SOCKET, SO_SNDBUF, &snd_size, optlen);
 	if(err<0){
 		LOGD("设置发送缓冲区大小错误\n");
 	}
 
-	rcv_size = 4*1024*1024; /* 接收缓冲区大小为8K */
+	rcv_size = 64*1024; /* 接收缓冲区大小为8K */
 	 optlen = sizeof(rcv_size);
 	 err = setsockopt(mClientSocket,SOL_SOCKET,SO_RCVBUF, (char *)&rcv_size, optlen);
 	 if(err<0){

@@ -79,8 +79,8 @@ static void updateDisp()
     mEditOrgNamePtr->setText(org);
 	mEditDevNamePtr->setText(name);
 	mEditHeartbeatPtr->setText(interval);
-
 }
+
 static void onDownloadEvent(string &msg)
 {
 	mWindStatusNoticePtr->showWnd();

@@ -183,6 +183,8 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 			LOGE("第1步完成");
 			mTextFingerStatePtr->setText("第1次录入成功");
 			mBtnRollStepPtr->setText("请继续点击");
+			finger.roll_step2_async(fingerNum);
+			LOGE("正在 第%d步",fingerInputState);
 		}
 		else
 		{
@@ -203,6 +205,8 @@ static void onFingerOver(unsigned char cmd,int cmdState,unsigned char *data, uns
 			LOGE("第2步完成");
 			mTextFingerStatePtr->setText("第2次录入成功");
 			mBtnRollStepPtr->setText("请继续点击");
+			finger.roll_step3_async(fingerNum);
+			LOGE("正在 第%d步",fingerInputState);
 		}
 		else
 		{
@@ -568,38 +572,18 @@ static bool onButtonClick_BtnRollStep(ZKButton *pButton) {
 
 
 	mTextFingerStatePtr->setText("请放手指。。。");
-		LOGE("--正在 第%d步",fingerInputState);
-	switch(fingerInputState)
-	{
-		case 0:
-		    if(finger.get_free(1, 150, &fingerNum) == true){
+	LOGD("--正在 第%d步",fingerInputState);
 
-				LOGE("找到空闲指纹ID：%d",fingerNum);
-				LOGE("正在 第%d步",fingerInputState);
-				 finger.roll_step1_async(fingerNum);
-		    }
-		    else{
-		    	fingerInputState = 0;
-		    }
+	if(finger.get_free(1, 150, &fingerNum) == true){
 
-			break;
-		case 1:
-//		case 2:
-//		case 3:
-//		case 4:
-
-			 finger.roll_step2_async(fingerNum);
-			LOGE("正在 第%d步",fingerInputState);
-			Thread::sleep(100);
-			break;
-		default:
-
-				finger.roll_step3_async(fingerNum);
-				LOGE("正在 第%d步",fingerInputState);
-				Thread::sleep(100);
-
-			break;
+		LOGD("找到空闲指纹ID：%d",fingerNum);
+		LOGD("正在 第%d步",fingerInputState);
+		finger.roll_step1_async(fingerNum);
 	}
+	else{
+		fingerInputState = 0;
+	}
+
 
 
     return false;

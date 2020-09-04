@@ -45,6 +45,25 @@ using namespace std;
 #define ACK_USER_EXIST 		0x07 	//用户已存在
 #define ACK_TIMEOUT  		0x08	//采集超时
 #define ACK_SUSPEND  		0xFF	//
+
+#define UART_MESSAGE_NUM_MAX  64   //消息最大数量64个
+
+typedef struct {
+	int 		err;      //错误信息
+	uint8_t   	cmd;   //modbus命令
+	uint8_t   	p[3];   //
+	uint8_t		data[128]; //modbus数据指针
+} FingerProtocolData;
+
+typedef struct
+{
+	FingerProtocolData uartMessage[UART_MESSAGE_NUM_MAX];
+	int front; //队头
+	int rear;  //队尾
+}FingerMessageSequeue;
+
+void build_request_basis(uint8_t cmd,uint8_t *req);
+
 typedef enum
 {
 	HEAD,
