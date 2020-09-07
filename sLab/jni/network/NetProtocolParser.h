@@ -19,6 +19,5 @@ void notifyNetProtocolDataUpdate(const NetProtocolData &data) ;
 
 
 bool parseNetProtocol(char *data,NetProtocolData &msg) ;
-int notifyProtocolDataTimeout(NetProtocolDataList &data);
 
 #endif /* JNI_NETWORK_NETPROTOCOLPARSER_H_ */

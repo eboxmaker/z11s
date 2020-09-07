@@ -9,10 +9,9 @@
 #define JNI_NETWORK_NETPROTOCOLSENDER_H_
 #include "netProtocolData.h"
 
-
-bool deletDataFromList(NetProtocolData &data);
-int getNetProtocolDataTimeout(NetProtocolDataList *timeout_list);
+void tx_loop();
 int writeProtocol(NetProtocolData data);
+bool deletDataFromList(NetProtocolData &data);
 
 
 #endif /* JNI_NETWORK_NETPROTOCOLSENDER_H_ */

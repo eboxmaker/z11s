@@ -49,15 +49,14 @@ private:
 	NetContext();
 
 private:
-	char buf[1024*500];
-	size_t cnt ;
+	char buf[1024*1000];
+	uint32_t cnt ;
 	int protocol_state;
 	bool connected_;
 
 	time_t last_live_time;
 	time_t last_conn_time;
 	NetProtocolData   		msg;
-	NetProtocolDataList   timeoutMsgList;
 
 
 

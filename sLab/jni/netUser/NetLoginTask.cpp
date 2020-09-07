@@ -103,21 +103,6 @@ bool NetUserApp::threadLoop()
 			login_state = false;
 			last_login_time = time(NULL);
 		}
-//		else
-//		{
-//
-//
-//			if(time(NULL) - last >= 60)
-//			{
-//				last = time(NULL);
-////				tmp = makeDevInfo(dev.info,StatusSet);//(StatusOK,info);
-////				writeProtocol(tmp);//(tmp);
-//			}
-//
-//
-//		}
-
-
 
 		if (exitPending()) {
 			return false;

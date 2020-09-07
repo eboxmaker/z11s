@@ -31,6 +31,7 @@ namespace socket
         static int person_num;
         static TcpClient person_sender;
         static int totalPersonNum = 10;
+        string id = "";
 
         string[] fingers = {
                     "DQgSYgEKpV9hDBzMIRyPn2Evj51BOx0DgQ8gYAInhB+CKx+YojQeWYI+nxjCQJaEYg0QjCEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABXGg==",
@@ -168,6 +169,8 @@ namespace socket
         }
         public void DelegateRecvData(TcpClient sender, byte[] datagram)
         {
+            
+
             if (ListBoxConnections.InvokeRequired)
             {
                 this.Invoke(server.DelegateReceived, new object[] { sender, datagram });
@@ -175,7 +178,6 @@ namespace socket
             else
             {
 
-                string id;
                 string resault;
                 string enjs = Encoding.UTF8.GetString(datagram);
 
@@ -189,7 +191,7 @@ namespace socket
                 {
                     case "Heartbeat":
                         JsonManager.ParseCMDHeartbeat(js);
-                         resault = JsonManager.MakeCMDHeartbeat("OK");
+                         resault = JsonManager.MakeCMDHeartbeat(id,"OK");
                          server.Send(sender,resault);
                         // server.SendAll(resault);
                         break;
@@ -257,7 +259,6 @@ namespace socket
 
                         break;
                     case "Login":
-                         id = "";
                         string cStatus = JsonManager.GetJsonStatusConfirm(js,ref id);
 
                         if (cStatus == "Set")

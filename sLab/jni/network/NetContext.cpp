@@ -206,13 +206,11 @@ bool NetContext::threadLoop() {
 		if(ret){
 			//LOGD("处理完一条消息");
 		}
-		timeout_cnt = getNetProtocolDataTimeout(&timeoutMsgList);
-		if(timeout_cnt > 0)
-		{
-			notifyProtocolDataTimeout(timeoutMsgList);
-		}
 
-		if(time(NULL) - last_live_time > 30)
+		tx_loop();
+
+
+		if(time(NULL) - last_live_time > 16)
 		{
 			connected_ = false;
 		}
@@ -227,7 +225,7 @@ bool NetContext::threadLoop() {
 		}
 
 
-		Thread::sleep(10);
+		Thread::sleep(100);
 		if (exitPending()) {
 			return false;
 		}

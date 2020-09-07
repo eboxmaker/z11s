@@ -56,45 +56,19 @@ static bool jsonPreDeal(std::string &js,NetProtocolData &msg)
 
 #if AESMD5_ENABLE
 
-//	LOGD("执行AES解密");
+	LOGD("===========开始AES解密===========");
 	bool ret;
-
 	ret = unPack(js, msg.data);
 	LOGD("AES解析结果：%s",msg.data.c_str());
 	if(ret){
 		if (reader.parse(msg.data, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 		{
-			  if(root.isMember("cmd"))
-			  {
-				  if(root["cmd"].type() == Json::stringValue)
-				  {
-					  msg.cmd = root["cmd"].asString();
-				  }
-				  else
-				  {
-					  LOGE(" cmd 类型错误");
-				  }
-			  }
-			  else{
-				  LOGE("不存在CMD");
-				  return false;
-			  }
-
-			  if(root.isMember("status"))
-			  {
-				  if(root["status"].type() == Json::stringValue)
-				  {
-					  msg.status = root["status"].asString();
-				  }
-				  else
-				  {
-					  LOGE(" status 类型错误");
-				  }
-			  }
-			  else{
-				  LOGE("不存在 status");
-				  return false;
-			  }
+			if(!root.isMember("cmd")){LOGE("不存在：cmd");return false;}
+			if(!root["cmd"].type() == Json::stringValue){LOGE("cmd:类型错误");return false;}
+			if(!root.isMember("status")){LOGE("不存在：status");return false;}
+			if(!root["status"].type() == Json::stringValue){LOGE("status:类型错误");return false;}
+		    msg.cmd = root["cmd"].asString();
+		    msg.status = root["status"].asString();
 			msg.err = 0;
 			return true;
 		}
@@ -107,6 +81,7 @@ static bool jsonPreDeal(std::string &js,NetProtocolData &msg)
 	}
 	else
 	{
+		LOGE("AES解密结束：失败！！！");
 		msg.cmd = Cmd::Unknown;
 		msg.err = -1;
 		msg.data = "";
@@ -143,27 +118,14 @@ bool parseNetProtocol(char *data,NetProtocolData &msg)
 	std::string str = data;
 	//MD5  AES解析
 	//解析命令和status
-	LOGD("网络接收完成一帧数据");
 	ret = jsonPreDeal(str,msg);
-//	LOGD("msg.data:%s",msg.data.c_str());
 	if(ret){
-		LOGD("cmd=%s status=%s err=%d",msg.cmd.c_str(),msg.status.c_str(),msg.err);
+		LOGD("%s,%s,err=%d",msg.cmd.c_str(),msg.status.c_str(),msg.err);
 		notifyNetProtocolDataUpdate(msg);
 	}else{
-		LOGE("cmd=%s status=%s err=%d",msg.cmd.c_str(),msg.status.c_str(),msg.err);
+		LOGE("%s,%s, err=%d",msg.cmd.c_str(),msg.status.c_str(),msg.err);
 	}
     return ret;
 }
-int notifyProtocolDataTimeout(NetProtocolDataList &msg) {
-	int cnt = 0;
-	for (NetProtocolData *iter  = msg.begin(); iter != msg.end(); ) {
-		notifyNetProtocolDataUpdate(*iter);
 
-//		LOGD("删除：%d:cmd:%d,err = %d,status = %d,time = %d\n(%s)",\
-//				cnt,(*iter).cmd, (*iter).err, (*iter).status,iter->time,iter->data.c_str());
-		cnt++;
-		iter++;
-	}
-    return cnt;
-}
 

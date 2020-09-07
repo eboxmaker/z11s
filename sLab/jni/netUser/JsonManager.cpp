@@ -134,14 +134,38 @@ NetProtocolData makeHeartbeat(string status)
 	return msg;
 }
 
+string parseHeartbeat(const NetProtocolData &data,string &id)
+{
+	Json::Reader reader;
+	Json::Value root;
+
+	string status = Status::Err;
+
+	if (!reader.parse(data.data, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
+	{
+		LOGE("解析JSON msg 错误");
+		return Status::Err;
+	}
+	if(!root.isMember("cmd")){LOGE("不存在：cmd");return status;}
+	if(!root["cmd"].type() == Json::stringValue){LOGE("cmd:类型错误");return status;}
+	if(!root.isMember("status")){LOGE("不存在：status");return status;}
+	if(!root["status"].type() == Json::stringValue){LOGE("status:类型错误");return status;}
+	if(!root.isMember("id")){LOGE("不存在：id");return status;}
+	if(!root["id"].type() == Json::stringValue){LOGE("id:类型错误");return status;}
+	if(!root.isMember("value")){LOGE("不存在：value");return status;}
+	if(!root["value"].type() == Json::stringValue){LOGE("value:类型错误");return status;}
+
+	id = root["id"].asString();
+	status = root["status"].asString();
+	return status;
+}
+
 NetProtocolData makeLogin(string status)
 {
 	//{"cmd":2,"value":"hello world","status":2}
 	NetProtocolData msg;
 
 	Json::Value root;
-
-
 
 
 	root["cmd"] = Json::Value(Cmd::Login);
@@ -451,7 +475,7 @@ NetProtocolData makeDoorState(string status,DoorState_t door)
 }
 
 
-NetProtocolData	makeCourseInfo(string status,CourseInfo_t info)
+NetProtocolData	makeCourseInfo(string status,CourseInfo_t info,int retrytimes = 0)
 {
 	NetProtocolData msg;
 	Json::Value root;
@@ -477,14 +501,14 @@ NetProtocolData	makeCourseInfo(string status,CourseInfo_t info)
 	msg.data =  sw.write(root);
 	msg.cmd = Cmd::CourseInfo;
 	msg.status = status;
-	msg.retryTimes = 3;
+	msg.retryTimes = retrytimes;
 
 
-	LOGD("COURSER INFO:%s",msg.data.c_str());
+//	LOGD("COURSER INFO:%s",msg.data.c_str());
 	return msg;
 
 }
-string	parseCourseInfo(const NetProtocolData &data, CourseInfo_t &info)
+string	parseCourseInfo(const NetProtocolData data, CourseInfo_t &info)
 {
 	string status = Status::Err;
 	Json::Reader reader;
@@ -677,7 +701,7 @@ string 	parseBroadcast(const NetProtocolData &data,string &broadcast_msg)
 
 	return status;
 }
-NetProtocolData	makeQRCode(string status)
+NetProtocolData	makeQRCode(string status,int retrytimes = 0)
 {
 	NetProtocolData msg;
 	Json::Value root;
@@ -687,10 +711,10 @@ NetProtocolData	makeQRCode(string status)
 	msg.data =  sw.write(root);
 	msg.cmd = Cmd::QRCode;
 	msg.status = status;
-	msg.retryTimes = 3;
+	msg.retryTimes = retrytimes;
 	return msg;
 }
-string	parseQRCode(const NetProtocolData &data, Picture_t &pic)
+string	parseQRCode(const NetProtocolData data, Picture_t &pic)
 {
 	string status = Status::Err;
 	Json::Reader reader;
@@ -704,8 +728,6 @@ string	parseQRCode(const NetProtocolData &data, Picture_t &pic)
 	if(!root["cmd"].type() == Json::stringValue){LOGE("cmd:类型错误");return status;}
 	if(!root.isMember("status")){LOGE("不存在：status");return status;}
 	if(!root["status"].type() == Json::stringValue){LOGE("status:类型错误");return status;}
-	if(!root.isMember("name")){LOGE("不存在：name");return status;}
-	if(!root["name"].type() == Json::stringValue){LOGE("name:类型错误");return status;}
 	if(!root.isMember("name")){LOGE("不存在：name");return status;}
 	if(!root["name"].type() == Json::stringValue){LOGE("name:类型错误");return status;}
 	if(!root.isMember("data")){LOGE("不存在：data");return status;}
@@ -833,7 +855,7 @@ string  parseDoorPwd(const NetProtocolData &data,string &pwd)
 }
 
 
-NetProtocolData makePersonList(string status)
+NetProtocolData makePersonList(string status,int retrytimes)
 {
 	NetProtocolData msg;
 
@@ -845,12 +867,12 @@ NetProtocolData makePersonList(string status)
 //	msg.data =  sw.write(root);
 	msg.cmd = Cmd::PersonList;
 	msg.status = status;
-	msg.retryTimes = 3;
+	msg.retryTimes = retrytimes;
 
 	return msg;
 }
 
-string parsePersonList(const NetProtocolData &data,PersonInfoList_t &personList)
+string parsePersonList(const NetProtocolData data,PersonInfoList_t &personList)
 {
 	string status = Status::Err;
 	PersonInfo_t person;
@@ -867,7 +889,7 @@ string parsePersonList(const NetProtocolData &data,PersonInfoList_t &personList)
 	if(!root.isMember("status")){LOGE("不存在：status");return status;}
 	if(!root["status"].type() == Json::stringValue){LOGE("status:类型错误");return status;}
 	if(!root.isMember("persons")){LOGE("不存在：persons");return status;}
-	if(!root["persons"].type() == Json::arrayValue){LOGE("persons:类型错误");return status;}
+	if(!root["persons"].isArray() == false){LOGE("persons:类型错误");return status;}
 
 	LOGD("解析成功:Person");
 	status = (string)root["status"].asString();
@@ -879,9 +901,8 @@ string parsePersonList(const NetProtocolData &data,PersonInfoList_t &personList)
 	personList.clear();
 	LOGD("personList清空");
 	Json::Value persons = root["persons"];
-	int persons_size =  root["persons"].size();
-	LOGD("====人员数量：%d====",persons_size);
-	for(int i = 0; i < persons_size; i++)
+	LOGD("====人员数量：%d====",persons.size());
+	for(Json::ArrayIndex i = 0; i < persons.size(); i++)
 	{
 		if(!persons[i].isMember("name")){LOGE("不存在：name");return status;}
 		if(!persons[i]["name"].type() == Json::stringValue){LOGE("name:类型错误");return status;}
@@ -889,6 +910,8 @@ string parsePersonList(const NetProtocolData &data,PersonInfoList_t &personList)
 		if(!persons[i]["id"].type() == Json::stringValue){LOGE("id:类型错误");return status;}
 		if(!persons[i].isMember("level")){LOGE("不存在：level");return status;}
 		if(!persons[i]["level"].type() == Json::stringValue){LOGE("level:类型错误");return status;}
+		if(!persons[i].isMember("lockControl")){LOGE("不存在：lockControl");return status;}
+		if(!persons[i]["lockControl"].type() == Json::stringValue){LOGE("lockControl:类型错误");return status;}
 
 		person.name = persons[i]["name"].asString();
 		person.id = persons[i]["id"].asString();
@@ -900,10 +923,9 @@ string parsePersonList(const NetProtocolData &data,PersonInfoList_t &personList)
 		if(!persons[i]["fingers"].type() == Json::arrayValue){LOGE("fingers:类型错误");continue;}
 
 		Json::Value fingers = persons[i]["fingers"];
-		int fingers_size =  persons[i]["fingers"].size();
-		LOGD("===%s的指纹数量：%d===",person.name.c_str(),fingers_size);
+		LOGD("===%s的指纹数量：%d===",person.name.c_str(),fingers.size());
 		string temp;
-		for(int j = 0; j < fingers_size; j++)
+		for(Json::ArrayIndex j = 0; j < fingers.size(); j++)
 		{
 			if(!fingers[j].isMember("finger")){LOGE("不存在：finger");continue;}
 			if(!fingers[j]["finger"].type() == Json::stringValue){LOGE("finger:类型错误");continue;}
@@ -965,13 +987,16 @@ string parsePersonGet(const NetProtocolData &data,PersonInfo_t &person)
 		if(!root.isMember("name")){LOGE("不存在：name");return status;}
 		if(!root.isMember("id")){LOGE("不存在：id");return status;}
 		if(!root.isMember("level")){LOGE("不存在：level");return status;}
+		if(!root.isMember("lockControl")){LOGE("不存在：lockControl");return status;}
 		if(!root["name"].type() == Json::stringValue){LOGE("name:类型错误");return status;}
 		if(!root["id"].type() == Json::stringValue){LOGE("id:类型错误");return status;}
 		if(!root["level"].type() == Json::stringValue){LOGE("level:类型错误");return status;}
+		if(!root["lockControl"].type() == Json::stringValue){LOGE("lockControl:类型错误");return status;}
 
 		person.name = root["name"].asString();
 		person.id =root["id"].asString();
-		person.level = root["level"].asInt();
+		person.level = root["level"].asString();
+		person.lockCtr = root["lockControl"].asString();
 		if(root.isMember("fingers"))
 		{
 			Json::Value fingers = root["fingers"];

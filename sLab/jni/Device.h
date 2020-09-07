@@ -63,7 +63,7 @@ public:
 	    para.volume =  StoragePreferences::getInt("volume", 5);
 
 	}
-	string& get_id(){
+	string get_id(){
 		return id;
 	}
 

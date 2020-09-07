@@ -457,10 +457,11 @@ namespace MyJson
             string pwd = jo["interval"].ToString();
             return pwd;
         }
-        public static string MakeCMDHeartbeat(string status)
+        public static string MakeCMDHeartbeat(string id,string status)
         {
             JObject obj = new JObject();
             obj.Add("cmd","Heartbeat");
+            obj.Add("id", id);
             obj.Add("value", "hello");
             obj.Add("status", status);
             string jstring = JsonConvert.SerializeObject(obj);

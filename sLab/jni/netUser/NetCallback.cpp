@@ -205,13 +205,14 @@ void onNetDataToExeUpdate(const NetProtocolData &data)
 	}
 	else if(data.cmd == Cmd::PersonList)
 	{
-		parsePersonList(data, gPersonList);
-		if(data.status == Status::Set)
-		{
-			gPerson.update(gPersonList);
-		}
+//		parsePersonList(data, gPersonList);
+//		if(data.status == Status::Set)
+//		{
+//			//gPerson.update(gPersonList);
+//		}
 		tmp = makePersonList(Status::OK);
 		netUser.write(tmp);
+		LOGD("personList 已经回复");
 	}
 	else if(data.cmd == Cmd::Unknown)
 	{
@@ -230,6 +231,8 @@ void onNetDataServerAck(const NetProtocolData &data)
 		return ;
 	}
 	NetProtocolData tmp;
+	NetProtocolData tmp1;
+	NetProtocolData tmp2;
 	LOGD("触发网络回调函数：服务器的响应cmd:%s,err:%d",data.cmd.c_str(),data.err);
 //	LOGD("接收到的回复：\ncmd:%s\n err:%d,\n stuts:%s,\ndata:%s",data.cmd.c_str(),data.err,data.status.c_str(),data.data.c_str());
 	if(data.cmd == Cmd::Login)
@@ -242,13 +245,12 @@ void onNetDataServerAck(const NetProtocolData &data)
 			dev.set_organization(dev.para.org);
 			dev.set_department(dev.para.department);
 
-			tmp = makeCourseInfo(Status::Get, gCourseInfo);
+			tmp = makeCourseInfo(Status::Get, gCourseInfo,3);
 			netUser.write(tmp);
-			tmp = makeQRCode(Status::Get);
+			tmp = makePersonList(Status::Get,3);
 			netUser.write(tmp);
-			tmp = makePersonList(Status::Get);
+			tmp = makeQRCode(Status::Get,3);
 			netUser.write(tmp);
-
 		}
 	}
 	else if(data.cmd == Cmd::Update)
@@ -301,6 +303,19 @@ void onNetDataServerAck(const NetProtocolData &data)
 		if(data.status == Status::OK)
 		{
 
+		}
+	}
+	else if(data.cmd == Cmd::Heartbeat)
+	{
+		string id;
+		NetProtocolData msg;
+
+		parseHeartbeat(data,id);
+		if((id != dev.get_id()) && (netUser.login_state_get() == true))
+		{
+			LOGE("登录状态不匹配，重新登录,id=%s",id.c_str());
+			msg = makeLogin(Status::Set);
+			netUser.write(msg);
 		}
 	}
 	else
