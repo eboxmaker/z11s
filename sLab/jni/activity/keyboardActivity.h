@@ -26,6 +26,12 @@
 #include "window/ZKSlideWindow.h"
 
 /*TAG:Macro宏ID*/
+#define ID_KEYBOARD_BtnConfirm    20030
+#define ID_KEYBOARD_BtnCancel    20029
+#define ID_KEYBOARD_TextView1    50020
+#define ID_KEYBOARD_BtnOpenCancel    20019
+#define ID_KEYBOARD_BtnOpenYes    20025
+#define ID_KEYBOARD_WindOpenLock    110007
 #define ID_KEYBOARD_TextMsg    50027
 #define ID_KEYBOARD_TextMsgTitle    50026
 #define ID_KEYBOARD_WindNotify    110005
@@ -34,12 +40,7 @@
 #define ID_KEYBOARD_BtnLock    20026
 #define ID_KEYBOARD_Textview1    50040
 #define ID_KEYBOARD_WindDoorControl    110006
-#define ID_KEYBOARD_TextStatusNotice2    50035
-#define ID_KEYBOARD_TextStatusNotice    50005
-#define ID_KEYBOARD_WindStatusNotice    110003
-#define ID_KEYBOARD_BtnCancel    20016
 #define ID_KEYBOARD_Textview2    50002
-#define ID_KEYBOARD_BtnConfirm    20015
 #define ID_KEYBOARD_EditTextAdminPassword    51002
 #define ID_KEYBOARD_WinPwdAdmin    110001
 #define ID_KEYBOARD_TextFingerOnlineState    50019

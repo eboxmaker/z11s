@@ -42,9 +42,9 @@ string parseDateTime(const NetProtocolData &data);
 
 
 
-NetProtocolData makeDoorCtr(string status,DoorLockState_t door);
-string 	parseDoorCtr(const NetProtocolData &data,DoorLockState_t &door);
-NetProtocolData makeDoorState(string status,DoorState_t door);
+NetProtocolData makeDoorCtr(string status,LockState_t door);
+string 	parseDoorCtr(const NetProtocolData &data,LockState_t &door);
+NetProtocolData makeDoorState(string status,DoorLockState_t door);
 
 
 NetProtocolData	makeCourseInfo(string status,CourseInfo_t info,int retrytimes = 0);

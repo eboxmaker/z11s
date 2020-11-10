@@ -4,6 +4,10 @@
 #include "keyboardActivity.h"
 
 /*TAG:GlobalVariable全局变量*/
+static ZKTextView* mTextView1Ptr;
+static ZKButton* mBtnOpenCancelPtr;
+static ZKButton* mBtnOpenYesPtr;
+static ZKWindow* mWindOpenLockPtr;
 static ZKTextView* mTextMsgPtr;
 static ZKTextView* mTextMsgTitlePtr;
 static ZKWindow* mWindNotifyPtr;
@@ -12,9 +16,6 @@ static ZKButton* mBtnUnLockPtr;
 static ZKButton* mBtnLockPtr;
 static ZKTextView* mTextview1Ptr;
 static ZKWindow* mWindDoorControlPtr;
-static ZKTextView* mTextStatusNotice2Ptr;
-static ZKTextView* mTextStatusNoticePtr;
-static ZKWindow* mWindStatusNoticePtr;
 static ZKButton* mBtnCancelPtr;
 static ZKTextView* mTextview2Ptr;
 static ZKButton* mBtnConfirmPtr;
@@ -102,6 +103,8 @@ typedef struct {
 
 /*TAG:ButtonCallbackTab按键映射表*/
 static S_ButtonCallback sButtonCallbackTab[] = {
+    ID_KEYBOARD_BtnOpenCancel, onButtonClick_BtnOpenCancel,
+    ID_KEYBOARD_BtnOpenYes, onButtonClick_BtnOpenYes,
     ID_KEYBOARD_BtnUnLock, onButtonClick_BtnUnLock,
     ID_KEYBOARD_BtnLock, onButtonClick_BtnLock,
     ID_KEYBOARD_BtnCancel, onButtonClick_BtnCancel,
@@ -209,6 +212,10 @@ const char* keyboardActivity::getAppName() const{
 //TAG:onCreate
 void keyboardActivity::onCreate() {
 	Activity::onCreate();
+    mTextView1Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextView1);
+    mBtnOpenCancelPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnOpenCancel);
+    mBtnOpenYesPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnOpenYes);
+    mWindOpenLockPtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindOpenLock);
     mTextMsgPtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextMsg);
     mTextMsgTitlePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextMsgTitle);
     mWindNotifyPtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindNotify);
@@ -217,9 +224,6 @@ void keyboardActivity::onCreate() {
     mBtnLockPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnLock);
     mTextview1Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview1);
     mWindDoorControlPtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindDoorControl);
-    mTextStatusNotice2Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextStatusNotice2);
-    mTextStatusNoticePtr = (ZKTextView*)findControlByID(ID_KEYBOARD_TextStatusNotice);
-    mWindStatusNoticePtr = (ZKWindow*)findControlByID(ID_KEYBOARD_WindStatusNotice);
     mBtnCancelPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnCancel);
     mTextview2Ptr = (ZKTextView*)findControlByID(ID_KEYBOARD_Textview2);
     mBtnConfirmPtr = (ZKButton*)findControlByID(ID_KEYBOARD_BtnConfirm);

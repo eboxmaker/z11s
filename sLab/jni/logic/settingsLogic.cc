@@ -40,7 +40,7 @@
 */
 
 static void onProtocolNetDataUpdate(const NetProtocolData &data);
-
+static time_t last_touch_time;
 static void onDownloadEvent(std::string msg){
 	mTextMsgTitlePtr->setText("下载信息");
 	if(msg == "")
@@ -56,7 +56,7 @@ static void onDownloadEvent(std::string msg){
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	//{0,  6000}, //定时器id=0, 时间间隔6秒
+	{0,  2000}, //定时器id=0, 时间间隔6秒
 	{1,  1000},
 };
 
@@ -104,6 +104,7 @@ static void onUI_show() {
     mEditTextServerPortPtr->setText(dev.get_serverPort());
     mEditOrgNamePtr->setText(dev.get_organization());
 	mEditDevNamePtr->setText(dev.get_department());
+	last_touch_time = time(NULL);
 }
 
 /*
@@ -185,9 +186,11 @@ static bool onUI_Timer(int id){
 	struct sysinfo systemInfo;
 	float memUsage;
 	switch (id) {
-	case 0:
 
-	     break;
+	case 0:
+		if(time(NULL) - last_touch_time > 30)
+			EASYUICONTEXT->goHome();
+		break;
 	case 1:
 		if(NETCONTEXT->connected())
 			mBtnServerStatePtr->setBackgroundPic("kai.png");
@@ -239,6 +242,7 @@ static bool onsettingsActivityTouchEvent(const MotionEvent &ev) {
 		default:
 			break;
 	}
+    last_touch_time = time(NULL);
 	return false;
 }
 static bool onButtonClick_BtnNetWork(ZKButton *pButton) {

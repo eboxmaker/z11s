@@ -1,6 +1,5 @@
 #pragma once
 #include "uart/ProtocolSender.h"
-#include "init.h"
 
 /*
 *此文件由GUI工具生成
@@ -32,15 +31,14 @@
 * 在Eclipse编辑器中  使用 “alt + /”  快捷键可以打开智能提示
 */
 
-bool isShowKeyboard = true;
-
+static time_t last_touch_time;
 /**
  * 注册定时器
  * 填充数组用于注册定时器
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	//{0,  6000}, //定时器id=0, 时间间隔6秒
+	{0,  2000}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
 };
 
@@ -49,8 +47,6 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
  */
 static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
-	init();
-
 
 }
 
@@ -68,12 +64,8 @@ static void onUI_intent(const Intent *intentPtr) {
  */
 static void onUI_show() {
 	EASYUICONTEXT->hideStatusBar();
-	LOGD("显示:main");
-	if(isShowKeyboard)
-	{
-		EASYUICONTEXT->openActivity("keyboardActivity");
-		isShowKeyboard  =false;
-	}
+
+	last_touch_time = time(NULL);
 }
 
 /*
@@ -124,9 +116,12 @@ const char* IconTab[]={
  */
 static bool onUI_Timer(int id){
 	switch (id) {
-
-		default:
-			break;
+	case 0:
+		if(time(NULL) - last_touch_time > 30)
+			EASYUICONTEXT->goHome();
+		break;
+	default:
+		break;
 	}
     return true;
 }
@@ -152,11 +147,20 @@ static bool onmainActivityTouchEvent(const MotionEvent &ev) {
 		default:
 			break;
 	}
+    last_touch_time = time(NULL);
 	return false;
 }
 static void onSlideItemClick_Slidewindow1(ZKSlideWindow *pSlideWindow, int index) {
     //LOGD(" onSlideItemClick_ Slidewindow1 %d !!!\n", index);
 	if(index <= sizeof(IconTab)/sizeof(char*)){
-		EASYUICONTEXT->openActivity(IconTab[index]);
+		if("keyboardActivity" == IconTab[index])
+		{
+			EASYUICONTEXT->goBack();
+			LOGD("GOBACK!!!");
+		}
+		else
+		{
+			EASYUICONTEXT->openActivity(IconTab[index]);
+		}
 	}
 }

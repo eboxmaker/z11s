@@ -60,7 +60,7 @@ bool Door::threadLoop()
 
 		}
 
-		lock_ctr_loop();
+		lock_btn_loop();
 		state_loop();
 		Thread::sleep(100);
 	}
@@ -68,9 +68,14 @@ bool Door::threadLoop()
 void Door::state_loop()
 {
 	NetProtocolData msg;
-	static DoorState_t state = get_state();
-	static DoorState_t last_state = get_state();;
+	static DoorLockState_t state = get_state();
+	static DoorLockState_t last_state = get_state();;
 
+	state = get_state();
+	if(state == LockOpen )
+	{
+		lock_ctr_unlock();
+	}
 	state = get_state();
 	if(state != last_state)
 	{
@@ -78,8 +83,9 @@ void Door::state_loop()
 		msg = makeDoorState(Status::Set,state);
 		netUser.write(msg);
 	}
+
 }
-void Door::lock_ctr_loop()
+void Door::lock_btn_loop()
 {
 	static bool last_btn_state = door.get_door_btn();
 	static bool now_btn_state = door.get_door_btn();
@@ -97,7 +103,7 @@ void Door::lock_ctr_loop()
 
 }
 
-void Door::set_lock_ctr(DoorLockState_t state)
+void Door::set_lock_ctr(LockState_t state)
 {
 	if(state == Lock){
 		lock_ctr_state = Lock;
@@ -116,14 +122,34 @@ void Door::set_lock_ctr(DoorLockState_t state)
 			GpioHelper::output(IO_LOCK_CTR, 1);
 	}
 	LOGD("set lock ctr:%d,%d",lock_ctr_state,last_lock_ctr_state);
+}
+void Door::lock_ctr_unlock()
+{
+	lock_ctr_state = Lock;
+	if(LockCtrLogic == HighLock)
+		GpioHelper::output(IO_LOCK_CTR, 1);
+	else
+		GpioHelper::output(IO_LOCK_CTR, 0);
+	LOGD("set lock ctr:%d,%d",lock_ctr_state,last_lock_ctr_state);
 
 }
-DoorLockState_t Door::get_lock_ctr_state()
+void Door::lock_ctr_lock()
+{
+	lock_ctr_state = Unlock;
+	last_lock_ctr_open_time = time(NULL);
+	if(LockCtrLogic == HighLock)
+		GpioHelper::output(IO_LOCK_CTR, 0);
+	else
+		GpioHelper::output(IO_LOCK_CTR, 1);
+	LOGD("set lock ctr:%d,%d",lock_ctr_state,last_lock_ctr_state);
+
+}
+LockState_t Door::get_lock_ctr_state()
 {
 	return lock_ctr_state;
 }
 
-DoorLockState_t Door::get_lock_state()
+LockState_t Door::get_lock_state()
 {
 	if(Feed1Logic == HighLock){
 		if( GpioHelper::input(IO_LOCK_FEED) == 1) return Lock;
@@ -134,7 +160,7 @@ DoorLockState_t Door::get_lock_state()
 		else  return Unlock;
 	}
 }
-DoorDoorState_t Door::get_door_state()
+DoorState_t Door::get_door_state()
 {
 	if(Feed2Logic == HighClose){
 		if( GpioHelper::input(IO_DOOR_FEED) == 1) return Close;
@@ -172,10 +198,10 @@ DoorStateRaw_t Door::get_raw()
 	return raw;
 }
 
-DoorState_t Door::get_state()
+DoorLockState_t Door::get_state()
 {
 	DoorStateRaw_t raw;
-	DoorState_t state;
+	DoorLockState_t state;
 
 	raw = get_raw();
 

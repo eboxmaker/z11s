@@ -18,14 +18,13 @@ typedef enum {HighClose,HighOpen}DoorLogic_t;
 	{
 		Lock,
 		Unlock,
-	}DoorLockState_t;
+	}LockState_t;
 
 	typedef enum
 	{
 		Close,
 		Open
-	}DoorDoorState_t;
-
+	}DoorState_t;
 
 	typedef enum
 	{
@@ -33,7 +32,7 @@ typedef enum {HighClose,HighOpen}DoorLogic_t;
 		LockOpen,
 		UnlockClose,
 		UnlockOpen,
-	}DoorState_t;
+	}DoorLockState_t;
 
 
 	typedef struct
@@ -54,28 +53,33 @@ public:
 	Door();
 	virtual ~Door();
 
-	void set_lock_ctr(DoorLockState_t state);
+	void 			set_lock_ctr(LockState_t state);
+	void 			lock_ctr_unlock();
+	void 			lock_ctr_lock();
+	LockState_t 	get_lock_state();
+	DoorState_t 	get_door_state();
+	DoorLockState_t	get_state();
 
 
-	DoorLockState_t get_lock_ctr_state();
-	DoorLockState_t get_lock_state();
-	DoorDoorState_t get_door_state();
-
-	DoorState_t		get_state();
 
 
-
+	//和门相关的三个IO的逻辑关系配置
+	LockState_t 	get_lock_ctr_state();
 	void			set_lock_ctr_logic(LockLogic_t logic);
-	void			set_lock_logic(LockLogic_t logic);
-	void			set_door_logic(DoorLogic_t logic);
 	LockLogic_t 	get_lock_ctr_logic(){return LockCtrLogic;};
+
+	void			set_lock_logic(LockLogic_t logic);
 	LockLogic_t 	get_lock_logic(){return Feed1Logic;};
+
+	void			set_door_logic(DoorLogic_t logic);
 	DoorLogic_t 	get_door_logic(){return Feed2Logic;};
 
+
+	//室内门的按键开关
 	bool 	get_door_btn();
 
 	void 	state_loop();
-	void 	lock_ctr_loop();
+	void 	lock_btn_loop();
 
 protected:
 	virtual bool readyToRun();
@@ -86,11 +90,11 @@ private:
 	LockLogic_t Feed1Logic;
 	DoorLogic_t Feed2Logic;
 
-	DoorLockState_t lock_state;
-	DoorDoorState_t door_state;
+	LockState_t lock_state;
+	DoorState_t door_state;
 
-	DoorLockState_t lock_ctr_state;
-	DoorLockState_t last_lock_ctr_state;
+	LockState_t lock_ctr_state;
+	LockState_t last_lock_ctr_state;
 
 
 

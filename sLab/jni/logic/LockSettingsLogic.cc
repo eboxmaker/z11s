@@ -33,7 +33,7 @@
 #define	getArraySize(__ARR)									(sizeof(__ARR)/sizeof(__ARR[0]))		// 获取数组大小
 
 static bool editEnable = false;
-
+static time_t last_touch_time;
 typedef struct {
 	const char* mainText;
 	bool bOn;
@@ -57,8 +57,8 @@ static LockData_t ListFeed2Data[] = {
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	{0,  1000}, //定时器id=0, 时间间隔6秒
-	//{1,  1000},
+	{0,  2000}, //定时器id=0, 时间间隔6秒
+	{1,  1000},
 };
 
 /**
@@ -111,6 +111,7 @@ static void onUI_show() {
 
 	editEnable = false;
 	mBtnEnablePtr->setText("不允许编辑锁选项");
+	last_touch_time = time(NULL);
 }
 
 /*
@@ -149,6 +150,10 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
 static bool onUI_Timer(int id){
 	switch (id) {
 	case 0:
+		if(time(NULL) - last_touch_time > 30)
+			EASYUICONTEXT->goHome();
+		break;
+	case 1:
 
 		if(door.get_lock_state() == Unlock)
 		{
@@ -201,6 +206,7 @@ static bool onLockSettingsActivityTouchEvent(const MotionEvent &ev) {
 		default:
 			break;
 	}
+    last_touch_time = time(NULL);
 	return false;
 }
 static int getListItemCount_ListLockLogic(const ZKListView *pListView) {

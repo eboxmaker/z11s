@@ -45,7 +45,7 @@ void onNetDataToExeUpdate(const NetProtocolData &data)
 	string org,department;
 	string tempstr;
 	float temperature;
-	DoorLockState_t doorState;
+	LockState_t doorState;
 	if(data.status == Status::OK || data.status == Status::Err)//不处理回复消息
 	{
 //		LOGD("这是一个服务器回复命令");

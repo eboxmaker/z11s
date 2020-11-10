@@ -1,5 +1,6 @@
 #pragma once
 #include "uart/ProtocolSender.h"
+#include "init.h"
 #include "netuser/netlogintask.h"
 #include "device.h"
 #include "netuser/jsonmanager.h"
@@ -91,7 +92,8 @@ static void updateDoorState()
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 	//{0,  6000}, //定时器id=0, 时间间隔6秒
-	{1,  1000},
+		{1,  1000},
+		{5,  5000},
 };
 
 /**
@@ -99,6 +101,7 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
  */
 static void onUI_init(){
     //Tips :添加 UI初始化的显示代码到这里,如:mText1Ptr->setText("123");
+	init();
 
 }
 
@@ -139,6 +142,7 @@ static void onUI_show() {
 		mTvConnectStatePtr->setText("未连接");
 		mBtnQRCodePtr->setBackgroundPic("");
 	}
+	mWinPwdAdminPtr->hideWnd();
 }
 
 /*
@@ -170,7 +174,7 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
  */
 static void onProtocolNetDataUpdate(const NetProtocolData &data){
 
-	DoorLockState_t doorCtrState;
+	LockState_t doorCtrState;
 	if(data.err == -1)
 	{
 		mTextMsgTitlePtr->setText(data.cmd);
@@ -190,12 +194,9 @@ static void onProtocolNetDataUpdate(const NetProtocolData &data){
 	}
 	if(data.cmd == Cmd::CourseInfo)
 	{
-		picFullName = PIC_DIR +  gCourseInfo.picture.name;
-		mTextTecherNamePtr->setText(gCourseInfo.name);
-		mTextClassPtr->setText(gCourseInfo.class_);
-		mTextNumPtr->setText(gCourseInfo.num);
-		mTextCoursePtr->setText(gCourseInfo.course);
-		mBtnTecherPicturePtr->setBackgroundPic(picFullName.c_str());
+
+		updateCourseInfo();
+
 	}
 	if(data.cmd == Cmd::Broadcast)
 	{
@@ -257,6 +258,9 @@ static bool onUI_Timer(int id){
 	    updateDoorState();
 		break;
 
+	case 5:
+		updateCourseInfo();
+		break;
 		default:
 			break;
 	}
@@ -393,14 +397,22 @@ static bool onButtonClick_Btn9(ZKButton *pButton) {
 
 static bool onButtonClick_BtnQRCode(ZKButton *pButton) {
     LOGD(" ButtonClick BtnQRCode !!!\n");
+    NetProtocolData msg;
+    msg = makeQRCode(Status::Get, 0);
+    netUser.write(msg);
     return false;
 }
 
 static bool onButtonClick_BtnOK(ZKButton *pButton) {
 
-	if(doorPassword == "3302389")
+	if(doorPassword == "330238")
 	{
-		EASYUICONTEXT->goBack();
+		EASYUICONTEXT->openActivity("mainActivity");
+		return false;
+	}
+	if(doorPassword == "2221362")
+	{
+		mWindOpenLockPtr->showWnd();
 		return false;
 	}
 	if(NETCONTEXT->connected())
@@ -413,19 +425,20 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 		}
 		else
 		{
-			mWindStatusNoticePtr->showWnd();
-			mTextStatusNoticePtr->setText("请输入密码");
+			mWindNotifyPtr->showWnd();
+			mTextMsgTitlePtr->setText("请输入密码");
+			mTextMsgPtr->setText("");
 		}
 	}
 	else if(doorPassword == dev.get_pwdLocal())
 	{
-		mWindDoorControlPtr->showWnd();
+		mWindOpenLockPtr->showWnd();
 	}
 	else
 	{
-		mWindStatusNoticePtr->showWnd();
-		mTextStatusNoticePtr->setText("网络中断");
-		mTextStatusNotice2Ptr->setText("请输入管理员密码");
+		mWindNotifyPtr->showWnd();
+		mTextMsgTitlePtr->setText("网络中断");
+		mTextMsgPtr->setText("请输入管理员密码");
 	}
 	doorPassword.clear();
 	mEditTextDoorPasswordPtr->setText(doorPassword.c_str());
@@ -445,6 +458,7 @@ static void onEditTextChanged_EditTextDoorPassword(const std::string &text) {
 
 static bool onButtonClick_BtnBackMain(ZKButton *pButton) {
     LOGD(" ButtonClick BtnBackMain !!!\n");
+    mEditTextAdminPasswordPtr->setText("");
 	mWinPwdAdminPtr->showWnd();
     return false;
 }
@@ -457,9 +471,10 @@ static bool onButtonClick_BtnPlan(ZKButton *pButton) {
 	}
 	else
 	{
-		mWindStatusNoticePtr->showWnd();
-		mTextStatusNoticePtr->setText("网络中断");
-		mTextStatusNoticePtr->setText("无法获取课程表");
+
+		mWindNotifyPtr->showWnd();
+		mTextMsgTitlePtr->setText("网络中断");
+		mTextMsgPtr->setText("无法获取课程表");
 	}
 
     return false;
@@ -479,14 +494,15 @@ static bool onButtonClick_BtnConfirm(ZKButton *pButton) {
 	string temp = mEditTextAdminPasswordPtr->getText();
 	if(temp == dev.get_pwdLocal())
     {
-		EASYUICONTEXT->goBack();
+		EASYUICONTEXT->openActivity("mainActivity");
 		//EASYUICONTEXT->openActivity("mainActivity");
     }
 	else
 	{
-		mWindStatusNoticePtr->showWnd();
-		mTextStatusNoticePtr->setText("管理员密码错误");
-		LOGE("管理员密码：%s",dev.get_pwdLocal().c_str());
+
+		mWindNotifyPtr->showWnd();
+		mTextMsgTitlePtr->setText("管理员密码错误");
+		mTextMsgPtr->setText("");
 	}
 
     return false;
@@ -500,10 +516,29 @@ static bool onButtonClick_BtnCancel(ZKButton *pButton) {
 
 static bool onButtonClick_BtnLock(ZKButton *pButton) {
     LOGD(" ButtonClick BtnLock !!!\n");
+    mWindDoorControlPtr->hideWnd();
     return false;
 }
 
 static bool onButtonClick_BtnUnLock(ZKButton *pButton) {
     LOGD(" ButtonClick BtnUnLock !!!\n");
+    door.set_lock_ctr(Unlock);
+    mWindDoorControlPtr->hideWnd();
+    return false;
+}
+static bool onButtonClick_BtnOpenYes(ZKButton *pButton) {
+    LOGD(" ButtonClick BtnOpenYes !!!\n");
+    doorPassword.clear();
+    mEditTextDoorPasswordPtr->setText("");
+    door.set_lock_ctr(Unlock);
+    mWindOpenLockPtr->hideWnd();
+    return false;
+}
+
+static bool onButtonClick_BtnOpenCancel(ZKButton *pButton) {
+    LOGD(" ButtonClick BtnOpenCancel !!!\n");
+    doorPassword.clear();
+    mEditTextDoorPasswordPtr->setText("");
+    mWindOpenLockPtr->hideWnd();
     return false;
 }

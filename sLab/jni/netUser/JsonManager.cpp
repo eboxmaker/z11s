@@ -387,7 +387,7 @@ string parseDateTime(const NetProtocolData &data)
 	return status;
 }
 
-NetProtocolData makeDoorCtr(string status,DoorLockState_t door)
+NetProtocolData makeDoorCtr(string status,LockState_t door)
 {
 	NetProtocolData msg;
 	Json::Value root;
@@ -410,7 +410,7 @@ NetProtocolData makeDoorCtr(string status,DoorLockState_t door)
 	LOGD("DoorLockControl回复：%s",msg.data.c_str());
 	return msg;
 }
-string 	parseDoorCtr(const NetProtocolData &data,DoorLockState_t &door)
+string 	parseDoorCtr(const NetProtocolData &data,LockState_t &door)
 {
 	  Json::Reader reader;
 	  Json::Value root;
@@ -450,7 +450,7 @@ string 	parseDoorCtr(const NetProtocolData &data,DoorLockState_t &door)
 	  return status;
 }
 
-NetProtocolData makeDoorState(string status,DoorState_t door)
+NetProtocolData makeDoorState(string status,DoorLockState_t door)
 {
 	NetProtocolData msg;
 	Json::Value root;

@@ -34,7 +34,7 @@
 * 在Eclipse编辑器中  使用 “alt + /”  快捷键可以打开智能提示
 */
 static void onProtocolNetDataUpdate(const NetProtocolData &data);
-
+static time_t last_touch_time;
 static void updateUI_time() {
 	char timeStr[20];
 	struct tm *t = TimeHelper::getDateTime();
@@ -53,7 +53,7 @@ static void updateUI_time() {
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	//{0,  6000}, //定时器id=0, 时间间隔6秒
+	{0,  2000}, //定时器id=0, 时间间隔6秒
 	{1,  1000},
 };
 
@@ -92,6 +92,7 @@ static void onUI_show() {
 	NetProtocolData msg;
 	msg = makePlan(Status::Get);
 	netUser.write(msg);
+	last_touch_time = time(NULL);
 }
 
 /*
@@ -151,9 +152,13 @@ static void onProtocolNetDataUpdate(const NetProtocolData &data){
  */
 static bool onUI_Timer(int id){
 	switch (id) {
-		case 1:
-			updateUI_time();
-			break;
+	case 0:
+		if(time(NULL) - last_touch_time > 30)
+			EASYUICONTEXT->goHome();
+		break;
+	case 1:
+		updateUI_time();
+		break;
 
 		default:
 			break;
@@ -182,6 +187,7 @@ static bool onplanActivityTouchEvent(const MotionEvent &ev) {
 		default:
 			break;
 	}
+    last_touch_time = time(NULL);
 	return false;
 }
 static int getListItemCount_List(const ZKListView *pListView) {

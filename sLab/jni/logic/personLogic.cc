@@ -33,6 +33,9 @@
 */
 
 
+
+static time_t last_touch_time;
+
 static 	PersonInfo_t person;
 
 static void onProtocolNetDataUpdate(const NetProtocolData &data);
@@ -44,7 +47,7 @@ static void onProtocolNetDataUpdate(const NetProtocolData &data);
  * 注意：id不能重复
  */
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
-	//{0,  6000}, //定时器id=0, 时间间隔6秒
+	{0,  30000}, //定时器id=0, 时间间隔6秒
 	//{1,  1000},
 };
 
@@ -77,6 +80,7 @@ static void onUI_show() {
 	mTextLockRightPtr->setText("");
 	mTextFingerNumPtr->setText("");
 	person.fingers.clear();
+	last_touch_time = time(NULL);
 }
 
 /*
@@ -135,9 +139,12 @@ static void onProtocolNetDataUpdate(const NetProtocolData &data)
  */
 static bool onUI_Timer(int id){
 	switch (id) {
-
-		default:
-			break;
+	case 0:
+		if(time(NULL) - last_touch_time > 30)
+			EASYUICONTEXT->goHome();
+		break;
+	default:
+		break;
 	}
     return true;
 }
@@ -163,6 +170,7 @@ static bool onpersonActivityTouchEvent(const MotionEvent &ev) {
 		default:
 			break;
 	}
+	last_touch_time = time(NULL);
 	return false;
 }
 static bool onButtonClick_BtnQuaryPerson(ZKButton *pButton) {
