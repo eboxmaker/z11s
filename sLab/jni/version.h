@@ -11,8 +11,8 @@
 
 #define MAJOR_VERSION "1"
 #define MINOR_VERSION "1"
-#define BUGFIX_VERSION "6"
-#define VERSION	 "1.1.6"
+#define BUGFIX_VERSION "8"
+#define VERSION	 "1.1.8"
 #define VERSION_DATE	__DATE__
 
 #endif /* VERSION_H_ */

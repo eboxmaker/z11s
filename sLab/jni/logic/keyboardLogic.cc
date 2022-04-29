@@ -410,7 +410,12 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 		EASYUICONTEXT->openActivity("mainActivity");
 		return false;
 	}
-	if(doorPassword == "2221362")
+//	if(doorPassword == "2221362")
+//	{
+//		mWindOpenLockPtr->showWnd();
+//		return false;
+//	}
+	if(doorPassword == dev.get_pwdLocal())
 	{
 		mWindOpenLockPtr->showWnd();
 		return false;
@@ -429,10 +434,6 @@ static bool onButtonClick_BtnOK(ZKButton *pButton) {
 			mTextMsgTitlePtr->setText("请输入密码");
 			mTextMsgPtr->setText("");
 		}
-	}
-	else if(doorPassword == dev.get_pwdLocal())
-	{
-		mWindOpenLockPtr->showWnd();
 	}
 	else
 	{
